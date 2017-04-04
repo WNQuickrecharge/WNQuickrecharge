@@ -18,6 +18,13 @@ public abstract class ManagerCallback<T> {
      */
     public void onSuccess(T returnContent) {
     }
+
+    /**
+     * 请求成功
+     * @param returnContent 请求结果
+     * @param requestCode 请求code
+     */
+    public void onSuccess(T returnContent,int requestCode){}
     /**
      * 请求失败
      *

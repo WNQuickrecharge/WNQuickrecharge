@@ -20,4 +20,6 @@ public class HttpApi {
     }
 
     public static final String login_url = "capp/user/login";
+    public static final String register_checknum = "capp/user/register_code";
+    public static final String register_url = "capp/user/register";
 }
