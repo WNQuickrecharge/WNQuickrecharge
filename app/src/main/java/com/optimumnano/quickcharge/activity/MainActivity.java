@@ -72,6 +72,7 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbOrder:
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
+
                         setRightTitle("");
                         viewPager.setCurrentItem(1);
                         break;
