@@ -12,6 +12,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class MainActivity extends BaseActivity {
     private RechargeFragment rechargeFragment;
     private OrderFragment orderFragment;
     private MineFragment mineFragment;
+
+    KeyboardWatcher keyboardWatcher;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,18 @@ public class MainActivity extends BaseActivity {
         initViews();
         initData();
         initListener();
+        keyboardWatcher=new KeyboardWatcher(this);
+        keyboardWatcher.setListener(new KeyboardWatcher.OnKeyboardToggleListener() {
+            @Override
+            public void onKeyboardShown(int keyboardSize) {
+
+            }
+
+            @Override
+            public void onKeyboardClosed() {
+
+            }
+        });
     }
 
 
@@ -116,5 +131,11 @@ public class MainActivity extends BaseActivity {
     @Override
     public void permissionFail(int requestCode) {
         super.permissionFail(requestCode);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        keyboardWatcher.destroy();
     }
 }

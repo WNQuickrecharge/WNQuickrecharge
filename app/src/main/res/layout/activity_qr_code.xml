@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity">
+
+    <include layout="@layout/title_main"
+        android:id="@+id/in_title"/>
+
+    <FrameLayout
+        android:id="@+id/qr_code"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/in_title"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+
+
+    <LinearLayout
+        android:id="@+id/ll_sence_two"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/in_title"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_sence_two_Top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <EditText
+                android:id="@+id/et_record_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/default_padding30"
+                android:layout_marginRight="@dimen/default_padding30"
+                android:layout_marginTop="@dimen/default_padding20"
+                android:background="@drawable/sp_edit_number"
+                android:gravity="center"
+                android:hint="@string/please_input_number"
+                android:paddingBottom="@dimen/dimen_8"
+                android:paddingTop="@dimen/dimen_8"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/tv_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/default_padding30"
+                android:layout_marginRight="@dimen/default_padding30"
+                android:layout_marginTop="@dimen/default_padding20"
+                android:background="@drawable/sl_submit"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_8"
+                android:paddingTop="@dimen/dimen_8"
+                android:text="@string/confirm"
+                android:textColor="@drawable/sl_submit_text_state"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9">
+
+            <LinearLayout
+                android:id="@+id/ll_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/default_padding">
+
+                <RadioGroup
+                    android:id="@+id/rg_buttom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/default_padding30"
+                    android:layout_marginRight="@dimen/default_padding30"
+                    android:background="@drawable/shape_maincolor_kuang"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+
+                    <RadioButton
+                        android:id="@+id/rb_qr"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sl_rb_state"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen_8"
+                        android:paddingLeft="@dimen/dimen_18"
+                        android:paddingRight="@dimen/dimen_18"
+                        android:paddingTop="@dimen/dimen_8"
+                        android:text="@string/qr_el"
+                        android:textColor="@drawable/sl_rb_text_state"
+                        android:textSize="@dimen/sp_16" />
+
+                    <RadioButton
+                        android:id="@+id/rb_write"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sl_rb_state"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen_8"
+                        android:paddingLeft="@dimen/dimen_18"
+                        android:paddingRight="@dimen/dimen_18"
+                        android:paddingTop="@dimen/dimen_8"
+                        android:text="@string/input_number"
+                        android:textColor="@drawable/sl_rb_text_state"
+                        android:textSize="@dimen/sp_16" />
+
+
+                </RadioGroup>
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_deng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_qr_deng" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
