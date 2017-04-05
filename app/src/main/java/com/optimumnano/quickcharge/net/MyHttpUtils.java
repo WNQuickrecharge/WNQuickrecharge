@@ -203,7 +203,7 @@ public class MyHttpUtils<T> {
                             }
                         }
                     } else {
-                        callback.onFailure(dataJson.optInt("status")+"", dataJson.optString("resultMsg"), httpCode);
+                        callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
                     }
             } catch (Exception e) {
                 callback.onFailure("数据异常", null, httpCode);
