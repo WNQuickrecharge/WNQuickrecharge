@@ -1,4 +1,4 @@
-package com.optimumnano.quickcharge.base;
+package com.optimumnano.quickcharge;
 
 import android.app.Application;
 
