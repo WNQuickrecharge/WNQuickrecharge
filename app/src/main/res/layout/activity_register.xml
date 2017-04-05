@@ -32,8 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_maincolor_kuang"
-            android:layout_marginTop="@dimen/dp_10"
-            android:padding="2dp">
+            android:layout_marginTop="@dimen/dp_10">
             <EditText
                 android:id="@+id/register_edtChecknum"
                 android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                 style="@style/EditTextStyle"
                 android:hint="@string/edt_checknum"
                 android:inputType="textPassword"
-                android:padding="@dimen/dp_10"/>
+                android:padding="12dp"/>
             <TextView
                 android:id="@+id/register_tvChecknum"
                 android:layout_width="120dp"
