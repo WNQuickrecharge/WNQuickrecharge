@@ -11,14 +11,6 @@
         android:background="@color/white"
         android:navigationIcon="@drawable/backtwo">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
 
                 <TextView
                     android:id="@+id/title_tvLeft"
@@ -37,7 +29,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="title"
-                    android:layout_marginRight="@dimen/default_margin"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -58,21 +49,19 @@
                     android:text="title"
                     android:textColor="@color/main_color"
                     android:textSize="16sp" />
-            </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimaryDark"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="nihao"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
     </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nihao"
+            android:textSize="16sp" />
+    </LinearLayout>
 </android.support.design.widget.AppBarLayout>
