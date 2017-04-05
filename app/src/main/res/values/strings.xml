@@ -19,4 +19,7 @@
     <string name="recharge">充电</string>
     <string name="order">订单</string>
     <string name="mine">我的</string>
+
+    <string name="show_ont">移动补电车</string>
+    <string name="show_two">充电桩</string>
 </resources>
