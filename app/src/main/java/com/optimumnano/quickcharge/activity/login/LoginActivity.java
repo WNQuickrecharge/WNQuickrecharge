@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -45,10 +46,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 manager.login(edtUsername.getText().toString(),edtPwd.getText().toString(),new Manager());
                 break;
             case R.id.login_tvReg:
-
+                skipActivity(RegisterActivity.class,null);
                 break;
             case R.id.login_tvForgetpwd:
-
+                skipActivity(ForgetPwdActivity.class,null);
                 break;
             default:
                 break;
@@ -59,6 +60,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
+            skipActivity(MainActivity.class,null);
         }
 
         @Override

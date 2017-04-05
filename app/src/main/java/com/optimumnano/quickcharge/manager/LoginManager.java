@@ -46,7 +46,9 @@ public class LoginManager {
      * 注册
      */
     public void register(String mobile,String pwd,String checkNum,String confirmpwd, final ManagerCallback callback,final int httpCode){
-        registerCheck(mobile,pwd,checkNum,confirmpwd);
+        if (!registerCheck(mobile,pwd,checkNum,confirmpwd,callback)){
+            return;
+        }
         String url = HttpApi.getInstance().getUrl(HttpApi.register_url);
         RequestParams params = new RequestParams(url);
         params.addBodyParameter("mobile",mobile);
@@ -69,10 +71,34 @@ public class LoginManager {
         });
     }
     //注册参数判断
-    private void registerCheck(String mobile,String pwd,String checkNum,String confirmpwd){
-
+    private boolean registerCheck(String mobile,String pwd,String checkNum,String confirmpwd,ManagerCallback callback){
+        if (StringUtils.isEmpty(mobile)){
+            callback.onFailure("请输入电话号码");
+            return false;
+        }
+        if (!StringUtils.isMobile(mobile)){
+            callback.onFailure("电话号码格式有误");
+            return false;
+        }
+        if (StringUtils.isEmpty(pwd)){
+            callback.onFailure("密码不能为空");
+            return false;
+        }
+        if (StringUtils.isEmpty(checkNum)){
+            callback.onFailure("验证码不能为空");
+            return false;
+        }
+        if (StringUtils.isEmpty(confirmpwd)){
+            callback.onFailure("确认密码不能为空");
+            return false;
+        }
+        if (!pwd.equals(confirmpwd)){
+            callback.onFailure("两次密码输入不一致");
+            return false;
+        }
+        return true;
     }
-    private void getCheckNum(String mobile, final ManagerCallback callback,final int httpCode){
+    public void getCheckNum(String mobile, final ManagerCallback callback,final int httpCode){
         String url = HttpApi.getInstance().getUrl(HttpApi.register_checknum);
         RequestParams params = new RequestParams(url);
         params.addBodyParameter("mobile",mobile);
