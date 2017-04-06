@@ -42,6 +42,24 @@
         <item name="android:paddingRight">@dimen/default_padding</item>
     </style>
 
+    <style name="ButtonStyle_small_gray">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/default_textsize14</item>
+        <item name="android:textColor">@color/color99</item>
+        <item name="android:background">@drawable/shape_gray_kuang</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingLeft">@dimen/default_padding</item>
+        <item name="android:paddingRight">@dimen/default_padding</item>
+    </style>
+    <style name="ButtonStyle_deleteorder">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/default_padding</item>
+        <item name="android:textSize">@dimen/default_textsize16</item>
+        <item name="android:textColor">@color/main_color_red</item>
+        <item name="android:background">@drawable/shape_delete_order</item>
+    </style>
+
     <style name="myRadioButto">
         <item name="android:background">@null</item>
         <item name="android:button">@null</item>
