@@ -89,5 +89,12 @@
         app:tvRightText="13522225555"
         app:LeftTextColor="@color/black"
         app:showtvRight="true"/>
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="补电车司机电话"
+        app:tvRightText="13522225555"
+        app:LeftTextColor="@color/black"
+        app:showtvRight="true"/>
 
 </LinearLayout>

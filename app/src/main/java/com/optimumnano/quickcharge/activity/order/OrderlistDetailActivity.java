@@ -19,4 +19,7 @@ public class OrderlistDetailActivity extends BaseActivity {
     public void initViews() {
         super.initViews();
     }
+    private void initListener(){
+
+    }
 }
