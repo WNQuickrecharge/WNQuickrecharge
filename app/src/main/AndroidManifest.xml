@@ -48,7 +48,8 @@
             android:process=":remote" />
 
         <activity android:name=".activity.login.RegisterActivity" />
-        <activity android:name=".activity.login.ForgetPwdActivity"></activity>
+        <activity android:name=".activity.login.ForgetPwdActivity" />
+        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@
     <attr name="title" format="string" localization="suggested" />
     <attr name="tvRightHint" format="string" localization="suggested" />
     <attr name="rightTextColor" format="color" />
+    <attr name="LeftTextColor" format="color" />
 
     <!-- 自定义圆形imageview -->
     <declare-styleable name="CircleImageView">
@@ -30,5 +31,7 @@
         <attr name="showtvRight" />
         <attr name="showivLeft" />
         <attr name="ivLeftDrawable" />
+        <attr name="rightTextColor"/>
+        <attr name="LeftTextColor"/>
     </declare-styleable>
 </resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity">
+
+    <include layout="@layout/title_main"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_lrmargin"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/default_lrmargin">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="订单编号"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/default_padding"
+                android:src="@drawable/head"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_lrmargin">
+            <TextView
+                android:id="@+id/orderlistDetl_tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                style="@style/text_mainstyle"
+                android:text="评价订单"/>
+            <TextView
+                android:id="@+id/orderlistDetl_tvOrdernum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_toLeftOf="@id/orderlistDetl_tvStatus"
+                android:text="88888888"/>
+            <TextView
+                android:id="@+id/orderlistDetl_tvCompany"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding5"
+                android:textSize="@dimen/default_textsize16"
+                android:textColor="@color/black"
+                android:layout_below="@id/orderlistDetl_tvOrdernum"
+                android:text="沃特马电池有限公司"/>
+
+            <TextView
+                android:id="@+id/orderlistDetl_tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding5"
+                android:textColor="@color/color66"
+                android:textSize="@dimen/default_textsize14"
+                android:layout_below="@id/orderlistDetl_tvCompany"
+                android:text="深圳市南山区"/>
+            <TextView
+                android:id="@+id/orderlistDetl_tvTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding5"
+                android:textColor="@color/color66"
+                android:gravity="right"
+                android:textSize="@dimen/default_textsize14"
+                android:layout_below="@id/orderlistDetl_tvAddress"
+                android:text="2017-03-22 12:24"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="补电车司机电话"
+        app:tvRightText="13522225555"
+        app:LeftTextColor="@color/black"
+        app:showtvRight="true"/>
+
+</LinearLayout>
