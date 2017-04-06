@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/default_lrmargin"
         android:orientation="horizontal"
+        android:background="@color/white"
         android:layout_marginTop="@dimen/default_lrmargin">
         <LinearLayout
             android:layout_width="wrap_content"
@@ -76,7 +77,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_padding5"
                 android:textColor="@color/color66"
-                android:gravity="right"
                 android:textSize="@dimen/default_textsize14"
                 android:layout_below="@id/orderlistDetl_tvAddress"
                 android:text="2017-03-22 12:24"/>
@@ -85,16 +85,104 @@
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="补电车司机电话"
-        app:tvRightText="13522225555"
-        app:LeftTextColor="@color/black"
+        app:tvLeftText="充电枪号"
+        app:tvRightText="888888"
+        app:LeftTextColor="@color/color99"
+        app:rightTextColor="@color/color33"
+        android:layout_marginTop="@dimen/default_padding"
         app:showtvRight="true"/>
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="补电车司机电话"
-        app:tvRightText="13522225555"
-        app:LeftTextColor="@color/black"
+        app:tvLeftText="桩类型"
+        app:tvRightText="直流桩"
+        app:LeftTextColor="@color/color99"
+        app:rightTextColor="@color/color33"
+        android:layout_marginTop="@dimen/dimen_1"
         app:showtvRight="true"/>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="额定电流"
+        app:tvRightText="150.00A"
+        app:LeftTextColor="@color/color99"
+        app:rightTextColor="@color/color33"
+        android:layout_marginTop="@dimen/dimen_1"
+        app:showtvRight="true"/>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="额定功率"
+        app:tvRightText="150/kwh"
+        app:LeftTextColor="@color/color99"
+        app:rightTextColor="@color/color33"
+        android:layout_marginTop="@dimen/dimen_1"
+        app:showtvRight="true"/>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="预交金额"
+        app:tvRightText="￥200"
+        app:LeftTextColor="@color/color99"
+        app:rightTextColor="@color/main_color_red"
+        android:layout_marginTop="@dimen/dimen_1"
+        app:showtvRight="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="实际费用=预交金额-实际充电金额+服务费"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/default_lrmargin"
+        android:drawablePadding="@dimen/default_padding5"
+        style="@style/text_mainstyle"
+        android:drawableLeft="@drawable/icon_text_tip"/>
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        style="@style/text_mainstyle12"
+        android:text="订单中多缴费用将会返回账户余额中，敬请留意"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/default_lrmargin"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/orderdtel_tvCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle1"
+            android:layout_margin="@dimen/default_lrmargin"
+            android:layout_alignParentBottom="true"
+            android:text="取消订单"/>
+
+
+        <TextView
+            android:id="@+id/orderlistDetl_tvPay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle"
+            android:layout_marginLeft="@dimen/default_lrmargin"
+            android:layout_marginRight="@dimen/default_lrmargin"
+            android:layout_above="@id/orderdtel_tvCancel"
+            android:text="支付订单"/>
+        <TextView
+            android:id="@+id/orderlistDetl_tvWatchStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle"
+            android:layout_margin="@dimen/default_lrmargin"
+            android:layout_above="@id/orderdtel_tvCancel"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:text="查看状态"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
