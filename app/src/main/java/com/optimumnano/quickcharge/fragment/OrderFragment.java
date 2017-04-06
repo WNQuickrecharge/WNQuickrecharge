@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
+import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
@@ -51,14 +56,33 @@ public class OrderFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
+
+        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
+            @Override
+            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+                OrderBean orderBean = orderList.get(position);
+                Intent intent;
+                if (orderBean.status==0 || orderBean.status==1){
+                    intent = new Intent(getActivity(), OrderlistDetailActivity.class);
+                }
+                else {
+                    intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("orderbean",orderList.get(position));
+                intent.putExtras(bundle);
+                getActivity().startActivity(intent);
+            }
+        });
     }
     private void initData(){
-        orderList.add(new OrderBean());
-        orderList.add(new OrderBean());
-        orderList.add(new OrderBean());
-        orderList.add(new OrderBean());
-        orderList.add(new OrderBean());
-        orderList.add(new OrderBean());
+        orderList.add(new OrderBean(0));
+        orderList.add(new OrderBean(1));
+        orderList.add(new OrderBean(2));
+        orderList.add(new OrderBean(3));
+        orderList.add(new OrderBean(0));
+        orderList.add(new OrderBean(1));
     }
     private void dataChanged(){
         if (adapter == null){
