@@ -177,4 +177,5 @@ public class QrCodeActivity extends BaseActivity {
                 break;
         }
     }
+
 }
