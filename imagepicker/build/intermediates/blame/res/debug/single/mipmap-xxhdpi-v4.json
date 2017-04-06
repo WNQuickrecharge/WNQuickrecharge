@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\text_indicator.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\text_indicator.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\default_image.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\default_image.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\checkbox_normal.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\checkbox_normal.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_back.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\ic_back.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\grid_camera.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\grid_camera.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\list_selected.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\list_selected.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_del.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\ic_del.png"
+    },
+    {
+        "merged": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\checkbox_checked.png",
+        "source": "F:\\wtmcode\\WNQuickrecharge\\imagepicker\\src\\main\\res\\mipmap-xxhdpi\\checkbox_checked.png"
+    }
+]

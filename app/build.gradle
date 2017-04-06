@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '24.0.0'
 
     defaultConfig {
         applicationId "com.optimumnano.quickcharge"
@@ -24,8 +24,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile files('libs/BaiduLBS_Android.jar')
     compile project(':library')
+    compile project(':imagepicker')
 
-    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'org.xutils:xutils:3.3.4'
     compile 'org.greenrobot:eventbus:3.0.0'
