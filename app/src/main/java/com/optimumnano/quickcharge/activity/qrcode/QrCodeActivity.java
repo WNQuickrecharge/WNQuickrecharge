@@ -25,7 +25,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-// TODO: 2017/4/6 0006 开灯关灯操作
 // TODO: 2017/4/6 0006 扫码二维码的值
 // TODO: 2017/4/6 0006 与页面关联
 public class QrCodeActivity extends BaseActivity {
@@ -52,6 +51,7 @@ public class QrCodeActivity extends BaseActivity {
     LinearLayout llSenceTwoTop;
 
     private boolean isLightOpen = false;
+
 
 
 
@@ -93,11 +93,19 @@ public class QrCodeActivity extends BaseActivity {
     public void openLight() {
         ivDeng.setImageResource(R.drawable.ic_qr_deng_on);
         isLightOpen = true;
+        /**
+         * 打开闪光灯
+         */
+        CodeUtils.isLightEnable(true);
     }
 
     private void closeLight() {
         ivDeng.setImageResource(R.drawable.ic_qr_deng);
         isLightOpen = false;
+        /**
+         * 关闭闪光灯
+         */
+        CodeUtils.isLightEnable(false);
     }
 
 
