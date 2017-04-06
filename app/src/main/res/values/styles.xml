@@ -49,7 +49,7 @@
         <item name="android:textSize">@dimen/default_textsize14</item>ba
         <item name="android:textColor">@drawable/selector_homecolor</item>
         <item name="android:gravity">center</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">5dp</item>
     </style>
 
     <style name="text_mainstyle">

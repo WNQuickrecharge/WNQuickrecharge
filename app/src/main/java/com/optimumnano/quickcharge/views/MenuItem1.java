@@ -20,6 +20,7 @@ public class MenuItem1 extends RelativeLayout {
 	private TextView tvLeft,tvRight;
 	private ImageView ivRight,ivLeft;
 	private CharSequence tvLeftText,tvRightText;
+	private int leftTextColor,rightTextColor;
 	
 	private boolean showivRight=false,showtvRight = false,showivLeft = false;
 	private int ivLeftDrawable;
@@ -56,6 +57,12 @@ public class MenuItem1 extends RelativeLayout {
 					case R.styleable.MenuItem1_ivLeftDrawable:
 						ivLeftDrawable = a.getResourceId(R.styleable.MenuItem1_ivLeftDrawable,0);
 						break;
+					case R.styleable.MenuItem1_LeftTextColor:
+						leftTextColor = a.getColor(index,0);
+						break;
+					case R.styleable.MenuItem1_rightTextColor:
+						rightTextColor = a.getColor(index,0);
+						break;
 					}
 				}
 				a.recycle();
@@ -88,6 +95,12 @@ public class MenuItem1 extends RelativeLayout {
 		}
 		else{
 			ivLeft.setVisibility(View.GONE);
+		}
+		if (leftTextColor!=0){
+			tvLeft.setTextColor(leftTextColor);
+		}
+		if (rightTextColor!=0){
+			tvRight.setTextColor(rightTextColor);
 		}
 	}
 	

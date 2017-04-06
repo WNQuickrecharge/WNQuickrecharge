@@ -64,6 +64,7 @@
 
         <activity android:name=".activity.login.RegisterActivity" />
         <activity android:name=".activity.login.ForgetPwdActivity" />
+        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
         <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
     </application>
 
