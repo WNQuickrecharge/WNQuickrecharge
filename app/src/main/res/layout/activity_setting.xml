@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+    <LinearLayout
+        android:layout_below="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/setting_modify_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="修改密码"
+            app:showivRight="true"/>
+        <include layout="@layout/view_line"/>
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/setting_modify_pay_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="修改支付密码"
+            app:showivRight="true"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_gravity="bottom"
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selecot_logout"
+        android:gravity="center"
+        android:text="退出登录"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+</RelativeLayout>

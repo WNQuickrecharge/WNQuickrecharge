@@ -21,16 +21,17 @@
                 android:src="@drawable/geren"
                 android:layout_marginLeft="@dimen/default_margin"
                 android:layout_gravity="center_vertical"/>
+
             <EditText
-                android:id="@+id/register_edtPhone"
+                android:id="@+id/forget_edtPhone"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/EditTextStyle"
-                android:hint="@string/login_hint"
                 android:layout_gravity="center_vertical"
+                android:hint="@string/login_hint"
                 android:inputType="phone"
                 android:maxLength="11"
-                android:padding="@dimen/dp_10"/>
+                android:padding="@dimen/dp_10" />
         </LinearLayout>
 
         <RelativeLayout
@@ -39,7 +40,7 @@
             android:background="@drawable/shape_maincolor_kuang"
             android:layout_marginTop="@dimen/dp_10">
             <ImageView
-                android:id="@+id/register_ivicon"
+                android:id="@+id/forget_ivicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/yanzhengma"
@@ -47,22 +48,22 @@
                 android:layout_marginLeft="@dimen/default_margin"
                 android:layout_gravity="center_vertical"/>
             <EditText
-                android:id="@+id/register_edtChecknum"
+                android:id="@+id/forget_edtChecknum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/edt_checknum"
                 android:inputType="textPassword"
-                android:layout_toRightOf="@id/register_ivicon"
+                android:layout_toRightOf="@id/forget_ivicon"
                 android:layout_centerVertical="true"
                 android:padding="12dp"/>
             <TextView
-                android:id="@+id/register_tvChecknum"
+                android:id="@+id/forget_tvChecknum"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_alignBottom="@id/register_edtChecknum"
-                android:layout_alignTop="@id/register_edtChecknum"
+                android:layout_alignBottom="@id/forget_edtChecknum"
+                android:layout_alignTop="@id/forget_edtChecknum"
                 android:gravity="center"
                 android:textColor="@color/main_color"
                 android:background="@drawable/shape_maincolor_kuang"
@@ -84,7 +85,7 @@
                 android:layout_marginLeft="@dimen/default_margin"
                 android:layout_gravity="center_vertical"/>
             <EditText
-                android:id="@+id/register_edtPwd"
+                android:id="@+id/forget_edtPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
@@ -108,7 +109,7 @@
                 android:layout_marginLeft="@dimen/default_margin"
                 android:layout_gravity="center_vertical"/>
             <EditText
-                android:id="@+id/register_edtConfirmPwd"
+                android:id="@+id/forget_edtConfirmPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
@@ -119,7 +120,7 @@
 
 
         <TextView
-            android:id="@+id/register_tvRegister"
+            android:id="@+id/forget_password_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/confirm"
