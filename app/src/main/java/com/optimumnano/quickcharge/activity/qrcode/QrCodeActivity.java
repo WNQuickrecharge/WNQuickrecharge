@@ -53,6 +53,8 @@ public class QrCodeActivity extends BaseActivity {
 
     private boolean isLightOpen = false;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,6 @@ public class QrCodeActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initViews();
-
         // 为二维码扫描界面设置定制化界面
         CodeUtils.setFragmentArgs(fragment, R.layout.qr_code_layout);
         fragment.setAnalyzeCallback(analyzeCallback);
@@ -85,8 +86,6 @@ public class QrCodeActivity extends BaseActivity {
                         break;
                 }
             }
-
-
         });
 
     }
@@ -100,6 +99,8 @@ public class QrCodeActivity extends BaseActivity {
         ivDeng.setImageResource(R.drawable.ic_qr_deng);
         isLightOpen = false;
     }
+
+
 
     @Override
     public void initViews() {
@@ -173,9 +174,15 @@ public class QrCodeActivity extends BaseActivity {
             case R.id.tv_submit:
                 break;
             case R.id.iv_deng:
+                if (!isLightOpen)
                 openLight();
+                else
+                    closeLight();
                 break;
         }
     }
+
+
+
 
 }
