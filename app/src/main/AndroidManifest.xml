@@ -21,8 +21,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- SD卡读取权限，用户写入离线定位数据 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
@@ -31,8 +29,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
         android:name=".MyApplication"
@@ -41,10 +38,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme">
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustResize|adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,8 +62,9 @@
 
         <activity android:name=".activity.login.RegisterActivity" />
         <activity android:name=".activity.login.ForgetPwdActivity" />
-        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
-        <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
+        <activity android:name=".activity.order.OrderlistDetailActivity" />
+        <activity android:name=".activity.qrcode.QrCodeActivity" />
+        <activity android:name=".activity.selectAddress.SelectAddressActivity"></activity>
     </application>
 
 </manifest>
