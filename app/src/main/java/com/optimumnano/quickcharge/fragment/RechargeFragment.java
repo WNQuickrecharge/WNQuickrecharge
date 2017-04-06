@@ -8,6 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -25,19 +28,41 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 
 import org.xutils.common.util.LogUtil;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 充电
  */
 public class RechargeFragment extends BaseFragment {
-    private View mainView;
-    private MapView mapView;
+    @Bind(R.id.mapView)
+    MapView mapView;
+    @Bind(R.id.iv_location)
+    ImageView ivLocation;
+    @Bind(R.id.et_address)
+    EditText etAddress;
+    @Bind(R.id.et_phone)
+    EditText etPhone;
+    @Bind(R.id.et_plate)
+    EditText etPlate;
+    @Bind(R.id.tv_tip)
+    TextView tvTip;
+    @Bind(R.id.tv_charge_now)
+    TextView tvChargeNow;
+    @Bind(R.id.tv_charge_late)
+    TextView tvChargeLate;
+    @Bind(R.id.tv_scan_charge)
+    TextView tvScanCharge;
+
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
-    private BaiduMap mBaidumap ;
+    private BaiduMap mBaidumap;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,15 +70,17 @@ public class RechargeFragment extends BaseFragment {
 
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_recharge,container,false);
+       View  mainView = inflater.inflate(R.layout.fragment_recharge, container, false);
+        ButterKnife.bind(this, mainView);
         return mainView;
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mapView = (MapView) mainView.findViewById(R.id.mapView);
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
         startLocation();
@@ -61,21 +88,21 @@ public class RechargeFragment extends BaseFragment {
         initLocation();
     }
 
-    public void startLocation(){
+    public void startLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED){
+                PackageManager.PERMISSION_GRANTED) {
             locationClient.start();
         }
 
     }
 
-    private void initLocation(){
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");
         //可选，默认gcj02，设置返回的定位结果坐标系
-        int span=0;
+        int span = 0;
         option.setScanSpan(span);
         //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);
@@ -97,13 +124,36 @@ public class RechargeFragment extends BaseFragment {
         locationClient.setLocOption(option);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late, R.id.tv_scan_charge})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_location:
+                break;
+            case R.id.et_address:
+                break;
+            case R.id.tv_charge_now:
+                break;
+            case R.id.tv_charge_late:
+                break;
+            case R.id.tv_scan_charge:
+                QrCodeActivity.start(getActivity());
+                break;
+        }
+    }
+
     public class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
-            sb.append(location.getLatitude()+"\n");    //获取纬度信息
+            sb.append(location.getLatitude() + "\n");    //获取纬度信息
             sb.append(location.getLongitude());    //获取纬度信息
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -121,20 +171,20 @@ public class RechargeFragment extends BaseFragment {
             mBaidumap.setMapStatus(mMapStatusUpdate);
 
             //构建Marker图标
-            marker(point,R.drawable.icon_openmap_mark);
-            marker(new LatLng(22.5616,113.951462),R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5139,113.952736),R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5271,113.955156),R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5853,113.955866),R.drawable.icon_openmap_focuse_mark);
+            marker(point, R.drawable.icon_openmap_mark);
+            marker(new LatLng(22.5616, 113.951462), R.drawable.icon_openmap_focuse_mark);
+            marker(new LatLng(22.5139, 113.952736), R.drawable.icon_openmap_focuse_mark);
+            marker(new LatLng(22.5271, 113.955156), R.drawable.icon_openmap_focuse_mark);
+            marker(new LatLng(22.5853, 113.955866), R.drawable.icon_openmap_focuse_mark);
 
-            if (location.getLocType() == BDLocation.TypeGpsLocation){
+            if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
-            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation){
+            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
             }
             //定位失败
-            else{
+            else {
             }
             sb.append(location.getLocationDescribe());    //位置语义化信息
             LogUtil.d(sb.toString());
@@ -144,7 +194,8 @@ public class RechargeFragment extends BaseFragment {
         public void onConnectHotSpotMessage(String s, int i) {
         }
     }
-    private void marker(LatLng point,int pic) {
+
+    private void marker(LatLng point, int pic) {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(pic);
         //构建MarkerOption，用于在地图上添加Marker
@@ -154,6 +205,7 @@ public class RechargeFragment extends BaseFragment {
         //在地图上添加Marker，并显示
         mapView.getMap().addOverlay(option);
     }
+
     @Override
     public void onResume() {
         super.onResume();

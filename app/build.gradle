@@ -21,8 +21,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile files('libs/BaiduLBS_Android.jar')
+    compile project(':library')
+
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'org.xutils:xutils:3.3.4'
@@ -30,6 +32,7 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.alibaba:fastjson:1.2.20'
     compile 'com.android.support:support-v4:24.2.1'
-    compile files('libs/BaiduLBS_Android.jar')
-    compile project(':library')
+    compile 'cn.yipianfengye.android:zxing-library:2.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    testCompile 'junit:junit:4.12'
 }
