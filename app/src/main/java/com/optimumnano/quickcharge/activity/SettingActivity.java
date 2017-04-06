@@ -29,13 +29,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         setRightTitle("");
         modifyPassword= (MenuItem1) findViewById(R.id.setting_modify_password);
         modifyPayPassword= (MenuItem1) findViewById(R.id.setting_modify_pay_password);
+        modifyPassword.setOnClickListener(this);
+        modifyPayPassword.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_modify_password:
-                //startActivity(new Intent(this,ModifyPassword.class));
+                startActivity(new Intent(this,ModifyPassword.class));
                 break;
 
             case R.id.setting_modify_pay_password:

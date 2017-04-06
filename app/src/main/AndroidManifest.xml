@@ -66,10 +66,12 @@
         <activity android:name=".activity.order.OrderlistDetailActivity" />
         <activity android:name=".activity.selectAddress.SelectAddressActivity" />
         <activity android:name=".activity.order.OrderlistDetailtwoActivity"></activity>
-        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
         <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
         <activity android:name=".activity.SettingActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.ModifyPassword"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

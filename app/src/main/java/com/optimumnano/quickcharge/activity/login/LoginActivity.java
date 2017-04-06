@@ -14,6 +14,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.json.JSONException;
 
@@ -72,6 +73,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             super.onSuccess(returnContent);
             showToast("登陆成功!");
             hideLoading();
+            SharedPreferencesUtil.putValue("userInform","mobile",edtUsername.getText().toString());
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
         }
