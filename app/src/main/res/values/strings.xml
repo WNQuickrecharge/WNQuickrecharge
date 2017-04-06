@@ -22,4 +22,10 @@
 
     <string name="show_ont">移动补电车</string>
     <string name="show_two">充电桩</string>
+    <string name="qr_code">将二维码/条码放入框内，即可自动扫描</string>
+    <string name="qr_title">扫码补电</string>
+    <string name="input_number">输入终端号</string>
+    <string name="qr_el">扫码充电</string>
+    <string name="please_input_number">请输入终端号</string>
+    <string name="client_number">终端号</string>
 </resources>

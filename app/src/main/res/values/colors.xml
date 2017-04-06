@@ -26,4 +26,6 @@
     <!--弹框按钮颜色-->
     <color name="dialog_btncolor">#EAE9E6</color>
     <color name="dialog_btncolor_press">#cecdcd</color>
+
+    <color name="bg_gray">#ececec</color>
 </resources>
