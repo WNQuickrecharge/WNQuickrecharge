@@ -29,7 +29,9 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
+import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.data.PreferencesHelper;
 
 import org.xutils.common.util.LogUtil;
 
@@ -64,6 +66,8 @@ public class RechargeFragment extends BaseFragment {
     public BDLocationListener myListener = new MyLocationListener();
     private BaiduMap mBaidumap;
 
+    private PreferencesHelper mHelper;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         SDKInitializer.initialize(getActivity().getApplicationContext());
@@ -73,8 +77,9 @@ public class RechargeFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       View  mainView = inflater.inflate(R.layout.fragment_recharge, container, false);
+        View mainView = inflater.inflate(R.layout.fragment_recharge, container, false);
         ButterKnife.bind(this, mainView);
+        mHelper = new PreferencesHelper(getActivity());
         return mainView;
     }
 
@@ -136,6 +141,7 @@ public class RechargeFragment extends BaseFragment {
             case R.id.iv_location:
                 break;
             case R.id.et_address:
+                SelectAddressActivity.start(getActivity());
                 break;
             case R.id.tv_charge_now:
                 break;
@@ -179,9 +185,13 @@ public class RechargeFragment extends BaseFragment {
 
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
+                mHelper.updateCity(location.getCity());
+                mHelper.setLocation(location.getLatitude(), location.getLatitude());
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
+                mHelper.updateCity(location.getCity());
+                mHelper.setLocation(location.getLatitude(), location.getLatitude());
             }
             //定位失败
             else {
@@ -209,21 +219,21 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mapView!=null)
-        mapView.onResume();
+        if (mapView != null)
+            mapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mapView!=null)
-        mapView.onPause();
+        if (mapView != null)
+            mapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mapView!=null)
-        mapView.onDestroy();
+        if (mapView != null)
+            mapView.onDestroy();
     }
 }
