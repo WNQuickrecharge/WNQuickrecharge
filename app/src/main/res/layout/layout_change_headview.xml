@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#22000000"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/layout_changehead_tv_camera"
+            android:textColor="@color/main_color"
+            android:textSize="@dimen/text_size_default"
+            android:background="@drawable/shape_popview_bg_top"
+            android:text="手机拍照"
+            android:gravity="center"
+            android:padding="@dimen/default_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <include layout="@layout/layout_line"/>
+
+        <TextView
+            android:id="@+id/layout_changehead_tv_album"
+            android:gravity="center"
+            android:textColor="@color/main_color"
+            android:textSize="@dimen/text_size_default"
+            android:background="@drawable/shape_popview_bg_bottom"
+            android:text="从相册选择"
+            android:padding="@dimen/default_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/layout_changehead_tv_cancel"
+        android:textColor="@color/main_color"
+        android:layout_marginTop="@dimen/dimen_16"
+        android:background="@drawable/shape_popview_bg"
+        android:gravity="center"
+        android:padding="@dimen/default_padding"
+        android:text="取消"
+        android:textSize="@dimen/text_size_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+</android.support.v7.widget.LinearLayoutCompat>

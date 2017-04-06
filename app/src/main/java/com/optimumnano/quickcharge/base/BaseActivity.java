@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 
@@ -34,10 +35,13 @@ public class BaseActivity extends AppCompatActivity {
     public TextView tvTitle,tvRight,tvLeft;
     public ImageView ivRight;
     public Toolbar toolbar;
+
+    protected PreferencesHelper mHelper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
+        mHelper=new PreferencesHelper(this);
     }
     public void initViews(){
         tvTitle = (TextView) findViewById(R.id.title_tvTitle);
@@ -77,6 +81,9 @@ public class BaseActivity extends AppCompatActivity {
     }
     public void hideBack(){
         toolbar.setNavigationIcon(null);
+    }
+    public void showBack(){
+        toolbar.setNavigationIcon(R.drawable.backtwo);
     }
 
     public void skipActivity(Class toActivity, Bundle bundle) {

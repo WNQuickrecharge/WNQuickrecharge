@@ -52,6 +52,7 @@
             </intent-filter>
         </activity>
 
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="SfRGXTBoQyIgDXLvfFBsKekZrnILH2La" />
@@ -63,7 +64,6 @@
 
         <activity android:name=".activity.login.RegisterActivity" />
         <activity android:name=".activity.login.ForgetPwdActivity" />
-        <activity android:name=".activity.order.OrderlistDetailActivity" />
         <activity android:name=".activity.selectAddress.SelectAddressActivity" />
         <activity android:name=".activity.order.OrderlistDetailtwoActivity"></activity>
         <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
@@ -72,6 +72,8 @@
         <activity android:name=".activity.ModifyPassword"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
+        <activity android:name=".activity.mineinfo.MineInfoAct"></activity>
     </application>
 
 </manifest>
