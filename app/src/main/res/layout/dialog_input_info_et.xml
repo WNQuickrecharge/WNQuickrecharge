@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:padding="@dimen/dimen_10"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EFEFEF"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="修改昵称" />
+
+    <EditText
+        android:id="@+id/dialog_input_info_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="@dimen/dimen_15"
+        android:hint="请输入昵称"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginRight="@dimen/dimen_4"
+            android:id="@+id/dialog_input_info_tv_ok"
+            android:background="@drawable/text_view_background"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_16"
+            android:gravity="center"
+            android:padding="@dimen/dimen_10"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginLeft="@dimen/dimen_4"
+            android:id="@+id/dialog_input_info_tv_cancel"
+            android:background="@drawable/shape_maincolor_kuang"
+            android:text="取消"
+            android:textColor="@color/main_color"
+            android:textSize="@dimen/font_16"
+            android:gravity="center"
+            android:padding="@dimen/dimen_10"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

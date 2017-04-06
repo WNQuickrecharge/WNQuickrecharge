@@ -66,6 +66,7 @@
         <activity android:name=".activity.login.ForgetPwdActivity" />
         <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
         <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
+        <activity android:name=".activity.mineinfo.MineInfoAct"></activity>
     </application>
 
 </manifest>

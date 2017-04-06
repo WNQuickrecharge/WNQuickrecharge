@@ -78,6 +78,9 @@ public class BaseActivity extends AppCompatActivity {
     public void hideBack(){
         toolbar.setNavigationIcon(null);
     }
+    public void showBack(){
+        toolbar.setNavigationIcon(R.drawable.backtwo);
+    }
 
     public void skipActivity(Class toActivity, Bundle bundle) {
         Intent intent = new Intent(this, toActivity);

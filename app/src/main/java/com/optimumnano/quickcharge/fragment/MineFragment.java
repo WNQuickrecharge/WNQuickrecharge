@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.login.LoginActivity;
+import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
 import com.optimumnano.quickcharge.base.BaseFragment;
 
 /**
@@ -41,7 +41,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.mine_ivHead:
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(), MineInfoAct.class));
                 break;
             default:
                 break;
