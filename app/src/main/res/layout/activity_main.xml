@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             style="@style/myRadioButto"
             android:layout_weight="1"
+            android:drawableTop="@drawable/selector_recharge"
             android:text="@string/recharge"/>
         <RadioButton
             android:id="@+id/main_rbOrder"
@@ -29,6 +30,8 @@
             android:layout_height="wrap_content"
             style="@style/myRadioButto"
             android:layout_weight="1"
+            android:drawableTop="@drawable/selector_order"
+            android:drawablePadding="@dimen/default_padding5"
             android:text="@string/order"/>
         <RadioButton
             android:id="@+id/main_rbMine"
@@ -36,6 +39,8 @@
             android:layout_height="wrap_content"
             style="@style/myRadioButto"
             android:layout_weight="1"
+            android:drawableTop="@drawable/selector_mine"
+            android:drawablePadding="@dimen/default_padding5"
             android:text="@string/mine"/>
 
     </RadioGroup>
