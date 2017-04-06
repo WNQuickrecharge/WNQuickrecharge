@@ -18,7 +18,7 @@
         android:padding="@dimen/dimen_16">
 
         <com.optimumnano.quickcharge.views.CircleImageView
-            android:id="@+id/mine_ivHead"
+            android:id="@+id/act_mineinfo_iv_headimg"
             android:layout_width="@dimen/default_headwidth"
             android:layout_height="@dimen/default_headwidth"
             android:layout_gravity="center_horizontal"
@@ -28,6 +28,7 @@
             android:drawableRight="@drawable/nextarrow"
             android:textColor="@color/color99"
             android:drawablePadding="@dimen/default_padding"
+            android:id="@+id/act_mineinfo_tv_changehead"
             android:gravity="end"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,6 +52,7 @@
     <include layout="@layout/layout_line"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/act_mineinfo_tv_sex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="性别"
@@ -61,6 +63,7 @@
     <include layout="@layout/layout_line"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/act_mineinfo_tv_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="电话"
@@ -70,6 +73,7 @@
     <include layout="@layout/layout_line"/>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/nicknameLLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -91,7 +95,7 @@
             android:background="@drawable/shape_graycolor_kuang"
             android:textColor="@color/color33"
             android:textSize="@dimen/default_textsize14"
-            android:id="@+id/nicknameTv"
+            android:id="@+id/act_mineinfo_et_describe"
             android:layout_marginLeft="@dimen/dimen_5"
             android:padding="@dimen/dimen_2"
             android:layout_width="0dp"
@@ -99,6 +103,7 @@
             android:layout_height="100dp"/>
 
     </LinearLayout>
+
     <include layout="@layout/layout_line"/>
 
 </LinearLayout>
