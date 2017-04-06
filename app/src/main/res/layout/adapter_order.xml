@@ -74,11 +74,20 @@
             android:layout_marginLeft="@dimen/default_padding"
             android:text="￥200"/>
         <TextView
+            android:id="@+id/order_tvPay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             style="@style/ButtonStyle_small"
             android:text="支付订单"/>
+        <TextView
+            android:id="@+id/order_tvComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            style="@style/ButtonStyle_small_gray"
+            android:visibility="gone"
+            android:text="已评价"/>
     </RelativeLayout>
 
 </LinearLayout>

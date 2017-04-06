@@ -64,7 +64,8 @@
         <activity android:name=".activity.login.ForgetPwdActivity" />
         <activity android:name=".activity.order.OrderlistDetailActivity" />
         <activity android:name=".activity.qrcode.QrCodeActivity" />
-        <activity android:name=".activity.selectAddress.SelectAddressActivity"></activity>
+        <activity android:name=".activity.selectAddress.SelectAddressActivity" />
+        <activity android:name=".activity.order.OrderlistDetailtwoActivity"></activity>
     </application>
 
 </manifest>
