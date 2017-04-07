@@ -80,6 +80,8 @@
 
         </activity>
         <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
     </application>
 
 </manifest>
