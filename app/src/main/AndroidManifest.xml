@@ -79,16 +79,6 @@
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.order.OrderlistDetailtwoActivity"></activity>
-        <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
-        <activity android:name=".activity.SettingActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.ModifyPassword"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
-        <activity android:name=".activity.mineinfo.MineInfoAct"></activity>
-        <activity android:name=".activity.filter.FilterActivity"></activity>
         <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
     </application>
 
