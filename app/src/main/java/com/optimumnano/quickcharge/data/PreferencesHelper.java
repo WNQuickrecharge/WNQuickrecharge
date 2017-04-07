@@ -26,6 +26,10 @@ public class PreferencesHelper {
     public static final String LOCATION_CITY = "city";
     public static final String LOCATION = "location";
     public static final String USER_ROLE = "user_role";
+    public static final String IS_OPEN_SHOW_ONLY_FREE = "is_open_show_free";
+    public static final String KM = "km";
+    public static final String KV = "kv";
+
 
     public PreferencesHelper(Context context) {
         this.mPref = context.getSharedPreferences(SETTING, Context.MODE_PRIVATE);
@@ -41,6 +45,37 @@ public class PreferencesHelper {
         editor.putBoolean(ISLOGIN, islogin);
         editor.apply();
     }
+
+    public int showDistance() {
+        return mPref.getInt(KM, 20);
+    }
+
+    public void setKV(int km) {
+        SharedPreferences.Editor editor = mPref.edit();
+        editor.putInt(KV, km);
+        editor.apply();
+    }
+
+    public int showKV() {
+        return mPref.getInt(KV, 120);
+    }
+
+    public void setShowDistance(int km) {
+        SharedPreferences.Editor editor = mPref.edit();
+        editor.putInt(KM, km);
+        editor.apply();
+    }
+
+    public boolean isShowOnlyFree() {
+        return mPref.getBoolean(IS_OPEN_SHOW_ONLY_FREE, true);
+    }
+
+    public void setIsShowOnlyFree(boolean isShowFree) {
+        SharedPreferences.Editor editor = mPref.edit();
+        editor.putBoolean(IS_OPEN_SHOW_ONLY_FREE, isShowFree);
+        editor.apply();
+    }
+
 
     private void setCity(String city) {
         SharedPreferences.Editor editor = mPref.edit();
