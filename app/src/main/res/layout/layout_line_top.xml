@@ -3,4 +3,4 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dimen_iron"
     android:layout_marginTop="@dimen/dimen_10"
-    android:background="@color/bg_gray" />
+    android:background="@color/default_bgcolor" />

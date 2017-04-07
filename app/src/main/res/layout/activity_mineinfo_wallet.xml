@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+    <include layout="@layout/layout_line_top"/>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="余额"
+        android:id="@+id/act_mineinfo_wallet_mi_balance"
+        app:tvRightText="0.00"
+        app:showtvRight="true"
+        app:showivRight="true"/>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/act_mineinfo_wallet_mi_trans_Bill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        app:tvLeftText="交易明细"
+        app:showtvRight="false"
+        app:showivRight="true"/>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginTop="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="@dimen/default_lrmargin">
+
+        <TextView
+            android:id="@+id/tvLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="支付方式"
+            android:textColor="@color/color33"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/default_textsize"/>
+
+        <ImageView
+            android:id="@+id/ivRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/default_padding"
+            android:layout_centerVertical="true"
+            android:src="@drawable/nextarrow"
+            />
+
+        <TextView
+            android:id="@+id/act_mineinfo_wallet_tv_payment"
+            android:drawablePadding="@dimen/dimen_10"
+            android:drawableLeft="@drawable/wx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/color99"
+            android:layout_toLeftOf="@id/ivRight"
+            android:text="微信"
+            android:textSize="@dimen/default_textsize14"/>
+
+    </RelativeLayout>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_marginTop="1dp"
+        android:id="@+id/act_mineinfo_wallet_mi_mycard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="我的银行卡"
+        app:showtvRight="false"
+        app:showivRight="true"/>
+
+</LinearLayout>
