@@ -13,6 +13,8 @@ import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.StringUtils;
 
+import org.json.JSONException;
+
 import static com.optimumnano.quickcharge.R.id.register_edtConfirmPwd;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
@@ -75,7 +77,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
         tvChecknum.setClickable(false);
         startCountTime(60*1000,1000);
-        loginManager.getCheckNum(mobile,requestCallback,0);
+        loginManager.getCheckNum(mobile,"RegisterCApp",requestCallback,0);
     }
 
     class RequestCallback extends ManagerCallback<String>{

@@ -2,15 +2,20 @@ package com.optimumnano.quickcharge.activity.login;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
+
+import org.xutils.common.util.LogUtil;
 
 import static com.optimumnano.quickcharge.R.id.register_edtConfirmPwd;
 
@@ -33,12 +38,12 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
         super.initViews();
         setTitle(getString(R.string.forgetpwd));
 
-        edtPhone = (EditText) findViewById(R.id.register_edtPhone);
-        edtChecknum = (EditText) findViewById(R.id.register_edtChecknum);
-        edtPwd = (EditText) findViewById(R.id.register_edtPwd);
-        edtConfirmPwd = (EditText) findViewById(register_edtConfirmPwd);
-        tvChecknum = (TextView) findViewById(R.id.register_tvChecknum);
-        tvReg = (TextView) findViewById(R.id.register_tvRegister);
+        edtPhone = (EditText) findViewById(R.id.forget_edtPhone);
+        edtChecknum = (EditText) findViewById(R.id.forget_edtChecknum);
+        edtPwd = (EditText) findViewById(R.id.forget_edtPwd);
+        edtConfirmPwd = (EditText) findViewById(R.id.forget_edtConfirmPwd);
+        tvChecknum = (TextView) findViewById(R.id.forget_tvChecknum);
+        tvReg = (TextView) findViewById(R.id.forget_password_confirm);
 
         requestCallback = new RequestCallback();
     }
@@ -50,16 +55,40 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.register_tvChecknum:
+            case R.id.forget_tvChecknum:
                 getChecknum();
                 break;
-            case R.id.register_tvRegister:
-                loginManager.register(edtPhone.getText().toString(), edtPwd.getText().toString(), edtChecknum.getText().toString(),
-                        edtConfirmPwd.getText().toString(), requestCallback, 1);
+            case R.id.forget_password_confirm:
+                forgetPassword();
                 break;
             default:
                 break;
         }
+    }
+
+    private void forgetPassword() {
+        String mobile = edtPhone.getText().toString();
+        if (StringUtils.isEmpty(mobile)){
+            showToast("电话号码不能为空");
+            return;
+        }
+        if (!StringUtils.isMobile(mobile)){
+            showToast("电话号码格式不对");
+            return;
+        }
+        if (TextUtils.isEmpty(edtConfirmPwd.getText().toString())||TextUtils.isEmpty(edtPwd.getText().toString())){
+            showToast("密码不能为空");
+            return;
+        }
+        if (!TextUtils.equals(edtConfirmPwd.getText().toString(),edtPwd.getText().toString())){
+            showToast("两次密码不一致,请重输入");
+            return;
+        }
+        String newPassword = edtConfirmPwd.getText().toString();
+        String Md5Password = MD5Utils.encodeMD5(newPassword);
+        loginManager.forgetPassword(mobile,"ForgetPwdCApp",
+                edtChecknum.getText().toString(),Md5Password,
+                1,new Manager());
     }
 
     private void getChecknum() {
@@ -74,7 +103,7 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
         }
         tvChecknum.setClickable(false);
         startCountTime(60*1000,1000);
-        loginManager.getCheckNum(mobile,requestCallback,0);
+        loginManager.getCheckNum(mobile,"ForgetPwdCApp",requestCallback,0);
     }
 
     class RequestCallback extends ManagerCallback<String> {
@@ -133,5 +162,19 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
             tvChecknum.setClickable(true);
         }
 
+    }
+    class Manager extends ManagerCallback{
+        @Override
+        public void onSuccess(Object returnContent) {
+            super.onSuccess(returnContent);
+            showToast("密码修改成功!");
+            finish();
+        }
+
+        @Override
+        public void onFailure(String msg) {
+            super.onFailure(msg);
+            showToast(msg);
+        }
     }
 }

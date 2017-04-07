@@ -43,13 +43,15 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan">
+        </activity>
+        <activity android:name=".activity.login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.login.LoginActivity" />
+
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -62,12 +64,15 @@
 
         <activity android:name=".activity.login.RegisterActivity" />
         <activity android:name=".activity.login.ForgetPwdActivity" />
-        <activity android:name=".activity.order.OrderlistDetailActivity" />
-        <activity android:name=".activity.qrcode.QrCodeActivity" />
         <activity android:name=".activity.selectAddress.SelectAddressActivity" />
         <activity android:name=".activity.order.OrderlistDetailtwoActivity"></activity>
-        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
         <activity android:name=".activity.qrcode.QrCodeActivity"></activity>
+        <activity android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.ModifyPassword"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".activity.order.OrderlistDetailActivity"></activity>
         <activity android:name=".activity.mineinfo.MineInfoAct"></activity>
     </application>
 

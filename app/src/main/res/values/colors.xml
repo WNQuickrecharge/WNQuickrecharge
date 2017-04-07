@@ -8,6 +8,7 @@
 
     <color name="default_bgcolor">#F8F8F8</color>
     <color name="main_color">#36d863</color>
+    <color name="button_pressed">#30CA5B</color>
     <color name="main_color_red">#ff3b30</color>
     <color name="colorCC">#CCCCCC</color>
     <color name="color33">#333333</color>
@@ -22,6 +23,8 @@
 
     <color name="main_color_press">#bbff486c</color>
     <color name="success">#1dee75</color>
+
+    <color name="bg_iron">#CCC</color>
 
     <!--弹框按钮颜色-->
     <color name="dialog_btncolor">#EAE9E6</color>
