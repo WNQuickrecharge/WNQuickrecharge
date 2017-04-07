@@ -33,4 +33,9 @@
     <string name="client_number">终端号</string>
     <string name="please_input_address">请输入地址</string>
     <string name="chong_address">充电地址</string>
+
+    <string name="wallet_deposit">充值</string>
+    <string name="wallet_withdraw">提现</string>
+
+
 </resources>

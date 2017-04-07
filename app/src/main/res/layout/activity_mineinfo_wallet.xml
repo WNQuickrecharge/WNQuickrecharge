@@ -9,9 +9,8 @@
         android:id="@+id/title"
         layout="@layout/title_default"/>
 
-    <include layout="@layout/layout_line_top"/>
-
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="余额"
@@ -31,7 +30,7 @@
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"

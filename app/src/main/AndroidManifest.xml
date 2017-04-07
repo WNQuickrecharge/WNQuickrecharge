@@ -76,6 +76,7 @@
         <activity android:name=".activity.mineinfo.MineInfoAct"></activity>
         <activity android:name=".activity.filter.FilterActivity"></activity>
         <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ public class MineWalletAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.act_mineinfo_wallet_mi_balance:
+                startActivity(new Intent(MineWalletAct.this, WalletBalanceAct.class));
                 break;
             case R.id.act_mineinfo_wallet_mi_trans_Bill:
                 break;
