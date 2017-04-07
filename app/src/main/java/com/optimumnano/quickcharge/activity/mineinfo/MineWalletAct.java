@@ -71,13 +71,14 @@ public class MineWalletAct extends BaseActivity {
                 startActivity(new Intent(MineWalletAct.this, WalletBalanceAct.class));
                 break;
             case R.id.act_mineinfo_wallet_mi_trans_Bill:
+                startActivity(new Intent(MineWalletAct.this, WalletBillAct.class));
                 break;
             case R.id.act_mineinfo_wallet_tv_payment:
                 /*Drawable drawable= getResources().getDrawable(R.drawable.zfb);
                 drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                 mPayment.setCompoundDrawables(drawable,null,null,null);*/
                 break;
-            case R.id.act_mineinfo_wallet_mi_mycard:
+            case R.id.act_mineinfo_wallet_mi_mycard://银行卡暂时不实现
                 break;
         }
     }

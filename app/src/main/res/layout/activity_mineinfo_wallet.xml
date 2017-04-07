@@ -70,6 +70,7 @@
     </RelativeLayout>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:visibility="gone"
         android:layout_marginTop="1dp"
         android:id="@+id/act_mineinfo_wallet_mi_mycard"
         android:layout_width="match_parent"
