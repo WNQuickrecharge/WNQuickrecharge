@@ -13,6 +13,8 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 import static org.xutils.x.http;
 

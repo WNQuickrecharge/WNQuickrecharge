@@ -14,6 +14,9 @@
     <string name="setting">设置</string>
     <string name="login_hint">请输入电话号码</string>
     <string name="pwd_hint">请输入密码</string>
+    <string name="old_pwd_hint">请输入旧密码</string>
+    <string name="new_pwd_hint">请输入新密码</string>
+    <string name="pwd_confirm_hint">请输入确认新密码</string>
     <string name="edt_checknum">请输入验证码</string>
 
     <string name="recharge">充电</string>

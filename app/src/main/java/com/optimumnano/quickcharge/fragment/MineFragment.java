@@ -11,7 +11,9 @@ import android.widget.ImageView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
+import com.optimumnano.quickcharge.activity.SettingActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.views.MenuItem1;
 
 /**
  * 我的
@@ -19,6 +21,7 @@ import com.optimumnano.quickcharge.base.BaseFragment;
 public class MineFragment extends BaseFragment implements View.OnClickListener {
     private View mainView;
     private ImageView ivHead;
+    private MenuItem1 mineSetting;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,6 +38,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void initViews() {
         ivHead = (ImageView) mainView.findViewById(R.id.mine_ivHead);
         ivHead.setOnClickListener(this);
+        mineSetting = (MenuItem1) mainView.findViewById(R.id.mine_setting);
+        mineSetting.setOnClickListener(this);
     }
 
     @Override
@@ -42,6 +47,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         switch (view.getId()){
             case R.id.mine_ivHead:
                 startActivity(new Intent(getActivity(), MineInfoAct.class));
+                break;
+            case R.id.mine_setting:
+                startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
             default:
                 break;
