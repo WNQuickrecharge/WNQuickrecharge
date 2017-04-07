@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.optimumnano.quickcharge.activity.order.RechargeControlActivity">
+    <include layout="@layout/title_main"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/default_padding30"
+        android:layout_marginTop="@dimen/default_padding">
+
+
+        <TextView
+            android:id="@+id/rechargecon_tvPersent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="50%"
+            android:textSize="35sp"
+            android:gravity="center"
+            android:textColor="@color/main_color"
+            />
+
+        <com.optimumnano.quickcharge.views.WaveLoadingView
+            android:id="@+id/waveLoadingView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/default_padding15"
+            />
+        <TextView
+            android:id="@+id/rechargecon_tvDescone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="待充电"
+            android:textSize="35sp"
+            android:gravity="center"
+            android:textColor="@color/main_color"
+            android:layout_marginTop="@dimen/default_padding40"
+            />
+        <TextView
+            android:id="@+id/rechargecon_tvDescTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="请确认充电枪已连接"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:textColor="@color/main_color"
+            android:layout_marginTop="@dimen/default_padding15"
+            />
+        <TextView
+            android:id="@+id/rechargecon_tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="充电预计时间15分钟"
+            android:gravity="center"
+            android:textSize="@dimen/default_textsize"
+            android:layout_marginTop="@dimen/default_padding"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/rechargecon_tvStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle"
+            android:text="开始充电"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/default_lrmargin"/>
+
+        <TextView
+            android:id="@+id/rechargecon_tvStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:layout_margin="@dimen/default_lrmargin"
+            android:background="@drawable/shape_stoprecharge"
+            android:text="结束充电"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:textSize="@dimen/default_textsize16"
+            android:visibility="gone"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+</LinearLayout>

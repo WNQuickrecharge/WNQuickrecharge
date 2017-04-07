@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity">
-
     <include layout="@layout/title_main"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,8 +44,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                style="@style/text_mainstyle"
-                android:text="评价订单"/>
+                android:textSize="@dimen/default_textsize14"
+                android:textColor="@color/main_color_red"
+                android:text="待支付"/>
             <TextView
                 android:id="@+id/orderlistDetl_tvOrdernum"
                 android:layout_width="match_parent"
@@ -150,19 +153,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/default_lrmargin"
         />
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/orderdtel_tvCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ButtonStyle1"
-            android:layout_margin="@dimen/default_lrmargin"
-            android:layout_alignParentBottom="true"
-            android:text="取消订单"/>
-
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/default_padding40"
+        android:paddingBottom="@dimen/default_padding40">
         <TextView
             android:id="@+id/orderlistDetl_tvPay"
             android:layout_width="match_parent"
@@ -170,19 +166,27 @@
             style="@style/ButtonStyle"
             android:layout_marginLeft="@dimen/default_lrmargin"
             android:layout_marginRight="@dimen/default_lrmargin"
-            android:layout_above="@id/orderdtel_tvCancel"
             android:text="支付订单"/>
+
+        <TextView
+            android:id="@+id/orderdtel_tvCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle1"
+            android:layout_margin="@dimen/default_lrmargin"
+            android:text="取消订单"/>
+
         <TextView
             android:id="@+id/orderlistDetl_tvWatchStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/ButtonStyle"
             android:layout_margin="@dimen/default_lrmargin"
-            android:layout_above="@id/orderdtel_tvCancel"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
             android:text="查看状态"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

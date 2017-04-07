@@ -13,9 +13,6 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.xutils.x.http;
 
@@ -36,8 +33,8 @@ public class MyHttpUtils<T> {
         return instance;
 
     }
-    public Callback.Cancelable get( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
-        return get( url,maps, callback, -1);
+    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback) {
+        return get( maps, callback, -1);
     }
 
     /**
@@ -47,12 +44,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable get(String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(url,HttpMethod.GET,  maps, callback, httpCode);
+    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.GET,  maps, callback, httpCode);
     }
 
-    public Callback.Cancelable delete(final String url, HashMap<String,Object> maps, final HttpCallback<T> callback) {
-        return delete( url,maps, callback, -1);
+    public Callback.Cancelable delete(final String url, RequestParams maps, final HttpCallback<T> callback) {
+        return delete( maps, callback, -1);
     }
 
     /**
@@ -62,12 +59,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable delete( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(url,HttpMethod.DELETE,  maps, callback, httpCode);
+    public Callback.Cancelable delete( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.DELETE,  maps, callback, httpCode);
     }
 
-    public Callback.Cancelable put( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
-        return put( url,maps, callback, -1);
+    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback) {
+        return put( maps, callback, -1);
     }
 
     /**
@@ -77,8 +74,8 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable put( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(url,HttpMethod.PUT, maps, callback, httpCode);
+    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.PUT, maps, callback, httpCode);
     }
 
     /**
@@ -87,8 +84,8 @@ public class MyHttpUtils<T> {
      * @param maps
      * @param callback
      */
-    public Callback.Cancelable post( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
-        return post(url, maps, callback, -1);
+    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback) {
+        return post( maps, callback, -1);
     }
 
     /**
@@ -98,8 +95,8 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable post( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(url,HttpMethod.POST, maps, callback, httpCode);
+    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.POST, maps, callback, httpCode);
     }
 
 
@@ -110,15 +107,13 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    private Callback.Cancelable httpRequestIml(String url ,HttpMethod method, HashMap<String,Object> map, final HttpCallback callback, final int httpCode) {
+    private Callback.Cancelable httpRequestIml(HttpMethod method, RequestParams params, final HttpCallback callback, final int httpCode) {
         Callback.Cancelable cancelable = null;
-        RequestParams params = new RequestParams(url);
-        params.setBodyContent(JSON.toJSONString(map));
         try {
             //检查网络是否可以，再进行下一步操作
             if (Tool.isConnectingToInternet()) {
                 params.setConnectTimeout(30 * 1000);//超时时间30秒
-                params.setUseCookie(false);
+//                params.setUseCookie(false);
                 switch (method) {
                     case PUT:
                     case POST:
@@ -184,32 +179,32 @@ public class MyHttpUtils<T> {
         public void onSuccess(MyResponseInfo result) {
             LogUtil.d(TAG + "返回数据：======>>>>>  " + result.getResult());
             try {
-                    JSONObject dataJson = new JSONObject((result.getResult()));
-                    if (0 == dataJson.optInt("status")) {//操作成功
-                        String data = dataJson.optString("result");
-                        //检验数据
-                        if (callback != null) {
-                            if (!TextUtils.isEmpty(data)) {
-                                try {
-                                    Class clazz = callback.getTClass();
-                                    int type = callback.getType();
-                                    if (type == 0){
-                                        callback.onSuccess(JSON.parseObject(data, clazz),httpCode);
-                                    }
-                                    else {
-                                        callback.onSuccess(JSON.parseArray(data,clazz),httpCode);
-                                    }
-                                } catch (Exception e) {
-                                    LogUtil.e(TAG, e);
-                                    callback.onSuccess(data, httpCode);
+                JSONObject dataJson = new JSONObject((result.getResult()));
+                if (0 == dataJson.optInt("status")) {//操作成功
+                    String data = dataJson.optString("result");
+                    //检验数据
+                    if (callback != null) {
+                        if (!TextUtils.isEmpty(data)) {
+                            try {
+                                Class clazz = callback.getTClass();
+                                int type = callback.getType();
+                                if (type == 0){
+                                    callback.onSuccess(JSON.parseObject(data, clazz),httpCode);
                                 }
-                            } else {
-                                callback.onSuccess(null, httpCode);
+                                else {
+                                    callback.onSuccess(JSON.parseArray(data,clazz),httpCode);
+                                }
+                            } catch (Exception e) {
+                                LogUtil.e(TAG, e);
+                                callback.onSuccess(data, httpCode);
                             }
+                        } else {
+                            callback.onSuccess(null, httpCode);
                         }
-                    } else {
-                        callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
                     }
+                } else {
+                    callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
+                }
             } catch (Exception e) {
                 callback.onFailure("数据异常", null, httpCode);
                 LogUtil.e(TAG, e);
