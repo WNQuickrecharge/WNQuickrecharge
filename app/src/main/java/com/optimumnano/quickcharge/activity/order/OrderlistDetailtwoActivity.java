@@ -11,5 +11,11 @@ public class OrderlistDetailtwoActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderlist_detailtwo);
+        initViews();
+    }
+
+    @Override
+    public void initViews() {
+        super.initViews();
     }
 }
