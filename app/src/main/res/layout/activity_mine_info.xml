@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         app:tvLeftText="昵称"
         android:id="@+id/act_mineinfo_tv_nickname"
-        app:tvRightText="皮皮鳝"
+        app:tvRightText=""
         app:showtvRight="true"
         app:showivRight="true"/>
 
@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="电话"
-        app:tvRightText="13724253750"
+        app:tvRightText=""
         app:showtvRight="true"/>
 
     <include layout="@layout/layout_line"/>
