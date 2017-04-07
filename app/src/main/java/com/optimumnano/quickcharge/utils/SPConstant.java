@@ -10,14 +10,17 @@ public interface SPConstant {
     String SP_USERINFO = "sp_userinfo";
 
     /***sharedpreferences****用户头像地址key******/
-    String KEY_UERINFO_HEADIMG="uerinfo_headimg";
+    String KEY_USERINFO_HEADIMG="userinfo_headimg";
     /***sharedpreferences****用户性别key******/
-    String KEY_UERINFO_SEX="uerinfo_sex";
+    String KEY_USERINFO_SEX ="userinfo_sex";
     /***sharedpreferences****用户昵称key******/
-    String KEY_UERINFO_NICKNAME="uerinfo_nickname";
+    String KEY_USERINFO_NICKNAME ="userinfo_nickname";
+    /***sharedpreferences****用户默认支付方式key******/
+    String KEY_USERINFO_DEFPAYMENT ="userinfo_defPayment";
     /**
      * 用户登录的手机号
      */
     String KEY_USERINFO_MOBILE="userinfo_mobile";
+    String KEY_USERINFO_COOKIE="userinfo_cookie";
 
 }

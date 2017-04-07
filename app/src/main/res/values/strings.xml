@@ -42,4 +42,9 @@
     <string name="km_dist">距离范围（km）</string>
     <string name="show_sample">仅显示空闲站点</string>
     <string name="unkown_dis">无法定位到该区域</string>
+
+    <string name="wallet_deposit">充值</string>
+    <string name="wallet_withdraw">提现</string>
+
+
 </resources>

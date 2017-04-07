@@ -31,7 +31,7 @@ public class LoginManager {
         }
         else {
             String url = HttpApi.getInstance().getUrl(HttpApi.login_url);
-            RequestParams params = new RequestParams(url);
+            RequestParams params= new RequestParams(url);
             HashMap<String ,Object> requestJson=new HashMap<>();
             requestJson.put("mobile",username);
             requestJson.put("pwd",pwd);
@@ -62,12 +62,14 @@ public class LoginManager {
             return;
         }
         String url = HttpApi.getInstance().getUrl(HttpApi.register_url);
-        RequestParams params = new RequestParams(url);
-        params.addBodyParameter("mobile",mobile);
-        params.addBodyParameter("purpose","RegisterCApp");
-        params.addBodyParameter("validate_code",checkNum);
-        params.addBodyParameter("password",pwd);
-
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("mobile",mobile);
+        requestJson.put("purpose","RegisterCApp");
+        requestJson.put("validate_code",checkNum);
+        requestJson.put("password",pwd);
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -112,7 +114,7 @@ public class LoginManager {
     }
     public void getCheckNum(String mobile,String purpose, final ManagerCallback callback,final int httpCode) {
         String url = HttpApi.getInstance().getUrl(HttpApi.register_checknum);
-        RequestParams params = new RequestParams(url);
+        RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("mobile",mobile);
         requestJson.put("purpose",purpose);
@@ -136,7 +138,7 @@ public class LoginManager {
     public void forgetPassword(String mobile,String purpose,String validate_code,String newpwd,int userType,
                                final ManagerCallback callback) {
         String url = HttpApi.getInstance().getUrl(HttpApi.forget_password_url);
-        RequestParams params = new RequestParams(url);
+        RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("mobile",mobile);
         requestJson.put("purpose",purpose);
@@ -145,6 +147,7 @@ public class LoginManager {
         requestJson.put("user_type",userType);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
+
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

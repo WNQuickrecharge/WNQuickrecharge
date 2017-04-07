@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" >
+
+    <!--android:background="@drawable/shape_chose_payment_bg"-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="@dimen/dimen_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:paddingBottom="@dimen/default_padding5"
+            android:paddingTop="@dimen/default_padding5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:textColor="@color/color33"
+                android:text="选择支付方式"/>
+
+            <TextView
+                android:id="@+id/dialog_chose_payment_qx"
+                android:paddingLeft="@dimen/default_lrmargin"
+                android:paddingRight="@dimen/default_lrmargin"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/close"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/layout_line"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/dialog_chose_payment_wx"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="微信"
+            app:ivLeftDrawable="@drawable/wx"
+            app:showivLeft="true"
+            app:showivRight="true"/>
+
+        <include layout="@layout/layout_line"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/dialog_chose_payment_zfb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="支付宝"
+            app:ivLeftDrawable="@drawable/zfb"
+            app:showivLeft="true"
+            app:showivRight="true"/>
+
+        <include layout="@layout/layout_line"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/dialog_chose_payment_ye"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="余额"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            app:ivLeftDrawable="@drawable/icon_text_tip"
+            app:showivLeft="true"
+            app:showivRight="true"/>
+
+        <include layout="@layout/layout_line"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

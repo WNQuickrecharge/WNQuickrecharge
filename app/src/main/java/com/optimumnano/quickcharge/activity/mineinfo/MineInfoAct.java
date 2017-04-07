@@ -2,9 +2,8 @@ package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,23 +20,26 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import com.optimumnano.quickcharge.views.CircleImageView;
 import com.optimumnano.quickcharge.views.GlideImageLoader;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
-import java.io.File;
-import java.io.IOException;
+import org.xutils.common.util.LogUtil;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_UERINFO_HEADIMG;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_UERINFO_NICKNAME;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_UERINFO_SEX;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -65,6 +67,7 @@ public class MineInfoAct extends BaseActivity {
     private String nickname;
     private int uerSex=0;//默认为男
     private RadioGroup mSexRb;
+    private ModifyUserInformationManager mManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,7 @@ public class MineInfoAct extends BaseActivity {
     }
 
     private void initData() {
-
+        mManager = new ModifyUserInformationManager();
     }
 
     @Override
@@ -96,22 +99,19 @@ public class MineInfoAct extends BaseActivity {
 
     private void initUserInfo() {
         //TODO 获取网络数据
-        String url = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_UERINFO_HEADIMG, "");
+        String url = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG, "");
         if (!TextUtils.isEmpty(url)) {
             Bitmap bmp = null;
-            try {
-                bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(url)));
-                ivHead.setImageBitmap(bmp);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            bmp = BitmapFactory.decodeFile(url);
+            ivHead.setImageBitmap(bmp);
         }
 
-        String nickName = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_UERINFO_NICKNAME, "");
+        String nickName = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, "");
         mTvNickname.setRightText(nickName);
-        int sex = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_UERINFO_SEX, 0);
+        int sex = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_SEX, 0);
         mTvSex.setRightText(sex==0?"男":"女");
+        String phone = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
+        mTvPhone.setRightText(phone);
 
         View popView = LayoutInflater.from(this).inflate(R.layout.layout_change_headview, null);
         mBsdialog = new BottomSheetDialog(this);
@@ -222,7 +222,20 @@ public class MineInfoAct extends BaseActivity {
                 nickname=inputvalue;
                 mTvNickname.setRightText(nickname);
                 mInPutInfoDialog.dismiss();
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_UERINFO_NICKNAME, nickname);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, nickname);
+                mManager.modifyNickNameAndSex(nickname, uerSex, new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        showToast("修改成功");
+                        LogUtil.i("test==onSuccess "+(String)returnContent);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        showToast("修改失败");
+                        LogUtil.i("test==onFailure "+msg);
+                    }
+                });
             }
         });
 
@@ -257,7 +270,7 @@ public class MineInfoAct extends BaseActivity {
                     uerSex=1;
                     mTvSex.setRightText("女");
                 }
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_UERINFO_SEX, uerSex);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, uerSex);
                 mSetSexDialog.dismiss();
             }
         });
@@ -284,7 +297,7 @@ public class MineInfoAct extends BaseActivity {
                 Glide.with(MineInfoAct.this)
                         .load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(ivHead);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_UERINFO_HEADIMG, url);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG, url);
             }
         }
     }

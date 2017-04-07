@@ -4,6 +4,7 @@ package com.optimumnano.quickcharge.activity.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,7 +18,10 @@ import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.xutils.common.util.LogUtil;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -75,7 +79,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
             showToast("登陆成功!");
+            LogUtil.i("return s==="+returnContent);
             hideLoading();
+            JSONObject dataJson = null;
+            try {
+                dataJson = new JSONObject((String) returnContent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String data = dataJson.optString("NickName");
+            LogUtil.i("test==http NickName"+data);
+            if (!TextUtils.isEmpty(data))
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,data);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,edtUsername.getText().toString());
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();

@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.optimumnano.quickcharge.fragment.MineFragment">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.optimumnano.quickcharge.views.CircleImageView
+            android:id="@+id/act_wallet_balance_headview"
+            android:layout_width="@dimen/default_headwidth"
+            android:layout_height="@dimen/default_headwidth"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/default_padding20"
+            android:src="@drawable/head"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_textsize16"
+            android:textColor="@color/color33"
+            android:text="我的余额"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/default_padding"/>
+
+        <TextView
+            android:id="@+id/act_wallet_balance_value"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_textsize20"
+            android:textColor="@color/black"
+            android:text="0.00"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="@dimen/default_padding20"
+        android:layout_marginRight="@dimen/default_padding20"
+        android:layout_marginLeft="@dimen/default_padding20"
+        android:id="@+id/act_wallet_balance_deposit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/wallet_deposit"
+        style="@style/ButtonStyle"/>
+
+    <TextView
+        android:layout_marginRight="@dimen/default_padding20"
+        android:layout_marginLeft="@dimen/default_padding20"
+        android:id="@+id/act_wallet_balance_withdraw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/wallet_withdraw"
+        style="@style/ButtonStyle1"
+        android:layout_marginTop="@dimen/dp_14"/>
+
+</LinearLayout>

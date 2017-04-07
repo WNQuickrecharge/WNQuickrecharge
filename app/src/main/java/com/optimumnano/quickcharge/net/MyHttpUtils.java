@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.httpresponse.MyResponseInfo;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 
 import org.json.JSONObject;
@@ -14,8 +15,9 @@ import org.xutils.http.RequestParams;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 import static org.xutils.x.http;
 
 /**
@@ -115,7 +117,7 @@ public class MyHttpUtils<T> {
             //检查网络是否可以，再进行下一步操作
             if (Tool.isConnectingToInternet()) {
                 params.setConnectTimeout(30 * 1000);//超时时间30秒
-                params.setUseCookie(false);
+//                params.setUseCookie(false);
                 switch (method) {
                     case PUT:
                     case POST:
@@ -181,32 +183,43 @@ public class MyHttpUtils<T> {
         public void onSuccess(MyResponseInfo result) {
             LogUtil.d(TAG + "返回数据：======>>>>>  " + result.getResult());
             try {
-                    JSONObject dataJson = new JSONObject((result.getResult()));
-                    if (0 == dataJson.optInt("status")) {//操作成功
-                        String data = dataJson.optString("result");
-                        //检验数据
-                        if (callback != null) {
-                            if (!TextUtils.isEmpty(data)) {
-                                try {
-                                    Class clazz = callback.getTClass();
-                                    int type = callback.getType();
-                                    if (type == 0){
-                                        callback.onSuccess(JSON.parseObject(data, clazz),httpCode);
-                                    }
-                                    else {
-                                        callback.onSuccess(JSON.parseArray(data,clazz),httpCode);
-                                    }
-                                } catch (Exception e) {
-                                    LogUtil.e(TAG, e);
-                                    callback.onSuccess(data, httpCode);
-                                }
-                            } else {
-                                callback.onSuccess(null, httpCode);
+                JSONObject dataJson = new JSONObject((result.getResult()));
+                if (0 == dataJson.optInt("status")) {//操作成功
+                    String data = dataJson.optString("result");
+                    List<String> cookies = result.getHeader().get("Set-Cookie");
+                    String cookie="";
+                    if (cookies!=null) {
+                        for (String s : cookies) {
+                            if (s.contains("SessionKey")) {
+                                cookie = s;
+                                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_COOKIE, cookie);
+                                break;
                             }
                         }
-                    } else {
-                        callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
                     }
+                    //检验数据
+                    if (callback != null) {
+                        if (!TextUtils.isEmpty(data)) {
+                            try {
+                                Class clazz = callback.getTClass();
+                                int type = callback.getType();
+                                if (type == 0){
+                                    callback.onSuccess(JSON.parseObject(data, clazz),httpCode);
+                                }
+                                else {
+                                    callback.onSuccess(JSON.parseArray(data,clazz),httpCode);
+                                }
+                            } catch (Exception e) {
+                                LogUtil.e(TAG, e);
+                                callback.onSuccess(data, httpCode);
+                            }
+                        } else {
+                            callback.onSuccess(null, httpCode);
+                        }
+                    }
+                } else {
+                    callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
+                }
             } catch (Exception e) {
                 callback.onFailure("数据异常", null, httpCode);
                 LogUtil.e(TAG, e);
