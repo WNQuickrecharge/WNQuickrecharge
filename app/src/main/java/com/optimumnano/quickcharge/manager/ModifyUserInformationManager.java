@@ -1,12 +1,19 @@
 package com.optimumnano.quickcharge.manager;
 
+import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.net.MyHttpUtils;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 
+import org.xutils.http.RequestParams;
+
 import java.util.HashMap;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by mfwn on 2017/4/6.
@@ -26,11 +33,16 @@ public class ModifyUserInformationManager {
         }
         else {
             String url = HttpApi.getInstance().getUrl(HttpApi.modify_password_url);
+            RequestParams params= new RequestParams(url);
             HashMap<String ,Object> requestJson=new HashMap<>();
             requestJson.put("mobile",mobile);
             requestJson.put("oldpwd",oldpwd);
             requestJson.put("newpwd",newpwd);
-            MyHttpUtils.getInstance().post(url,requestJson, new HttpCallback<String>() {
+            params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+            String json = JSON.toJSONString(requestJson);
+            params.setBodyContent(json);
+
+            MyHttpUtils.getInstance().post(params ,new HttpCallback<String>() {
                 @Override
                 public void onSuccess(String result, int httpCode) {
                     super.onSuccess(result, httpCode);
@@ -48,14 +60,14 @@ public class ModifyUserInformationManager {
 
     public void modifyNickNameAndSex(String nickname, int sex, final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.modify_userinfo_url);
-        //RequestParams params = new RequestParams(url);
+        RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("Nick_name",nickname);
+        requestJson.put("mobile",nickname);
         requestJson.put("sex",sex);
-//        String json = JSON.toJSONString(requestJson);
-//        params.setBodyContent(json);
-//        params.addHeader("Cookie","");
-        MyHttpUtils.getInstance().post(url,requestJson, new HttpCallback<String>() {
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
                 super.onSuccess(result, httpCode);

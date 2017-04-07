@@ -79,6 +79,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
             showToast("登陆成功!");
+            LogUtil.i("return s==="+returnContent);
             hideLoading();
             JSONObject dataJson = null;
             try {

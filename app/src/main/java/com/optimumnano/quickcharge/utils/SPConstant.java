@@ -19,5 +19,6 @@ public interface SPConstant {
      * 用户登录的手机号
      */
     String KEY_USERINFO_MOBILE="userinfo_mobile";
+    String KEY_USERINFO_COOKIE="userinfo_cookie";
 
 }
