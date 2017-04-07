@@ -43,15 +43,15 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan">
-        </activity>
-        <activity android:name=".activity.login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.login.LoginActivity" />
+        <activity android:name=".activity.login.LoginActivity" >
+
+        </activity>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
