@@ -13,6 +13,7 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,8 @@ public class MyHttpUtils<T> {
         return instance;
 
     }
-    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback) {
-        return get( maps, callback, -1);
+    public Callback.Cancelable get( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
+        return get( url,maps, callback, -1);
     }
 
     /**
@@ -46,12 +47,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.GET,  maps, callback, httpCode);
+    public Callback.Cancelable get(String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(url,HttpMethod.GET,  maps, callback, httpCode);
     }
 
-    public Callback.Cancelable delete(final String url, RequestParams maps, final HttpCallback<T> callback) {
-        return delete( maps, callback, -1);
+    public Callback.Cancelable delete(final String url, HashMap<String,Object> maps, final HttpCallback<T> callback) {
+        return delete( url,maps, callback, -1);
     }
 
     /**
@@ -61,12 +62,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable delete( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.DELETE,  maps, callback, httpCode);
+    public Callback.Cancelable delete( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(url,HttpMethod.DELETE,  maps, callback, httpCode);
     }
 
-    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback) {
-        return put( maps, callback, -1);
+    public Callback.Cancelable put( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
+        return put( url,maps, callback, -1);
     }
 
     /**
@@ -76,8 +77,8 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.PUT, maps, callback, httpCode);
+    public Callback.Cancelable put( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(url,HttpMethod.PUT, maps, callback, httpCode);
     }
 
     /**
@@ -86,8 +87,8 @@ public class MyHttpUtils<T> {
      * @param maps
      * @param callback
      */
-    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback) {
-        return post( maps, callback, -1);
+    public Callback.Cancelable post( String url , HashMap<String,Object> maps, final HttpCallback<T> callback) {
+        return post(url, maps, callback, -1);
     }
 
     /**
@@ -97,8 +98,8 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.POST, maps, callback, httpCode);
+    public Callback.Cancelable post( String url , HashMap<String,Object> maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(url,HttpMethod.POST, maps, callback, httpCode);
     }
 
 
@@ -109,8 +110,10 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    private Callback.Cancelable httpRequestIml(HttpMethod method, RequestParams params, final HttpCallback callback, final int httpCode) {
+    private Callback.Cancelable httpRequestIml(String url ,HttpMethod method, HashMap<String,Object> map, final HttpCallback callback, final int httpCode) {
         Callback.Cancelable cancelable = null;
+        RequestParams params = new RequestParams(url);
+        params.setBodyContent(JSON.toJSONString(map));
         try {
             //检查网络是否可以，再进行下一步操作
             if (Tool.isConnectingToInternet()) {
