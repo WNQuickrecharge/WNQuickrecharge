@@ -1,13 +1,10 @@
 package com.optimumnano.quickcharge.manager;
 
-import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.net.MyHttpUtils;
 import com.optimumnano.quickcharge.utils.StringUtils;
-
-import org.xutils.http.RequestParams;
 
 import java.util.HashMap;
 
@@ -51,15 +48,14 @@ public class ModifyUserInformationManager {
 
     public void modifyNickNameAndSex(String nickname, int sex, final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.modify_userinfo_url);
-        RequestParams params = new RequestParams(url);
+        //RequestParams params = new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("Nick_name",nickname);
         requestJson.put("sex",sex);
-        String json = JSON.toJSONString(requestJson);
-        params.setBodyContent(json);
-        params.setUseCookie(true);
-        params.addHeader("Set-Cookie","");
-        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+//        String json = JSON.toJSONString(requestJson);
+//        params.setBodyContent(json);
+//        params.addHeader("Cookie","");
+        MyHttpUtils.getInstance().post(url,requestJson, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
                 super.onSuccess(result, httpCode);
