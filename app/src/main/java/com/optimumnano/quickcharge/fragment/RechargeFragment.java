@@ -1,6 +1,8 @@
 package com.optimumnano.quickcharge.fragment;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,6 +33,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 
 import org.xutils.common.util.LogUtil;
@@ -88,9 +91,10 @@ public class RechargeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
+        initLocation();
         startLocation();
         mBaidumap = mapView.getMap();
-        initLocation();
+
     }
 
     public void startLocation() {
@@ -107,7 +111,7 @@ public class RechargeFragment extends BaseFragment {
         //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");
         //可选，默认gcj02，设置返回的定位结果坐标系
-        int span = 0;
+        int span = 30000;
         option.setScanSpan(span);
         //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);
@@ -214,6 +218,22 @@ public class RechargeFragment extends BaseFragment {
                 .icon(bitmap);
         //在地图上添加Marker，并显示
         mapView.getMap().addOverlay(option);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (SelectAddressActivity.REQUEST_CODE == requestCode
+                && Activity.RESULT_OK == resultCode) {
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                SuggestionInfo info= (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
+                etAddress.setText(info.key);
+            }
+        }
     }
 
     @Override

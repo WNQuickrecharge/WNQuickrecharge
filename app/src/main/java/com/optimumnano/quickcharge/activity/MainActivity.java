@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -138,5 +139,11 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        rechargeFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

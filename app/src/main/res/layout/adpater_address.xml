@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/default_padding"
     android:paddingRight="@dimen/default_padding"
+    android:background="@color/white"
     android:orientation="horizontal">
 
     <ImageView
@@ -30,7 +31,9 @@
         <TextView
             android:id="@+id/tv_poi_detail"
             android:layout_width="wrap_content"
-            android:padding="@dimen/default_padding"
+            android:paddingBottom="@dimen/default_padding"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingRight="@dimen/default_padding"
             android:text="天府三街"
             android:textColor="@color/color66"
             android:textSize="@dimen/sp_14"

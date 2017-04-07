@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
@@ -19,6 +20,7 @@ import com.optimumnano.quickcharge.adapter.OnListClickListener;
 import com.optimumnano.quickcharge.adapter.SugAddressAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
+import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +47,15 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_address);
         ButterKnife.bind(this);
-
+        initViews();
+        setTitle(getString(R.string.chong_address));
         mPoiSearch = PoiSearch.newInstance();
         mSuggestionSearch = SuggestionSearch.newInstance();
         mSuggestionSearch.setOnGetSuggestionResultListener(this);
         mAdapter=new SugAddressAdapter(suggest,this);
         rvSug.setAdapter(mAdapter);
+        rvSug.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST));
         rvSug.setLayoutManager(new LinearLayoutManager(this));
         etRecordNumber.addTextChangedListener(new TextWatcher() {
 
@@ -88,13 +93,15 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
         if (res == null || res.getAllSuggestions() == null) {
             return;
         }
+        suggest.clear();
         for (SuggestionResult.SuggestionInfo info : res.getAllSuggestions()) {
-            if (info.key != null) {
+            if (info.key != null&&!TextUtils.isEmpty(info.city)) {
                 SuggestionInfo info1=new SuggestionInfo();
                 info1.key=info.key;
                 info1.city=info.city;
                 info1.district=info.district;
-                info1.pt=info.pt;
+                info1.lat=info.pt.latitude;
+                info1.lng=info.pt.longitude;
                 suggest.add(info1);
             }
         }
@@ -110,11 +117,17 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
 
     @Override
     public void onShowMessage(Object item) {
-
+        Intent resultIntent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_FOR_RESULT, (SuggestionInfo)item);
+        resultIntent.putExtras(bundle);
+        this.setResult(RESULT_OK, resultIntent);
+        this.finish();
     }
-
+    public static String KEY_FOR_RESULT="data";
+    public static int REQUEST_CODE=1001;
     public static void start(Context mContext){
         Intent intent=new Intent(mContext,SelectAddressActivity.class);
-        mContext.startActivity(intent);
+        ((BaseActivity)mContext).startActivityForResult(intent,REQUEST_CODE);
     }
 }
