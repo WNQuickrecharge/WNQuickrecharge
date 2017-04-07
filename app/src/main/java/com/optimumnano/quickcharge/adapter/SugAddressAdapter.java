@@ -38,10 +38,17 @@ public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.tvPoiName.setText(holder.mItem.key);
         holder.tvPoiDetail.setText(holder.mItem.city + " - " + holder.mItem.district);
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener!=null)
+                    mListener.onShowMessage(holder.mItem);
+            }
+        });
     }
 
     @Override

@@ -29,14 +29,11 @@ public class ModifyUserInformationManager {
         }
         else {
             String url = HttpApi.getInstance().getUrl(HttpApi.modify_password_url);
-            RequestParams params = new RequestParams(url);
             HashMap<String ,Object> requestJson=new HashMap<>();
             requestJson.put("mobile",mobile);
             requestJson.put("oldpwd",oldpwd);
             requestJson.put("newpwd",newpwd);
-            String json = JSON.toJSONString(requestJson);
-            params.setBodyContent(json);
-            MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            MyHttpUtils.getInstance().post(url,requestJson, new HttpCallback<String>() {
                 @Override
                 public void onSuccess(String result, int httpCode) {
                     super.onSuccess(result, httpCode);

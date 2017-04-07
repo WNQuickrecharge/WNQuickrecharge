@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+    <color name="abc_search_url_text_normal">#7fa87f</color>
+    <color name="abc_search_url_text_selected">@android:color/black</color>
+    <color name="abc_search_url_text_pressed">@android:color/black</color>
+    <color name="blue">#33b6e7</color>
+
+    <color name="fab_reveal_white">#ccffffff</color>
+    <color name="fab_reveal_black">#66222222</color>
+</resources>

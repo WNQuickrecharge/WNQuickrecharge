@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/colorCC"
     android:layout_height="match_parent"
     tools:context="com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity">
 
@@ -10,10 +11,10 @@
         android:id="@+id/in_title"/>
 
     <LinearLayout
-
         android:layout_below="@+id/in_title"
         android:id="@+id/ll_address"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -23,11 +24,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/default_padding30"
             android:layout_marginRight="@dimen/default_padding30"
-            android:layout_marginTop="@dimen/default_padding5"
+            android:layout_marginTop="@dimen/default_padding"
             android:layout_marginBottom="@dimen/default_padding5"
             android:background="@drawable/sp_edit_number"
             android:gravity="center"
-            android:hint="@string/please_input_number"
+            android:hint="@string/please_input_address"
             android:paddingBottom="@dimen/dimen_8"
             android:paddingTop="@dimen/dimen_8"
             android:singleLine="true" />
@@ -36,5 +37,6 @@
         android:id="@+id/rv_sug"
         android:layout_below="@+id/ll_address"
         android:layout_width="match_parent"
+        android:layout_marginTop="1dp"
         android:layout_height="wrap_content"/>
 </RelativeLayout>

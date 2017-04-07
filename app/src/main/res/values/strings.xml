@@ -32,4 +32,5 @@
     <string name="please_input_number">请输入终端号</string>
     <string name="client_number">终端号</string>
     <string name="please_input_address">请输入地址</string>
+    <string name="chong_address">充电地址</string>
 </resources>

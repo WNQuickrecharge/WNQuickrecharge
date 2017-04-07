@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="exitXAnimationStart">-15dp</dimen>
+  <dimen name="exitYAnimatorFinish">34dp</dimen>
+  <dimen name="enterYAnimationStart">-30dp</dimen>
+  <dimen name="enterAnimationStartValue">-25dp</dimen>
+  <dimen name="exitAnimationExitValue">25dp</dimen>
+  <dimen name="icon_size">11dp</dimen>
+  <dimen name="margin">14dp</dimen>
+  <dimen name="ball_radius">11dp</dimen>
+  <dimen name="ball_start_position">12dp</dimen>
+
+
+  <!-- Default screen margins, per the Android Design guidelines. -->
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="mtf_cardHeight_initial">4dp</dimen>
+  <dimen name="mtf_cardHeight_final">55dp</dimen>
+
+  <dimen name="mtf_cardview_additionnal">4dp</dimen>
+
+
+  <!-- fab -->
+  <dimen name="fab_size_normal_app">56dp</dimen>
+  <dimen name="fab_shadow_radius_app">9dip</dimen>
+
+  <dimen name="fab_size_normal">56dp</dimen>
+  <dimen name="fab_size_mini">40dp</dimen>
+
+  <dimen name="fab_icon_size">24dp</dimen>
+
+  <dimen name="fab_plus_icon_size">14dp</dimen>
+  <dimen name="fab_plus_icon_stroke">2dp</dimen>
+
+  <dimen name="fab_shadow_offset">3dp</dimen>
+  <dimen name="fab_shadow_radius">9dp</dimen>
+
+  <dimen name="fab_stroke_width">1dp</dimen>
+
+  <dimen name="fab_actions_spacing">16dp</dimen>
+  <dimen name="fab_labels_margin">8dp</dimen>
+
+  <dimen name="fab_2_bottom_margin">79dip</dimen>
+  <dimen name="fab_3_bottom_margin">146dip</dimen>
+</resources>
