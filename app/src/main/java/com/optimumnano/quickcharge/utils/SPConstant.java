@@ -15,5 +15,9 @@ public interface SPConstant {
     String KEY_UERINFO_SEX="uerinfo_sex";
     /***sharedpreferences****用户昵称key******/
     String KEY_UERINFO_NICKNAME="uerinfo_nickname";
+    /**
+     * 用户登录的手机号
+     */
+    String KEY_USERINFO_MOBILE="userinfo_mobile";
 
 }
