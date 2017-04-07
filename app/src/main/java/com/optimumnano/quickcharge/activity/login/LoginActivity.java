@@ -18,6 +18,9 @@ import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.json.JSONException;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvLogin,tvReg,tvForgetpwd;
     private EditText edtUsername,edtPwd;
@@ -73,7 +76,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             super.onSuccess(returnContent);
             showToast("登陆成功!");
             hideLoading();
-            SharedPreferencesUtil.putValue("userInform","mobile",edtUsername.getText().toString());
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,edtUsername.getText().toString());
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
         }

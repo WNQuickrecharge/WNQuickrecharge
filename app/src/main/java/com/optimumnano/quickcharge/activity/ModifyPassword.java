@@ -13,6 +13,9 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+
 /**
  * Created by mfwn on 2017/4/6.
  */
@@ -54,7 +57,7 @@ public class ModifyPassword extends BaseActivity implements View.OnClickListener
             String md5OldPwd = MD5Utils.encodeMD5(oldPwd);
             String md5NewPwd = MD5Utils.encodeMD5(newPwd);
 
-            manager.modifyPassword(SharedPreferencesUtil.getValue("userInform","mobile",""),
+            manager.modifyPassword(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_MOBILE,""),
                     md5OldPwd,md5NewPwd,new Manager());
         }
     }
