@@ -1,7 +1,5 @@
 package com.optimumnano.quickcharge.manager;
 
-import android.text.TextUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
@@ -52,5 +50,30 @@ public class ModifyUserInformationManager {
                 }
             });
         }
+    }
+
+    public void modifyNickNameAndSex(String nickname, int sex, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.modify_userinfo_url);
+        RequestParams params = new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("Nick_name",nickname);
+        requestJson.put("sex",sex);
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        params.setUseCookie(true);
+        params.addHeader("Set-Cookie","");
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
     }
 }
