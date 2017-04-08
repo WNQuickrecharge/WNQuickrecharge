@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -28,6 +27,8 @@ import com.optimumnano.quickcharge.views.CircleImageView;
 import com.optimumnano.quickcharge.views.GlideImageLoader;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_MD5;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
@@ -98,16 +99,18 @@ public class MineInfoAct extends BaseActivity {
     }
 
     private void initUserInfo() {
-        String headimgmd5 = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_MD5, "");
-        Bitmap headBitmap = Base64Image.Base64ToBitmap(headimgmd5);
-        if (null != headBitmap){
-            mHeadview.setImageBitmap(headBitmap);
-        }
-
+        //初始化头像
+        String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
+        Glide.with(MineInfoAct.this)
+                .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.head).placeholder(R.drawable.head).into(mHeadview);
+        //初始化昵称
         mNickname = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, "");
         mTvNickname.setRightText(mNickname);
+        //初始化性别
         mUerSex = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_SEX, 1);
         mTvSex.setRightText(mUerSex ==1?"男":"女");
+        //初始化电话号码
         String phone = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
         mTvPhone.setRightText(phone);
 
@@ -262,15 +265,23 @@ public class MineInfoAct extends BaseActivity {
     }
 
     private void modifyHeadView(final String url, final String imagebase64) {
-        mManager.modifyNickNameAndSex(imagebase64, new ManagerCallback() {
+        mManager.modifyHeadView(imagebase64, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("修改成功");
+
+                JSONObject dataJson = null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String netHeadUrl = dataJson.optString("url");
                 Glide.with(MineInfoAct.this)
-                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(mHeadview);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_MD5, imagebase64);
-                LogUtil.i("test==modifyHeadView onSuccess ");
+                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(mHeadview);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
+                LogUtil.i("test==modifyHeadView onSuccess "+netHeadUrl);
             }
 
             @Override

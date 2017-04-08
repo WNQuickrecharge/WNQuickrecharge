@@ -82,7 +82,7 @@ public class ModifyUserInformationManager {
         });
     }
 
-    public void modifyNickNameAndSex(String imagebase64, final ManagerCallback callback){
+    public void modifyHeadView(String imagebase64, final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.upload_headView_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
