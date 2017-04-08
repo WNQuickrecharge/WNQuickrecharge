@@ -25,5 +25,6 @@ public class HttpApi {
     public static final String forget_password_url = "capp/user/forget_pwd";
     public static final String modify_password_url = "capp/user/modify_pwd";
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
+    public static final String logout_url = "capp/user/logout";//登出
 
 }
