@@ -13,6 +13,9 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.WalletBillAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
+
+import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 
@@ -36,8 +39,8 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_bill);
         ButterKnife.bind(this);
-        initViews();
         initData();
+        initViews();
         initListener();
     }
 
@@ -52,6 +55,21 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
         for (int i = 0; i < 30; i++) {
             mData.add("条目"+i);
         }
+
+        GetMineInfoManager.getTransactionBill(1, 10, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                showToast("获取成功");
+
+                LogUtil.i("test==getTransactionBill onSuccess "+returnContent);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast("获取失败");
+                LogUtil.i("test==getTransactionBill onFailure "+msg);
+            }
+        });
     }
 
     @Override
@@ -66,13 +84,11 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
     @Override
     protected void onResume() {
         super.onResume();
-        mRefreshLayout.startAutoRefresh();
     }
 
     public void initRefreshView() {
 
         mAdapter = new WalletBillAdapter(R.layout.item_bill_list,mData);
-
         HTBaseViewHolder viewHolder = new HTDefaultVerticalRefreshViewHolder(this);
         viewHolder.setRefreshViewBackgroundResId(R.color.foreground_material_dark);
         mRefreshLayout.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式
@@ -99,6 +115,6 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
     @Override
     public void onLoadMore() {
-
+        mRefreshLayout.setRefreshCompleted(false);
     }
 }

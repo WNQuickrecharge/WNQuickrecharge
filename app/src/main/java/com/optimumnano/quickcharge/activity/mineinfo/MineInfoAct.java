@@ -258,7 +258,7 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onFailure(String msg) {
                 showToast("修改失败");
-                LogUtil.i("test==onFailure "+msg);
+                LogUtil.i("test==modifyUserInfo onFailure "+msg);
             }
         });
     }

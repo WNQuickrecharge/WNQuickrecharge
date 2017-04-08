@@ -15,3 +15,18 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+#htrefreshrecyclerview
+-keep class com.netease.hearttouch.htrefreshrecyclerview.** { *; }
+-dontwarn com.netease.hearttouch.htrefreshrecyclerview.**
+
+#glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+#保护JavaBean
+-keep class com.optimumnano.quickcharge.bean.** {*;}
