@@ -220,7 +220,7 @@ public class MineInfoAct extends BaseActivity {
                     return;
                 }
                 mInPutInfoDialog.dismiss();
-                modifyUserInfo(inputvalue, mUerSex);
+                modifyUserInfo(inputvalue, mUerSex,1);
             }
         });
 
@@ -236,15 +236,23 @@ public class MineInfoAct extends BaseActivity {
 
     }
 
-    private void modifyUserInfo(final String nickname, int uerSex) {
+    private void modifyUserInfo(final String nickname, final int uerSex, final int modifyType) {
         mManager.modifyNickNameAndSex(nickname, uerSex, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("修改成功");
-                mNickname=nickname;
-                mTvNickname.setRightText(mNickname);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
-                LogUtil.i("test==onSuccess ");
+
+                if (1 == modifyType){//改昵称
+                    mNickname = nickname;
+                    mTvNickname.setRightText(mNickname);
+                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
+                } else if (2 == modifyType){//改性别
+                    mUerSex = uerSex;
+                    mTvSex.setRightText(mUerSex ==1?"男":"女");
+                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
+                }
+
+                LogUtil.i("test==modifyUserInfo onSuccess ");
             }
 
             @Override
@@ -267,15 +275,14 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onClick(View v) {
                 int buttonId = mSexRb.getCheckedRadioButtonId();
+                int sex=1;
                 if (R.id.dialog_input_info_rg_male==buttonId){
-                    mUerSex =1;
-                    mTvSex.setRightText("男");
+                    sex =1;
                 }else if (R.id.dialog_input_info_rg_female==buttonId){
-                    mUerSex =2;
-                    mTvSex.setRightText("女");
+                    sex =2;
                 }
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
                 mSetSexDialog.dismiss();
+                modifyUserInfo(mNickname, sex ,2);
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
