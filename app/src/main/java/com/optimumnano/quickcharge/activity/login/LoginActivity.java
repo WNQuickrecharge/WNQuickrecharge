@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
@@ -21,8 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -79,20 +82,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
             showToast("登陆成功!");
-            LogUtil.i("return s==="+returnContent);
+            LogUtil.i("test==returnContent "+returnContent);
             hideLoading();
+
             JSONObject dataJson = null;
             try {
-                dataJson = new JSONObject((String) returnContent);
+                dataJson = new JSONObject(returnContent.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            String data = dataJson.optString("NickName");
-            LogUtil.i("test==http NickName"+data);
-            if (!TextUtils.isEmpty(data))
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,data);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,edtUsername.getText().toString());
+            String data = dataJson.optString("userinfo");
+
+            UserInfo.UserinfoBean userinfoBean = JSON.parseObject(data, UserInfo.UserinfoBean.class);
+            LogUtil.i("test==http NickName "+userinfoBean.NickName+" Gender "+userinfoBean.Gender+" PhoneNum "+userinfoBean.PhoneNum);
+            if (!TextUtils.isEmpty(userinfoBean.NickName))
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,userinfoBean.NickName);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.Gender);
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.PhoneNum);
+
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
         }
