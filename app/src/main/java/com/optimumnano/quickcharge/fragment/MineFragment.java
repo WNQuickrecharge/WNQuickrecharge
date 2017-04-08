@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.AboutActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
 import com.optimumnano.quickcharge.activity.setting.SettingActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
@@ -22,7 +23,7 @@ import com.optimumnano.quickcharge.views.MenuItem1;
 public class MineFragment extends BaseFragment implements View.OnClickListener {
     private View mainView;
     private ImageView ivHead;
-    private MenuItem1 mineSetting;
+    private MenuItem1 mineSetting,mineAbout;
     private MenuItem1 mywallet;
 
     @Override
@@ -44,7 +45,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mineSetting = (MenuItem1) mainView.findViewById(R.id.mine_setting);
         mineSetting.setOnClickListener(this);
         mywallet = (MenuItem1) mainView.findViewById(R.id.frag_mine_mi_mywallet);
+        mineAbout = (MenuItem1) mainView.findViewById(R.id.mine_about);
         mywallet.setOnClickListener(this);
+        mineAbout.setOnClickListener(this);
     }
 
     @Override
@@ -58,6 +61,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.frag_mine_mi_mywallet:
                 startActivity(new Intent(getActivity(), MineWalletAct.class));
+                break;
+            case R.id.mine_about:
+                startActivity(new Intent(getActivity(), AboutActivity.class));
                 break;
             default:
                 break;

@@ -86,6 +86,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.setting.ForgetPayPasswordActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
