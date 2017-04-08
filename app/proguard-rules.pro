@@ -30,3 +30,6 @@
 
 #保护JavaBean
 -keep class com.optimumnano.quickcharge.bean.** {*;}
+
+#BASE64Encoder
+-keep class Decoder.** {*;}
