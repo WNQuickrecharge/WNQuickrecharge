@@ -19,6 +19,7 @@ import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -79,8 +80,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         mPayPassword.addTextChangedListener(this);
         mPayPassword.setOnKeyListener(keyListener);
         imageViews = new ImageView[]{oneImag, twoImag, threeImag, fourImag, fiveImag, sixImag};
-        //获取支付密码
-        manager.getPayPassword(new PayPasswordManager());
+
 
     }
 
@@ -107,11 +107,10 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
             imageViews[len - 1].setVisibility(View.VISIBLE);
         }
         if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_OLD_PAY_PASSWORD)) {
-            LogUtil.i("支付密码" + str);
-
+            String Md5Paypassword = MD5Utils.encodeMD5(str);
             showLoading();
             String payPassword = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PAYPASSWORD, "");
-            if (!mStringBuffer.toString().equals(payPassword)) {
+            if (!Md5Paypassword.equals(payPassword)) {
 
                 EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
 
@@ -123,14 +122,14 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
 
         } else if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_NEW_PAY_PASSWORD)) {
             tempPayPassword = mStringBuffer.toString();
-            LogUtil.i("firstPayPassword==" + tempPayPassword);
             EventBus.getDefault().post(new EventManager.onInputNewPayPassword(2));
         } else if ((len == 6) && (inputPayPasswordStatus == SECOND_INPUT_NEW_PAY_PASSWORD)) {
             String confirmPayPassword = mStringBuffer.toString();
-            LogUtil.i("confirmPayPassword==" + confirmPayPassword);
+
             if (tempPayPassword.equals(confirmPayPassword)) {
                 //两次密码相同提交服务器修改支付密码
-                showToast("提交服务器修改支付密码");
+                //showToast("提交服务器修改支付密码");
+                showLoading();
                 manager.modifyPayPassword(confirmPayPassword, new Manager());
                 finish();
             } else {
@@ -269,6 +268,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
+            hideLoading();
             showToast("支付密码修改成功!");
             finish();
         }
@@ -276,6 +276,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onFailure(String msg) {
             super.onFailure(msg);
+            hideLoading();
             showToast(msg);
         }
     }
@@ -316,4 +317,9 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.getPayPassword(new PayPasswordManager());
+    }
 }
