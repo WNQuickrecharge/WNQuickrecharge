@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
-import com.optimumnano.quickcharge.activity.SettingActivity;
+import com.optimumnano.quickcharge.activity.setting.SettingActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.views.MenuItem1;

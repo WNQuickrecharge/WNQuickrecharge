@@ -24,6 +24,6 @@ public interface SPConstant {
      */
     String KEY_USERINFO_MOBILE="userinfo_mobile";
     String KEY_USERINFO_COOKIE="userinfo_cookie";
-    List<String> getAllSP();
+    String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
 
 }

@@ -23,6 +23,7 @@ import org.xutils.common.util.LogUtil;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -89,6 +90,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
 
             String data = dataJson.optString("NickName");
+            String payPassword = dataJson.optString("PayPassword");
+            if (!TextUtils.isEmpty(payPassword)){
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
+            }
             LogUtil.i("test==http NickName"+data);
             if (!TextUtils.isEmpty(data))
                 SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,data);

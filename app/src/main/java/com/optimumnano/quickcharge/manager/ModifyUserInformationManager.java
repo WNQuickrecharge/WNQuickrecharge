@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.manager;
 
 import com.alibaba.fastjson.JSON;
+import com.optimumnano.quickcharge.base.EventTask;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -8,6 +9,7 @@ import com.optimumnano.quickcharge.net.MyHttpUtils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 
+import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 
 import java.util.HashMap;
@@ -95,6 +97,53 @@ public class ModifyUserInformationManager {
                 super.onSuccess(result, httpCode);
                 callback.onSuccess(result);
             }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+    public void modifyPayPassword(String pay_pwd,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.modify_pay_password_url);
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("pay_pwd",pay_pwd);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
+    public void getPayPassword(final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_password_url);
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                LogUtil.i("result=="+result);
+                callback.onSuccess(result);
+            }
+
 
             @Override
             public void onFailure(String msg, String errorCode, int httpCode) {
