@@ -64,11 +64,11 @@ public class ModifyUserInformationManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.modify_userinfo_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("mobile",nickname);
+        requestJson.put("nick_name",nickname);
         requestJson.put("sex",sex);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

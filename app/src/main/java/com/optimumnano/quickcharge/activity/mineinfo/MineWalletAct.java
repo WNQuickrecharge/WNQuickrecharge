@@ -101,7 +101,7 @@ public class MineWalletAct extends BaseActivity {
                 mPayment.setText("支付宝");
                 break;
             case 3:
-                drawable= getResources().getDrawable(R.drawable.icon_text_tip);
+                drawable= getResources().getDrawable(R.drawable.yue);
                 mPayment.setText("余额");
                 break;
         }

@@ -52,6 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.login.LoginActivity"></activity>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -79,9 +80,10 @@
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
+        <activity android:name=".activity.mineinfo.MineWalletAct" />
+        <activity android:name=".activity.mineinfo.WalletBalanceAct" />
+        <activity android:name=".activity.mineinfo.WalletBillAct" />
+        <activity android:name=".activity.order.OrderDetlActivity"></activity>
         <activity android:name=".activity.setting.ModifyPayPasswordActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.setting.ForgetPayPasswordActivity"

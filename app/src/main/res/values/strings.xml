@@ -33,6 +33,15 @@
     <string name="client_number">终端号</string>
     <string name="please_input_address">请输入地址</string>
     <string name="chong_address">充电地址</string>
+    <string name="now_location">当前城市：</string>
+    <string name="select_title">筛选</string>
+    <string name="interflow">交流桩</string>
+    <string name="dc">直流桩</string>
+    <string name="charging_type">充电桩类型</string>
+    <string name="_0kw_300kw">查看功率0kw-300kw内充电桩及补电车</string>
+    <string name="km_dist">距离范围（km）</string>
+    <string name="show_sample">仅显示空闲站点</string>
+    <string name="unkown_dis">无法定位到该区域</string>
 
     <string name="wallet_deposit">充值</string>
     <string name="wallet_withdraw">提现</string>
