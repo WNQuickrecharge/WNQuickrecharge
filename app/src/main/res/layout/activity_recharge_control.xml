@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:text="充电预计时间15分钟"
             android:gravity="center"
+            android:visibility="gone"
             android:textSize="@dimen/default_textsize"
             android:layout_marginTop="@dimen/default_padding"/>
     </LinearLayout>
