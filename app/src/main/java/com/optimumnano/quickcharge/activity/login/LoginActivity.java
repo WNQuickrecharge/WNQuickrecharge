@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,6 +21,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.DESEncryptTools;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
@@ -25,8 +29,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
+import java.io.UnsupportedEncodingException;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
@@ -36,6 +44,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private EditText edtUsername,edtPwd;
     private ProgressDialog progressDialog;
     private int userType=1;
+    private CheckBox checkBox;
+    private String pwdKey = "mfwnydgiyutjyg";
     LoginManager manager = new LoginManager();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         edtPwd = (EditText) findViewById(R.id.login_edtPwd);
         edtUsername = (EditText) findViewById(R.id.login_edtUsername);
         tvUserType= (TextView) findViewById(R.id.tv_login_type_textView);
+        checkBox= (CheckBox) findViewById(R.id.login_checkbox);
+        checkBox.setChecked(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,false));
+        if (checkBox.isChecked()){
+            edtUsername.setText(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_MOBILE,""));
+            String password = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PASSWORD, "");
+
+            byte[] decode = Base64.decode(password.getBytes(), Base64.DEFAULT);
+            byte[] decrypt = DESEncryptTools.decrypt(decode, pwdKey.getBytes());
+            try {
+                if (decrypt!=null)
+                    edtPwd.setText(new String(decrypt,"utf-8"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            edtPwd.setText("");
+            edtUsername.setText("");
+        }
     }
     private void initListener(){
         tvLogin.setOnClickListener(this);
@@ -62,6 +91,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         tvForgetpwd.setOnClickListener(this);
         tvUserType.setOnClickListener(this);
         tvUserType.addTextChangedListener(this);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,edtUsername.getText().toString());
+                    SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,true);
+                    return;
+                }
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,"");
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,false);
+            }
+        });
     }
 
     @Override
@@ -131,6 +172,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             try {
                 dataJson = new JSONObject(returnContent.toString());
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String mobile = edtUsername.getText().toString();
+            String password = edtPwd.getText().toString();
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,mobile);
+            try {
+                byte[] utf8s = DESEncryptTools.encrypt(password.getBytes("utf-8"), pwdKey.getBytes());
+                byte[] encode = Base64.encode(utf8s, Base64.DEFAULT);
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PASSWORD,new String(encode));
+            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 

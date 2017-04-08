@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -69,6 +70,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
             showToast("您已退出登录");
             AppManager.getAppManager().finishAllActivity();
+            startActivity(new Intent(SettingActivity.this, LoginActivity.class));
             finish();
 
         }
