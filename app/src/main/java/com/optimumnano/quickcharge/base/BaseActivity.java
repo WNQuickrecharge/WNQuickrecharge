@@ -70,11 +70,16 @@ public class BaseActivity extends AppCompatActivity {
         tvLeft.setVisibility(View.VISIBLE);
         tvLeft.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                showToast("title");
+            public void onClick(View v) {
+                onLeftDoSomething();
             }
         });
     }
+
+    protected void onLeftDoSomething() {
+
+    }
+
     public void setRightTitle(String rightTitle){
         tvRight.setText(rightTitle);
         tvRight.setVisibility(View.VISIBLE);
@@ -97,6 +102,7 @@ public class BaseActivity extends AppCompatActivity {
     public void showToast(String msg) {
         ToastUtil.showToast(this.getApplicationContext(), msg);
     }
+
 
 
     @Override

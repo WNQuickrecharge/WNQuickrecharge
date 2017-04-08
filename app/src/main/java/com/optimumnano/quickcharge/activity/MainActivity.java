@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
@@ -73,6 +74,11 @@ public class MainActivity extends BaseActivity {
         rbRecharge = (RadioButton) findViewById(R.id.main_rbRecharge);
         rbRecharge.setChecked(true);
 
+    }
+
+    @Override
+    protected void onLeftDoSomething() {
+        FilterActivity.start(this);
     }
 
     private void initListener() {

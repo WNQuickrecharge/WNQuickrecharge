@@ -4,6 +4,292 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_gray"
     tools:context="com.optimumnano.quickcharge.activity.filter.FilterActivity">
 
+    <include
+        android:id="@+id/in_title"
+        layout="@layout/title_main" />
+
+    <LinearLayout
+        android:id="@+id/ll_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/in_title"
+        android:layout_marginTop="@dimen/default_padding15"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding25"
+        android:paddingRight="@dimen/default_padding25"
+        android:paddingTop="@dimen/default_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前城市："
+            android:textColor="@color/color33"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/default_padding"
+            android:drawableRight="@mipmap/ic_xiangqing"
+            android:gravity="right|center_vertical"
+            android:textColor="@color/main_color"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_mid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_location"
+        android:layout_marginTop="@dimen/default_padding15"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/default_padding"
+        android:paddingLeft="@dimen/default_padding25"
+        android:paddingRight="@dimen/default_padding25"
+        android:paddingTop="@dimen/default_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_padding5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/show_sample"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/sp_14" />
+
+            <com.weijing.materialanimatedswitch.MaterialAnimatedSwitch
+                android:id="@+id/switch_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ball_press_color="@color/main_color"
+                app:ball_release_color="@color/main_color"
+                app:base_press_color="#8cf0a9"
+                app:base_release_color="#eaedf1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_padding5"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/km_dist"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/sp_14" />
+
+            <SeekBar
+                android:id="@+id/sk_km"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:focusable="true"
+                android:max="50"
+                android:maxHeight="8.0dip"
+                android:minHeight="8.0dip"
+                android:progress="10"
+                android:progressDrawable="@drawable/po_seekbar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding5"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/default_padding5"
+                android:paddingRight="@dimen/default_padding5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="10" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="20"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="30"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="40"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="50"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="60"
+                    android:textSize="@dimen/sp_12" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:text="@string/_0kw_300kw"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/sp_14" />
+
+            <SeekBar
+                android:id="@+id/sb_kv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:focusable="true"
+                android:max="40"
+                android:maxHeight="8.0dip"
+                android:minHeight="8.0dip"
+                android:progress="10"
+                android:progressDrawable="@drawable/po_seekbar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding5"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/default_padding5"
+                android:paddingRight="@dimen/default_padding5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="60" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="120"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="180"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="240"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="300"
+                    android:textSize="@dimen/sp_12" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:text="@string/charging_type"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/sp_14" />
+
+            <RadioGroup
+                android:id="@+id/rg_buttom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_20"
+                android:layout_marginTop="@dimen/default_padding"
+                android:orientation="horizontal">
+
+
+                <RadioButton
+                    android:id="@+id/rb_dc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/sl_rb_state_sample"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dimen_4"
+                    android:paddingLeft="@dimen/default_padding15"
+                    android:paddingRight="@dimen/default_padding15"
+                    android:paddingTop="@dimen/dimen_4"
+                    android:text="@string/dc"
+                    android:textColor="@drawable/sl_rb_text_state"
+                    android:textSize="@dimen/sp_14" />
+
+                <RadioButton
+                    android:id="@+id/rb_interflow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_padding"
+                    android:background="@drawable/sl_rb_state_sample"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dimen_4"
+                    android:paddingLeft="@dimen/default_padding15"
+                    android:paddingRight="@dimen/default_padding15"
+                    android:paddingTop="@dimen/dimen_4"
+                    android:text="@string/interflow"
+                    android:textColor="@drawable/sl_rb_text_state"
+                    android:textSize="@dimen/sp_14" />
+
+            </RadioGroup>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_mid"
+        android:layout_marginLeft="@dimen/default_padding30"
+        android:layout_marginRight="@dimen/default_padding30"
+        android:layout_marginTop="@dimen/default_padding30"
+        android:background="@drawable/sl_submit"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dimen_8"
+        android:paddingTop="@dimen/dimen_8"
+        android:text="@string/confirm"
+        android:textColor="@drawable/sl_submit_text_state"
+        android:textSize="@dimen/sp_16" />
 </RelativeLayout>
