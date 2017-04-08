@@ -2,7 +2,6 @@ package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -22,6 +21,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.Base64Image;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import com.optimumnano.quickcharge.views.CircleImageView;
@@ -36,7 +36,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_MD5;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
@@ -52,7 +52,7 @@ public class MineInfoAct extends BaseActivity {
     private static final int REQUEST_CODE_OPEN_ALBUM = 1001;
     private static final int REQUEST_CODE_OPEN_CAMERA = 1002;
     @Bind(R.id.act_mineinfo_iv_headimg)
-    CircleImageView ivHead;
+    CircleImageView mHeadview;
     public ImagePicker imagePicker;
     @Bind(R.id.act_mineinfo_tv_nickname)
     MenuItem1 mTvNickname;
@@ -98,12 +98,10 @@ public class MineInfoAct extends BaseActivity {
     }
 
     private void initUserInfo() {
-        //TODO 获取网络数据
-        String url = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG, "");
-        if (!TextUtils.isEmpty(url)) {
-            Bitmap bmp = null;
-            bmp = BitmapFactory.decodeFile(url);
-            ivHead.setImageBitmap(bmp);
+        String headimgmd5 = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_MD5, "");
+        Bitmap headBitmap = Base64Image.Base64ToBitmap(headimgmd5);
+        if (null != headBitmap){
+            mHeadview.setImageBitmap(headBitmap);
         }
 
         mNickname = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, "");
@@ -220,7 +218,7 @@ public class MineInfoAct extends BaseActivity {
                     return;
                 }
                 mInPutInfoDialog.dismiss();
-                modifyUserInfo(inputvalue, mUerSex);
+                modifyUserInfo(inputvalue, mUerSex,1);
             }
         });
 
@@ -236,21 +234,49 @@ public class MineInfoAct extends BaseActivity {
 
     }
 
-    private void modifyUserInfo(final String nickname, int uerSex) {
+    private void modifyUserInfo(final String nickname, final int uerSex, final int modifyType) {
         mManager.modifyNickNameAndSex(nickname, uerSex, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("修改成功");
-                mNickname=nickname;
-                mTvNickname.setRightText(mNickname);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
-                LogUtil.i("test==onSuccess ");
+
+                if (1 == modifyType){//改昵称
+                    mNickname = nickname;
+                    mTvNickname.setRightText(mNickname);
+                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
+                } else if (2 == modifyType){//改性别
+                    mUerSex = uerSex;
+                    mTvSex.setRightText(mUerSex ==1?"男":"女");
+                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
+                }
+
+                LogUtil.i("test==modifyUserInfo onSuccess ");
             }
 
             @Override
             public void onFailure(String msg) {
-                showToast("修改失败");
-                LogUtil.i("test==onFailure "+msg);
+                showToast("修改失败"+msg);
+                LogUtil.i("test==modifyUserInfo onFailure "+msg);
+            }
+        });
+    }
+
+    private void modifyHeadView(final String url, final String imagebase64) {
+        mManager.modifyNickNameAndSex(imagebase64, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                showToast("修改成功");
+                Glide.with(MineInfoAct.this)
+                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(mHeadview);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_MD5, imagebase64);
+                LogUtil.i("test==modifyHeadView onSuccess ");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+                LogUtil.i("test==modifyHeadView onFailure "+msg);
             }
         });
     }
@@ -267,15 +293,14 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onClick(View v) {
                 int buttonId = mSexRb.getCheckedRadioButtonId();
+                int sex=1;
                 if (R.id.dialog_input_info_rg_male==buttonId){
-                    mUerSex =1;
-                    mTvSex.setRightText("男");
+                    sex =1;
                 }else if (R.id.dialog_input_info_rg_female==buttonId){
-                    mUerSex =2;
-                    mTvSex.setRightText("女");
+                    sex =2;
                 }
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
                 mSetSexDialog.dismiss();
+                modifyUserInfo(mNickname, sex ,2);
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -298,10 +323,9 @@ public class MineInfoAct extends BaseActivity {
             ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (images != null && images.size() != 0 && !images.get(0).path.equals("")) {
                 url = images.get(0).path;
-                Glide.with(MineInfoAct.this)
-                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(ivHead);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG, url);
+                String headViewBase64 = Base64Image.image2Base64Str(url);
+                modifyHeadView(url,headViewBase64);
+
             }
         }
     }

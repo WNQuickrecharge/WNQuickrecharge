@@ -11,6 +11,7 @@ public interface SPConstant {
 
     /***sharedpreferences****用户头像地址key******/
     String KEY_USERINFO_HEADIMG="userinfo_headimg";
+    String KEY_USERINFO_HEADIMG_MD5="userinfo_headimg_md5";
     /***sharedpreferences****用户性别key******/
     String KEY_USERINFO_SEX ="userinfo_sex";
     /***sharedpreferences****用户昵称key******/

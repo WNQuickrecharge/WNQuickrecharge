@@ -1,15 +1,14 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.utils.Base64Image;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.CircleImageView;
 
@@ -17,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_MD5;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -62,13 +61,10 @@ public class WalletBalanceAct extends BaseActivity {
         showBack();
         setTitle("余额");
 
-        //TODO 获取网络数据
-        String url = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG, "");
-        if (!TextUtils.isEmpty(url)) {
-            Bitmap bmp = null;
-            bmp = BitmapFactory.decodeFile(url);
-            mHeadview.setImageBitmap(bmp);
-
+        String headimgmd5 = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_MD5, "");
+        Bitmap headBitmap = Base64Image.Base64ToBitmap(headimgmd5);
+        if (null != headBitmap){
+            mHeadview.setImageBitmap(headBitmap);
         }
     }
 
