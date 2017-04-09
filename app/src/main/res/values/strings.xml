@@ -45,6 +45,8 @@
 
     <string name="wallet_deposit">充值</string>
     <string name="wallet_withdraw">提现</string>
+    <string name="now_no_support">暂不支持选城市</string>
+    <string name="edit_sai_xuan_success">修改筛选条件成功</string>
 
 
 </resources>
