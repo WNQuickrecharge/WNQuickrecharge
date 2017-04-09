@@ -27,4 +27,17 @@ public class Point {
     public String CreateTime;//": "2017-04-05T10:13:46.877",
     public String UpdateTime;//": "2017-04-05T10:13:46.877",
     public boolean IsDel;//": false
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this==obj) return true;
+        if (!(obj instanceof Point)) return false;
+        final Point other = (Point)obj;
+
+        if(this.Id==(other.Id)&& this.State==other.State&&this.StationName.equals(other.StationName)
+                &&this.UpdateTime.equals(other.UpdateTime))
+            return true;
+        else
+            return false;
+    }
 }
