@@ -51,10 +51,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.login.LoginActivity" >
-
-        </activity>
-
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="SfRGXTBoQyIgDXLvfFBsKekZrnILH2La" />
@@ -86,11 +82,6 @@
         <activity android:name=".activity.mineinfo.WalletBillAct" />
         <activity android:name=".activity.order.OrderDetlActivity" />
         <activity android:name=".activity.order.OrderActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.setting.ModifyPayPasswordActivity"
             android:screenOrientation="portrait"/>
