@@ -61,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <CheckBox
+                android:id="@+id/login_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="记住密码"
@@ -97,4 +98,15 @@
 
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_login_type_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/white"
+        android:padding="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_36"
+        android:text="企业"
+        />
 </RelativeLayout>

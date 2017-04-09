@@ -1,5 +1,7 @@
 package com.optimumnano.quickcharge.utils;
 
+import java.util.List;
+
 /**
  * 作者：邓传亮 on 2017/4/6 14:15
  * <p>
@@ -22,5 +24,8 @@ public interface SPConstant {
      */
     String KEY_USERINFO_MOBILE="userinfo_mobile";
     String KEY_USERINFO_COOKIE="userinfo_cookie";
+    String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
+    String KEY_USERINFO_IS_REMEMBER="userinfo_is_remember";
+    String KEY_USERINFO_PASSWORD="userinfo_password";
 
 }

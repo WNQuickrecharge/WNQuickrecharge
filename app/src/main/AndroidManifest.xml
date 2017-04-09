@@ -68,10 +68,10 @@
         <activity android:name=".activity.order.OrderlistDetailtwoActivity" />
         <activity android:name=".activity.qrcode.QrCodeActivity" />
         <activity
-            android:name=".activity.SettingActivity"
+            android:name=".activity.setting.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ModifyPassword"
+            android:name=".activity.setting.ModifyPassword"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.order.OrderlistDetailActivity" />
         <activity android:name=".activity.mineinfo.MineInfoAct" />
@@ -79,9 +79,18 @@
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
+        <activity android:name=".activity.mineinfo.MineWalletAct" />
+        <activity android:name=".activity.mineinfo.WalletBalanceAct" />
+        <activity android:name=".activity.mineinfo.WalletBillAct" />
+        <activity android:name=".activity.order.OrderDetlActivity"></activity>
+        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.mineinfo.MyCollectActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

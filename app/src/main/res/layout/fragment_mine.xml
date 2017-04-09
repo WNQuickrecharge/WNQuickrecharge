@@ -71,6 +71,7 @@
         android:layout_marginTop="1dp"
         app:showivRight="true"/>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/mine_collect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="我的收藏"
@@ -90,6 +91,7 @@
         android:layout_marginTop="1dp"
         app:showivRight="true"/>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/mine_about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="关于我们"
