@@ -76,13 +76,22 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    protected void onLeftDoSomething() {
+     protected void onLeftDoSomething() {
+
+    }
+    protected void onRightDoSomething() {
 
     }
 
     public void setRightTitle(String rightTitle){
         tvRight.setText(rightTitle);
         tvRight.setVisibility(View.VISIBLE);
+        tvRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRightDoSomething();
+            }
+        });
     }
     public void hideBack(){
         toolbar.setNavigationIcon(null);

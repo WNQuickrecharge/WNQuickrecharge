@@ -33,10 +33,18 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.event.OnPushDataEvent;
+import com.optimumnano.quickcharge.manager.MapManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.xutils.common.util.LogUtil;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -65,11 +73,14 @@ public class RechargeFragment extends BaseFragment {
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
 
+    private MapManager mManager=new MapManager();
+
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
     private BaiduMap mBaidumap;
 
     private PreferencesHelper mHelper;
+    private List<Point> mPiont;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -180,22 +191,24 @@ public class RechargeFragment extends BaseFragment {
             //改变地图状态
             mBaidumap.setMapStatus(mMapStatusUpdate);
 
-            //构建Marker图标
-            marker(point, R.drawable.icon_openmap_mark);
-            marker(new LatLng(22.5616, 113.951462), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5139, 113.952736), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5271, 113.955156), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5853, 113.955866), R.drawable.icon_openmap_focuse_mark);
+//            //构建Marker图标
+//            marker(point, R.drawable.icon_openmap_mark);
+//            marker(new LatLng(22.5616, 113.951462), R.drawable.icon_openmap_focuse_mark);
+//            marker(new LatLng(22.5139, 113.952736), R.drawable.icon_openmap_focuse_mark);
+//            marker(new LatLng(22.5271, 113.955156), R.drawable.icon_openmap_focuse_mark);
+//            marker(new LatLng(22.5853, 113.955866), R.drawable.icon_openmap_focuse_mark);
 
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                initPoint();
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                initPoint();
             }
             //定位失败
             else {
@@ -207,6 +220,21 @@ public class RechargeFragment extends BaseFragment {
         @Override
         public void onConnectHotSpotMessage(String s, int i) {
         }
+    }
+
+    private void initPoint() {
+        mManager.getReigonInfo(mHelper, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                mPiont= (List<Point>) returnContent;
+                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+            }
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     private void marker(LatLng point, int pic) {
@@ -241,6 +269,7 @@ public class RechargeFragment extends BaseFragment {
         super.onResume();
         if (mapView != null)
             mapView.onResume();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -248,6 +277,7 @@ public class RechargeFragment extends BaseFragment {
         super.onPause();
         if (mapView != null)
             mapView.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -256,4 +286,6 @@ public class RechargeFragment extends BaseFragment {
         if (mapView != null)
             mapView.onDestroy();
     }
+
+
 }
