@@ -101,4 +101,6 @@
 
     <dimen name="rippleStrokeWidth">2dp</dimen>
     <dimen name="rippleRadius">14dp</dimen>
+
+    <dimen name="ratingbar">17dp</dimen>
 </resources>

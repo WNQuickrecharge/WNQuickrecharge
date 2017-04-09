@@ -33,11 +33,12 @@
             android:layout_marginLeft="@dimen/default_lrmargin"
             />
         <TextView
+            android:id="@+id/orderdetl_tvComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color66"
             android:textSize="@dimen/default_textsize"
-            android:text="888888888"
+            android:text="待评价"
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>
@@ -135,6 +136,7 @@
         android:layout_marginRight="@dimen/default_padding70"/>
 
     <TextView
+        android:id="@+id/orderdetl_tvConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/ButtonStyle"

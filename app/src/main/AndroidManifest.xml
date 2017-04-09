@@ -42,14 +42,8 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activity.login.LoginActivity"></activity>
+            android:windowSoftInputMode="adjustResize|adjustPan"></activity>
+        <activity android:name=".activity.login.LoginActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -75,12 +69,17 @@
         <activity android:name=".activity.mineinfo.MineInfoAct" />
         <activity android:name=".activity.filter.FilterActivity" />
         <activity android:name=".activity.order.RechargeControlActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.mineinfo.MineWalletAct" />
         <activity android:name=".activity.mineinfo.WalletBalanceAct" />
         <activity android:name=".activity.mineinfo.WalletBillAct" />
-        <activity android:name=".activity.order.OrderDetlActivity"></activity>
+        <activity android:name=".activity.order.OrderDetlActivity" />
+        <activity android:name=".activity.order.OrderActivity"></activity>
     </application>
 
 </manifest>
