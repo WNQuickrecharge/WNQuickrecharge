@@ -25,6 +25,8 @@
     <color name="success">#1dee75</color>
 
     <color name="bg_iron">#CCC</color>
+    <color name="bg_gray_F2">#F2F2F2</color>
+    <color name="text_dark_disable">#6666</color>
 
     <!--弹框按钮颜色-->
     <color name="dialog_btncolor">#EAE9E6</color>

@@ -3,6 +3,8 @@ package com.optimumnano.quickcharge.utils;
 import android.app.Activity;
 import android.content.Context;
 
+import org.xutils.common.util.LogUtil;
+
 import java.util.Stack;
 
 /**
@@ -70,6 +72,7 @@ public class AppManager {
      * 结束所有Activity
      */
     public void finishAllActivity() {
+        LogUtil.i("size=="+activityStack.size());
         for (int i = 0, size = activityStack.size(); i < size; i++) {
             if (null != activityStack.get(i)) {
                 finishActivity(activityStack.get(i));

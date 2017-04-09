@@ -22,7 +22,7 @@ import java.util.HashMap;
  * 登录注册相关 manager
  */
 public class LoginManager {
-    public void login(String username, String pwd, final ManagerCallback callback){
+    public void login(String username, String pwd,int userType,final ManagerCallback callback){
         if (StringUtils.isEmpty(username)){
             callback.onFailure("用户名不能为空");
         }
@@ -35,7 +35,7 @@ public class LoginManager {
             HashMap<String ,Object> requestJson=new HashMap<>();
             requestJson.put("mobile",username);
             requestJson.put("pwd",pwd);
-            requestJson.put("type",1);
+            requestJson.put("type",userType);
             String json = JSON.toJSONString(requestJson);
             params.setBodyContent(json);
             MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
