@@ -129,6 +129,7 @@
     </LinearLayout>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderdetl_miUseTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="充电耗时"
@@ -139,6 +140,7 @@
         android:layout_marginTop="@dimen/default_padding5"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderdetl_miAllelec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="充电电量"
@@ -148,6 +150,7 @@
         app:showtvRight="true"
         android:layout_marginTop="1dp"/>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderdetl_miRechargeCash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="充电费用"
@@ -171,6 +174,7 @@
             style="@style/text_mainstyle12"
             android:text="+服务费"/>
         <TextView
+            android:id="@+id/orderdetl_tvServiceCash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -180,6 +184,7 @@
     </RelativeLayout>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderdetl_miAllMoney"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="总金额"
@@ -203,6 +208,7 @@
             android:textColor="@color/color99"
             android:text="优惠券抵用"/>
         <TextView
+            android:id="@+id/orderdetl_mi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -212,6 +218,7 @@
     </RelativeLayout>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderdetl_miSMoney"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="实付金额"

@@ -49,6 +49,8 @@ public class PayDialog extends BaseDialog {
      */
     public void setPaywayListener(View.OnClickListener I){
         menuItem1.setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(I);
     }
 
     /**
@@ -76,6 +78,31 @@ public class PayDialog extends BaseDialog {
                 menuItem1.setIvLeftDrawable(R.drawable.yue);
                 menuItem1.setTvLeftText("余额");
                 break;
+        }
+    }
+
+    /**
+     * 设置弹框显示
+     * 0输入密码
+     * 1支付成功
+     * 2支付失败
+     */
+    public void setStatus(int status){
+        if (status == 0){
+            passwordView.setText("");
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt,true);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
+        }
+        else if (status == 1){
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,true);
+        }
+        else {
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail,true);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
         }
     }
 
