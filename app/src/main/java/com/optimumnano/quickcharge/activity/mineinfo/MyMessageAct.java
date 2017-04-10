@@ -14,9 +14,6 @@ import com.optimumnano.quickcharge.adapter.MyMessageAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.MessageBean;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
-
-import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 
@@ -60,21 +57,6 @@ public class MyMessageAct extends BaseActivity implements HTRefreshListener, HTL
             messageBean.type=i+"type";
             mData.add(messageBean);
         }
-
-        GetMineInfoManager.getTransactionBill(1, 10, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                showToast("获取成功");
-
-                LogUtil.i("test==getTransactionBill onSuccess "+returnContent);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast("获取失败");
-                LogUtil.i("test==getTransactionBill onFailure "+msg);
-            }
-        });
     }
 
     @Override
