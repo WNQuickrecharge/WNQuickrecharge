@@ -90,6 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding5"
+        android:visibility="gone"
         android:orientation="vertical">
         <com.optimumnano.quickcharge.views.MenuItem1
             android:layout_width="match_parent"
@@ -241,6 +242,7 @@
             android:textColor="@color/color99"
             android:text="支付方式"/>
         <TextView
+            android:id="@+id/orderlistDetl_tvPayWay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -262,6 +264,7 @@
         android:layout_marginTop="1dp"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miYFCash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="预缴金额"
@@ -272,6 +275,7 @@
         android:layout_marginTop="@dimen/default_padding5"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miBackCash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="已退金额"
@@ -282,6 +286,7 @@
         android:layout_marginTop="@dimen/default_padding5"/>
 
     <TextView
+        android:id="@+id/orderlistDetl_tvDeleteOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/ButtonStyle_deleteorder"
