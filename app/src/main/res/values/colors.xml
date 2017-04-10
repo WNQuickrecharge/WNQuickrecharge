@@ -27,6 +27,8 @@
     <color name="bg_iron">#CCC</color>
     <color name="bg_gray_F2">#F2F2F2</color>
     <color name="text_dark_disable">#6666</color>
+    <color name="electric_charge">#ff3b30</color>
+    <color name="free_gun_numbers">#00a762</color>
 
     <!--弹框按钮颜色-->
     <color name="dialog_btncolor">#EAE9E6</color>
