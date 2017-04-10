@@ -8,8 +8,11 @@ import com.optimumnano.quickcharge.R;
 
 import java.util.List;
 
+
 /**
- * Created by ds on 2017/3/29.
+ * 作者：邓传亮 on 2017/4/7 12:43
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
  */
 public class WalletBillAdapter extends BaseQuickAdapter<String,BaseViewHolder> {
     public WalletBillAdapter(int layoutResId, List<String> data) {

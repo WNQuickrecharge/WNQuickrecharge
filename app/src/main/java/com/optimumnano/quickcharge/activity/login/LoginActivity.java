@@ -22,6 +22,7 @@ import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.DESEncryptTools;
+import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
@@ -31,13 +32,14 @@ import org.xutils.common.util.LogUtil;
 
 import java.io.UnsupportedEncodingException;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private TextView tvLogin,tvReg,tvForgetpwd,tvUserType;
@@ -167,6 +169,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             showToast("登陆成功!");
             LogUtil.i("test==returnContent "+returnContent);
             hideLoading();
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
             JSONObject dataJson = null;
             try {
@@ -175,9 +178,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 e.printStackTrace();
             }
 
-            String mobile = edtUsername.getText().toString();
             String password = edtPwd.getText().toString();
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,mobile);
             try {
                 byte[] utf8s = DESEncryptTools.encrypt(password.getBytes("utf-8"), pwdKey.getBytes());
                 byte[] encode = Base64.encode(utf8s, Base64.DEFAULT);
@@ -192,14 +193,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
             }
             UserInfo.UserinfoBean userinfoBean = JSON.parseObject(data, UserInfo.UserinfoBean.class);
+            LogUtil.i("test==http NickName "+userinfoBean.NickName+" Gender "+userinfoBean.Gender+" PhoneNum "+userinfoBean.PhoneNum+" headurl "+userinfoBean.AvatarUrl);
 
-            LogUtil.i("test==http NickName "+userinfoBean.NickName+" Gender "+userinfoBean.Gender+" PhoneNum "+userinfoBean.PhoneNum);
-            if (!TextUtils.isEmpty(userinfoBean.NickName))
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,userinfoBean.NickName);
+            String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
+            if (!phoneNum.equals(userinfoBean.PhoneNum)){
+                GlideCacheUtil.getInstance().clearImageAllCache(LoginActivity.this);
+                SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
+                LogUtil.i("test==Glide  clearDiskCache");
+            }
+
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,TextUtils.isEmpty(userinfoBean.NickName)?"":userinfoBean.NickName);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.AvatarUrl)?"":userinfoBean.AvatarUrl);
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.PhoneNum);
 
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
         }
 

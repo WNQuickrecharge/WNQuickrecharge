@@ -10,12 +10,10 @@ import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.netease.hearttouch.htrefreshrecyclerview.base.HTBaseViewHolder;
 import com.netease.hearttouch.htrefreshrecyclerview.viewimpl.HTDefaultVerticalRefreshViewHolder;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.adapter.WalletBillAdapter;
+import com.optimumnano.quickcharge.adapter.MyMessageAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.MessageBean;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
-
-import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 
@@ -23,21 +21,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * 作者：邓传亮 on 2017/4/7 15:47
+ * 作者：邓传亮 on 2017/4/8 16:47
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class WalletBillAct extends BaseActivity implements HTRefreshListener, HTLoadMoreListener {
-    @Bind(R.id.act_wattet_bill_rv)
+public class MyMessageAct extends BaseActivity implements HTRefreshListener, HTLoadMoreListener {
+    @Bind(R.id.act_mine_message_rv)
     HTRefreshRecyclerView mRefreshLayout;
     private GetMineInfoManager mManager;
-    private ArrayList mData;
-    private WalletBillAdapter mAdapter;
+    private ArrayList<MessageBean> mData;
+    private MyMessageAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet_bill);
+        setContentView(R.layout.activity_mine_message);
         ButterKnife.bind(this);
         initData();
         initViews();
@@ -53,31 +51,19 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
         mData = new ArrayList();
         for (int i = 0; i < 30; i++) {
-            mData.add("条目"+i);
+            MessageBean messageBean = new MessageBean();
+            messageBean.content=i+"content";
+            messageBean.time=i+"time";
+            messageBean.type=i+"type";
+            mData.add(messageBean);
         }
-
-        GetMineInfoManager.getTransactionBill(1, 10, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                showToast("获取成功");
-
-                LogUtil.i("test==getTransactionBill onSuccess "+returnContent);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast("获取失败");
-                LogUtil.i("test==getTransactionBill onFailure "+msg);
-            }
-        });
     }
 
     @Override
     public void initViews() {
         super.initViews();
         setRightTitle("");
-        showBack();
-        setTitle("交易明细");
+        setTitle("消息");
         initRefreshView();
     }
 
@@ -88,7 +74,7 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
     public void initRefreshView() {
 
-        mAdapter = new WalletBillAdapter(R.layout.item_bill_list,mData);
+        mAdapter = new MyMessageAdapter(R.layout.item_message_list,mData);
         HTBaseViewHolder viewHolder = new HTDefaultVerticalRefreshViewHolder(this);
         viewHolder.setRefreshViewBackgroundResId(R.color.foreground_material_dark);
         mRefreshLayout.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式

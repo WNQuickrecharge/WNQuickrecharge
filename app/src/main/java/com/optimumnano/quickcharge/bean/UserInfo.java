@@ -51,7 +51,7 @@ public class UserInfo implements Serializable{
         public int RegisteredType;
         public Object CompanyId;
         public int Gender;
-        public Object AvatarUrl;
+        public String AvatarUrl;
         public Object Signature;
         public String NickName;
         public String CreateTime;
