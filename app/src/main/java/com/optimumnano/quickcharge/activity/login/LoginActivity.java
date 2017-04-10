@@ -114,7 +114,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 showLoading();
                 if ("企业登录".equals(tvLogin.getText().toString())){
                     userType=3;
-                }else if ("个人登录".equals(tvUserType.getText().toString())){
+                }else if ("个人登录".equals(tvLogin.getText().toString())){
                     userType=1;
                 }
                 manager.login(edtUsername.getText().toString(),Md5Password,userType,new Manager());
