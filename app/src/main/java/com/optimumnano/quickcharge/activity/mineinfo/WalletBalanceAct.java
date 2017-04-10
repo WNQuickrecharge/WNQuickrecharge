@@ -1,12 +1,11 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
@@ -17,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -62,14 +61,10 @@ public class WalletBalanceAct extends BaseActivity {
         showBack();
         setTitle("余额");
 
-        //TODO 获取网络数据
-        String url = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG, "");
-        if (!TextUtils.isEmpty(url)) {
-            Bitmap bmp = null;
-            bmp = BitmapFactory.decodeFile(url);
-            mHeadview.setImageBitmap(bmp);
-
-        }
+        String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
+        Glide.with(WalletBalanceAct.this)
+                .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.icon_text_tip).into(mHeadview);
     }
 
     @Override

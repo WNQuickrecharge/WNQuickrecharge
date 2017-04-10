@@ -84,6 +84,29 @@ public class ModifyUserInformationManager {
         });
     }
 
+    public void modifyHeadView(String imagebase64, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.upload_headView_url);
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("imagebase64",imagebase64);
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
     public void logout(final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.logout_url);
         RequestParams params= new RequestParams(url);

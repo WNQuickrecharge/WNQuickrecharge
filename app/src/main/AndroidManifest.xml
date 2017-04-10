@@ -77,9 +77,10 @@
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.mineinfo.MineWalletAct" />
-        <activity android:name=".activity.mineinfo.WalletBalanceAct" />
-        <activity android:name=".activity.mineinfo.WalletBillAct" />
+        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
+        <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
         <activity android:name=".activity.order.OrderDetlActivity" />
         <activity android:name=".activity.order.OrderActivity">
         </activity>
