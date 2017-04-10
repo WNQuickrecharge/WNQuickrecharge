@@ -86,6 +86,7 @@
         </RelativeLayout>
     </LinearLayout>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miGunNum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="充电枪号"
@@ -95,6 +96,7 @@
         android:layout_marginTop="@dimen/default_padding"
         app:showtvRight="true"/>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miPileType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="桩类型"
@@ -105,6 +107,7 @@
         app:showtvRight="true"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miElec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="额定电流"
@@ -115,6 +118,7 @@
         app:showtvRight="true"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miPower"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="额定功率"
@@ -125,6 +129,7 @@
         app:showtvRight="true"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/orderlistDetl_miFrozenCash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="预交金额"
