@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -126,7 +127,12 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
     @Override
     public void onItemClickListener(Object item,int position) {
-        showToast(((BillBean)item).amount+"  position");
+        showToast(((BillBean)item).amount+"   "+position);
+        Intent intent = new Intent(WalletBillAct.this,WalletBillDetailAct.class);
+        Bundle bound=new Bundle();
+        bound.putSerializable("BillBean",(BillBean)item);
+        intent.putExtras(bound);
+        startActivity(intent);
 
     }
 }
