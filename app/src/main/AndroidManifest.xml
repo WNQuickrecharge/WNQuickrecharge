@@ -92,6 +92,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.mineinfo.MyCollectActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activity.StationActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
