@@ -131,6 +131,10 @@ public class MenuItem1 extends RelativeLayout {
 		tvLeft.setText(str);
 	}
 
+	public void setIvLeftDrawable(int ivLeftDrawable) {
+		ivLeft.setImageResource(ivLeftDrawable);
+	}
+
 	public CharSequence getTvLeftText() {
 		return tvLeftText;
 	}

@@ -27,7 +27,6 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         initViews();
         initListener();
     }
-
     private void initListener() {
         tvStart.setOnClickListener(this);
         tvStop.setOnClickListener(this);
@@ -54,7 +53,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rechargecon_tvStop:
-
+//                waveLoadingView
+                skipActivity(OrderDetlActivity.class,null);
                 break;
             case R.id.rechargecon_tvStart:
                 dialog.show();
