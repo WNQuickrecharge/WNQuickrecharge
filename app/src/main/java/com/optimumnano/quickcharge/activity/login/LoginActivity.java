@@ -22,6 +22,7 @@ import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.DESEncryptTools;
+import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
@@ -194,10 +195,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             UserInfo.UserinfoBean userinfoBean = JSON.parseObject(data, UserInfo.UserinfoBean.class);
             LogUtil.i("test==http NickName "+userinfoBean.NickName+" Gender "+userinfoBean.Gender+" PhoneNum "+userinfoBean.PhoneNum+" headurl "+userinfoBean.AvatarUrl);
 
-            if (!TextUtils.isEmpty(userinfoBean.NickName))
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,userinfoBean.NickName);
-            if (!TextUtils.isEmpty(userinfoBean.AvatarUrl))
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,userinfoBean.AvatarUrl);
+            String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
+            if (!phoneNum.equals(userinfoBean.PhoneNum)){
+                GlideCacheUtil.getInstance().clearImageAllCache(LoginActivity.this);
+                SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
+                LogUtil.i("test==Glide  clearDiskCache");
+            }
+
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,TextUtils.isEmpty(userinfoBean.NickName)?"":userinfoBean.NickName);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.AvatarUrl)?"":userinfoBean.AvatarUrl);
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.PhoneNum);
 
