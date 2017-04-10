@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +24,27 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.event.OnPushDataEvent;
+import com.optimumnano.quickcharge.manager.MapManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 
+import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -65,11 +73,15 @@ public class RechargeFragment extends BaseFragment {
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
 
+    private MapManager mManager = new MapManager();
+
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
     private BaiduMap mBaidumap;
 
     private PreferencesHelper mHelper;
+    private List<Point> mPiont;
+    boolean isFirstLoc = true; // 是否首次定位
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -160,42 +172,43 @@ public class RechargeFragment extends BaseFragment {
     public class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
+            // map view 销毁后不在处理新接收的位置
+            if (location == null || mapView == null) {
+                return;
+            }
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
             sb.append(location.getLatitude() + "\n");    //获取纬度信息
             sb.append(location.getLongitude());    //获取纬度信息
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
 
-            //定义Maker坐标点
-            LatLng point = new LatLng(latitude, longitude);
 
-            MapStatus mMapStatus = new MapStatus.Builder()
-                    .target(point)
-                    .zoom(13)
-                    .build();
-            //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
-            MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
-            //改变地图状态
-            mBaidumap.setMapStatus(mMapStatusUpdate);
-
-            //构建Marker图标
-            marker(point, R.drawable.icon_openmap_mark);
-            marker(new LatLng(22.5616, 113.951462), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5139, 113.952736), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5271, 113.955156), R.drawable.icon_openmap_focuse_mark);
-            marker(new LatLng(22.5853, 113.955866), R.drawable.icon_openmap_focuse_mark);
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(100).latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaidumap.setMyLocationData(locData);
+            if (isFirstLoc) {
+                isFirstLoc = false;
+                LatLng ll = new LatLng(location.getLatitude(),
+                        location.getLongitude());
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(ll).zoom(15.0f);
+                mBaidumap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            }
 
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                initPoint();
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                initPoint();
             }
             //定位失败
             else {
@@ -207,6 +220,29 @@ public class RechargeFragment extends BaseFragment {
         @Override
         public void onConnectHotSpotMessage(String s, int i) {
         }
+    }
+
+    private void initPoint() {
+        mManager.getReigonInfo(mHelper, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                if (mPiont != null && mPiont.equals(returnContent))
+                    return;
+                Log.d("TAG", "sss");
+                mPiont = (List<Point>) returnContent;
+                for (int i = 0; i < mPiont.size(); i++) {
+                    marker(new LatLng(mPiont.get(i).Lat, mPiont.get(i).Lng), R.drawable.che);
+                }
+
+                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     private void marker(LatLng point, int pic) {
@@ -230,7 +266,7 @@ public class RechargeFragment extends BaseFragment {
                 if (bundle == null) {
                     return;
                 }
-                SuggestionInfo info= (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
+                SuggestionInfo info = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
                 etAddress.setText(info.key);
             }
         }
@@ -241,6 +277,7 @@ public class RechargeFragment extends BaseFragment {
         super.onResume();
         if (mapView != null)
             mapView.onResume();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -248,6 +285,7 @@ public class RechargeFragment extends BaseFragment {
         super.onPause();
         if (mapView != null)
             mapView.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -256,4 +294,6 @@ public class RechargeFragment extends BaseFragment {
         if (mapView != null)
             mapView.onDestroy();
     }
+
+
 }

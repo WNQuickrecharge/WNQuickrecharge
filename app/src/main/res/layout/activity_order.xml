@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_order"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:context="com.optimumnano.quickcharge.activity.order.OrderActivity">
+        <include layout="@layout/title_main"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="充电枪号"
+            app:tvRightText="88888"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            android:layout_marginTop="@dimen/default_padding"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="桩类型"
+            app:tvRightText="直流桩"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            android:layout_marginTop="1dp"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="额定电流"
+            app:tvRightText="150.00A"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            android:layout_marginTop="1dp"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="额定功率"
+            app:tvRightText="150/kwh"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            android:layout_marginTop="1dp"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="单价"
+            app:tvRightText="1.5元/kwh"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            android:layout_marginTop="@dimen/default_padding"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white"
+            android:padding="@dimen/default_lrmargin">
+            <TextView
+                android:id="@+id/order_tvmoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color33"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/default_textsize"
+                android:text="预交金额"/>
+            <TextView
+                android:id="@+id/order_tvAllkwh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0/kwh"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/default_textsize"
+                android:textColor="@color/color66"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/order_danwei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_mainstyle"
+                android:text="元"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/order_tvAllkwh"
+                android:layout_marginRight="@dimen/default_padding25"
+                android:layout_marginLeft="@dimen/default_padding"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_gray"
+                android:hint="请输入充值金额"
+                android:padding="@dimen/default_padding"
+                android:textSize="@dimen/default_textsize"
+                android:layout_toRightOf="@id/order_tvmoney"
+                android:layout_toLeftOf="@id/order_danwei"
+                android:layout_marginLeft="@dimen/default_padding"
+
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_lrmargin"
+            android:text="支付方式"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/default_padding"/>
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/order_payway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tvLeftText="余额（0.00）"
+            app:showivRight="true"
+            app:ivLeftDrawable="@drawable/yue"
+            app:LeftTextColor="@color/color66"
+            app:rightTextColor="@color/color33"
+            app:showtvRight="true"
+            app:showivLeft="true"
+            android:layout_marginTop="1dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="实际费用 = 实际充电度数 * 单价"
+            android:layout_marginLeft="@dimen/default_padding40"
+            android:layout_marginRight="@dimen/default_padding40"
+            android:layout_marginTop="@dimen/default_lrmargin"
+            android:gravity="center_horizontal"
+            style="@style/text_mainstyle"
+            />
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            style="@style/text_mainstyle12"
+            android:text="订单中多缴费用将会返回账户余额中，敬请留意"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/default_lrmargin"
+            />
+
+        <TextView
+            android:id="@+id/order_tvConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonStyle"
+            android:text="@string/confirm"
+            android:layout_marginLeft="@dimen/default_lrmargin"
+            android:layout_marginRight="@dimen/default_lrmargin"
+            android:layout_marginTop="@dimen/default_padding40"
+            android:layout_marginBottom="@dimen/default_padding40"/>
+    </LinearLayout>
+</ScrollView>

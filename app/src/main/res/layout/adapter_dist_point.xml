@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/default_padding"
+    android:paddingRight="@dimen/default_padding25"
+    android:paddingBottom="@dimen/default_padding15"
+    android:paddingTop="@dimen/default_padding15">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="地址"
+            android:textColor="@color/color33"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_location"
+            android:drawablePadding="@dimen/default_padding5"
+            android:text="1.8km"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_detail_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding5"
+        android:text="详细地址"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/tv_price_per"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding5"
+        android:text="电费:1.5元/度,服务费:0.5元/度"
+        android:textColor="@color/color33"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding5"
+        android:text="空闲"
+        android:drawablePadding="@dimen/default_padding5"
+        android:drawableLeft="@drawable/ic_number"
+        android:textSize="@dimen/sp_12" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/tv_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sl_other_rb_state_sample"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_4"
+            android:drawableLeft="@drawable/ic_daohang"
+            android:drawablePadding="@dimen/default_padding5"
+            android:paddingLeft="@dimen/default_padding15"
+            android:paddingRight="@dimen/default_padding15"
+            android:paddingTop="@dimen/dimen_4"
+            android:text="导航"
+            android:textColor="@drawable/sl_other_rb_text_state"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_padding"
+            android:background="@drawable/sl_other_rb_state_sample_two"
+            android:button="@null"
+            android:drawableLeft="@drawable/ic_fav"
+            android:drawablePadding="@dimen/default_padding5"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_4"
+            android:paddingLeft="@dimen/default_padding15"
+            android:paddingRight="@dimen/default_padding15"
+            android:paddingTop="@dimen/dimen_4"
+            android:text="收藏"
+            android:textColor="@drawable/sl_other_rb_text_state_two"
+            android:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+</LinearLayout>

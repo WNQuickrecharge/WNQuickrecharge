@@ -160,7 +160,7 @@ public class SharedPreferencesUtil {
     }
 
     //获取Editor实例  
-    private static Editor getEditor(String name) {
+    public static Editor getEditor(String name) {
         return getSharedPreferences(name).edit();
     }
 

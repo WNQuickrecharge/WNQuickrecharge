@@ -13,11 +13,18 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
+import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +40,9 @@ public class MainActivity extends BaseActivity {
     private MineFragment mineFragment;
 
     KeyboardWatcher keyboardWatcher;
+
+    private DistShowHepler mShowHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +54,7 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
         };
+        mShowHelper=new DistShowHepler(this);
         requestPermission(permissions,0);
         initViews();
         initData();
@@ -62,6 +73,17 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public void initViews() {
@@ -81,6 +103,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onLeftDoSomething() {
         FilterActivity.start(this);
+    }
+
+    @Override
+    protected void onRightDoSomething() {
+        super.onRightDoSomething();
+        mShowHelper.setData(mData);
+        mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW,toolbar);
     }
 
     private void initListener() {
@@ -161,4 +190,10 @@ public class MainActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         rechargeFragment.onActivityResult(requestCode,resultCode,data);
     }
+    List<Point> mData;
+    @Subscribe
+    public void onPushData(OnPushDataEvent event) {
+        mData= (List<Point>) event.getObj();
+    }
+
 }

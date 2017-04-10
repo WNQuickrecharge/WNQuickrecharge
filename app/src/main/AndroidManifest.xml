@@ -42,17 +42,15 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan"></activity>
+        <activity android:name=".activity.login.LoginActivity"
             android:windowSoftInputMode="adjustResize|adjustPan">
-
-        </activity>
-        <activity android:name=".activity.login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="SfRGXTBoQyIgDXLvfFBsKekZrnILH2La" />
@@ -68,10 +66,10 @@
         <activity android:name=".activity.order.OrderlistDetailtwoActivity" />
         <activity android:name=".activity.qrcode.QrCodeActivity" />
         <activity
-            android:name=".activity.SettingActivity"
+            android:name=".activity.setting.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ModifyPassword"
+            android:name=".activity.setting.ModifyPassword"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.order.OrderlistDetailActivity" />
         <activity android:name=".activity.mineinfo.MineInfoAct" />
@@ -83,6 +81,17 @@
         <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
         <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
         <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
+        <activity android:name=".activity.order.OrderDetlActivity" />
+        <activity android:name=".activity.order.OrderActivity">
+        </activity>
+        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.mineinfo.MyCollectActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

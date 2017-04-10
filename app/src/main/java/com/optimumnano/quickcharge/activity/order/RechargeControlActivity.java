@@ -1,19 +1,17 @@
 package com.optimumnano.quickcharge.activity.order;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.views.WaveLoadingView;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static com.optimumnano.quickcharge.R.id.rechargecon_tvStop;
 
 public class RechargeControlActivity extends BaseActivity implements View.OnClickListener {
 
@@ -21,6 +19,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     private TextView tvPersent,tvStart,tvStop,tvDescone,tvDescTwo,tvTime;
     int persent = 0;
     static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    private WaitRechargeDialog dialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +27,6 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         initViews();
         initListener();
     }
-
     private void initListener() {
         tvStart.setOnClickListener(this);
         tvStop.setOnClickListener(this);
@@ -38,6 +36,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public void initViews() {
         super.initViews();
         setTitle("充电控制");
+        setRightTitle("使用帮助");
         waveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         tvPersent = (TextView) findViewById(R.id.rechargecon_tvPersent);
         tvDescone = (TextView) findViewById(R.id.rechargecon_tvDescone);
@@ -47,32 +46,60 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         tvTime = (TextView) findViewById(R.id.rechargecon_tvTime);
 
 
+        dialog = new WaitRechargeDialog(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rechargecon_tvStop:
-
+//                waveLoadingView
+                skipActivity(OrderDetlActivity.class,null);
                 break;
             case R.id.rechargecon_tvStart:
-                service.scheduleAtFixedRate(new Runnable() {
+                dialog.show();
+                tvStart.setVisibility(View.GONE);
+                tvStop.setVisibility(View.VISIBLE);
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while (persent<100){
-                            persent += 1;
-                            waveLoadingView.setWaveHeight(persent);
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Thread.sleep(10000);
+                            dialog.cancelDialog();
+                            service.scheduleAtFixedRate(new Runnable() {
+                                @Override
+                                public void run() {
+                                    while (persent<100){
+                                        persent += 1;
+                                        waveLoadingView.setWaveHeight(persent);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                tvTime.setVisibility(View.VISIBLE);
+                                                tvPersent.setText(persent+"%");
+                                            }
+                                        });
+                                        try {
+                                            Thread.sleep(500);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }, 0, 500, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, 0, 500, TimeUnit.SECONDS);
+                }).start();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

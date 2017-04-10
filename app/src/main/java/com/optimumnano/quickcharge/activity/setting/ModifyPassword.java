@@ -1,4 +1,4 @@
-package com.optimumnano.quickcharge.activity;
+package com.optimumnano.quickcharge.activity.setting;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +12,8 @@ import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+
+import org.xutils.common.util.LogUtil;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
@@ -67,6 +69,7 @@ public class ModifyPassword extends BaseActivity implements View.OnClickListener
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
             showToast("密码修改成功");
+            finish();
         }
 
         @Override
