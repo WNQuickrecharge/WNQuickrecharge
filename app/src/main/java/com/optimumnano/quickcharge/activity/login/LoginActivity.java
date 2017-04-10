@@ -29,16 +29,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import java.io.UnsupportedEncodingException;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private TextView tvLogin,tvReg,tvForgetpwd,tvUserType;
@@ -177,6 +177,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 e.printStackTrace();
             }
 
+            String password = edtPwd.getText().toString();
             try {
                 byte[] utf8s = DESEncryptTools.encrypt(password.getBytes("utf-8"), pwdKey.getBytes());
                 byte[] encode = Base64.encode(utf8s, Base64.DEFAULT);
