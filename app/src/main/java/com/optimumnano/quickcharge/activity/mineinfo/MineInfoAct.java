@@ -103,7 +103,7 @@ public class MineInfoAct extends BaseActivity {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(MineInfoAct.this)
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.head).placeholder(R.drawable.head).into(mHeadview);
+                .error(R.drawable.icon_text_tip).into(mHeadview);
         //初始化昵称
         mNickname = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, "");
         mTvNickname.setRightText(mNickname);

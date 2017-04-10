@@ -64,7 +64,7 @@ public class WalletBalanceAct extends BaseActivity {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(WalletBalanceAct.this)
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.head).placeholder(R.drawable.head).into(mHeadview);
+                .error(R.drawable.icon_text_tip).into(mHeadview);
     }
 
     @Override

@@ -85,6 +85,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             showToast("登陆成功!");
             LogUtil.i("test==returnContent "+returnContent);
             hideLoading();
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
             JSONObject dataJson = null;
             try {
@@ -104,7 +105,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.PhoneNum);
 
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
             finish();
         }
 
