@@ -15,4 +15,9 @@ public class Constants {
     public static final int RESULT_FAILED = 0;
 
     public static final String RESULT_STRING = "result_string";
+
+
+    public static final String APP_FOLDER_NAME = "WNQuickrecharge";
+
+    public static String mSDCardPath = null;
 }

@@ -1,30 +1,39 @@
 package com.optimumnano.quickcharge.dialog;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
-import static com.optimumnano.quickcharge.R.id.pay_tvMoney;
-
 /**
- * Created by PC on 2017/4/9.
+ * Created by ds on 2017/4/9.
  * 支付弹框
  */
 
-public class PayDialog extends BaseDialog {
-    private final Activity mActivity;
+public class PayDialog extends BaseDialog implements View.OnClickListener {
     private PasswordView passwordView;
     private MenuItem1 menuItem1;
+
+    public static final int EDTPWD = 0;
+    public static final int PAYWAY = 1;
+    public static final int PAYSUCCESS = 2;
+    public static final int PAYFAIL = 3;
+
+    public static final int pay_wx = 0;
+    public static final int pay_zfb = 1;
+    public static final int pay_yue = 2;
+    private Activity activity;
     private TextView payName;
     public PayDialog(Activity mAty) {
         super(mAty);
-        this.mActivity=mAty;
+        activity = mAty;
         dialog.getViewHolder().getView(R.id.pay_ivClose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -34,6 +43,15 @@ public class PayDialog extends BaseDialog {
         passwordView = dialog.getViewHolder().getView(R.id.pay_passwordView);
         passwordView.requestFocus();
         menuItem1 = dialog.getViewHolder().getView(R.id.pay_payWay);
+
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx1).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_wx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_zfb).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_ye).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.pay_payWay).setOnClickListener(this);
         payName = dialog.getViewHolder().getView(R.id.pay_name);
     }
 
@@ -50,38 +68,12 @@ public class PayDialog extends BaseDialog {
         passwordView.addTextChangedListener(watcher);
     }
 
-/*    *//**
-     * 选择支付方式
-     * @param I
-     *//*
-    public void setPaywayListener(View.OnClickListener I){
-        menuItem1.setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(I);
-    }*/
-
     /**
      * 选择支付方式
      * @param I
      */
     public void setPaywayListener(View.OnClickListener I){
         menuItem1.setOnClickListener(I);
-    }
-
-    /**
-     * 重置支付密码按钮监听
-     * @param I
-     */
-    public void setUpdatePwdBtListener(View.OnClickListener I){
-        dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(I);
-    }
-
-    /**
-     * 重新输入密码按钮监听
-     * @param I
-     */
-    public void setReInputBtListener(View.OnClickListener I){
-        dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(I);
     }
 
     /**
@@ -89,23 +81,23 @@ public class PayDialog extends BaseDialog {
      * @param money 金额
      */
     public void setMoney(double money){
-        dialog.getViewHolder().setText(pay_tvMoney,"¥"+money);
+        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
     }
 
     public void setPayway(int payway){
         switch (payway){
             //微信
-            case 0:
+            case pay_wx:
                 menuItem1.setIvLeftDrawable(R.drawable.wx);
                 menuItem1.setTvLeftText("微信");
                 break;
             //支付寶
-            case 1:
+            case pay_zfb:
                 menuItem1.setIvLeftDrawable(R.drawable.zfb);
                 menuItem1.setTvLeftText("支付宝");
                 break;
             //余額
-            case 2:
+            case pay_yue:
                 menuItem1.setIvLeftDrawable(R.drawable.yue);
                 menuItem1.setTvLeftText("余额");
                 break;
@@ -141,21 +133,30 @@ public class PayDialog extends BaseDialog {
      * 2支付失败
      */
     public void setStatus(int status){
-        if (status == 0){
+        if (status == EDTPWD){
             passwordView.setText("");
             dialog.getViewHolder().setVisible(R.id.pay_llEdt,true);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
         }
-        else if (status == 1){
+        else if (status == PAYSUCCESS){
             dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,true);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
         }
-        else {
+        else if (status == PAYFAIL){
             dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail,true);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
+        }
+        else {
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway,true);
         }
     }
 
@@ -165,6 +166,46 @@ public class PayDialog extends BaseDialog {
         passwordView.setText("");
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.dialog_chose_payment_qx:
+                setStatus(EDTPWD);
+                break;
+            case R.id.dialog_chose_payment_qx1:
+                setStatus(EDTPWD);
+                break;
+            //微信支付
+            case R.id.dialog_chose_payment_wx:
+                setPayway(pay_wx);
+                setStatus(EDTPWD);
+                break;
+            //支付宝支付
+            case R.id.dialog_chose_payment_zfb:
+                setPayway(pay_zfb);
+                setStatus(EDTPWD);
+                break;
+            //余额支付
+            case R.id.dialog_chose_payment_ye:
+                setPayway(pay_yue);
+                setStatus(EDTPWD);
+                break;
+            //支付彈框 修改支付方式
+            case R.id.pay_payWay:
+                setStatus(PAYWAY);
+                break;
+            //重新输入
+            case R.id.pay_tvReInput:
+                setStatus(EDTPWD);
+                break;
+            //修改密码
+            case R.id.pay_tvUpdatePwd:
+                //跳转界面
+                activity.startActivity(new Intent(activity, ModifyPayPasswordActivity.class));
+                break;
+        }
+    }
+
     public void cleanPasswordView(){
         passwordView.setText("");
     }
@@ -172,5 +213,4 @@ public class PayDialog extends BaseDialog {
     public void setPayName(String payname){
         payName.setText(payname);
     }
-
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -180,6 +181,8 @@ public class QrCodeActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_submit:
+                //跳转支付
+                skipActivity(OrderActivity.class,null);
                 break;
             case R.id.iv_deng:
                 if (!isLightOpen)

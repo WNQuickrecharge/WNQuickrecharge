@@ -1,21 +1,33 @@
 package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.RechargeGunBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
+
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * 下单界面
+ */
 public class OrderActivity extends BaseActivity implements View.OnClickListener {
 
     @Bind(R.id.order_tvConfirm)
@@ -39,14 +51,18 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
 
     private PayDialog payDialog;
     private PayWayDialog payWayDialog;
+    private OrderManager orderManager = new OrderManager();
+    private RechargeGunBean gunBean;
+    private String orderNo = "";//订单号
+    private String gunNo = "67867678901234517";
 
-    private boolean isConfirm = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         ButterKnife.bind(this);
         initViews();
+        initData();
         initDialog();
     }
 
@@ -58,11 +74,53 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         tvConfirm.setOnClickListener(this);
         miPayway.setOnClickListener(this);
     }
+    private void initData(){
+        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
+            @Override
+            public void onSuccess(RechargeGunBean returnContent) {
+                super.onSuccess(returnContent);
+                gunBean = returnContent;
+                loadData();
+            }
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
+    }
+    private void loadData(){
+        miRechargenum.setRightText("67867678901234517");
+        miType.setRightText(gunBean.pile_type);
+        miElectric.setRightText(gunBean.elec_current+"A");
+        miPower.setRightText(gunBean.power+"kwh");
+        miSimprice.setRightText(gunBean.price+"元/kwh");
+    }
     private void initDialog(){
         payDialog = new PayDialog(this);
         payWayDialog = new PayWayDialog(this);
         payDialog.setPaywayListener(this);
-        payWayDialog.setViewClickListener(this);
+        payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
+            @Override
+            public void onMenuClick(int payway) {
+                switch (payway){
+                    //微信
+                    case PayDialog.pay_wx:
+                        miPayway.setIvLeftDrawable(R.drawable.wx);
+                        miPayway.setTvLeftText("微信");
+                        break;
+                    //支付寶
+                    case PayDialog.pay_zfb:
+                        miPayway.setIvLeftDrawable(R.drawable.zfb);
+                        miPayway.setTvLeftText("支付宝");
+                        break;
+                    //余額
+                    case PayDialog.pay_yue:
+                        miPayway.setIvLeftDrawable(R.drawable.yue);
+                        miPayway.setTvLeftText("余额");
+                        break;
+                }
+            }
+        });
 
         payDialog.setTextChangedListener(new TextWatcher() {
             @Override
@@ -75,12 +133,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             public void afterTextChanged(Editable s) {
                 if (s.length() == 6){
                     if (s.toString().equals("123456")){
-                        payDialog.setStatus(1);
-                        skipActivity(RechargeControlActivity.class,null);
+                        payDialog.setStatus(PayDialog.PAYSUCCESS);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("order_no",orderNo);
+                        bundle.putString("gun_no",gunNo);
+                        skipActivity(RechargeControlActivity.class,bundle);
                         payDialog.close();
                     }
                     else {
-                        payDialog.setStatus(2);
+                        payDialog.setStatus(PayDialog.PAYFAIL);
                     }
 
                 }
@@ -98,54 +159,33 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.order_tvConfirm:
-                isConfirm = true;
-                payDialog.setStatus(0);
-                payDialog.show();
+                addOrder();
                 break;
             case R.id.order_payway:
-                isConfirm = false;
                 payWayDialog.show();
                 break;
-            //支付彈框 修改支付方式
-            case R.id.pay_payWay:
-                payDialog.close();
-                payWayDialog.show();
-                break;
-            //弹框关闭按钮
-            case R.id.dialog_chose_payway_qx:
-                payWayDialog.close();
-                if (isConfirm){
-                    payDialog.show();
-                }
-                break;
-            //微信支付
-            case R.id.dialog_chose_payway_wx:
-                choosePayway(0);
-                break;
-            //支付宝支付
-            case R.id.dialog_chose_payway_zfb:
-                choosePayway(1);
-                break;
-            //余额支付
-            case R.id.dialog_chose_payway_ye:
-                choosePayway(2);
-                break;
-            //修改密码
-            case R.id.pay_tvUpdatePwd:
 
-                break;
-            //重新输入
-            case R.id.pay_tvReInput:
+        }
+    }
+    //下单
+    private void addOrder(){
+        orderManager.addOrder("67867678901234517", edtMoney.getText().toString(), new ManagerCallback<String>() {
+            @Override
+            public void onSuccess(String returnContent) {
+                super.onSuccess(returnContent);
+                Gson gson = new Gson();
+                HashMap<String,Object> ha = gson.fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
+                orderNo = ha.get("order_no").toString();
                 payDialog.setStatus(0);
-                break;
-        }
+                payDialog.show();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg+"");
+            }
+        });
     }
 
-    private void choosePayway(int payway) {
-        payDialog.setPayway(payway);
-        payWayDialog.close();
-        if (isConfirm) {
-            payDialog.show();
-        }
-    }
 }
