@@ -51,4 +51,26 @@ public class OrderManager {
             }
         });
     }
+
+
+    public void getGunInfo(String gun_code,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_guninfo);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("gun_code ",gun_code);
+        params.setBodyContent(JSON.toJSONString(ha));
+//        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback() {
+            @Override
+            public void onSuccess(Object result, int httpCode) {
+                super.onSuccess(result, httpCode);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
 }

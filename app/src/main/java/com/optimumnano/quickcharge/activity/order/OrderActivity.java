@@ -11,6 +11,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -39,14 +41,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
 
     private PayDialog payDialog;
     private PayWayDialog payWayDialog;
+    private OrderManager orderManager = new OrderManager();
 
-    private boolean isConfirm = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         ButterKnife.bind(this);
         initViews();
+        initData();
         initDialog();
     }
 
@@ -58,11 +61,45 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         tvConfirm.setOnClickListener(this);
         miPayway.setOnClickListener(this);
     }
+    private void initData(){
+        orderManager.getGunInfo("67867678901234517", new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
+    }
     private void initDialog(){
         payDialog = new PayDialog(this);
         payWayDialog = new PayWayDialog(this);
         payDialog.setPaywayListener(this);
-        payWayDialog.setViewClickListener(this);
+        payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
+            @Override
+            public void onMenuClick(int payway) {
+                switch (payway){
+                    //微信
+                    case PayDialog.pay_wx:
+                        miPayway.setIvLeftDrawable(R.drawable.wx);
+                        miPayway.setTvLeftText("微信");
+                        break;
+                    //支付寶
+                    case PayDialog.pay_zfb:
+                        miPayway.setIvLeftDrawable(R.drawable.zfb);
+                        miPayway.setTvLeftText("支付宝");
+                        break;
+                    //余額
+                    case PayDialog.pay_yue:
+                        miPayway.setIvLeftDrawable(R.drawable.yue);
+                        miPayway.setTvLeftText("余额");
+                        break;
+                }
+            }
+        });
 
         payDialog.setTextChangedListener(new TextWatcher() {
             @Override
@@ -75,12 +112,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             public void afterTextChanged(Editable s) {
                 if (s.length() == 6){
                     if (s.toString().equals("123456")){
-                        payDialog.setStatus(1);
+                        payDialog.setStatus(PayDialog.PAYSUCCESS);
                         skipActivity(RechargeControlActivity.class,null);
                         payDialog.close();
                     }
                     else {
-                        payDialog.setStatus(2);
+                        payDialog.setStatus(PayDialog.PAYFAIL);
                     }
 
                 }
@@ -98,54 +135,18 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.order_tvConfirm:
-                isConfirm = true;
                 payDialog.setStatus(0);
                 payDialog.show();
                 break;
             case R.id.order_payway:
-                isConfirm = false;
                 payWayDialog.show();
                 break;
-            //支付彈框 修改支付方式
-            case R.id.pay_payWay:
-                payDialog.close();
-                payWayDialog.show();
-                break;
-            //弹框关闭按钮
-            case R.id.dialog_chose_payment_qx:
-                payWayDialog.close();
-                if (isConfirm){
-                    payDialog.show();
-                }
-                break;
-            //微信支付
-            case R.id.dialog_chose_payment_wx:
-                choosePayway(0);
-                break;
-            //支付宝支付
-            case R.id.dialog_chose_payment_zfb:
-                choosePayway(1);
-                break;
-            //余额支付
-            case R.id.dialog_chose_payment_ye:
-                choosePayway(2);
-                break;
-            //修改密码
-            case R.id.pay_tvUpdatePwd:
 
-                break;
-            //重新输入
-            case R.id.pay_tvReInput:
-                payDialog.setStatus(0);
-                break;
         }
     }
 
     private void choosePayway(int payway) {
         payDialog.setPayway(payway);
         payWayDialog.close();
-        if (isConfirm) {
-            payDialog.show();
-        }
     }
 }

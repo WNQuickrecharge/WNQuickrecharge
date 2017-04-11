@@ -77,7 +77,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.orderlistDetl_tvPay:
-
+                skipActivity(OrderActivity.class,null);
                 break;
             case R.id.orderdtel_tvCancel:
 
