@@ -34,6 +34,17 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <!-- SDK1.5需要android.permission.GET_TASKS权限判断本程序是否为当前运行的应用? -->
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <!-- 来电消音 -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -45,8 +56,6 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan"></activity>
-        <activity android:name=".activity.login.LoginActivity"
             android:windowSoftInputMode="adjustResize|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,6 +63,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.login.LoginActivity">
+
+        </activity>
+
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="48ae76de3f" />
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="SfRGXTBoQyIgDXLvfFBsKekZrnILH2La" />
@@ -87,24 +103,51 @@
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
-        <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillDetailAct"></activity>
-        <activity android:name=".activity.order.OrderDetlActivity" />
-        <activity android:name=".activity.order.OrderActivity">
-        </activity>
-        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AboutActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.mineinfo.MyCollectActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.mineinfo.MineWalletAct" />
+        <activity android:name=".activity.mineinfo.WalletBalanceAct" />
+        <activity android:name=".activity.mineinfo.WalletBillAct" />
+        <activity android:name=".activity.order.OrderDetlActivity"></activity>
+        <activity
+            android:name=".activity.setting.ModifyPayPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.setting.ForgetPayPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.mineinfo.MyCollectActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.StationActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.test.BNDemoMainActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+
+        <activity
+            android:name=".activity.test.BNDemoGuideActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+
+        <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillDetailAct"></activity>
+        <activity android:name=".activity.order.OrderActivity">
+        </activity>
     </application>
 
 </manifest>

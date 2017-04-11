@@ -19,17 +19,21 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
@@ -37,6 +41,7 @@ import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -49,6 +54,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.optimumnano.quickcharge.adapter.DistDetailAcapter.DoubleDP;
 
 /**
  * 充电
@@ -72,20 +79,19 @@ public class RechargeFragment extends BaseFragment {
     TextView tvChargeLate;
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
-
+    private InfoWindow mInfoWindow;
     private MapManager mManager = new MapManager();
 
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
-    private BaiduMap mBaidumap;
-
+    private BaiduMap mBaiduMap;
     private PreferencesHelper mHelper;
     private List<Point> mPiont;
     boolean isFirstLoc = true; // 是否首次定位
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        SDKInitializer.initialize(getActivity().getApplicationContext());
+
 
         super.onCreate(savedInstanceState);
     }
@@ -101,27 +107,113 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mBaiduMap = mapView.getMap();
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
         initLocation();
-        startLocation();
-        mBaidumap = mapView.getMap();
+//        startLocation();
+        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mBaiduMap.hideInfoWindow();
+            }
 
+            @Override
+            public boolean onMapPoiClick(MapPoi mapPoi) {
+                return false;
+            }
+        });
+
+        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //从marker中获取info信息
+                Bundle bundle = marker.getExtraInfo();
+                final Point infoUtil = (Point) bundle.getSerializable("info");
+                View view = View.inflate(getContext(), R.layout.adapter_dist_point, null);
+                ViewHolder holder = new ViewHolder(view);
+                holder.mItem = infoUtil;
+                holder.tvAddress.setText(holder.mItem.StationName);
+                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                holder.tvDetailAddress.setText(holder.mItem.Address);
+                holder.tvPricePer.setText("电费");
+                String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
+                SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
+                        .first(holder.mItem.FreePiles).textColor(R.color.main_color);
+                simpleText.linkify(holder.tvNum);
+                holder.tvNum.setText(simpleText);
+                view.setBackgroundResource(R.drawable.sp_map_infowindow);
+                holder.tvNav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OnNaviEvent event=new OnNaviEvent();
+                        event.end=infoUtil;
+                        EventBus.getDefault().post(event);
+                    }
+                });
+                //将信息显示在界面上
+                LatLng ll = marker.getPosition();
+                mInfoWindow = new InfoWindow(view, ll, -47);
+                mBaiduMap.showInfoWindow(mInfoWindow);
+                return true;
+            }
+        });
+
+
+    }
+
+
+
+    public class ViewHolder {
+
+        public final View mView;
+        @Bind(R.id.tv_address)
+        TextView tvAddress;
+        @Bind(R.id.tv_distance)
+        TextView tvDistance;
+        @Bind(R.id.tv_detail_address)
+        TextView tvDetailAddress;
+        @Bind(R.id.tv_price_per)
+        TextView tvPricePer;
+        @Bind(R.id.tv_num)
+        TextView tvNum;
+        @Bind(R.id.tv_nav)
+        TextView tvNav;
+        @Bind(R.id.tv_fav)
+        TextView tvFav;
+        public Point mItem;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+            mView = view;
+        }
     }
 
     public void startLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            locationClient.start();
+            if (locationClient != null)
+                locationClient.start();
+            else {
+                locationClient = new LocationClient(getActivity().getApplicationContext());
+                locationClient.registerLocationListener(myListener);
+                locationClient.start();
+            }
         }
 
     }
 
     private void initLocation() {
         LocationClientOption option = new LocationClientOption();
+
+        // 开启定位图层
+        mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
+                MyLocationConfiguration.LocationMode.NORMAL, true, null));
+
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        option.setCoorType("bd09ll");
+        option.setCoorType("WGS84");
         //可选，默认gcj02，设置返回的定位结果坐标系
         int span = 30000;
         option.setScanSpan(span);
@@ -182,32 +274,31 @@ public class RechargeFragment extends BaseFragment {
             sb.append(location.getLatitude() + "\n");    //获取纬度信息
             sb.append(location.getLongitude());    //获取纬度信息
 
-
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
                     // 此处设置开发者获取到的方向信息，顺时针0-360
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
-            mBaidumap.setMyLocationData(locData);
+            mBaiduMap.setMyLocationData(locData);
             if (isFirstLoc) {
                 isFirstLoc = false;
                 LatLng ll = new LatLng(location.getLatitude(),
                         location.getLongitude());
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.target(ll).zoom(15.0f);
-                mBaidumap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
 
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
-                mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
-                mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             }
             //定位失败
@@ -219,7 +310,10 @@ public class RechargeFragment extends BaseFragment {
 
         @Override
         public void onConnectHotSpotMessage(String s, int i) {
+
         }
+
+
     }
 
     private void initPoint() {
@@ -231,10 +325,10 @@ public class RechargeFragment extends BaseFragment {
                     return;
                 Log.d("TAG", "sss");
                 mPiont = (List<Point>) returnContent;
-                for (int i = 0; i < mPiont.size(); i++) {
-                    marker(new LatLng(mPiont.get(i).Lat, mPiont.get(i).Lng), R.drawable.che);
-                }
-
+//                for (int i = 0; i < mPiont.size(); i++) {
+//                    marker(new LatLng(mPiont.get(i).Lat, mPiont.get(i).Lng), R.drawable.che);
+//                }
+                marker(mPiont, R.drawable.che);
                 EventBus.getDefault().post(new OnPushDataEvent(mPiont));
             }
 
@@ -245,15 +339,41 @@ public class RechargeFragment extends BaseFragment {
         });
     }
 
-    private void marker(LatLng point, int pic) {
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(pic);
-        //构建MarkerOption，用于在地图上添加Marker
-        OverlayOptions option = new MarkerOptions()
-                .position(point)
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        mapView.getMap().addOverlay(option);
+    private void marker(List<Point> mPiont, int pic) {
+        //清空地图
+        mBaiduMap.clear();
+        //创建marker的显示图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(pic);
+        LatLng latLng = null;
+        Marker marker;
+        OverlayOptions options;
+        for (Point info : mPiont) {
+            //获取经纬度
+            latLng = new LatLng(info.Lat, info.Lng);
+            //设置marker
+            options = new MarkerOptions()
+                    .position(latLng)//设置位置
+                    .icon(bitmap)//设置图标样式
+                    .zIndex(9) // 设置marker所在层级
+                    .draggable(true); // 设置手势拖拽;
+            //添加marker
+            marker = (Marker) mBaiduMap.addOverlay(options);
+            //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+            Bundle bundle = new Bundle();
+            //info必须实现序列化接口
+            bundle.putSerializable("info", info);
+            marker.setExtraInfo(bundle);
+        }
+        //将地图显示在最后一个marker的位置
+//
+//        BitmapDescriptor bitmap = BitmapDescriptorFactory
+//                .fromResource(pic);
+//        //构建MarkerOption，用于在地图上添加Marker
+//        OverlayOptions option = new MarkerOptions()
+//                .position(point)
+//                .icon(bitmap);
+//        //在地图上添加Marker，并显示
+//        mapView.getMap().addOverlay(option);
     }
 
     @Override
@@ -277,6 +397,7 @@ public class RechargeFragment extends BaseFragment {
         super.onResume();
         if (mapView != null)
             mapView.onResume();
+        startLocation();
         EventBus.getDefault().register(this);
     }
 

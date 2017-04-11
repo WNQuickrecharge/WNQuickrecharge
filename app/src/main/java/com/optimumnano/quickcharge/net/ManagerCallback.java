@@ -32,6 +32,8 @@ public abstract class ManagerCallback<T> {
      */
     public void onFailure(String msg) {
     }
+    public void onFailure(String msg,int requestCode) {
+    }
     /**
      * 进度条更新
      */

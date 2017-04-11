@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge;
 
 import android.app.Application;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.service.GTPushService;
 import com.optimumnano.quickcharge.service.MyIntentService;
@@ -23,5 +24,6 @@ public class MyApplication extends Application {
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
 
+        SDKInitializer.initialize(this);
     }
 }

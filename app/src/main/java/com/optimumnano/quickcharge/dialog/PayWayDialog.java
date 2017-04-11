@@ -7,13 +7,18 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseDialog;
 
 /**
- * Created by PC on 2017/4/9.
+ * Created by ds on 2017/4/9.
  */
 
-public class PayWayDialog extends BaseDialog {
+public class PayWayDialog extends BaseDialog implements View.OnClickListener {
     public PayWayDialog(Activity mAty) {
         super(mAty);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_wx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_zfb).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payment_ye).setOnClickListener(this);
     }
+    private PayWayDialogClick payWayDialogClick;
 
     @Override
     protected int getContentViewID() {
@@ -22,12 +27,33 @@ public class PayWayDialog extends BaseDialog {
 
     /**
      * 彈框點擊監聽
-     * @param I
      */
-    public void setViewClickListener(View.OnClickListener I){
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_wx).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_zfb).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_ye).setOnClickListener(I);
+    public void setViewClickListener(PayWayDialogClick payWayDialogClick){
+        this.payWayDialogClick = payWayDialogClick;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.dialog_chose_payment_qx1:
+                break;
+            //微信支付
+            case R.id.dialog_chose_payment_wx:
+                payWayDialogClick.onMenuClick(PayDialog.pay_wx);
+                break;
+            //支付宝支付
+            case R.id.dialog_chose_payment_zfb:
+                payWayDialogClick.onMenuClick(PayDialog.pay_zfb);
+                break;
+            //余额支付
+            case R.id.dialog_chose_payment_ye:
+                payWayDialogClick.onMenuClick(PayDialog.pay_yue);
+                break;
+        }
+        close();
+    }
+
+    public interface PayWayDialogClick{
+        void onMenuClick(int payway);
     }
 }

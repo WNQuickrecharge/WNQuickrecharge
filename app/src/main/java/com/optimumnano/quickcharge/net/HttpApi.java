@@ -34,4 +34,10 @@ public class HttpApi {
     public static final String get_password_url = "capp/user/get_paypwd";//
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
     public static final String order_list = "capp/order/all_orders";//
+    public static final String get_guninfo = "capp/bs/get_gunInfo";//获取充电枪详情
+    public static final String add_order = "capp/order/add_order";//下单
+    public static final String get_gunConnect= "capp/bs/get_gunConnect";//获取握手状态
+    public static final String start_charge = "capp/bs/start_charge";//开始充电
+    public static final String get_chargeProgress = "capp/bs/get_chargeProgress";//获取充电过程中的时间和电量
+
 }
