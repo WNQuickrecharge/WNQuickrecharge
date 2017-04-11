@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -40,7 +41,8 @@ public class WalletDepositAct extends BaseActivity {
     TextView mTvNext;
     private ModifyUserInformationManager mManager;
     private PayDialog mPayDialog;
-    private int mChosePayway=0;//默认使用微信充值
+    private PayWayDialog mPayWayDialog;
+    private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
@@ -56,18 +58,21 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void initListener() {
-        mPayDialog = new PayDialog(WalletDepositAct.this);
 
     }
 
     private void initData() {
         mManager = new ModifyUserInformationManager();
-        int payway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, 0);
-        if (payway == 2)
-            mChosePayway = 0;//不能使用余额给余额充值
+        int payway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
+        if (payway == PayDialog.pay_yue)
+            mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
         mPayPsd = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logi("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
+
+
+        mPayDialog = new PayDialog(WalletDepositAct.this);
+        mPayWayDialog = new PayWayDialog(WalletDepositAct.this);
     }
 
     @Override
@@ -82,7 +87,8 @@ public class WalletDepositAct extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        dismissDialog();
+        mPayWayDialog=null;
     }
 
     @OnClick({R.id.act_wallet_deposit_tv_next,R.id.act_wallet_deposit_rl_payway})
@@ -114,7 +120,7 @@ public class WalletDepositAct extends BaseActivity {
         }
         mPayDialog.setPayway(mChosePayway);
         mPayDialog.setMoney(Double.valueOf(mAmount));
-        mPayDialog.setStatus(0);
+        mPayDialog.setStatus(PayDialog.EDTPWD);
         mPayDialog.setPayName("充值");
         mPayDialog.setPaywayListener(new View.OnClickListener() {
             @Override
@@ -140,7 +146,7 @@ public class WalletDepositAct extends BaseActivity {
                         showToast("支付密码错误");
                         mPayDialog.cleanPasswordView();
                     }else {
-                        mPayDialog.setStatus(2);
+                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
 
                     logi("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
@@ -155,15 +161,15 @@ public class WalletDepositAct extends BaseActivity {
     private void showPayWayStatus(int payway) {
         Drawable drawable=null;
         switch (payway){
-            case 0:
+            case PayDialog.pay_wx:
                 drawable= getResources().getDrawable(R.drawable.wx);
                 mTvPayway.setText("微信");
                 break;
-            case 1:
+            case PayDialog.pay_zfb:
                 drawable= getResources().getDrawable(R.drawable.zfb);
                 mTvPayway.setText("支付宝");
                 break;
-            case 2:
+            case PayDialog.pay_yue:
                 drawable= getResources().getDrawable(R.drawable.yue);
                 mTvPayway.setText("余额");
                 break;
@@ -178,42 +184,21 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void showChosePayWayDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = View.inflate(this, R.layout.dialog_chose_payway_tv, null);
-        builder.setView(view);
-        mChosePaywayDialog = builder.show();
-        view.findViewById(R.id.dialog_chose_payway_wx).setOnClickListener(new View.OnClickListener() {
+        mPayWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
-            public void onClick(View v) {
-                mChosePayway =0;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
+            public void onMenuClick(int payway) {
+                mChosePayway = payway;
+                mPayWayDialog.close();
+                changePayWayStatus(payway);
             }
         });
-
-        view.findViewById(R.id.dialog_chose_payway_zfb).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayway =1;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
-            }
-        });
-
-        view.findViewById(R.id.dialog_chose_payway_ye).setVisibility(View.GONE);
-
-        view.findViewById(R.id.dialog_chose_payway_qx).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissDialog();
-            }
-        });
+        mPayWayDialog.show();
 
     }
 
     private void dismissDialog(){
-        if (null!= mChosePaywayDialog && mChosePaywayDialog.isShowing()){
-            mChosePaywayDialog.dismiss();
+        if (null!= mPayWayDialog){
+            mPayWayDialog.close();
         }
     }
 }

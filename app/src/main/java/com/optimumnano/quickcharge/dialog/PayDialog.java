@@ -105,7 +105,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     }
 
     public void setPaywayAndBalance(int payway,double balance){
-        String paywayFomat= mActivity.getResources().getString(R.string.dialog_pay_way_balance);
+        String paywayFomat= activity.getResources().getString(R.string.dialog_pay_way_balance);
         switch (payway){
             //微信
             case 0:

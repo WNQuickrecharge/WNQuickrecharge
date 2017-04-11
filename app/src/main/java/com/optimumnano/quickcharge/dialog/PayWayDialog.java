@@ -13,10 +13,10 @@ import com.optimumnano.quickcharge.base.BaseDialog;
 public class PayWayDialog extends BaseDialog implements View.OnClickListener {
     public PayWayDialog(Activity mAty) {
         super(mAty);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx).setOnClickListener(this);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_wx).setOnClickListener(this);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_zfb).setOnClickListener(this);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_ye).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_qx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_wx).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_zfb).setOnClickListener(this);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_ye).setOnClickListener(this);
     }
     private PayWayDialogClick payWayDialogClick;
 
@@ -35,7 +35,7 @@ public class PayWayDialog extends BaseDialog implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.dialog_chose_payway_qx1:
+            case R.id.dialog_chose_payway_qx:
                 break;
             //微信支付
             case R.id.dialog_chose_payway_wx:

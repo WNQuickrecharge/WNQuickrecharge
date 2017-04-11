@@ -3,12 +3,13 @@ package com.optimumnano.quickcharge.activity.mineinfo;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -34,8 +35,8 @@ public class MineWalletAct extends BaseActivity {
     @Bind(R.id.act_mineinfo_wallet_mi_mycard)
     MenuItem1 mMycard;
     private ModifyUserInformationManager mManager;
-    private AlertDialog mChosePaywayDialog;
-    private int mChosePayway =2;//默认余额支付
+    private PayWayDialog mPayWayDialog;
+    private int mChosePayway =PayDialog.pay_yue;//默认余额支付
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MineWalletAct extends BaseActivity {
 
     private void initData() {
         mManager = new ModifyUserInformationManager();
+        mPayWayDialog = new PayWayDialog(MineWalletAct.this);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class MineWalletAct extends BaseActivity {
         setRightTitle("");
         showBack();
         setTitle("我的钱包");
-        mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, 2);
+        mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
         showPayWayStatus(mChosePayway);
     }
 
@@ -69,7 +71,7 @@ public class MineWalletAct extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         dismissDialog();
-        mChosePaywayDialog =null;
+        mPayWayDialog=null;
     }
 
     @OnClick({R.id.act_mineinfo_wallet_mi_balance, R.id.act_mineinfo_wallet_mi_trans_Bill, R.id.act_mineinfo_wallet_rl_payway, R.id.act_mineinfo_wallet_mi_mycard})
@@ -92,15 +94,15 @@ public class MineWalletAct extends BaseActivity {
     private void showPayWayStatus(int payway) {
         Drawable drawable=null;
         switch (payway){
-            case 0:
+            case PayDialog.pay_wx:
                 drawable= getResources().getDrawable(R.drawable.wx);
                 mPayway.setText("微信");
                 break;
-            case 1:
+            case PayDialog.pay_zfb:
                 drawable= getResources().getDrawable(R.drawable.zfb);
                 mPayway.setText("支付宝");
                 break;
-            case 2:
+            case PayDialog.pay_yue:
                 drawable= getResources().getDrawable(R.drawable.yue);
                 mPayway.setText("余额");
                 break;
@@ -115,49 +117,21 @@ public class MineWalletAct extends BaseActivity {
     }
 
     private void alertChosePayWayDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = View.inflate(this, R.layout.dialog_chose_payway_tv, null);
-        builder.setView(view);
-        mChosePaywayDialog = builder.show();
-        view.findViewById(R.id.dialog_chose_payway_wx).setOnClickListener(new View.OnClickListener() {
+        mPayWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
-            public void onClick(View v) {
-                mChosePayway =0;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
+            public void onMenuClick(int payway) {
+                mChosePayway = payway;
+                mPayWayDialog.close();
+                changePayWayStatus(payway);
             }
         });
-
-        view.findViewById(R.id.dialog_chose_payway_zfb).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayway =1;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
-            }
-        });
-
-        view.findViewById(R.id.dialog_chose_payway_ye).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayway =2;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
-            }
-        });
-
-        view.findViewById(R.id.dialog_chose_payway_qx).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissDialog();
-            }
-        });
+        mPayWayDialog.show();
 
     }
 
     private void dismissDialog(){
-        if (null!= mChosePaywayDialog && mChosePaywayDialog.isShowing()){
-            mChosePaywayDialog.dismiss();
+        if (null!= mPayWayDialog){
+            mPayWayDialog.close();
         }
     }
 }
