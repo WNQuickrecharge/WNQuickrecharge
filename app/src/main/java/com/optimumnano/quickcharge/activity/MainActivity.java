@@ -8,10 +8,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.View;
 import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.igexin.sdk.PushManager;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -22,6 +24,7 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
+import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
@@ -31,6 +34,7 @@ import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
+import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
@@ -99,6 +103,8 @@ public class MainActivity extends BaseActivity {
         if (initDirs()) {
             initNavi();
         }
+
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
     }
 
     private boolean initDirs() {
@@ -231,7 +237,6 @@ public class MainActivity extends BaseActivity {
         rg = (RadioGroup) findViewById(R.id.main_rg);
         rbRecharge = (RadioButton) findViewById(R.id.main_rbRecharge);
         rbRecharge.setChecked(true);
-        viewPager.setOffscreenPageLimit(3);
 
     }
 
@@ -270,6 +275,13 @@ public class MainActivity extends BaseActivity {
                         setLeftTitle("");
                         setRightTitle("消息");
                         viewPager.setCurrentItem(2);
+
+                        tvRight.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(MainActivity.this, MyMessageAct.class));
+                            }
+                        });
                         break;
                     default:
                         break;
@@ -277,8 +289,7 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
-    public void initData() {
+    public void initData(){
         rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
@@ -287,13 +298,11 @@ public class MainActivity extends BaseActivity {
         listFrg.add(mineFragment);
         viewPager.setAdapter(fpa);
     }
-
     FragmentPagerAdapter fpa = new FragmentPagerAdapter(getSupportFragmentManager()) {
         @Override
         public Fragment getItem(int position) {
             return listFrg.get(position);
         }
-
         @Override
         public int getCount() {
             return listFrg.size();
@@ -314,6 +323,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
 
     @Override

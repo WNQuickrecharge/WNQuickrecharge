@@ -83,7 +83,7 @@ public class WaveLoadingView extends View {
         };
 
         mXOffsetSpeedOne = 10;
-        mXOffsetSpeedTwo = 10;
+        mXOffsetSpeedTwo = 5;
 
         // 初始绘制波纹的画笔
         mWavePaint = new Paint();
@@ -115,7 +115,7 @@ public class WaveLoadingView extends View {
         /*
          * 将绘制操作保存到新的图层
          */
-        canvas.drawCircle(mTotalWidth/2,mTotalHeight/2,mTotalHeight/2,paintK);
+        canvas.drawCircle(mTotalWidth/2,mTotalHeight/2,mTotalHeight/2-5,paintK);
         int sc = canvas.saveLayer(0, 0, mTotalWidth, mTotalHeight, null, Canvas.ALL_SAVE_FLAG);
 
         // 设定要绘制的波纹部分
@@ -127,7 +127,7 @@ public class WaveLoadingView extends View {
                     mTotalHeight,
                     mWavePaint);
             // 绘制第二条水波纹
-            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - waveHeight, i,
+            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - waveHeight+20, i,
                     mTotalHeight,
                     mWavePaint);
         }
@@ -157,9 +157,9 @@ public class WaveLoadingView extends View {
 
     public void setWaveHeight(int persent){
         isGo = true;
-        if (persent == 100){
-            isGo = false;
-        }
+//        if (persent == 100){
+//            isGo = false;
+//        }
         if (!timer.isAlive()){
             timer.start();
         }

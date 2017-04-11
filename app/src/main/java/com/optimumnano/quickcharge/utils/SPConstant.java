@@ -12,7 +12,7 @@ public interface SPConstant {
     String SP_USERINFO = "sp_userinfo";
 
     /***sharedpreferences****用户头像地址key******/
-    String KEY_USERINFO_HEADIMG="userinfo_headimg";
+    String KEY_USERINFO_HEADIMG_URL="userinfo_headimg_url";
     /***sharedpreferences****用户性别key******/
     String KEY_USERINFO_SEX ="userinfo_sex";
     /***sharedpreferences****用户昵称key******/

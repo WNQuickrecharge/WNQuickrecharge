@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.mineinfo.MyMessageAct">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+    <com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView
+        android:id="@+id/act_mine_message_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:htOrientation="vertical_down"
+        android:background="#fff"/>
+
+</android.support.v7.widget.LinearLayoutCompat>
+
+

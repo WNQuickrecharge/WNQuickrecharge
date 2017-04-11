@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/pay_llEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="请输入支付密码"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/default_textsize16" />
+
+            <ImageView
+                android:id="@+id/pay_ivClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/default_lrmargin"
+                android:src="@drawable/close" />
+        </RelativeLayout>
+
+        <include layout="@layout/layout_line" />
+
+        <TextView
+            style="@style/text_mainstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/default_padding"
+            android:text="预交金额" />
+
+        <TextView
+            android:id="@+id/pay_tvMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="￥100.00"
+            android:textColor="@color/color33"
+            android:textSize="30sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_iron"
+            android:layout_marginLeft="@dimen/default_lrmargin"
+            android:layout_marginRight="@dimen/default_lrmargin"
+            android:layout_marginTop="@dimen/default_lrmargin"
+            android:background="@color/default_bgcolor" />
+
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:id="@+id/pay_payWay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:LeftTextColor="@color/color66"
+            app:ivLeftDrawable="@drawable/yue"
+            app:rightTextColor="@color/color33"
+            app:showivLeft="true"
+            app:showivRight="true"
+            app:showtvRight="true"
+            app:tvLeftText="余额（0.00）" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_iron"
+            android:layout_marginLeft="@dimen/default_lrmargin"
+            android:layout_marginRight="@dimen/default_lrmargin"
+            android:background="@color/default_bgcolor" />
+
+        <com.optimumnano.quickcharge.views.PasswordView
+            android:id="@+id/pay_passwordView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_lrmargin"
+            android:layout_marginLeft="@dimen/default_padding30"
+            android:layout_marginRight="@dimen/default_padding30"
+            android:layout_marginTop="@dimen/default_lrmargin"
+            android:inputType="number"
+            android:maxLength="6"
+            app:pivBorderWidth="2dp"
+            app:pivPasswordLength="6" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/payresult_llSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="@dimen/default_lrmargin"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ok"
+            android:layout_gravity="center_horizontal"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            style="@style/text_mainstyle"
+            android:text="支付成功"
+            android:layout_marginTop="@dimen/default_padding"/>
+
+        <TextView
+            android:id="@+id/payresult_tvMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="￥100.00"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30sp"
+            android:layout_marginTop="@dimen/default_padding"
+            android:textColor="@color/color33"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请连接充电枪..."
+            android:layout_gravity="center_horizontal"
+            android:textSize="30sp"
+            android:layout_marginTop="@dimen/default_padding"
+            android:textColor="@color/main_color"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/payresult_llFail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:paddingBottom="@dimen/default_padding5"
+            android:paddingTop="@dimen/default_padding5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:textColor="@color/color33"
+
+                android:text="支付提示"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dialog_chose_payment_qx"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/close"
+                android:padding="@dimen/default_lrmargin"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="支付密码错误，请重试"
+            android:layout_marginTop="@dimen/default_padding40"
+            android:layout_marginBottom="@dimen/default_padding40"
+            android:gravity="center"
+            style="@style/text_mainstyle"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorCC"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/pay_tvUpdatePwd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="修改密码"
+                android:gravity="center"
+                android:background="@drawable/shape_btn_updatepwd"
+                android:padding="@dimen/default_lrmargin"
+                android:textColor="@color/main_color"/>
+            <TextView
+                android:layout_width="@dimen/dimen_half"
+                android:layout_height="match_parent"
+                android:background="@color/colorCC"/>
+            <TextView
+                android:id="@+id/pay_tvReInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="重新输入"
+                android:gravity="center"
+                android:background="@drawable/shape_btn_reinput"
+                android:layout_marginLeft="0.5dp"
+                android:padding="@dimen/default_lrmargin"
+                android:textColor="@color/main_color"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

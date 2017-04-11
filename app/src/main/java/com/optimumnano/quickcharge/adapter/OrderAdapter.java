@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by ds on 2017/3/29.
+ * 订单列表适配器
  */
 public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> {
     public OrderAdapter(int layoutResId, List<OrderBean> data) {
@@ -20,26 +21,26 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, OrderBean item) {
         TextView tvStatus = helper.getView(R.id.order_status);
-        switch (item.status){
-            case 0:
+        switch (item.order_status){
+            case 2:
                 helper.setText(R.id.order_status,"待支付");
                 helper.setVisible(R.id.order_tvPay,true);
                 helper.setVisible(R.id.order_tvComment,false);
                 helper.setText(R.id.order_tvPay,"支付订单");
                 break;
-            case 1:
+            case 4:
                 helper.setText(R.id.order_status,"充电中");
                 helper.setVisible(R.id.order_tvPay,true);
                 helper.setVisible(R.id.order_tvComment,false);
                 helper.setText(R.id.order_tvPay,"查看状态");
                 break;
-            case 2:
+            case 5:
                 helper.setText(R.id.order_status,"已完成");
                 helper.setVisible(R.id.order_tvPay,true);
                 helper.setVisible(R.id.order_tvComment,false);
                 helper.setText(R.id.order_tvPay,"评价订单");
                 break;
-            case 3:
+            case 6:
                 helper.setText(R.id.order_status,"已完成");
                 helper.setVisible(R.id.order_tvPay,false);
                 helper.setVisible(R.id.order_tvComment,true);

@@ -26,6 +26,14 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
+        manifestPlaceholders = [
+                GETUI_APP_ID : "EGwqPmPNSiAr6u8WadoaZ",
+                GETUI_APP_KEY : "j9tgnYHQnZ9RR9gpgY4PY4",
+                GETUI_APP_SECRET : "ZSTzy2W71388bZP3HSTzM2"
+        ]
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86_64"
+        }
     }
     sourceSets {
         main {
@@ -61,5 +69,6 @@ dependencies {
     compile 'com.netease.hearttouch:ht-refreshrecyclerview:1.1.1'
     testCompile 'junit:junit:4.12'
     compile 'com.github.jaychang0917:SimpleText:1.2.1'
+    compile 'com.getui:sdk:2.10.2.0'
 
 }

@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.optimumnano.quickcharge">
 
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -21,6 +22,7 @@
     <!-- SD卡读取权限，用户写入离线定位数据 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -28,6 +30,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!--个推 iBeancon功能所需权限 -->;
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
     <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
@@ -131,6 +136,22 @@
         </activity>
 
 
+        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
+        <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillDetailAct"></activity>
+        <activity android:name=".activity.order.OrderDetlActivity" />
+        <activity android:name=".activity.order.OrderActivity">
+        </activity>
+        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.mineinfo.MyCollectActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
