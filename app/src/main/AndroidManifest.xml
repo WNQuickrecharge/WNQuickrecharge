@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.optimumnano.quickcharge">
 
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -22,7 +21,6 @@
     <!-- SD卡读取权限，用户写入离线定位数据 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -30,6 +28,17 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <!-- SDK1.5需要android.permission.GET_TASKS权限判断本程序是否为当前运行的应用? -->
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <!-- 来电消音 -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".MyApplication"
@@ -49,10 +58,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.login.LoginActivity" >
+        <activity android:name=".activity.login.LoginActivity">
 
         </activity>
 
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="48ae76de3f" />
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="SfRGXTBoQyIgDXLvfFBsKekZrnILH2La" />
@@ -83,14 +95,42 @@
         <activity android:name=".activity.mineinfo.WalletBalanceAct" />
         <activity android:name=".activity.mineinfo.WalletBillAct" />
         <activity android:name=".activity.order.OrderDetlActivity"></activity>
-        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AboutActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.mineinfo.MyCollectActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.setting.ModifyPayPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.setting.ForgetPayPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.mineinfo.MyCollectActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.test.BNDemoMainActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+
+        <activity
+            android:name=".activity.test.BNDemoGuideActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+
     </application>
 
 </manifest>

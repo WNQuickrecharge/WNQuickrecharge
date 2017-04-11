@@ -27,6 +27,12 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -39,8 +45,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':library')
     compile project(':materialanimatedswitch')
-    compile files('libs/BaiduLBS_Android.jar')
-    compile files('libs/httpmime-4.1.2.jar')
+
     compile 'org.xutils:xutils:3.3.4'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'

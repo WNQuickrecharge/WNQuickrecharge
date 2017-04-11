@@ -1,10 +1,12 @@
 package com.optimumnano.quickcharge.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 秋平 on 2017/4/8 0008.
  */
 
-public class Point {
+public class Point implements Serializable{
 
     public String yyprovince;//湖北省",
     public String yycity;//: "武汉市",

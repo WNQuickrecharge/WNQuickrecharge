@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge;
 
 import android.app.Application;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.optimumnano.quickcharge.utils.ImageLoaderUtil;
 
 import org.xutils.x;
@@ -16,5 +17,6 @@ public class MyApplication extends Application {
         x.Ext.init(this);
         x.Ext.setDebug(true);
         ImageLoaderUtil.getInstance().init(this);
+        SDKInitializer.initialize(this);
     }
 }
