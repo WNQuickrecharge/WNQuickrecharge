@@ -125,4 +125,21 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="bill_item_detail_tvstyle_right">
+        <item name="android:textColor">@color/color33</item>
+        <item name="android:textSize">@dimen/default_textsize18</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="bill_item_detail_tvstyle_left">
+        <item name="android:textColor">@color/color99</item>
+        <item name="android:textSize">@dimen/default_textsize16</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

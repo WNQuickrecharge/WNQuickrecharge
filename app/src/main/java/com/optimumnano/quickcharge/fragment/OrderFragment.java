@@ -19,6 +19,8 @@ import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MyDivier;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class OrderFragment extends BaseFragment {
 
     private OrderAdapter adapter;
     private List<OrderBean> orderList = new ArrayList<>();
+    private OrderManager orderManager = new OrderManager();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +65,7 @@ public class OrderFragment extends BaseFragment {
             public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
                 OrderBean orderBean = orderList.get(position);
                 Intent intent;
-                if (orderBean.status==0 || orderBean.status==1){
+                if (orderBean.order_status==2 || orderBean.order_status==4){
                     intent = new Intent(getActivity(), OrderlistDetailActivity.class);
                 }
                 else {
@@ -77,12 +80,19 @@ public class OrderFragment extends BaseFragment {
         });
     }
     private void initData(){
-        orderList.add(new OrderBean(0));
-        orderList.add(new OrderBean(1));
-        orderList.add(new OrderBean(2));
-        orderList.add(new OrderBean(3));
-        orderList.add(new OrderBean(0));
-        orderList.add(new OrderBean(1));
+        orderManager.getAllOrderlist(1, 10, new ManagerCallback<List<OrderBean>>() {
+            @Override
+            public void onSuccess(List<OrderBean> returnContent) {
+                super.onSuccess(returnContent);
+                orderList.addAll(returnContent);
+                dataChanged();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
     private void dataChanged(){
         if (adapter == null){

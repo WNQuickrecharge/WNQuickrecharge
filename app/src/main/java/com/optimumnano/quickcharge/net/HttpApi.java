@@ -33,5 +33,5 @@ public class HttpApi {
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//
     public static final String get_password_url = "capp/user/get_paypwd";//
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
-
+    public static final String order_list = "capp/order/all_orders";//
 }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
@@ -20,6 +21,7 @@ import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
+import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
@@ -71,6 +73,8 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
     }
 
     @Override
@@ -183,6 +187,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
 
     @Override
