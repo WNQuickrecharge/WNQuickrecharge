@@ -97,38 +97,38 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         dialog.show();
         tvStart.setVisibility(View.GONE);
         tvStop.setVisibility(View.VISIBLE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                    dialog.cancelDialog();
-                    service.scheduleAtFixedRate(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (persent<100){
-                                persent += 1;
-                                waveLoadingView.setWaveHeight(persent);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tvTime.setVisibility(View.VISIBLE);
-                                        tvPersent.setText(persent+"%");
-                                    }
-                                });
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }, 0, 500, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(10000);
+//                    dialog.cancelDialog();
+//                    service.scheduleAtFixedRate(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            while (persent<100){
+//                                persent += 1;
+//                                waveLoadingView.setWaveHeight(persent);
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        tvTime.setVisibility(View.VISIBLE);
+//                                        tvPersent.setText(persent+"%");
+//                                    }
+//                                });
+//                                try {
+//                                    Thread.sleep(500);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    }, 0, 500, TimeUnit.SECONDS);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 
     @Override
