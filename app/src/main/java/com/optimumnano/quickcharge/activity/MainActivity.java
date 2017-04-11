@@ -349,7 +349,7 @@ public class MainActivity extends BaseActivity {
 
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84,mPoint);
         }
     }
 

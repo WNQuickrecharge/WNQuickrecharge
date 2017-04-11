@@ -213,7 +213,7 @@ public class RechargeFragment extends BaseFragment {
 
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        option.setCoorType("bd09ll");
+        option.setCoorType("WGS84");
         //可选，默认gcj02，设置返回的定位结果坐标系
         int span = 30000;
         option.setScanSpan(span);
@@ -292,13 +292,13 @@ public class RechargeFragment extends BaseFragment {
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
-                mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
-                mHelper.setLocation(location.getLatitude(), location.getLatitude());
+                mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             }
             //定位失败
