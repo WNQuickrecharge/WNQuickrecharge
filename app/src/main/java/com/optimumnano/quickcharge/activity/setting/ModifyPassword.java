@@ -50,17 +50,22 @@ public class ModifyPassword extends BaseActivity implements View.OnClickListener
         if (v.getId()==R.id.modify_password_confirm_Pwd_textView){
             String oldPwd = oldPassword.getText().toString();
             String newPwd = newPassword.getText().toString();
-
             String confirmPwd = confirmPassword.getText().toString();
+
             if (!TextUtils.equals(newPwd,confirmPwd)){
                 showToast("两次密码不一致,请重新输入");
                 return;
             }
+            if (TextUtils.isEmpty(oldPwd)||TextUtils.isEmpty(newPwd)||TextUtils.isEmpty(confirmPwd)){
+                showToast("密码不能为空!");
+                return;
+            }
             String md5OldPwd = MD5Utils.encodeMD5(oldPwd);
+            String finalOldPassword = MD5Utils.encodeMD5(md5OldPwd);
             String md5NewPwd = MD5Utils.encodeMD5(newPwd);
-
+            String finalNewPwd = MD5Utils.encodeMD5(md5NewPwd);
             manager.modifyPassword(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_MOBILE,""),
-                    md5OldPwd,md5NewPwd,new Manager());
+                    finalOldPassword,finalNewPwd,new Manager());
         }
     }
 

@@ -77,7 +77,7 @@ public class StationActivity extends BaseActivity {
         serviceName.setText(station.getServiceName());
         onServiceTime.setText(station.getOnServiceTime());
         stationFreeGuns.setText(station.getFreeGuns());
-        stationTotalGuns.setText(station.getOnServiceTime());
+        stationTotalGuns.setText(station.getTotalGuns());
         gunBeanList.add(new GunBean("0001","正在充电"));
         gunBeanList.add(new GunBean("0002","正在充电"));
         gunBeanList.add(new GunBean("0003","正在充电"));

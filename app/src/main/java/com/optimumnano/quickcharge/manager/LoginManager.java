@@ -57,10 +57,8 @@ public class LoginManager {
     /**
      * 注册
      */
-    public void register(String mobile,String pwd,String checkNum,String confirmpwd, final ManagerCallback callback,final int httpCode){
-        if (!registerCheck(mobile,pwd,checkNum,confirmpwd,callback)){
-            return;
-        }
+    public void register(String mobile,String pwd,String checkNum, final ManagerCallback callback,final int httpCode){
+
         String url = HttpApi.getInstance().getUrl(HttpApi.register_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();

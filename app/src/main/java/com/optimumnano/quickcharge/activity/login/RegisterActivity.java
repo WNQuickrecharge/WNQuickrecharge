@@ -3,6 +3,7 @@ package com.optimumnano.quickcharge.activity.login;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
 
 import org.json.JSONException;
@@ -57,12 +59,39 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 getChecknum();
                 break;
             case R.id.register_tvRegister:
-                loginManager.register(edtPhone.getText().toString(), edtPwd.getText().toString(), edtChecknum.getText().toString(),
-                        edtConfirmPwd.getText().toString(), requestCallback, 1);
+                register();
                 break;
             default:
                 break;
         }
+    }
+
+    private void register() {
+        String confirmPassword = edtConfirmPwd.getText().toString();
+        String password = edtPwd.getText().toString();
+        if (!TextUtils.equals(confirmPassword,password)){
+            showToast("两次密码不一致,请确认!");
+            return;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword)||TextUtils.isEmpty(password)){
+            showToast("密码不能为空!");
+            return;
+        }
+        if (TextUtils.isEmpty(edtChecknum.getText().toString())){
+            showToast("验证码不能为空!");
+            return;
+        }
+        if (TextUtils.isEmpty(edtPhone.getText().toString())){
+            showToast("手机号码不能为空!");
+            return;
+        }
+
+        String Md5Pasword = MD5Utils.encodeMD5(password);
+        String finalPassword = MD5Utils.encodeMD5(Md5Pasword);
+
+
+        loginManager.register(edtPhone.getText().toString(), finalPassword, edtChecknum.getText().toString(), requestCallback, 1);
     }
 
     private void getChecknum() {

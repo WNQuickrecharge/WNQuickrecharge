@@ -100,7 +100,8 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
         }
         String newPassword = confirmPaypassword.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
-        modifyUserInformationManager.forgetPayPassword(phone,"ForgetPayPwdCApp",verificationCode.getText().toString(),Md5Password,new Manager());
+        String finalPaypassword = MD5Utils.encodeMD5(Md5Password);
+        modifyUserInformationManager.forgetPayPassword(phone,"ForgetPayPwdCApp",verificationCode.getText().toString(),finalPaypassword,new Manager());
     }
 
     private void startCountTime(long allTime, long time) {

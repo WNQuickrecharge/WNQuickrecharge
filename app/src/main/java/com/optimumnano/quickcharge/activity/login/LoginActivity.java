@@ -113,13 +113,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.login_tvLogin:
                 String password = edtPwd.getText().toString();
                 String Md5Password = MD5Utils.encodeMD5(password);
+                String finalPassword = MD5Utils.encodeMD5(Md5Password);
                 showLoading();
                 if ("企业登录".equals(tvLogin.getText().toString())){
                     userType=3;
                 }else if ("个人登录".equals(tvLogin.getText().toString())){
                     userType=1;
                 }
-                manager.login(edtUsername.getText().toString(),Md5Password,userType,new Manager());
+                manager.login(edtUsername.getText().toString(),finalPassword,userType,new Manager());
                 break;
             case R.id.login_tvReg:
                 skipActivity(RegisterActivity.class,null);
