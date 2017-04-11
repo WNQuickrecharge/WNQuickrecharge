@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.optimumnano.quickcharge.activity.mineinfo.WalletDepositSuccessAct">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+   <ImageView
+       android:layout_marginTop="@dimen/dimen_20"
+       android:layout_gravity="center_horizontal"
+       android:src="@drawable/pay_ok"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_margin="@dimen/dimen_10"
+        android:layout_gravity="center_horizontal"
+        android:text="支付成功"
+        android:textColor="@color/color33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="@dimen/default_lrmargin">
+
+        <TextView
+            android:id="@+id/tvLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="支付方式"
+            android:textColor="@color/color33"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/default_textsize"/>
+
+        <TextView
+            android:id="@+id/act_wallet_deposit_suc_tv_payway"
+            android:drawablePadding="@dimen/dimen_10"
+            android:drawableLeft="@drawable/wx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/color33"
+            android:layout_alignParentRight="true"
+            android:text="微信"
+            android:textSize="@dimen/default_textsize14"/>
+    </RelativeLayout>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="充值金额"
+        app:rightTextColor="@color/color33"
+        android:id="@+id/act_wallet_deposit_suc_mi_amount"
+        app:tvRightText="100.00"
+        app:showtvRight="true"/>
+
+    <TextView
+        android:id="@+id/act_wallet_deposit_suc_tv_back"
+        android:layout_marginTop="@dimen/default_padding70"
+        android:layout_marginRight="@dimen/default_padding20"
+        android:layout_marginLeft="@dimen/default_padding20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="返回钱包"
+        style="@style/ButtonStyle"/>
+</LinearLayout>

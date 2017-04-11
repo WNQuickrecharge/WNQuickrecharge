@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +43,7 @@ public class WalletDepositAct extends BaseActivity {
     private int mChosePayway=0;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
+    private String mAmount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,7 @@ public class WalletDepositAct extends BaseActivity {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
                         //showPayPsdDialog();
-                        showToast("调起支付");
+                        callPay();
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
                         showChosePayWayDialog();
@@ -96,14 +98,22 @@ public class WalletDepositAct extends BaseActivity {
                 }
     }
 
+    private void callPay() {
+        showToast("调起支付");
+        Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
+        intent.putExtra("payway",mChosePayway);
+        intent.putExtra("amount",mEtAmount.getText().toString().trim());
+        startActivity(intent);
+    }
+
     private void showPayPsdDialog() {
-        String amount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(amount)){
+        mAmount = mEtAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(mAmount)){
             showToast("充值金额不能为空");
             return;
         }
         mPayDialog.setPayway(mChosePayway);
-        mPayDialog.setMoney(Double.valueOf(amount));
+        mPayDialog.setMoney(Double.valueOf(mAmount));
         mPayDialog.setStatus(0);
         mPayDialog.setPayName("充值");
         mPayDialog.setPaywayListener(new View.OnClickListener() {
@@ -164,7 +174,7 @@ public class WalletDepositAct extends BaseActivity {
 
     private void changePayWayStatus(int payway) {
         showPayWayStatus(payway);
-        mPayDialog.setPaywayAndBalance(payway,55.54d);
+        mPayDialog.setPayway(payway);
     }
 
     private void showChosePayWayDialog() {
