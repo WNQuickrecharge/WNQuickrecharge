@@ -136,22 +136,10 @@
         </activity>
 
 
-        <activity android:name=".activity.mineinfo.MineWalletAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBalanceAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillAct"></activity>
         <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
         <activity android:name=".activity.mineinfo.WalletBillDetailAct"></activity>
-        <activity android:name=".activity.order.OrderDetlActivity" />
         <activity android:name=".activity.order.OrderActivity">
         </activity>
-        <activity android:name=".activity.setting.ModifyPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.setting.ForgetPayPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AboutActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.mineinfo.MyCollectActivity"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
