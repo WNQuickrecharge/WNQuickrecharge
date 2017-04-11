@@ -39,7 +39,7 @@ public class WalletDepositAct extends BaseActivity {
     TextView mTvNext;
     private ModifyUserInformationManager mManager;
     private PayDialog mPayDialog;
-    private int mChosePayway=2;//默认余额支付
+    private int mChosePayway=0;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
 
@@ -60,7 +60,9 @@ public class WalletDepositAct extends BaseActivity {
 
     private void initData() {
         mManager = new ModifyUserInformationManager();
-        mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, 2);
+        int payway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, 0);
+        if (payway == 2)
+            mChosePayway = 0;//不能使用余额给余额充值
         mPayPsd = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logi("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
@@ -85,10 +87,11 @@ public class WalletDepositAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-                        showPayPsdDialog();
+                        //showPayPsdDialog();
+                        showToast("调起支付");
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
-                        alertChosePayWayDialog();
+                        showChosePayWayDialog();
                         break;
                 }
     }
@@ -102,10 +105,11 @@ public class WalletDepositAct extends BaseActivity {
         mPayDialog.setPayway(mChosePayway);
         mPayDialog.setMoney(Double.valueOf(amount));
         mPayDialog.setStatus(0);
+        mPayDialog.setPayName("充值");
         mPayDialog.setPaywayListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertChosePayWayDialog();
+                showChosePayWayDialog();
             }
         });
         mPayDialog.setTextChangedListener(new TextWatcher() {
@@ -122,19 +126,19 @@ public class WalletDepositAct extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length()==6){
-                    if (mPayPsd.equals(s.toString())){
+                    if (!mPayPsd.equals(s.toString())){
                         showToast("支付密码错误");
+                        mPayDialog.cleanPasswordView();
                     }else {
                         mPayDialog.setStatus(2);
-                        mPayDialog.show();
                     }
+
+                    logi("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
                 }
             }
         });
 
         mPayDialog.show();
-        logi("amount "+amount);
-        logi("mChosePayway "+mChosePayway);
     }
 
 
@@ -160,10 +164,10 @@ public class WalletDepositAct extends BaseActivity {
 
     private void changePayWayStatus(int payway) {
         showPayWayStatus(payway);
-        SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,payway);
+        mPayDialog.setPaywayAndBalance(payway,55.54d);
     }
 
-    private void alertChosePayWayDialog() {
+    private void showChosePayWayDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = View.inflate(this, R.layout.dialog_chose_payway_tv, null);
         builder.setView(view);
@@ -186,14 +190,7 @@ public class WalletDepositAct extends BaseActivity {
             }
         });
 
-        view.findViewById(R.id.dialog_chose_payway_ye).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayway =2;
-                dismissDialog();
-                changePayWayStatus(mChosePayway);
-            }
-        });
+        view.findViewById(R.id.dialog_chose_payway_ye).setVisibility(View.GONE);
 
         view.findViewById(R.id.dialog_chose_payway_qx).setOnClickListener(new View.OnClickListener() {
             @Override

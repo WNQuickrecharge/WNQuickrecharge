@@ -83,6 +83,7 @@
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:inputType="numberDecimal"
                 android:id="@+id/act_wallet_deposit_et_amount"
                 android:layout_marginLeft="@dimen/default_padding"
                 android:background="@null"

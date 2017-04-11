@@ -37,6 +37,7 @@
         <include layout="@layout/layout_line" />
 
         <TextView
+            android:id="@+id/pay_name"
             style="@style/text_mainstyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

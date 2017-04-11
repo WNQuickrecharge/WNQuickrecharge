@@ -3,11 +3,14 @@ package com.optimumnano.quickcharge.dialog;
 import android.app.Activity;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseDialog;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
+
+import static com.optimumnano.quickcharge.R.id.pay_tvMoney;
 
 /**
  * Created by PC on 2017/4/9.
@@ -15,10 +18,13 @@ import com.optimumnano.quickcharge.views.PasswordView;
  */
 
 public class PayDialog extends BaseDialog {
+    private final Activity mActivity;
     private PasswordView passwordView;
     private MenuItem1 menuItem1;
+    private TextView payName;
     public PayDialog(Activity mAty) {
         super(mAty);
+        this.mActivity=mAty;
         dialog.getViewHolder().getView(R.id.pay_ivClose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,6 +34,7 @@ public class PayDialog extends BaseDialog {
         passwordView = dialog.getViewHolder().getView(R.id.pay_passwordView);
         passwordView.requestFocus();
         menuItem1 = dialog.getViewHolder().getView(R.id.pay_payWay);
+        payName = dialog.getViewHolder().getView(R.id.pay_name);
     }
 
     @Override
@@ -82,7 +89,7 @@ public class PayDialog extends BaseDialog {
      * @param money 金额
      */
     public void setMoney(double money){
-        dialog.getViewHolder().setText(R.id.pay_tvMoney,money+"");
+        dialog.getViewHolder().setText(pay_tvMoney,"¥"+money);
     }
 
     public void setPayway(int payway){
@@ -101,6 +108,28 @@ public class PayDialog extends BaseDialog {
             case 2:
                 menuItem1.setIvLeftDrawable(R.drawable.yue);
                 menuItem1.setTvLeftText("余额");
+                break;
+        }
+    }
+
+    public void setPaywayAndBalance(int payway,double balance){
+        String paywayFomat= mActivity.getResources().getString(R.string.dialog_pay_way_balance);
+        switch (payway){
+            //微信
+            case 0:
+                menuItem1.setIvLeftDrawable(R.drawable.wx);
+                menuItem1.setTvLeftText("微信");
+                break;
+            //支付寶
+            case 1:
+                menuItem1.setIvLeftDrawable(R.drawable.zfb);
+                menuItem1.setTvLeftText("支付宝");
+                break;
+            //余額
+            case 2:
+                menuItem1.setIvLeftDrawable(R.drawable.yue);
+                String sFinal = String.format(paywayFomat,"余额",balance);
+                menuItem1.setTvLeftText(sFinal);
                 break;
         }
     }
@@ -135,4 +164,13 @@ public class PayDialog extends BaseDialog {
         super.show();
         passwordView.setText("");
     }
+
+    public void cleanPasswordView(){
+        passwordView.setText("");
+    }
+
+    public void setPayName(String payname){
+        payName.setText(payname);
+    }
+
 }
