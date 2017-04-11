@@ -46,7 +46,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
         int payway = intent.getIntExtra("payway",3);
         String amount = intent.getStringExtra("amount");
         showPayWayStatus(payway);
-        mMiAmount.setRightText(amount);
+        mMiAmount.setRightText("¥"+amount);
     }
 
     private void showPayWayStatus(int payway) {
