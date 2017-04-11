@@ -43,13 +43,37 @@ public class PayDialog extends BaseDialog {
         passwordView.addTextChangedListener(watcher);
     }
 
+/*    *//**
+     * 选择支付方式
+     * @param I
+     *//*
+    public void setPaywayListener(View.OnClickListener I){
+        menuItem1.setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(I);
+    }*/
+
     /**
      * 选择支付方式
      * @param I
      */
     public void setPaywayListener(View.OnClickListener I){
         menuItem1.setOnClickListener(I);
+    }
+
+    /**
+     * 重置支付密码按钮监听
+     * @param I
+     */
+    public void setUpdatePwdBtListener(View.OnClickListener I){
         dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(I);
+    }
+
+    /**
+     * 重新输入密码按钮监听
+     * @param I
+     */
+    public void setReInputBtListener(View.OnClickListener I){
         dialog.getViewHolder().getView(R.id.pay_tvReInput).setOnClickListener(I);
     }
 

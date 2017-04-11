@@ -112,22 +112,22 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 payWayDialog.show();
                 break;
             //弹框关闭按钮
-            case R.id.dialog_chose_payment_qx:
+            case R.id.dialog_chose_payway_qx:
                 payWayDialog.close();
                 if (isConfirm){
                     payDialog.show();
                 }
                 break;
             //微信支付
-            case R.id.dialog_chose_payment_wx:
+            case R.id.dialog_chose_payway_wx:
                 choosePayway(0);
                 break;
             //支付宝支付
-            case R.id.dialog_chose_payment_zfb:
+            case R.id.dialog_chose_payway_zfb:
                 choosePayway(1);
                 break;
             //余额支付
-            case R.id.dialog_chose_payment_ye:
+            case R.id.dialog_chose_payway_ye:
                 choosePayway(2);
                 break;
             //修改密码

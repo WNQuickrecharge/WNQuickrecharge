@@ -29,7 +29,7 @@
         app:showivRight="true"/>
 
     <RelativeLayout
-        android:id="@+id/act_mineinfo_wallet_rl_payment"
+        android:id="@+id/act_mineinfo_wallet_rl_payway"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
             />
 
         <TextView
-            android:id="@+id/act_mineinfo_wallet_tv_payment"
+            android:id="@+id/act_mineinfo_wallet_tv_payway"
             android:drawablePadding="@dimen/dimen_10"
             android:drawableLeft="@drawable/wx"
             android:layout_width="wrap_content"

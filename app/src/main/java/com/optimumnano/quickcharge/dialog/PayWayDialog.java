@@ -17,7 +17,7 @@ public class PayWayDialog extends BaseDialog {
 
     @Override
     protected int getContentViewID() {
-        return R.layout.dialog_chose_payment_tv;
+        return R.layout.dialog_chose_payway_tv;
     }
 
     /**
@@ -25,9 +25,9 @@ public class PayWayDialog extends BaseDialog {
      * @param I
      */
     public void setViewClickListener(View.OnClickListener I){
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_qx).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_wx).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_zfb).setOnClickListener(I);
-        dialog.getViewHolder().getView(R.id.dialog_chose_payment_ye).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_qx).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_wx).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_zfb).setOnClickListener(I);
+        dialog.getViewHolder().getView(R.id.dialog_chose_payway_ye).setOnClickListener(I);
     }
 }

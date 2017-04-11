@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
     android:orientation="vertical" >
 
-    <!--android:background="@drawable/shape_chose_payment_bg"-->
+    <!--android:background="@drawable/shape_chose_payway_bg"-->
     <LinearLayout
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@drawable/shape_chose_payway_bg"
         android:padding="@dimen/dimen_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,7 +30,7 @@
                 android:text="选择支付方式"/>
 
             <TextView
-                android:id="@+id/dialog_chose_payment_qx"
+                android:id="@+id/dialog_chose_payway_qx"
                 android:paddingLeft="@dimen/default_lrmargin"
                 android:paddingRight="@dimen/default_lrmargin"
                 android:layout_centerVertical="true"
@@ -43,7 +44,7 @@
         <include layout="@layout/layout_line"/>
 
         <com.optimumnano.quickcharge.views.MenuItem1
-            android:id="@+id/dialog_chose_payment_wx"
+            android:id="@+id/dialog_chose_payway_wx"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="微信"
@@ -54,7 +55,7 @@
         <include layout="@layout/layout_line"/>
 
         <com.optimumnano.quickcharge.views.MenuItem1
-            android:id="@+id/dialog_chose_payment_zfb"
+            android:id="@+id/dialog_chose_payway_zfb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="支付宝"
@@ -65,7 +66,7 @@
         <include layout="@layout/layout_line"/>
 
         <com.optimumnano.quickcharge.views.MenuItem1
-            android:id="@+id/dialog_chose_payment_ye"
+            android:id="@+id/dialog_chose_payway_ye"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="余额"
