@@ -1,7 +1,5 @@
 package com.optimumnano.quickcharge.utils;
 
-import java.util.List;
-
 /**
  * 作者：邓传亮 on 2017/4/6 14:15
  * <p>
@@ -18,7 +16,7 @@ public interface SPConstant {
     /***sharedpreferences****用户昵称key******/
     String KEY_USERINFO_NICKNAME ="userinfo_nickname";
     /***sharedpreferences****用户默认支付方式key******/
-    String KEY_USERINFO_DEFPAYMENT ="userinfo_defPayment";
+    String KEY_USERINFO_DEFPAYWAY ="userinfo_defpayway";
     /**
      * 用户登录的手机号
      */

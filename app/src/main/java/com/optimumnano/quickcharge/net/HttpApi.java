@@ -27,7 +27,7 @@ public class HttpApi {
     public static final String modify_password_url = "capp/user/modify_pwd";
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
-    public static final String get_transaction_bill = "capp/bs/user_consume";//获取交易订单
+    public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
     public static final String  region_pile_url = "capp/bs/region_pile";//修改个人资料
     public static final String logout_url = "capp/user/logout";//登出
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//

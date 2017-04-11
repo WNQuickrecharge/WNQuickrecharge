@@ -63,7 +63,7 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
             mData.add(bean);
         }
 
-        GetMineInfoManager.getTransactionBill(1, 10, new ManagerCallback() {
+        GetMineInfoManager.getTransactionBill(1, 10, new ManagerCallback() {// index 从1开始
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("获取成功");

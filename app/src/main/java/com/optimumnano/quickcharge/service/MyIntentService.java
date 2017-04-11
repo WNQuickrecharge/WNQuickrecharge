@@ -9,7 +9,7 @@ import com.igexin.sdk.message.GTTransmitMessage;
 import org.xutils.common.util.LogUtil;
 
 /**
- * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调, 如果注册了该服务, 则务必要在 AndroidManifest中声明, 否则无法接受消息<br>
+ * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调<br>
  * onReceiveMessageData 处理透传消息<br>
  * onReceiveClientId 接收 cid <br>
  * onReceiveOnlineState cid 离线上线通知 <br>

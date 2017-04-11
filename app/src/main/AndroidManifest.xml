@@ -98,14 +98,19 @@
             android:name=".activity.setting.ModifyPassword"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.order.OrderlistDetailActivity" />
-        <activity android:name=".activity.mineinfo.MineInfoAct" />
+        <activity android:name=".activity.mineinfo.MineInfoAct" android:screenOrientation="portrait"/>
         <activity android:name=".activity.filter.FilterActivity" />
         <activity android:name=".activity.order.RechargeControlActivity">
 
         </activity>
-        <activity android:name=".activity.mineinfo.MineWalletAct" />
-        <activity android:name=".activity.mineinfo.WalletBalanceAct" />
-        <activity android:name=".activity.mineinfo.WalletBillAct" />
+        <activity android:name=".activity.mineinfo.MineWalletAct"
+                  android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
+        <activity android:name=".activity.mineinfo.WalletBalanceAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.MyMessageAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.WalletBillDetailAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.WalletDepositAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.WalletDepositSuccessAct" android:screenOrientation="portrait"></activity>
         <activity android:name=".activity.order.OrderDetlActivity"></activity>
         <activity
             android:name=".activity.setting.ModifyPayPasswordActivity"
@@ -143,9 +148,6 @@
             <!--</intent-filter>-->
         </activity>
 
-
-        <activity android:name=".activity.mineinfo.MyMessageAct"></activity>
-        <activity android:name=".activity.mineinfo.WalletBillDetailAct"></activity>
         <activity android:name=".activity.order.OrderActivity">
         </activity>
     </application>

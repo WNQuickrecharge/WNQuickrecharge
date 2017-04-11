@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.optimumnano.quickcharge.BuildConfig;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.utils.AppManager;
@@ -260,5 +261,10 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void permissionFail(int requestCode) {
 //        Log.d(TAG, "获取权限失败=" + requestCode);
+    }
+
+    public void logi(String msg){
+        if (BuildConfig.DEBUG)
+            LogUtil.i("test== "+msg);
     }
 }

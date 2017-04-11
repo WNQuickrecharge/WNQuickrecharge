@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.optimumnano.quickcharge.fragment.MineFragment">
+              tools:context="com.optimumnano.quickcharge.activity.mineinfo.WalletBalanceAct">
 
     <include
         android:id="@+id/title"
@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <TextView
-        android:layout_marginTop="@dimen/default_padding20"
+        android:layout_marginTop="@dimen/default_padding70"
         android:layout_marginRight="@dimen/default_padding20"
         android:layout_marginLeft="@dimen/default_padding20"
         android:id="@+id/act_wallet_balance_deposit"
@@ -54,6 +54,7 @@
         style="@style/ButtonStyle"/>
 
     <TextView
+        android:visibility="gone"
         android:layout_marginRight="@dimen/default_padding20"
         android:layout_marginLeft="@dimen/default_padding20"
         android:id="@+id/act_wallet_balance_withdraw"

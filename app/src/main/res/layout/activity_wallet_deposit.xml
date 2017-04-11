@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_default"/>
+
+    <LinearLayout
+        android:layout_margin="@dimen/default_padding"
+        android:padding="@dimen/dimen_2"
+        android:orientation="vertical"
+        android:background="@drawable/bg_charge_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/act_wallet_deposit_rl_payway"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="@dimen/default_lrmargin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="充值方式"
+                android:textColor="@color/color99"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/default_textsize"/>
+
+            <ImageView
+                android:id="@+id/ivRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/default_padding"
+                android:layout_centerVertical="true"
+                android:src="@drawable/nextarrow"
+                />
+
+            <TextView
+                android:id="@+id/act_wallet_deposit_tv_payway"
+                android:drawablePadding="@dimen/dimen_10"
+                android:drawableLeft="@drawable/wx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/color99"
+                android:layout_toLeftOf="@id/ivRight"
+                android:text="微信"
+                android:textSize="@dimen/default_textsize14"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:paddingTop="@dimen/default_lrmargin"
+            android:paddingBottom="@dimen/default_lrmargin"
+            android:paddingLeft="@dimen/default_lrmargin"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="@dimen/default_textsize"
+                android:textColor="@color/color99"
+                android:text="充值金额"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="      ¥"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/font_26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:inputType="numberDecimal"
+                android:id="@+id/act_wallet_deposit_et_amount"
+                android:layout_marginLeft="@dimen/default_padding"
+                android:background="@null"
+                android:hint="输入充值金额"
+                android:textColor="@color/color33"
+                android:textSize="@dimen/font_26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/act_wallet_deposit_tv_next"
+        android:layout_marginTop="@dimen/default_padding70"
+        android:layout_marginRight="@dimen/default_padding20"
+        android:layout_marginLeft="@dimen/default_padding20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next_step"
+        style="@style/ButtonStyle"/>
+</LinearLayout>

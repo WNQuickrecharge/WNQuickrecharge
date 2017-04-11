@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -8,7 +9,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
-import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.CircleImageView;
 
@@ -34,7 +34,6 @@ public class WalletBalanceAct extends BaseActivity {
     TextView mDeposit;
     @Bind(R.id.act_wallet_balance_withdraw)
     TextView mWithdraw;
-    private ModifyUserInformationManager mManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class WalletBalanceAct extends BaseActivity {
     }
 
     private void initData() {
-        mManager = new ModifyUserInformationManager();
+
     }
 
     @Override
@@ -77,10 +76,9 @@ public class WalletBalanceAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.act_wallet_balance_deposit:
-                showToast("充值");
+                startActivity(new Intent(WalletBalanceAct.this, WalletDepositAct.class));
                 break;
-            case R.id.act_wallet_balance_withdraw:
-                showToast("提现");
+            case R.id.act_wallet_balance_withdraw://提现 暂时不做的功能
                 break;
         }
     }

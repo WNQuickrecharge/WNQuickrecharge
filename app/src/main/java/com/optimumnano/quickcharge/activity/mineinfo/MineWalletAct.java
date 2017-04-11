@@ -3,12 +3,13 @@ package com.optimumnano.quickcharge.activity.mineinfo;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -29,13 +30,13 @@ public class MineWalletAct extends BaseActivity {
     MenuItem1 mBalance;
     @Bind(R.id.act_mineinfo_wallet_mi_trans_Bill)
     MenuItem1 mTransBill;
-    @Bind(R.id.act_mineinfo_wallet_tv_payment)
-    TextView mPayment;
+    @Bind(R.id.act_mineinfo_wallet_tv_payway)
+    TextView mPayway;
     @Bind(R.id.act_mineinfo_wallet_mi_mycard)
     MenuItem1 mMycard;
     private ModifyUserInformationManager mManager;
-    private AlertDialog mChosePaymentDialog;
-    private int mChosePayment=3;//默认余额支付
+    private PayWayDialog mPayWayDialog;
+    private int mChosePayway =PayDialog.pay_yue;//默认余额支付
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MineWalletAct extends BaseActivity {
 
     private void initData() {
         mManager = new ModifyUserInformationManager();
+        mPayWayDialog = new PayWayDialog(MineWalletAct.this);
     }
 
     @Override
@@ -61,18 +63,18 @@ public class MineWalletAct extends BaseActivity {
         setRightTitle("");
         showBack();
         setTitle("我的钱包");
-        int payment = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYMENT, 3);
-        showPaymentStatus(payment);
+        mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
+        showPayWayStatus(mChosePayway);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dismissDialog();
-        mChosePaymentDialog=null;
+        mPayWayDialog=null;
     }
 
-    @OnClick({R.id.act_mineinfo_wallet_mi_balance, R.id.act_mineinfo_wallet_mi_trans_Bill, R.id.act_mineinfo_wallet_rl_payment, R.id.act_mineinfo_wallet_mi_mycard})
+    @OnClick({R.id.act_mineinfo_wallet_mi_balance, R.id.act_mineinfo_wallet_mi_trans_Bill, R.id.act_mineinfo_wallet_rl_payway, R.id.act_mineinfo_wallet_mi_mycard})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.act_mineinfo_wallet_mi_balance:
@@ -81,83 +83,55 @@ public class MineWalletAct extends BaseActivity {
             case R.id.act_mineinfo_wallet_mi_trans_Bill:
                 startActivity(new Intent(MineWalletAct.this, WalletBillAct.class));
                 break;
-            case R.id.act_mineinfo_wallet_rl_payment:
-                alertChosePaymentDialog();
+            case R.id.act_mineinfo_wallet_rl_payway:
+                alertChosePayWayDialog();
                 break;
             case R.id.act_mineinfo_wallet_mi_mycard://银行卡暂时不实现
                 break;
         }
     }
 
-    private void showPaymentStatus(int payment) {
+    private void showPayWayStatus(int payway) {
         Drawable drawable=null;
-        switch (payment){
-            case 1:
+        switch (payway){
+            case PayDialog.pay_wx:
                 drawable= getResources().getDrawable(R.drawable.wx);
-                mPayment.setText("微信");
+                mPayway.setText("微信");
                 break;
-            case 2:
+            case PayDialog.pay_zfb:
                 drawable= getResources().getDrawable(R.drawable.zfb);
-                mPayment.setText("支付宝");
+                mPayway.setText("支付宝");
                 break;
-            case 3:
+            case PayDialog.pay_yue:
                 drawable= getResources().getDrawable(R.drawable.yue);
-                mPayment.setText("余额");
+                mPayway.setText("余额");
                 break;
         }
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mPayment.setCompoundDrawables(drawable,null,null,null);
+        mPayway.setCompoundDrawables(drawable,null,null,null);
     }
 
-    private void changePaymentStatus(int payment) {
-        showPaymentStatus(payment);
-        SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYMENT,payment);
+    private void changePayWayStatus(int payway) {
+        showPayWayStatus(payway);
+        SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,payway);
     }
 
-    private void alertChosePaymentDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = View.inflate(this, R.layout.dialog_chose_payment_tv, null);
-        builder.setView(view);
-        mChosePaymentDialog = builder.show();
-        view.findViewById(R.id.dialog_chose_payment_wx).setOnClickListener(new View.OnClickListener() {
+    private void alertChosePayWayDialog() {
+        mPayWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
-            public void onClick(View v) {
-                mChosePayment=1;
-                dismissDialog();
-                changePaymentStatus(mChosePayment);
+            public void onMenuClick(int payway) {
+                mChosePayway = payway;
+                mPayWayDialog.close();
+                changePayWayStatus(payway);
             }
         });
-
-        view.findViewById(R.id.dialog_chose_payment_zfb).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayment=2;
-                dismissDialog();
-                changePaymentStatus(mChosePayment);
-            }
-        });
-
-        view.findViewById(R.id.dialog_chose_payment_ye).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChosePayment=3;
-                dismissDialog();
-                changePaymentStatus(mChosePayment);
-            }
-        });
-
-        view.findViewById(R.id.dialog_chose_payment_qx).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissDialog();
-            }
-        });
+        mPayWayDialog.show();
 
     }
 
     private void dismissDialog(){
-        if (null!=mChosePaymentDialog&&mChosePaymentDialog.isShowing()){
-            mChosePaymentDialog.dismiss();
+        if (null!= mPayWayDialog){
+            mPayWayDialog.close();
         }
     }
 }
