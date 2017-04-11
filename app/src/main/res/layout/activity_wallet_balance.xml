@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <TextView
-        android:layout_marginTop="@dimen/default_padding20"
+        android:layout_marginTop="@dimen/default_padding70"
         android:layout_marginRight="@dimen/default_padding20"
         android:layout_marginLeft="@dimen/default_padding20"
         android:id="@+id/act_wallet_balance_deposit"
@@ -54,6 +54,7 @@
         style="@style/ButtonStyle"/>
 
     <TextView
+        android:visibility="gone"
         android:layout_marginRight="@dimen/default_padding20"
         android:layout_marginLeft="@dimen/default_padding20"
         android:id="@+id/act_wallet_balance_withdraw"

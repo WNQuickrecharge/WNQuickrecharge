@@ -79,8 +79,7 @@ public class WalletBalanceAct extends BaseActivity {
             case R.id.act_wallet_balance_deposit:
                 showToast("充值");
                 break;
-            case R.id.act_wallet_balance_withdraw:
-                showToast("提现");
+            case R.id.act_wallet_balance_withdraw://暂时不做的功能
                 break;
         }
     }
