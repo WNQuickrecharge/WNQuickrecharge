@@ -81,9 +81,9 @@ public class UserInfo implements Serializable{
         public int Id;
         public int UserId;
         public int AmmountType;
-        public int TotalCash;
-        public int FrozenCash;
-        public int RestCash;
+        public float TotalCash;
+        public float FrozenCash;
+        public float RestCash;
         public String CreateTime;
         public String CreateBy;
         public Object UpdateTime;

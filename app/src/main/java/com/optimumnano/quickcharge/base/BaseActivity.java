@@ -263,7 +263,7 @@ public class BaseActivity extends AppCompatActivity {
 //        Log.d(TAG, "获取权限失败=" + requestCode);
     }
 
-    public void logi(String msg){
+    public void logtesti(String msg){
         if (BuildConfig.DEBUG)
             LogUtil.i("test== "+msg);
     }

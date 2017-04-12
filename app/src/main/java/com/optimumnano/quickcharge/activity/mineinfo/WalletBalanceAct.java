@@ -9,8 +9,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.CircleImageView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,6 +46,8 @@ public class WalletBalanceAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_balance);
         ButterKnife.bind(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         initViews();
         initData();
         initListener();
@@ -64,12 +72,16 @@ public class WalletBalanceAct extends BaseActivity {
         Glide.with(WalletBalanceAct.this)
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_text_tip).into(mHeadview);
+
+        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
+        mBalanceValue.setText(balance);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.act_wallet_balance_deposit, R.id.act_wallet_balance_withdraw})
@@ -81,5 +93,10 @@ public class WalletBalanceAct extends BaseActivity {
             case R.id.act_wallet_balance_withdraw://提现 暂时不做的功能
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
+        mBalanceValue.setText(event.balance);
     }
 }

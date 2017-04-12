@@ -31,7 +31,9 @@ import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
@@ -169,7 +171,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             super.onSuccess(returnContent);
             showToast("登陆成功!");
             LogUtil.i("test==returnContent "+returnContent);
-            hideLoading();
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
             JSONObject dataJson = null;
@@ -193,21 +194,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             if (!TextUtils.isEmpty(payPassword)){
                 SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
             }
-            UserInfo.UserinfoBean userinfoBean = JSON.parseObject(data, UserInfo.UserinfoBean.class);
-            LogUtil.i("test==http NickName "+userinfoBean.NickName+" Gender "+userinfoBean.Gender+" PhoneNum "+userinfoBean.PhoneNum+" headurl "+userinfoBean.AvatarUrl);
+            UserInfo userinfoBean = JSON.parseObject(dataJson.toString(), UserInfo.class);
+            LogUtil.i("test==http NickName "+userinfoBean.userinfo.NickName+" Gender "+userinfoBean.userinfo.Gender+" PhoneNum "+userinfoBean.userinfo.PhoneNum+" headurl "+userinfoBean.userinfo.AvatarUrl+" RestCash balance "+userinfoBean.account.RestCash);
 
             String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
-            if (!phoneNum.equals(userinfoBean.PhoneNum)){
+            if (!phoneNum.equals(userinfoBean.userinfo.PhoneNum)){
                 GlideCacheUtil.getInstance().clearImageAllCache(LoginActivity.this);
                 SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
                 LogUtil.i("test==Glide  clearDiskCache");
             }
 
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,TextUtils.isEmpty(userinfoBean.NickName)?"":userinfoBean.NickName);
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.AvatarUrl)?"":userinfoBean.AvatarUrl);
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.Gender);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.PhoneNum);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,TextUtils.isEmpty(userinfoBean.userinfo.NickName)?"":userinfoBean.userinfo.NickName);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.userinfo.AvatarUrl)?"":userinfoBean.userinfo.AvatarUrl);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
+            DecimalFormat df = new DecimalFormat("0.00");
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(userinfoBean.account.RestCash));
 
+            hideLoading();
             finish();
         }
 
@@ -217,6 +221,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             hideLoading();
             showToast(msg);
         }
+
+        @Override
+        public void onFailure(String msg, int requestCode) {
+            super.onFailure(msg, requestCode);
+            hideLoading();
+            showToast(msg);
+        }
+
     }
 
     public void showLoading() {

@@ -14,6 +14,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.CollectionStationAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.StationBean;
+import com.optimumnano.quickcharge.manager.CollectManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MyDivier;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class MyCollectActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private CollectionStationAdapter adapter;
     private List<StationBean> stationBeanList = new ArrayList<>();
+    private CollectManager manager=new CollectManager();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,9 +41,24 @@ public class MyCollectActivity extends BaseActivity {
     }
 
     private void initData() {//114.3717,22.704188
-        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "沃特玛", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
-        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "民富", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
-        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "沃特玛", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
+        manager.getCollect(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                showToast("获取收藏成功!");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
+
+
+//        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "沃特玛", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
+//        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "民富", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
+//        stationBeanList.add(new StationBean(114.3717, 22.704188, "天俊工业园", "沃特玛", "8:00-18:30", "10", "20", "1.5", "0.2", "燕子岭充电站"));
     }
 
     @Override
@@ -62,6 +80,7 @@ public class MyCollectActivity extends BaseActivity {
 
     private void dataChanged() {
         if (adapter == null) {
+
             adapter = new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList);
             recyclerView.setAdapter(adapter);
         } else {

@@ -67,12 +67,13 @@ public class WalletDepositAct extends BaseActivity {
         if (payway == PayDialog.pay_yue)
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
         mPayPsd = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
-        logi("mPayPsd "+mPayPsd);
+        logtesti("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
 
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
         mPayWayDialog = new PayWayDialog(WalletDepositAct.this);
+        mPayWayDialog.getPayWayItemViewById(R.id.dialog_chose_payway_ye).setVisibility(View.GONE);
     }
 
     @Override
@@ -89,13 +90,14 @@ public class WalletDepositAct extends BaseActivity {
         super.onDestroy();
         dismissDialog();
         mPayWayDialog=null;
+        mPayDialog=null;
     }
 
     @OnClick({R.id.act_wallet_deposit_tv_next,R.id.act_wallet_deposit_rl_payway})
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-                        //showPayPsdDialog();
+//                        showPayPsdDialog();
                         callPay();
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
@@ -110,6 +112,7 @@ public class WalletDepositAct extends BaseActivity {
         intent.putExtra("payway",mChosePayway);
         intent.putExtra("amount",mEtAmount.getText().toString().trim());
         startActivity(intent);
+        finish();
     }
 
     private void showPayPsdDialog() {
@@ -146,10 +149,12 @@ public class WalletDepositAct extends BaseActivity {
                         showToast("支付密码错误");
                         mPayDialog.cleanPasswordView();
                     }else {
-                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
+                        callPay();
+                        dismissDialog();
+//                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
 
-                    logi("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
+                    logtesti("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
                 }
             }
         });
@@ -199,6 +204,9 @@ public class WalletDepositAct extends BaseActivity {
     private void dismissDialog(){
         if (null!= mPayWayDialog){
             mPayWayDialog.close();
+        }
+        if (null!= mPayDialog){
+            mPayDialog.close();
         }
     }
 }

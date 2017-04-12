@@ -81,6 +81,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/act_bill_detail_rl_advanceamount"
         android:layout_marginTop="@dimen/dimen_1"
         android:padding="@dimen/dimen_12"
         android:background="@color/white"
@@ -99,6 +100,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/act_bill_detail_rl_backamount"
         android:layout_marginTop="@dimen/dimen_1"
         android:padding="@dimen/dimen_12"
         android:background="@color/white"

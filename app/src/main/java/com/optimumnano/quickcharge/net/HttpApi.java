@@ -42,5 +42,8 @@ public class HttpApi {
     public static final String pay_success = "capp/order/pay_succ";//支付成功  测试
     public static final String cancel_order = "capp/order/cancel_order";//取消订单
     public static final String delete_order = "capp/order/delete_order";//删除订单
+    public static final String get_collection = "capp/user/get_collection";//获取个人收藏站点信息
+    public static final String add_collection = "capp/user/AddCollection";//增加收藏站点
+
 
 }

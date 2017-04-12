@@ -110,7 +110,7 @@
         <activity android:name=".activity.mineinfo.MyMessageAct" android:screenOrientation="portrait"></activity>
         <activity android:name=".activity.mineinfo.WalletBillDetailAct" android:screenOrientation="portrait"></activity>
         <activity android:name=".activity.mineinfo.WalletDepositAct" android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.mineinfo.WalletDepositSuccessAct" android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.mineinfo.WalletDepositSuccessAct" android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
         <activity android:name=".activity.order.OrderDetlActivity"></activity>
         <activity
             android:name=".activity.setting.ModifyPayPasswordActivity"
