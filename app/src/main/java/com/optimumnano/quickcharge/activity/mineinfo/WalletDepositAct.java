@@ -107,6 +107,10 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callPay() {
+        if (TextUtils.isEmpty(mAmount)){
+            showToast("充值金额不能为空");
+            return;
+        }
         showToast("调起支付");
         Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
         intent.putExtra("payway",mChosePayway);
