@@ -48,9 +48,15 @@ public abstract class HttpCallback<T> {
         if (ex instanceof SocketTimeoutException) {
             ToastUtil.showToast(x.app(), "连接超时...");
         }
-        String errorCode =  ((HttpException) ex).getCode()+"";
-        String errorMsg = ERROR_MSG_DEFAULT;
-        onFailure(errorMsg, errorCode, httpCode);
+        String errorCode="";
+        String errorMsg=ERROR_MSG_DEFAULT;
+        try {
+            errorCode =  ((HttpException) ex).getCode()+"";
+            errorMsg = ERROR_MSG_DEFAULT;
+        }catch (Exception e){
+            onFailure(errorMsg, errorCode, httpCode);
+        }
+
     }
 
     public void onCancelled(Callback.CancelledException cex, int httpCode) {

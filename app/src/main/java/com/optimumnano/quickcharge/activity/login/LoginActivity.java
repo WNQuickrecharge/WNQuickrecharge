@@ -217,6 +217,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             hideLoading();
             showToast(msg);
         }
+
+        @Override
+        public void onFailure(String msg, int requestCode) {
+            super.onFailure(msg, requestCode);
+            hideLoading();
+            showToast(msg);
+        }
+
     }
 
     public void showLoading() {
