@@ -49,17 +49,15 @@ public abstract class HttpCallback<T> {
         if (ex instanceof SocketTimeoutException) {
             errorMsg = "连接超时...";
         }
-        String errorCode =  ((HttpException) ex).getCode()+"";
-        if (errorCode.equals("401")){
-            errorCode = ex.getMessage();
-        }
         String errorCode="";
-        String errorMsg=ERROR_MSG_DEFAULT;
         try {
             errorCode =  ((HttpException) ex).getCode()+"";
             errorMsg = ERROR_MSG_DEFAULT;
         }catch (Exception e){
             onFailure(errorMsg, errorCode, httpCode);
+        }
+        if (errorCode.equals("401")){
+            errorCode = ex.getMessage();
         }
         onFailure(errorMsg, errorCode, httpCode);
 
