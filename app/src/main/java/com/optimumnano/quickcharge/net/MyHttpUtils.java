@@ -134,9 +134,11 @@ public class MyHttpUtils<T> {
                 cancelable = http().request(method, params, new MyCommonCallback(callback, httpCode));
 //                CancelableManager.getInstance().putCancelable();
             } else {
+                LogUtil.i("Httpcode1="+httpCode);
                 callback.onFailure("无网络", HttpCallback.NOT_NET, httpCode);
             }
         } catch (Exception e) {
+            LogUtil.i("Httpcode2="+httpCode);
             callback.onFailure("请求异常", HttpCallback.EXCEPTION, httpCode);
             LogUtil.e(TAG, e);
         }
@@ -177,6 +179,7 @@ public class MyHttpUtils<T> {
         public MyCommonCallback(HttpCallback callback, int httpCode) {
             this.callback = callback;
             this.httpCode = httpCode;
+            LogUtil.i("code="+httpCode);
         }
 
         @Override
@@ -218,9 +221,11 @@ public class MyHttpUtils<T> {
                         }
                     }
                 } else {
+                    LogUtil.i("httpCode1=="+httpCode);
                     callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
                 }
             } catch (Exception e) {
+                LogUtil.i("httpCode2=="+httpCode);
                 callback.onFailure("数据异常", null, httpCode);
                 LogUtil.e(TAG, e);
             }
@@ -231,9 +236,11 @@ public class MyHttpUtils<T> {
         public void onError(Throwable ex, boolean isOnCallback) {
             try {
                 if (callback != null) {
+                    LogUtil.i("httpCode3=="+httpCode);
                     callback.onError(ex, isOnCallback, httpCode);
                 }
             } catch (Exception e) {
+                callback.onError(ex, isOnCallback, httpCode);
                 LogUtil.e(TAG, e);
             }
         }
@@ -251,6 +258,7 @@ public class MyHttpUtils<T> {
                 callback.onFinished(httpCode);
             }
         }
+
 
     }
     public void download(RequestParams params, final ManagerCallback<String> callback) {

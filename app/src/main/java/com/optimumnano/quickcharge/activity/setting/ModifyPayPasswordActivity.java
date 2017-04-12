@@ -108,9 +108,10 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         }
         if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_OLD_PAY_PASSWORD)) {
             String Md5Paypassword = MD5Utils.encodeMD5(str);
+            String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
             showLoading();
             String payPassword = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PAYPASSWORD, "");
-            if (!Md5Paypassword.equals(payPassword)) {
+            if (!finalPayPassword.equals(payPassword)) {
 
                 EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
 
@@ -130,7 +131,9 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
                 //两次密码相同提交服务器修改支付密码
                 //showToast("提交服务器修改支付密码");
                 showLoading();
-                manager.modifyPayPassword(confirmPayPassword, new Manager());
+                String md5PayPassword = MD5Utils.encodeMD5(confirmPayPassword);
+                String finalPayPassword = MD5Utils.encodeMD5(md5PayPassword);
+                manager.modifyPayPassword(finalPayPassword, new Manager());
                 finish();
             } else {
                 myDialog.setTitle("提醒");

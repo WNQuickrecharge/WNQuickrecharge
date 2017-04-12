@@ -123,6 +123,7 @@ public class ModifyUserInformationManager {
 
             @Override
             public void onFailure(String msg, String errorCode, int httpCode) {
+                LogUtil.i("Httpc===="+httpCode);
                 super.onFailure(msg, errorCode, httpCode);
                 callback.onFailure(msg);
             }

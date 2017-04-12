@@ -86,8 +86,9 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
         }
         String newPassword = edtConfirmPwd.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
+        String finalPassword = MD5Utils.encodeMD5(Md5Password);
         loginManager.forgetPassword(mobile,"ForgetPwdCApp",
-                edtChecknum.getText().toString(),Md5Password,
+                edtChecknum.getText().toString(),finalPassword,
                 1,new Manager());
     }
 
