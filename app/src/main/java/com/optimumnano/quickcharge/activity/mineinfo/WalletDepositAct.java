@@ -97,7 +97,8 @@ public class WalletDepositAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-                        showPayPsdDialog();
+//                        showPayPsdDialog();
+                        callPay();
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
                         showChosePayWayDialog();
