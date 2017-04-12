@@ -56,6 +56,7 @@ public abstract class HttpCallback<T> {
         }catch (Exception e){
             onFailure(errorMsg, errorCode, httpCode);
         }
+        onFailure(errorMsg, errorCode, httpCode);
 
     }
 
