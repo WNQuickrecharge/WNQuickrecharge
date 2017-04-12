@@ -149,12 +149,71 @@ public class OrderManager {
      * @param order_no 订单号
      * @param callback 回调
      */
-    public void startCharge (String order_no,final ManagerCallback callback){
+    public void startCharge (String order_no,final ManagerCallback callback,final int requestCode){
         String url = HttpApi.getInstance().getUrl(HttpApi.start_charge);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
         params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result,requestCode);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg,requestCode);
+            }
+        });
+    }
+
+    /**
+     * 充电进度查询
+     * @param order_no 订单号
+     * @param test_no 测试数据，从1到10，每循环一次加一
+     * @param callback 回调
+     */
+    public void getChargeProgress (String order_no,int test_no,final ManagerCallback callback,final int requestCode){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_chargeProgress);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("order_no",order_no);
+        ha.put("test_no",test_no);
+        params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result,requestCode);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg,requestCode);
+            }
+        });
+    }
+
+    /**
+     * 支付成功  测试
+     * @param order_no 订单号
+     * @param pay_cash 支付金额
+     * @param callback 回调
+     */
+    public void startPay (String order_no,double pay_cash,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.pay_success);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("order_no",order_no);
+        ha.put("pay_cash",pay_cash);
+        params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -171,29 +230,55 @@ public class OrderManager {
     }
 
     /**
-     * 开始充电
+     * 支付成功  测试
      * @param order_no 订单号
-     * @param test_no 测试数据，从1到10，每循环一次加一
      * @param callback 回调
      */
-    public void getChargeProgress (String order_no,int test_no,final ManagerCallback callback,final int requestCode){
-        String url = HttpApi.getInstance().getUrl(HttpApi.get_chargeProgress);
+    public void cancelOrder (String order_no,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.cancel_order);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
-        ha.put("test_no",test_no);
         params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
                 super.onSuccess(result, httpCode);
-                callback.onSuccess(result,requestCode);
+                callback.onSuccess(result);
             }
 
             @Override
             public void onFailure(String msg, String errorCode, int httpCode) {
                 super.onFailure(msg, errorCode, httpCode);
-                callback.onFailure(msg,requestCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
+    /**
+     * 支付成功  测试
+     * @param order_no 订单号
+     * @param callback 回调
+     */
+    public void deleteOrder (String order_no,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.delete_order);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("order_no",order_no);
+        params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
             }
         });
     }

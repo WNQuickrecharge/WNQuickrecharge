@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 /**
  * 下单界面
  */
-public class OrderActivity extends BaseActivity implements View.OnClickListener {
+public class OrderActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
 
     @Bind(R.id.order_tvConfirm)
     TextView tvConfirm;
@@ -97,6 +98,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     }
     private void initDialog(){
         payDialog = new PayDialog(this);
+        payDialog.setPayCallback(this);
         payWayDialog = new PayWayDialog(this);
         payDialog.setPaywayListener(this);
         payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
@@ -118,32 +120,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                         miPayway.setIvLeftDrawable(R.drawable.yue);
                         miPayway.setTvLeftText("余额");
                         break;
-                }
-            }
-        });
-
-        payDialog.setTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 6){
-                    if (s.toString().equals("123456")){
-                        payDialog.setStatus(PayDialog.PAYSUCCESS);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("order_no",orderNo);
-                        bundle.putString("gun_no",gunNo);
-                        skipActivity(RechargeControlActivity.class,bundle);
-                        payDialog.close();
-                    }
-                    else {
-                        payDialog.setStatus(PayDialog.PAYFAIL);
-                    }
-
                 }
             }
         });
@@ -176,6 +152,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 Gson gson = new Gson();
                 HashMap<String,Object> ha = gson.fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
                 orderNo = ha.get("order_no").toString();
+                payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo);
                 payDialog.setStatus(0);
                 payDialog.show();
             }
@@ -188,4 +165,17 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         });
     }
 
+    @Override
+    public void paySuccess() {
+        Bundle bundle = new Bundle();
+        bundle.putString("order_no",orderNo);
+        bundle.putString("gun_no",gunNo);
+        bundle.putInt("order_status", Constants.STARTCHARGE);
+        skipActivity(RechargeControlActivity.class,bundle);
+    }
+
+    @Override
+    public void payFail() {
+
+    }
 }

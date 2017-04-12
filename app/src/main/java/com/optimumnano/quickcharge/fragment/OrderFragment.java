@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.listener.RecyclerItemClickListener;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MyDivier;
@@ -29,7 +31,7 @@ import java.util.List;
 /**
  * 订单
  */
-public class OrderFragment extends BaseFragment {
+public class OrderFragment extends BaseFragment implements View.OnClickListener{
     private View mainView;
     private RecyclerView recyclerView;
     private Context ctx;
@@ -55,14 +57,17 @@ public class OrderFragment extends BaseFragment {
     }
 
     private void initViews() {
+
+        HTRefreshRecyclerView view ;
+
+
         recyclerView = (RecyclerView) mainView.findViewById(R.id.order_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
-
-        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+            public void onItemClick(View view, int position) {
                 OrderBean orderBean = orderList.get(position);
                 Intent intent;
                 if (orderBean.order_status==2 || orderBean.order_status==4){
@@ -77,7 +82,31 @@ public class OrderFragment extends BaseFragment {
                 intent.putExtras(bundle);
                 getActivity().startActivity(intent);
             }
-        });
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        }));
+
+//        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
+//            @Override
+//            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                OrderBean orderBean = orderList.get(position);
+//                Intent intent;
+//                if (orderBean.order_status==2 || orderBean.order_status==4){
+//                    intent = new Intent(getActivity(), OrderlistDetailActivity.class);
+//                }
+//                else {
+//                    intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
+//                }
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("orderbean",orderList.get(position));
+//                intent.putExtras(bundle);
+//                getActivity().startActivity(intent);
+//            }
+//        });
     }
     private void initData(){
         orderManager.getAllOrderlist(1, 10, new ManagerCallback<List<OrderBean>>() {
@@ -101,6 +130,16 @@ public class OrderFragment extends BaseFragment {
         }
         else {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            //订单支付
+            case R.id.order_tvPay:
+
+                break;
         }
     }
 }
