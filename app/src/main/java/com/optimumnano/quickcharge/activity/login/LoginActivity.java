@@ -209,7 +209,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
             DecimalFormat df = new DecimalFormat("0.00");
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(userinfoBean.account.RestCash));
+            boolean b= userinfoBean.account.RestCash==0.0f||userinfoBean.account==null;
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
 
             hideLoading();
             finish();

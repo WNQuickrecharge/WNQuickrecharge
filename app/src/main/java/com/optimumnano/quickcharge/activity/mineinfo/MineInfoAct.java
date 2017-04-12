@@ -18,6 +18,7 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.Base64Image;
@@ -27,6 +28,7 @@ import com.optimumnano.quickcharge.views.CircleImageView;
 import com.optimumnano.quickcharge.views.GlideImageLoader;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
@@ -252,8 +254,8 @@ public class MineInfoAct extends BaseActivity {
                     mTvSex.setRightText(mUerSex ==1?"男":"女");
                     SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
                 }
-
                 LogUtil.i("test==modifyUserInfo onSuccess ");
+                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
             }
 
             @Override
@@ -282,6 +284,7 @@ public class MineInfoAct extends BaseActivity {
                         .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(mHeadview);
                 SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
                 LogUtil.i("test==modifyHeadView onSuccess "+netHeadUrl);
+                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
             }
 
             @Override
