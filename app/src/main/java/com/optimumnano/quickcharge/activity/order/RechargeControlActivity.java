@@ -2,9 +2,13 @@ package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
@@ -12,6 +16,7 @@ import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.WaveLoadingView;
 
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,19 +28,23 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
     private WaveLoadingView waveLoadingView;
     private TextView tvPersent,tvStart,tvStop,tvDescone,tvDescTwo,tvTime;
-    int persent = 0;
     static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
     private WaitRechargeDialog dialog;
 
+    private int persent = 0;
     private OrderManager orderManager = new OrderManager();
-    private boolean canStartcharege = false;//是否可以点击开始充电
+//    private boolean canStartcharege = false;//是否可以点击开始充电
 
-    private String orderNo,gunNo;
+    private String orderNo;
     private ShortMessageCountDownTimer smcCountDownTimer;
     private RequestCallback callback = new RequestCallback();
 
     public static final int GETCONNECT = 0;
     public static final int GETCHARGEPROGRESS = 1;
+    public static final int STARTCHARGE = 2;
+    private int progress = 1;
+
+    private int orderStatus;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,14 +56,15 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
     private void getExtras(){
         orderNo = getIntent().getExtras().getString("order_no");
-        gunNo = getIntent().getExtras().getString("gun_no");
+//        gunNo = getIntent().getExtras().getString("gun_no");
+        orderStatus = getIntent().getExtras().getInt("order_status");
     }
     private void initListener() {
         tvStart.setOnClickListener(this);
         tvStop.setOnClickListener(this);
     }
     private void initData(){
-        startCountTime(1000*1000,2000);
+//        startCountTime(1000*1000,2000);
     }
 
     @Override
@@ -70,6 +80,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         tvStop = (TextView) findViewById(R.id.rechargecon_tvStop);
         tvTime = (TextView) findViewById(R.id.rechargecon_tvTime);
 
+        if (orderStatus == Constants.GETCHARGEPROGRESS){
+            startCountTime(1000*1000,10*1000);
+        }
 
         dialog = new WaitRechargeDialog(this);
     }
@@ -90,45 +103,12 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
 
     private void startRecharge() {
-        if (!canStartcharege){
-            showToast("等待连接中。。。");
-            return;
-        }
+//        if (!canStartcharege){
+//            showToast("等待连接中。。。");
+//            return;
+//        }
         dialog.show();
-        tvStart.setVisibility(View.GONE);
-        tvStop.setVisibility(View.VISIBLE);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(10000);
-//                    dialog.cancelDialog();
-//                    service.scheduleAtFixedRate(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            while (persent<100){
-//                                persent += 1;
-//                                waveLoadingView.setWaveHeight(persent);
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        tvTime.setVisibility(View.VISIBLE);
-//                                        tvPersent.setText(persent+"%");
-//                                    }
-//                                });
-//                                try {
-//                                    Thread.sleep(500);
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
-//                    }, 0, 500, TimeUnit.SECONDS);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+        orderManager.startCharge(orderNo,callback,STARTCHARGE);
     }
 
     @Override
@@ -149,16 +129,22 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     class ShortMessageCountDownTimer extends CountDownTimer {
         public ShortMessageCountDownTimer(long millisInFuture,long countDownInterval) {
             super(millisInFuture, countDownInterval);
-            if (!canStartcharege){
-                orderManager.getGunConnect(gunNo,callback,GETCONNECT);
-            }
+//            if (!canStartcharege){
+//                orderManager.getGunConnect(gunNo,callback,GETCONNECT);
+//            }
+//            else{
+                orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+//            }
 
         }
         @Override
         public void onTick(long arg0) {
-            if (!canStartcharege){
-                orderManager.getGunConnect(gunNo,callback,GETCHARGEPROGRESS);
-            }
+//            if (!canStartcharege){
+//                orderManager.getGunConnect(gunNo,callback,GETCHARGEPROGRESS);
+//            }
+//            else{
+                orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+//            }
         }
         @Override
         public void onFinish() {}
@@ -167,20 +153,42 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         @Override
         public void onSuccess(String returnContent, int requestCode) {
             super.onSuccess(returnContent, requestCode);
-            if (requestCode == GETCONNECT){
-                canStartcharege = true;
-                stopCountTime();
+            //握手连接
+//            if (requestCode == GETCONNECT){
+////                canStartcharege = true;
+//                stopCountTime();
+//            }
+//            //开始充电
+//            else
+            if (requestCode == STARTCHARGE){
+                startCountTime(1000*1000,10*1000);
+                dialog.cancelDialog();
+                tvStart.setVisibility(View.GONE);
+                tvStop.setVisibility(View.VISIBLE);
             }
+            //充电进度查询
             else {
-
+//                {"time_remain":60,"status":"充电中","progress":40}
+                HashMap<String,Object> ha = new Gson().fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
+                persent = (int) Double.parseDouble(ha.get("progress").toString());
+                tvTime.setVisibility(View.VISIBLE);
+                tvTime.setText("充电预计时间"+ha.get("time_remain")+"分钟");
+                tvPersent.setText(persent+"%");
+                waveLoadingView.setWaveHeight(persent);
+                tvDescone.setText("正在充电中");
+                tvDescTwo.setText("请您稍作休息");
             }
-
         }
-
         @Override
         public void onFailure(String msg, int requestCode) {
             super.onFailure(msg, requestCode);
-            showToast(msg);
+            if (requestCode == STARTCHARGE){
+                dialog.cancelDialog();
+                showToast(msg);
+            }
+            else {
+                stopCountTime();
+            }
         }
     }
 }

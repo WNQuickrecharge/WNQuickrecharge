@@ -2,13 +2,19 @@ package com.optimumnano.quickcharge.dialog;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
@@ -31,6 +37,10 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     public static final int pay_yue = 2;
     private Activity activity;
     private TextView payName;
+    private OrderManager orderManager = new OrderManager();
+    private PayCallback payCallback;
+    private double money;
+    private String order_no;
     public PayDialog(Activity mAty) {
         super(mAty);
         activity = mAty;
@@ -53,6 +63,11 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
         dialog.getViewHolder().getView(R.id.pay_tvUpdatePwd).setOnClickListener(this);
         dialog.getViewHolder().getView(R.id.pay_payWay).setOnClickListener(this);
         payName = dialog.getViewHolder().getView(R.id.pay_name);
+        setTextChangedListener();
+    }
+
+    public void setPayCallback(PayCallback payCallback) {
+        this.payCallback = payCallback;
     }
 
     @Override
@@ -62,10 +77,43 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
 
     /**
      * 密码控件变化监听
-     * @param watcher 监听器
      */
-    public void setTextChangedListener(TextWatcher watcher){
-        passwordView.addTextChangedListener(watcher);
+    public void setTextChangedListener(TextWatcher textWatcher){
+        passwordView.addTextChangedListener(textWatcher);
+    }
+    public void setTextChangedListener(){
+        passwordView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 6) {
+                    if (s.toString().equals("123456")) {
+                        orderManager.startPay(order_no, money, new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                close();
+                                payCallback.paySuccess();
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                                payCallback.payFail();
+                            }
+                        });
+                    } else {
+                        setStatus(PayDialog.PAYFAIL);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -81,6 +129,12 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
      * @param money 金额
      */
     public void setMoney(double money){
+        this.money = money;
+        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+    }
+    public void setMoney(double money,String order_no){
+        this.money = money;
+        this.order_no  = order_no;
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
     }
 
@@ -212,5 +266,10 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
 
     public void setPayName(String payname){
         payName.setText(payname);
+    }
+
+    public interface PayCallback{
+        void paySuccess();
+        void payFail();
     }
 }

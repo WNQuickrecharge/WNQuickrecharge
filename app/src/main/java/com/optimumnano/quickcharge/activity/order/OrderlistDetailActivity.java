@@ -4,16 +4,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
-public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener {
+public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
     private TextView tvPay,tvCancel,tvWatchStatus;
     private TextView tvStatus,tvOrdernum,tvCompany,tvAddress,tvDate;
     private OrderBean orderBean;
     private MenuItem1 miGunNum,miPileType,miElec,miPower,miForzenCatsh;
+
+    private PayDialog payDialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,14 +56,31 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         tvWatchStatus.setOnClickListener(this);
     }
     private void initData(){
-        if (orderBean.order_status==2){
+        payDialog = new PayDialog(this);
+        payDialog.setMoney(orderBean.frozen_cash,orderBean.order_no);
+        payDialog.setPayCallback(this);
+        if (orderBean.order_status == 1){
+            tvStatus.setText("已取消");
+            tvPay.setVisibility(View.VISIBLE);
+            tvPay.setText("确定");
+            tvCancel.setVisibility(View.GONE);
+            tvWatchStatus.setVisibility(View.GONE);
+        }
+        else if (orderBean.order_status==2){
+            tvPay.setText("支付");
             tvStatus.setText("待支付");
             tvPay.setVisibility(View.VISIBLE);
             tvCancel.setVisibility(View.VISIBLE);
             tvWatchStatus.setVisibility(View.GONE);
         }
-        else {
-            tvStatus.setText("充电中");
+        else if (orderBean.order_status == 3){
+            tvStatus.setText("待充电");
+            tvPay.setVisibility(View.GONE);
+            tvCancel.setVisibility(View.GONE);
+            tvWatchStatus.setVisibility(View.VISIBLE);
+        }
+        else if (orderBean.order_status == 4){
+            tvStatus.setText("待充电");
             tvPay.setVisibility(View.GONE);
             tvCancel.setVisibility(View.GONE);
             tvWatchStatus.setVisibility(View.VISIBLE);
@@ -77,16 +98,42 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.orderlistDetl_tvPay:
-
+                if (orderBean.order_status == 1){
+                    finish();
+                }
+                else {
+                    payDialog.show();
+                }
                 break;
             case R.id.orderdtel_tvCancel:
 
                 break;
             case R.id.orderlistDetl_tvWatchStatus:
-
+                Bundle bundle = new Bundle();
+                if (orderBean.order_status == 3){//待充电
+                    bundle.putInt("order_status", Constants.GETCHARGEPROGRESS);
+                }
+                if (orderBean.order_status == 4){//充电中
+                    bundle.putInt("order_status", Constants.STARTCHARGE);
+                }
+                bundle.putString("order_no",orderBean.order_no);
+                skipActivity(RechargeControlActivity.class,bundle);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void paySuccess() {
+        Bundle bundle = new Bundle();
+        bundle.putString("order_no",orderBean.order_no);
+        bundle.putInt("order_status", Constants.STARTCHARGE);
+        skipActivity(RechargeControlActivity.class,bundle);
+    }
+
+    @Override
+    public void payFail() {
+
     }
 }

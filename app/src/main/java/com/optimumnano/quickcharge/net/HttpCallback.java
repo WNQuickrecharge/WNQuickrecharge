@@ -42,14 +42,17 @@ public abstract class HttpCallback<T> {
     }
 
     public void onError(Throwable ex, boolean isOnCallback, int httpCode) {
+        String errorMsg = ERROR_MSG_DEFAULT;
         if (ex instanceof ConnectException) {
-            ToastUtil.showToast(x.app(), "不能连接到服务器...");
+            errorMsg =  "不能连接到服务器...";
         }
         if (ex instanceof SocketTimeoutException) {
-            ToastUtil.showToast(x.app(), "连接超时...");
+            errorMsg = "连接超时...";
         }
         String errorCode =  ((HttpException) ex).getCode()+"";
-        String errorMsg = ERROR_MSG_DEFAULT;
+        if (errorCode.equals("401")){
+            errorCode = ex.getMessage();
+        }
         onFailure(errorMsg, errorCode, httpCode);
     }
 

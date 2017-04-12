@@ -20,4 +20,8 @@ public class Constants {
     public static final String APP_FOLDER_NAME = "WNQuickrecharge";
 
     public static String mSDCardPath = null;
+
+    //订单状态
+    public static final int GETCHARGEPROGRESS = 1;
+    public static final int STARTCHARGE = 2;
 }

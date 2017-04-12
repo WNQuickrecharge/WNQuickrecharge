@@ -39,5 +39,8 @@ public class HttpApi {
     public static final String get_gunConnect= "capp/bs/get_gunConnect";//获取握手状态
     public static final String start_charge = "capp/bs/start_charge";//开始充电
     public static final String get_chargeProgress = "capp/bs/get_chargeProgress";//获取充电过程中的时间和电量
+    public static final String pay_success = "capp/order/pay_succ";//支付成功  测试
+    public static final String cancel_order = "capp/order/cancel_order";//取消订单
+    public static final String delete_order = "capp/order/delete_order";//删除订单
 
 }
