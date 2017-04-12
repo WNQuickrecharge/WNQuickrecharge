@@ -54,7 +54,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
     private void initData() {
         DecimalFormat df = new DecimalFormat("0.00");
         Intent intent = getIntent();
-        int payway = intent.getIntExtra("payway",3);
+        int payway = intent.getIntExtra("payway",PayDialog.pay_wx);
         String amount = intent.getStringExtra("amount");
         showPayWayStatus(payway);
 

@@ -73,6 +73,7 @@ public class WalletDepositAct extends BaseActivity {
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
         mPayWayDialog = new PayWayDialog(WalletDepositAct.this);
+        mPayWayDialog.getPayWayItemViewById(R.id.dialog_chose_payway_ye).setVisibility(View.GONE);
     }
 
     @Override
@@ -89,14 +90,14 @@ public class WalletDepositAct extends BaseActivity {
         super.onDestroy();
         dismissDialog();
         mPayWayDialog=null;
+        mPayDialog=null;
     }
 
     @OnClick({R.id.act_wallet_deposit_tv_next,R.id.act_wallet_deposit_rl_payway})
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-                        //showPayPsdDialog();
-                        callPay();
+                        showPayPsdDialog();
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
                         showChosePayWayDialog();
@@ -110,6 +111,7 @@ public class WalletDepositAct extends BaseActivity {
         intent.putExtra("payway",mChosePayway);
         intent.putExtra("amount",mEtAmount.getText().toString().trim());
         startActivity(intent);
+        finish();
     }
 
     private void showPayPsdDialog() {
@@ -146,7 +148,9 @@ public class WalletDepositAct extends BaseActivity {
                         showToast("支付密码错误");
                         mPayDialog.cleanPasswordView();
                     }else {
-                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
+                        callPay();
+                        dismissDialog();
+//                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
 
                     logtesti("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
@@ -199,6 +203,9 @@ public class WalletDepositAct extends BaseActivity {
     private void dismissDialog(){
         if (null!= mPayWayDialog){
             mPayWayDialog.close();
+        }
+        if (null!= mPayDialog){
+            mPayDialog.close();
         }
     }
 }

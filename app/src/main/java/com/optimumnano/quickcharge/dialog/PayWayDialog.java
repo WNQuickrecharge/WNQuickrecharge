@@ -56,4 +56,8 @@ public class PayWayDialog extends BaseDialog implements View.OnClickListener {
     public interface PayWayDialogClick{
         void onMenuClick(int payway);
     }
+
+    public View getPayWayItemViewById(int viewid){
+       return dialog.getViewHolder().getView(viewid);
+    }
 }
