@@ -46,7 +46,8 @@ public class WalletBalanceAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_balance);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         initViews();
         initData();
         initListener();
@@ -72,14 +73,15 @@ public class WalletBalanceAct extends BaseActivity {
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_text_tip).into(mHeadview);
 
-        float balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, 0.0f);
-        mBalanceValue.setText(balance+"");
+        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
+        mBalanceValue.setText(balance);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.act_wallet_balance_deposit, R.id.act_wallet_balance_withdraw})

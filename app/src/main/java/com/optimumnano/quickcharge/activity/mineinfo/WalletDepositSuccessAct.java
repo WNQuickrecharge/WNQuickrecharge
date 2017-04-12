@@ -52,21 +52,21 @@ public class WalletDepositSuccessAct extends BaseActivity {
     }
 
     private void initData() {
+        DecimalFormat df = new DecimalFormat("0.00");
         Intent intent = getIntent();
         int payway = intent.getIntExtra("payway",3);
         String amount = intent.getStringExtra("amount");
         showPayWayStatus(payway);
-        mMiAmount.setRightText("¥ "+amount);
 
-        float oldBalance = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_BALANCE, 0.0f);
+        String oldBalance = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_BALANCE, "");
         logtesti("oldBalance "+oldBalance);
         float addBalance=Float.valueOf(amount);
-        float finalBalance=oldBalance+addBalance;
-        SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, finalBalance);
+        float finalBalance=Float.valueOf(oldBalance)+addBalance;
+        mMiAmount.setRightText("¥ "+df.format(addBalance));
 
-        DecimalFormat df = new DecimalFormat("0.00");
         String formatBalance = df.format(finalBalance);
         EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(formatBalance));
+        SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, formatBalance);
     }
 
     private void showPayWayStatus(int payway) {

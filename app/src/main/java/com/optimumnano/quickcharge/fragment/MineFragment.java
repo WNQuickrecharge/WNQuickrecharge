@@ -53,7 +53,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     private void initViews() {
@@ -71,12 +72,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mineAbout.setOnClickListener(this);
         mineCollect.setOnClickListener(this);
 
+        initUserInfo();
+    }
+
+    private void initUserInfo() {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(getActivity())
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_text_tip).into(ivHead);
-        float balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, 0.0f);
-        mTvBalance.setText(balance+"");
+        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
+        mTvBalance.setText(balance);
         String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
         mTvNickName.setText(nickName);
     }
@@ -107,11 +112,22 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if ( EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
         mTvBalance.setText(event.balance);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserInfoChangeEvent(EventManager.onUserInfoChangeEvent event) {
+        initUserInfo();
     }
 }

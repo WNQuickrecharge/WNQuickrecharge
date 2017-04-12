@@ -48,7 +48,8 @@ public class MineWalletAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mineinfo_wallet);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         initViews();
         initData();
         initListener();
@@ -71,15 +72,16 @@ public class MineWalletAct extends BaseActivity {
         setTitle("我的钱包");
         mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
         showPayWayStatus(mChosePayway);
-        float balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, 0.0f);
-        mBalance.setRightText(balance+"");
+        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
+        mBalance.setRightText(balance);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dismissDialog();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         mPayWayDialog=null;
     }
 

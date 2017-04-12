@@ -24,4 +24,7 @@ public class EventManager {
             this.balance=finalBalance;
         }
     }
+
+    public static class onUserInfoChangeEvent{
+    }
 }

@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
@@ -169,7 +170,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             super.onSuccess(returnContent);
             showToast("登陆成功!");
             LogUtil.i("test==returnContent "+returnContent);
-            hideLoading();
             startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
             JSONObject dataJson = null;
@@ -207,8 +207,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.userinfo.AvatarUrl)?"":userinfoBean.userinfo.AvatarUrl);
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,userinfoBean.account.RestCash);
+            DecimalFormat df = new DecimalFormat("0.00");
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(userinfoBean.account.RestCash));
 
+            hideLoading();
             finish();
         }
 
