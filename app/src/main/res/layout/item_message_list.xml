@@ -45,7 +45,7 @@
                 android:textColor="@color/color33"
                 android:textSize="@dimen/default_text_size"
                 android:gravity="left"
-                android:text="喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了久了喜欢你好久了喜欢你好久了"
+                android:text="啦啦,呼呼呼"
                 android:minWidth="80dp"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -52,15 +53,15 @@ public class WalletDepositSuccessAct extends BaseActivity {
     private void showPayWayStatus(int payway) {
         Drawable drawable=null;
         switch (payway){
-            case 0:
+            case PayDialog.pay_wx:
                 drawable= getResources().getDrawable(R.drawable.wx);
                 mTvPayway.setText("微信");
                 break;
-            case 1:
+            case PayDialog.pay_zfb:
                 drawable= getResources().getDrawable(R.drawable.zfb);
                 mTvPayway.setText("支付宝");
                 break;
-            case 2:
+            case PayDialog.pay_yue:
                 drawable= getResources().getDrawable(R.drawable.yue);
                 mTvPayway.setText("余额");
                 break;

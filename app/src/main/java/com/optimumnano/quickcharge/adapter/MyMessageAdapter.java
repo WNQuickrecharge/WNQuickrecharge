@@ -26,7 +26,7 @@ public class MyMessageAdapter extends BaseQuickAdapter<MessageBean,BaseViewHolde
         int position = holder.getAdapterPosition();
         TextView tvStatus = holder.getView(R.id.item_msg_list_tv);
         if (position%2==0){
-            tvStatus.setText("喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了喜欢你好久了久了喜欢你好久了喜欢你好久了");
+            tvStatus.setText("啦啦,呼呼呼,啦啦,呼呼呼,啦啦,呼呼呼,");
         }else {
             tvStatus.setText(item.content);
         }
