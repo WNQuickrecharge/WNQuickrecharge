@@ -10,10 +10,15 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +48,7 @@ public class MineWalletAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mineinfo_wallet);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         initViews();
         initData();
         initListener();
@@ -65,12 +71,15 @@ public class MineWalletAct extends BaseActivity {
         setTitle("我的钱包");
         mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
         showPayWayStatus(mChosePayway);
+        float balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, 0.0f);
+        mBalance.setRightText(balance+"");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dismissDialog();
+        EventBus.getDefault().unregister(this);
         mPayWayDialog=null;
     }
 
@@ -133,5 +142,11 @@ public class MineWalletAct extends BaseActivity {
         if (null!= mPayWayDialog){
             mPayWayDialog.close();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
+        mBalance.setRightText(event.balance);
+        logtesti("onBalanceChangeEvent "+event.balance);
     }
 }

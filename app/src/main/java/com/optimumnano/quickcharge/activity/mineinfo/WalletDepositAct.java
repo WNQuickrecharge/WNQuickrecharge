@@ -67,7 +67,7 @@ public class WalletDepositAct extends BaseActivity {
         if (payway == PayDialog.pay_yue)
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
         mPayPsd = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
-        logi("mPayPsd "+mPayPsd);
+        logtesti("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
 
 
@@ -149,7 +149,7 @@ public class WalletDepositAct extends BaseActivity {
                         mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
 
-                    logi("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
+                    logtesti("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
                 }
             }
         });

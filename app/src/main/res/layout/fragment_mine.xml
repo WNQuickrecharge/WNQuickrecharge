@@ -21,6 +21,7 @@
         android:src="@drawable/head"/>
 
     <TextView
+        android:id="@+id/mine_tv_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/default_textsize16"
@@ -41,6 +42,7 @@
             android:layout_centerVertical="true"
             android:text="充值"/>
         <TextView
+            android:id="@+id/mine_tv_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/default_textsize20"

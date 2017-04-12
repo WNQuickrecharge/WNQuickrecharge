@@ -8,15 +8,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.AboutActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
+import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
 import com.optimumnano.quickcharge.activity.mineinfo.MyCollectActivity;
 import com.optimumnano.quickcharge.activity.setting.SettingActivity;
-import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 我的
@@ -26,6 +39,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private ImageView ivHead;
     private MenuItem1 mineSetting,mineAbout,mineCollect;
     private MenuItem1 mywallet;
+    private TextView mTvBalance;
+    private TextView mTvNickName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +53,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
+        EventBus.getDefault().register(this);
     }
 
     private void initViews() {
@@ -48,10 +64,21 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mywallet = (MenuItem1) mainView.findViewById(R.id.frag_mine_mi_mywallet);
         mineAbout = (MenuItem1) mainView.findViewById(R.id.mine_about);
         mineCollect = (MenuItem1) mainView.findViewById(R.id.mine_collect);
+        mTvBalance = (TextView) mainView.findViewById(R.id.mine_tv_balance);
+        mTvNickName = (TextView) mainView.findViewById(R.id.mine_tv_nickname);
 
         mywallet.setOnClickListener(this);
         mineAbout.setOnClickListener(this);
         mineCollect.setOnClickListener(this);
+
+        String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
+        Glide.with(getActivity())
+                .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.icon_text_tip).into(ivHead);
+        float balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, 0.0f);
+        mTvBalance.setText(balance+"");
+        String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
+        mTvNickName.setText(nickName);
     }
 
     @Override
@@ -75,5 +102,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
+        mTvBalance.setText(event.balance);
     }
 }

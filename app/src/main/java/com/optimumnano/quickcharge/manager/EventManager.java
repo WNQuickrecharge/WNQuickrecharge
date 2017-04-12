@@ -17,4 +17,11 @@ public class EventManager {
             this.inputStatus=inputStatus;
         }
     }
+
+    public static class onBalanceChangeEvent{
+        public String balance;
+        public onBalanceChangeEvent(String finalBalance){
+            this.balance=finalBalance;
+        }
+    }
 }

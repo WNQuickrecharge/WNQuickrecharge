@@ -17,6 +17,8 @@ public interface SPConstant {
     String KEY_USERINFO_NICKNAME ="userinfo_nickname";
     /***sharedpreferences****用户默认支付方式key******/
     String KEY_USERINFO_DEFPAYWAY ="userinfo_defpayway";
+    /***sharedpreferences****用户钱包余额key******/
+    String KEY_USERINFO_BALANCE ="userinfo_balance";
     /**
      * 用户登录的手机号
      */
