@@ -187,6 +187,10 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         }
     }
 
+    public void setCanLoadMore(boolean mNextLoadEnable){
+        this.mNextLoadEnable = mNextLoadEnable;
+    }
+
     /**
      * Refresh complete
      */

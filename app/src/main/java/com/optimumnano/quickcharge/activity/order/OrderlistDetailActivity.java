@@ -9,6 +9,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
@@ -18,6 +20,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     private MenuItem1 miGunNum,miPileType,miElec,miPower,miForzenCatsh;
 
     private PayDialog payDialog;
+    private OrderManager orderManager = new OrderManager();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +83,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
             tvWatchStatus.setVisibility(View.VISIBLE);
         }
         else if (orderBean.order_status == 4){
-            tvStatus.setText("待充电");
+            tvStatus.setText("充电中");
             tvPay.setVisibility(View.GONE);
             tvCancel.setVisibility(View.GONE);
             tvWatchStatus.setVisibility(View.VISIBLE);
@@ -106,15 +109,15 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                 }
                 break;
             case R.id.orderdtel_tvCancel:
-
+                cancelOrder();
                 break;
             case R.id.orderlistDetl_tvWatchStatus:
                 Bundle bundle = new Bundle();
                 if (orderBean.order_status == 3){//待充电
-                    bundle.putInt("order_status", Constants.GETCHARGEPROGRESS);
+                    bundle.putInt("order_status", Constants.STARTCHARGE);
                 }
                 if (orderBean.order_status == 4){//充电中
-                    bundle.putInt("order_status", Constants.STARTCHARGE);
+                    bundle.putInt("order_status", Constants.GETCHARGEPROGRESS);
                 }
                 bundle.putString("order_no",orderBean.order_no);
                 skipActivity(RechargeControlActivity.class,bundle);
@@ -122,6 +125,22 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
             default:
                 break;
         }
+    }
+
+    private void cancelOrder(){
+        orderManager.cancelOrder(orderBean.order_no, new ManagerCallback<String>() {
+            @Override
+            public void onSuccess(String returnContent) {
+                super.onSuccess(returnContent);
+                showToast("取消成功");
+                finish();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override

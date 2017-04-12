@@ -230,7 +230,7 @@ public class OrderManager {
     }
 
     /**
-     * 支付成功  测试
+     * 取消订单
      * @param order_no 订单号
      * @param callback 回调
      */
@@ -257,7 +257,7 @@ public class OrderManager {
     }
 
     /**
-     * 支付成功  测试
+     * 删除订单
      * @param order_no 订单号
      * @param callback 回调
      */

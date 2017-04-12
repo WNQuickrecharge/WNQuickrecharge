@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,14 +32,17 @@ import java.util.List;
 /**
  * 订单
  */
-public class OrderFragment extends BaseFragment implements View.OnClickListener{
+public class OrderFragment extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
     private View mainView;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private Context ctx;
 
     private OrderAdapter adapter;
     private List<OrderBean> orderList = new ArrayList<>();
     private OrderManager orderManager = new OrderManager();
+
+    private int pageSize = 1;//当前页
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,15 +56,14 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
-        initData();
         dataChanged();
     }
 
     private void initViews() {
-
-        HTRefreshRecyclerView view ;
-
-
+        refreshLayout = (SwipeRefreshLayout) mainView.findViewById(R.id.order_swipRefreshLayout);
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorPrimaryDark),getResources().getColor(R.color.colorAccent));
+        refreshLayout.setOnRefreshListener(this);
         recyclerView = (RecyclerView) mainView.findViewById(R.id.order_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
@@ -70,7 +73,8 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener{
             public void onItemClick(View view, int position) {
                 OrderBean orderBean = orderList.get(position);
                 Intent intent;
-                if (orderBean.order_status==2 || orderBean.order_status==4){
+                if (orderBean.order_status==2 || orderBean.order_status==4 ||
+                        orderBean.order_status == 1 || orderBean.order_status == 3){
                     intent = new Intent(getActivity(), OrderlistDetailActivity.class);
                 }
                 else {
@@ -108,12 +112,29 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener{
 //            }
 //        });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
     private void initData(){
-        orderManager.getAllOrderlist(1, 10, new ManagerCallback<List<OrderBean>>() {
+        orderManager.getAllOrderlist(pageSize, 10, new ManagerCallback<List<OrderBean>>() {
             @Override
             public void onSuccess(List<OrderBean> returnContent) {
                 super.onSuccess(returnContent);
+                if (pageSize == 1){
+                    pageSize = 1;
+                    orderList.clear();
+                    adapter.setCanLoadMore(true);
+                }
+                if (returnContent.size()<10){
+//                    adapter.setEnableLoadMore(false);
+                    adapter.loadMoreEnd(true);
+                }
                 orderList.addAll(returnContent);
+                refreshLayout.setRefreshing(false);
                 dataChanged();
             }
 
@@ -127,6 +148,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener{
         if (adapter == null){
             adapter = new OrderAdapter(R.layout.adapter_order,orderList);
             recyclerView.setAdapter(adapter);
+            adapter.setOnLoadMoreListener(this);
         }
         else {
             adapter.notifyDataSetChanged();
@@ -141,5 +163,18 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener{
 
                 break;
         }
+    }
+
+    //下拉刷新
+    @Override
+    public void onRefresh() {
+        pageSize = 1;
+        initData();
+    }
+    //上拉加载
+    @Override
+    public void onLoadMoreRequested() {
+        pageSize ++;
+        initData();
     }
 }
