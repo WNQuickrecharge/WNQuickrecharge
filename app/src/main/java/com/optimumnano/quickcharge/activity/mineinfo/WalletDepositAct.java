@@ -107,6 +107,7 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callPay() {
+        mAmount = mEtAmount.getText().toString().trim();
         if (TextUtils.isEmpty(mAmount)){
             showToast("充值金额不能为空");
             return;
