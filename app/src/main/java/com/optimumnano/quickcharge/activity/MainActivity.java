@@ -229,7 +229,7 @@ public class MainActivity extends BaseActivity {
     public void initViews() {
         super.initViews();
         setTitle(getString(R.string.recharge));
-        setLeftTitle("筛选");
+        setLeftTitle("定位");
         setRightTitle("列表");
         hideBack();
 
@@ -259,7 +259,7 @@ public class MainActivity extends BaseActivity {
                 switch (i) {
                     case R.id.main_rbRecharge:
                         setTitle(getString(R.string.recharge));
-                        setLeftTitle("筛选");
+                        setLeftTitle("定位");
                         setRightTitle("列表");
                         viewPager.setCurrentItem(0);
                         break;

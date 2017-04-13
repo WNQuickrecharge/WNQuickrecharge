@@ -1,14 +1,20 @@
 package com.optimumnano.quickcharge.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 
 import org.xutils.common.util.LogUtil;
 
@@ -18,17 +24,32 @@ import java.util.List;
  * Created by ds on 2017/3/29.
  * 订单列表适配器
  */
-public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> {
+public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> implements PayDialog.PayCallback {
+    private PayDialog payDialog;
     public OrderAdapter(int layoutResId, List<OrderBean> data) {
         super(layoutResId, data);
     }
+
+    @Override
+    protected void convert(BaseViewHolder helper, OrderBean item) {
+
+    }
+
     private Activity activity;
     public void setContext(Activity activity){
         this.activity = activity;
+        payDialog = new PayDialog(activity);
+        payDialog.setPayCallback(this);
+    }
+
+    private MyOnitemClickListener onitemClickListener;
+
+    public void setOnitemClickListener(MyOnitemClickListener onitemClickListener) {
+        this.onitemClickListener = onitemClickListener;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, final OrderBean item) {
+    protected void convert(BaseViewHolder helper, final OrderBean item,final int position) {
         TextView tvStatus = helper.getView(R.id.order_status);
         switch (item.order_status){
             case 1:
@@ -74,27 +95,49 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> {
             public void onClick(View view) {
                 switch (item.order_status){
                     case 2:
-//                        helper.setText(R.id.order_status,"待支付");
-//                        helper.setText(R.id.order_tvPay,"支付订单");
+                        payDialog.show();
+                        payDialog.setMoney(item.frozen_cash,item.order_no);
                         LogUtil.d("待支付");
                         break;
                     case 3:
-//                        helper.setText(R.id.order_status,"待充电");
-//                        helper.setText(R.id.order_tvPay,"查看状态");
+                        skipAct(item.order_no, Constants.STARTCHARGE);
                         LogUtil.d("待充电");
                         break;
                     case 4:
-//                        helper.setText(R.id.order_status,"充电中");
-//                        helper.setText(R.id.order_tvPay,"查看状态");
+                        skipAct(item.order_no, Constants.GETCHARGEPROGRESS);
                         LogUtil.d("充电中");
                         break;
                     case 5:
-//                        helper.setText(R.id.order_status,"已完成");
-//                        helper.setText(R.id.order_tvPay,"评价订单");
                         LogUtil.d("已完成");
                         break;
                 }
             }
         });
+
+        helper.setOnClickListener(R.id.order_llMain, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onitemClickListener.onItemClick(v,position);
+            }
+        });
+    }
+
+    @Override
+    public void paySuccess(String order_no) {
+        skipAct(order_no, Constants.STARTCHARGE);
+    }
+
+    private void skipAct(String order_no,int status) {
+        Intent intent = new Intent(activity,RechargeControlActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("order_no",order_no);
+        bundle.putInt("order_status",status);
+        intent.putExtras(bundle);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void payFail() {
+
     }
 }

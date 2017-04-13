@@ -379,7 +379,7 @@ public class BNDemoMainActivity extends Activity {
 		BNaviSettingManager.setRealRoadCondition(BNaviSettingManager.RealRoadCondition.NAVI_ITS_ON);
 		Bundle bundle = new Bundle();
 		// 必须设置APPID，否则会静音
-		bundle.putString(BNCommonSettingParam.TTS_APP_ID, "9354030");
+		bundle.putString(BNCommonSettingParam.TTS_APP_ID, "9459984");
 		BNaviSettingManager.setNaviSdkParam(bundle);
 	}
 
