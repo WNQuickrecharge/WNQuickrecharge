@@ -8,23 +8,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.View;
 import android.util.Log;
+import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.igexin.sdk.PushManager;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
 import com.baidu.navisdk.adapter.BNaviSettingManager;
 import com.baidu.navisdk.adapter.BaiduNaviManager;
+import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
-import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
+import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
@@ -80,6 +81,12 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.CAMERA
         };
         mShowHelper = new DistShowHepler(this);
+        mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                isShow=false;
+            }
+        });
         requestPermission(permissions, 0);
         initViews();
         initData();
@@ -103,6 +110,7 @@ public class MainActivity extends BaseActivity {
         if (initDirs()) {
             initNavi();
         }
+
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
     }
@@ -242,14 +250,27 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        FilterActivity.start(this);
+        if (isShow=true){
+
+            mShowHelper.getmPopupWindow().dismiss();
+        }else {
+            FilterActivity.start(this);
+        }
     }
+
+    boolean isShow = false;
 
     @Override
     protected void onRightDoSomething() {
         super.onRightDoSomething();
         mShowHelper.setData(mData);
         mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
+        isShow = mShowHelper.getmPopupWindow().isShowing();
+        if (isShow){
+            setLeftTitle("定位");
+        }else{
+            setLeftTitle("筛选");
+        }
     }
 
     private void initListener() {
@@ -289,7 +310,8 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-    public void initData(){
+
+    public void initData() {
         rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
@@ -298,11 +320,13 @@ public class MainActivity extends BaseActivity {
         listFrg.add(mineFragment);
         viewPager.setAdapter(fpa);
     }
+
     FragmentPagerAdapter fpa = new FragmentPagerAdapter(getSupportFragmentManager()) {
         @Override
         public Fragment getItem(int position) {
             return listFrg.get(position);
         }
+
         @Override
         public int getCount() {
             return listFrg.size();
@@ -341,7 +365,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void onNavi(OnNaviEvent event) {
-        if (event==null)
+        if (event == null)
             return;
 
         navi(event.end);
@@ -349,13 +373,13 @@ public class MainActivity extends BaseActivity {
 
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84,mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
         }
     }
 
     private BNRoutePlanNode.CoordinateType mCoordinateType = null;
 
-    private void routeplanToNavi(BNRoutePlanNode.CoordinateType coType,Point mPoint) {
+    private void routeplanToNavi(BNRoutePlanNode.CoordinateType coType, Point mPoint) {
         mCoordinateType = coType;
         if (!hasInitSuccess) {
             Log.d("TAG", "还未初始化!");
