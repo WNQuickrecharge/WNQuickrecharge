@@ -27,4 +27,9 @@ public class EventManager {
 
     public static class onUserInfoChangeEvent{
     }
+
+    public static class addCollectStation{
+        public int station_id;
+        public addCollectStation(int station_id){this.station_id=station_id;}
+    }
 }
