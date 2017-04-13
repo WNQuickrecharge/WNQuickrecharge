@@ -195,7 +195,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
             }
             UserInfo userinfoBean = JSON.parseObject(dataJson.toString(), UserInfo.class);
-            LogUtil.i("test==http NickName "+userinfoBean.userinfo.NickName+" Gender "+userinfoBean.userinfo.Gender+" PhoneNum "+userinfoBean.userinfo.PhoneNum+" headurl "+userinfoBean.userinfo.AvatarUrl+" RestCash balance "+userinfoBean.account.RestCash);
+            //LogUtil.i("test==http NickName "+userinfoBean.userinfo.NickName+" Gender "+userinfoBean.userinfo.Gender+" PhoneNum "+userinfoBean.userinfo.PhoneNum+" headurl "+userinfoBean.userinfo.AvatarUrl+" RestCash balance "+userinfoBean.account.RestCash);
 
             String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
             if (!phoneNum.equals(userinfoBean.userinfo.PhoneNum)){
@@ -209,7 +209,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
             DecimalFormat df = new DecimalFormat("0.00");
-            boolean b= userinfoBean.account.RestCash==0.0f||userinfoBean.account==null;
+            boolean b= userinfoBean.account==null;
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
 
             hideLoading();
