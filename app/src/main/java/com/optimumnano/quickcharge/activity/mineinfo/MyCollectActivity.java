@@ -69,6 +69,7 @@ public class MyCollectActivity extends BaseActivity {
 
     private void initData() {//114.3717,22.704188
         navigation=new BaiduNavigation(this);
+        showLoading();
         manager.getCollect(new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
@@ -85,11 +86,13 @@ public class MyCollectActivity extends BaseActivity {
                 }
                 stationBeanList.addAll(list);
                 dataChanged();
+                hideLoading();
             }
 
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                hideLoading();
                 showToast(msg);
             }
         });

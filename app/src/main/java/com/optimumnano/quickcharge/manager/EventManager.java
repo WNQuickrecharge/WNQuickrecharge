@@ -41,4 +41,11 @@ public class EventManager {
             this.latLng=latLng;
         }
     }
+    public static class openStationDetail{
+        public int id;
+        public openStationDetail(int id){
+            this.id=id;
+        }
+
+    }
 }
