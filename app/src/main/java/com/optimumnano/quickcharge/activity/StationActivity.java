@@ -74,10 +74,11 @@ public class StationActivity extends BaseActivity {
     private void initData() {
         stationName.setText(station.getStationName());
         stationAddress.setText(station.getAddress());
-        serviceName.setText(station.getServiceName());
-        onServiceTime.setText(station.getOnServiceTime());
-        stationFreeGuns.setText(station.getFreeGuns());
-        stationTotalGuns.setText(station.getTotalGuns());
+        serviceName.setText(station.getManagementCompany());
+        onServiceTime.setText(station.getRunTimeSpan());
+        stationFreeGuns.setText(station.getFreePiles()+"");
+        stationTotalGuns.setText(station.getTotalPiles()+"");
+        stationDistance.setText(station.getDistance());
         gunBeanList.add(new GunBean("0001","正在充电"));
         gunBeanList.add(new GunBean("0002","正在充电"));
         gunBeanList.add(new GunBean("0003","正在充电"));

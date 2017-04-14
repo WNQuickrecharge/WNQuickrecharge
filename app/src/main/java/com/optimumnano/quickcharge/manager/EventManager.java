@@ -1,5 +1,8 @@
 package com.optimumnano.quickcharge.manager;
 
+import com.baidu.mapapi.model.LatLng;
+import com.optimumnano.quickcharge.bean.StationBean;
+
 /**
  * Created by mfwn on 2017/4/8.
  */
@@ -31,5 +34,11 @@ public class EventManager {
     public static class addCollectStation{
         public int station_id;
         public addCollectStation(int station_id){this.station_id=station_id;}
+    }
+    public static class startGPS{
+        public LatLng latLng;
+        public startGPS(LatLng latLng){
+            this.latLng=latLng;
+        }
     }
 }
