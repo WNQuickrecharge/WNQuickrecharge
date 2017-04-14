@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -80,11 +81,13 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
         };
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         mShowHelper = new DistShowHepler(this);
         mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 isShow=false;
+                setLeftTitle("筛选");
             }
         });
         requestPermission(permissions, 0);
@@ -250,8 +253,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow=true){
-
+        if (isShow==true){
             mShowHelper.getmPopupWindow().dismiss();
         }else {
             FilterActivity.start(this);
@@ -319,6 +321,7 @@ public class MainActivity extends BaseActivity {
         listFrg.add(orderFragment);
         listFrg.add(mineFragment);
         viewPager.setAdapter(fpa);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     FragmentPagerAdapter fpa = new FragmentPagerAdapter(getSupportFragmentManager()) {
