@@ -16,13 +16,24 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 作者：邓传亮 on 2017/4/11 10:47
@@ -63,10 +74,10 @@ public class WalletDepositAct extends BaseActivity {
 
     private void initData() {
         mManager = new ModifyUserInformationManager();
-        int payway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
+        int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
         if (payway == PayDialog.pay_yue)
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
-        mPayPsd = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
+        mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logtesti("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
 
@@ -107,16 +118,52 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callPay() {
+        mAmount = mEtAmount.getText().toString().trim();
         if (TextUtils.isEmpty(mAmount)){
             showToast("充值金额不能为空");
             return;
         }
         showToast("调起支付");
-        Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
-        intent.putExtra("payway",mChosePayway);
-        intent.putExtra("amount",mEtAmount.getText().toString().trim());
-        startActivity(intent);
-        finish();
+
+        ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                logtesti("returnContent "+returnContent.toString());
+                showToast("充值成功");
+
+                JSONObject dataJson = null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String newBalanceStr = dataJson.optString("rest_cash");
+                logtesti("newBalanceStr "+newBalanceStr);
+                DecimalFormat df = new DecimalFormat("0.00");
+                float addAmount=Float.valueOf(mAmount);
+                float newBalance=Float.valueOf(newBalanceStr);
+
+                String formatAddAmount = df.format(addAmount);
+                String formatNewBalance = df.format(newBalance);
+                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(formatNewBalance));
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, formatNewBalance);
+
+                Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
+                intent.putExtra("payway",mChosePayway);
+                intent.putExtra("amount",formatAddAmount);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+                super.onFailure(msg);
+            }
+
+        });
+
     }
 
     private void showPayPsdDialog() {

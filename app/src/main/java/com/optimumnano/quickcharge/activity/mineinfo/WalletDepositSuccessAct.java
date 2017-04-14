@@ -8,20 +8,11 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
-import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 作者：邓传亮 on 2017/4/11 12:07
@@ -52,21 +43,11 @@ public class WalletDepositSuccessAct extends BaseActivity {
     }
 
     private void initData() {
-        DecimalFormat df = new DecimalFormat("0.00");
         Intent intent = getIntent();
         int payway = intent.getIntExtra("payway",PayDialog.pay_wx);
         String amount = intent.getStringExtra("amount");
+        mMiAmount.setRightText("¥ "+amount);
         showPayWayStatus(payway);
-
-        String oldBalance = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_BALANCE, "");
-        logtesti("oldBalance "+oldBalance);
-        float addBalance=Float.valueOf(amount);
-        float finalBalance=Float.valueOf(oldBalance)+addBalance;
-        mMiAmount.setRightText("¥ "+df.format(addBalance));
-
-        String formatBalance = df.format(finalBalance);
-        EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(formatBalance));
-        SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, formatBalance);
     }
 
     private void showPayWayStatus(int payway) {

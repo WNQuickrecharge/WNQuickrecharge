@@ -1,14 +1,10 @@
 package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.Constants;
@@ -166,7 +162,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void paySuccess() {
+    public void paySuccess(String orderNo) {
         Bundle bundle = new Bundle();
         bundle.putString("order_no",orderNo);
         bundle.putString("gun_no",gunNo);

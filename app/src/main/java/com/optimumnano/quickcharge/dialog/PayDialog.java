@@ -99,7 +99,8 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                             public void onSuccess(Object returnContent) {
                                 super.onSuccess(returnContent);
                                 close();
-                                payCallback.paySuccess();
+//                                payCallback.paySuccess();
+                                payCallback.paySuccess(order_no);
                             }
 
                             @Override
@@ -269,7 +270,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     }
 
     public interface PayCallback{
-        void paySuccess();
+        void paySuccess(String oder_no);
         void payFail();
     }
 }
