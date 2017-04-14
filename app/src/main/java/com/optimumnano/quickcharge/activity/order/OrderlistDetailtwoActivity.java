@@ -1,18 +1,22 @@
 package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
-public class OrderlistDetailtwoActivity extends BaseActivity {
+public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvDeleteOrder;
     private TextView tvStatus,tvOrdernum,tvCompany,tvAddress,tvDate,tvServiceCash;
     private OrderBean orderBean;
     private MenuItem1 miUsertime,miAllelec,miRechargeCash,miAllMoney,miSMoney,miYFMoney,miBackMoney;
+    private OrderManager orderManager = new OrderManager();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,8 @@ public class OrderlistDetailtwoActivity extends BaseActivity {
         miSMoney = (MenuItem1) findViewById(R.id.orderdetl_miSMoney);
         miYFMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miYFCash);
         miBackMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miBackCash);
+
+        tvDeleteOrder.setOnClickListener(this);
     }
     private void initData(){
         tvOrdernum.setText(orderBean.order_no);
@@ -49,5 +55,29 @@ public class OrderlistDetailtwoActivity extends BaseActivity {
         miYFMoney.setRightText("￥"+orderBean.frozen_cash);
         miSMoney.setRightText("￥"+orderBean.charge_cash);
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.orderlistDetl_tvDeleteOrder:
+                deleteOrder();
+                break;
+        }
+    }
+    private void deleteOrder(){
+        orderManager.deleteOrder(orderBean.order_no, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
     }
 }
