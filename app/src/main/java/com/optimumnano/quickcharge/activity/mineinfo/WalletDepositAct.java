@@ -63,17 +63,8 @@ public class WalletDepositAct extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what==SDK_PAY_FLAG){
-                Object obj = msg.obj;
-                String jsonresult=obj.toString();
-
-                JSONObject dataJson = null;
-                try {
-                    dataJson = new JSONObject(jsonresult);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    logtesti("parse error "+e.getMessage());
-                    return;
-                }
+                Map mapresult =(Map) msg.obj;
+                JSONObject dataJson = new JSONObject(mapresult);
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
                 switch (resultStatus){
                     case "9000":
@@ -102,9 +93,7 @@ public class WalletDepositAct extends BaseActivity {
                         break;
                 }
 
-
-                showToast(jsonresult);
-                logtesti("alipayresult "+jsonresult);
+                logtesti("alipayresult "+dataJson.toString());
             }
         }
     };
