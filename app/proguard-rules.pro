@@ -26,10 +26,20 @@
   **[] $VALUES;
   public *;
 }
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 #保护JavaBean
+-dontwarn com.optimumnano.quickcharge.bean.**
 -keep class com.optimumnano.quickcharge.bean.** {*;}
 
 #BASE64Encoder
+-dontwarn Decoder.**
 -keep class Decoder.** {*;}
+-libraryjars sun.misc.BASE64Decoder.jar
+
+#个推
+-keep class com.igexin.** {*;}
+-dontwarn com.igexin.**
+
+#imagepick
+-dontwarn com.lzy.imagepicker.**
+-keep class com.lzy.imagepicker.** {*;}

@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -16,23 +15,15 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
-import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DecimalFormat;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -75,8 +66,11 @@ public class WalletDepositAct extends BaseActivity {
     private void initData() {
         mManager = new ModifyUserInformationManager();
         int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
-        if (payway == PayDialog.pay_yue)
+        if (payway == PayDialog.pay_yue){
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
+        }else {
+            mChosePayway = payway;
+        }
         mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logtesti("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);
@@ -123,6 +117,7 @@ public class WalletDepositAct extends BaseActivity {
             showToast("充值金额不能为空");
             return;
         }
+        //TODO
         showToast("调起支付");
 
         ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
@@ -130,7 +125,7 @@ public class WalletDepositAct extends BaseActivity {
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 logtesti("returnContent "+returnContent.toString());
-                showToast("充值成功");
+                /*showToast("充值成功");
 
                 JSONObject dataJson = null;
                 try {
@@ -153,7 +148,7 @@ public class WalletDepositAct extends BaseActivity {
                 intent.putExtra("payway",mChosePayway);
                 intent.putExtra("amount",formatAddAmount);
                 startActivity(intent);
-                finish();
+                finish();*/
             }
 
             @Override
