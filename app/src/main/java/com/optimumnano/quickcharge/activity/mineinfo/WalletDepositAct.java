@@ -65,6 +65,7 @@ public class WalletDepositAct extends BaseActivity {
             if (msg.what==SDK_PAY_FLAG){
                 Map mapresult =(Map) msg.obj;
                 JSONObject dataJson = new JSONObject(mapresult);
+                logtesti("alipayresult "+dataJson.toString());
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
                 switch (resultStatus){
                     case "9000"://支付成功
@@ -97,7 +98,6 @@ public class WalletDepositAct extends BaseActivity {
                         break;
                 }
 
-                logtesti("alipayresult "+dataJson.toString());
             }
         }
     };
@@ -156,7 +156,11 @@ public class WalletDepositAct extends BaseActivity {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
 //                        showPayPsdDialog();
-                        callPay();
+                        if (mChosePayway==PayDialog.pay_zfb)
+                            callALiPay();
+                        else if (mChosePayway==PayDialog.pay_wx){
+                            //callWXPay();
+                        }
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
                         showChosePayWayDialog();
@@ -164,14 +168,12 @@ public class WalletDepositAct extends BaseActivity {
                 }
     }
 
-    private void callPay() {
+    private void callALiPay() {
         mAmount = mEtAmount.getText().toString().trim();
         if (TextUtils.isEmpty(mAmount)){
             showToast("充值金额不能为空");
             return;
         }
-        //TODO
-        showToast("调起支付");
 
         ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
             @Override
@@ -243,7 +245,7 @@ public class WalletDepositAct extends BaseActivity {
                         showToast("支付密码错误");
                         mPayDialog.cleanPasswordView();
                     }else {
-                        callPay();
+                        callALiPay();
                         dismissDialog();
 //                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
