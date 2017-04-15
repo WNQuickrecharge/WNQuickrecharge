@@ -1,6 +1,10 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,15 +14,22 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
-import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.Tool;
+
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,6 +44,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  */
 public class WalletDepositAct extends BaseActivity {
 
+    private static final int SDK_PAY_FLAG = 001;
     @Bind(R.id.act_wallet_deposit_tv_payway)
     TextView mTvPayway;
     @Bind(R.id.act_wallet_deposit_rl_payway)
@@ -41,13 +53,55 @@ public class WalletDepositAct extends BaseActivity {
     EditText mEtAmount;
     @Bind(R.id.act_wallet_deposit_tv_next)
     TextView mTvNext;
-    private ModifyUserInformationManager mManager;
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
     private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==SDK_PAY_FLAG){
+                Map mapresult =(Map) msg.obj;
+                JSONObject dataJson = new JSONObject(mapresult);
+                logtesti("alipayresult "+dataJson.toString());
+                String resultStatus = dataJson.optString("resultStatus");// 结果码
+                switch (resultStatus){
+                    case "9000"://支付成功
+                    case "8000"://正在处理,支付结果确认中
+                    case "6004"://支付结果未知
+                        showToast("支付成功");
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        float addAmount=Float.valueOf(mAmount);
+                        String formatAddAmount = df.format(addAmount);
+                        Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
+                        intent.putExtra("payway",mChosePayway);
+                        intent.putExtra("amount",formatAddAmount);
+                        startActivity(intent);
+                        finish();
+
+                        break;
+                    case "4000":
+                        showToast("订单支付失败");
+                    case "5000":
+                        showToast("订单不能重复支付");
+                        break;
+                    case "6001":
+                        showToast("取消支付");
+                        break;
+                    case "6002":
+                        showToast("网络连接出错");
+                        break;
+                    default:
+                        showToast("支付异常");
+                        break;
+                }
+
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +118,6 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void initData() {
-        mManager = new ModifyUserInformationManager();
         int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
         if (payway == PayDialog.pay_yue){
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
@@ -102,7 +155,13 @@ public class WalletDepositAct extends BaseActivity {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
 //                        showPayPsdDialog();
-                        callPay();
+                        Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
+                        if (!payCheck()) return;
+                        if (mChosePayway==PayDialog.pay_zfb)
+                            callALiPay();
+                        else if (mChosePayway==PayDialog.pay_wx){
+                            callWXPay();
+                        }
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
                         showChosePayWayDialog();
@@ -110,44 +169,36 @@ public class WalletDepositAct extends BaseActivity {
                 }
     }
 
-    private void callPay() {
-        mAmount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)){
-            showToast("充值金额不能为空");
-            return;
-        }
-        //TODO
-        showToast("调起支付");
+    private void callWXPay() {
+        showToast("还未实现微信支付");
+    }
 
-        ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
+    private void callALiPay() {
+
+        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 logtesti("returnContent "+returnContent.toString());
-                /*showToast("充值成功");
 
-                JSONObject dataJson = null;
-                try {
-                    dataJson = new JSONObject(returnContent.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String newBalanceStr = dataJson.optString("rest_cash");
-                logtesti("newBalanceStr "+newBalanceStr);
-                DecimalFormat df = new DecimalFormat("0.00");
-                float addAmount=Float.valueOf(mAmount);
-                float newBalance=Float.valueOf(newBalanceStr);
+                final String orderInfo = returnContent.toString();// 签名后的订单信息
+                Runnable payRunnable = new Runnable() {
 
-                String formatAddAmount = df.format(addAmount);
-                String formatNewBalance = df.format(newBalance);
-                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(formatNewBalance));
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, formatNewBalance);
+                    @Override
+                    public void run() {
+                        PayTask alipay = new PayTask(WalletDepositAct.this);
+                        Map<String, String> result = alipay.payV2(orderInfo, true);//true表示唤起loading等待界面
 
-                Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
-                intent.putExtra("payway",mChosePayway);
-                intent.putExtra("amount",formatAddAmount);
-                startActivity(intent);
-                finish();*/
+                        Message msg = new Message();
+                        msg.what = SDK_PAY_FLAG;
+                        msg.obj = result;
+                        mHandler.sendMessage(msg);
+                    }
+                };
+                // 必须异步调用
+                Thread payThread = new Thread(payRunnable);
+                payThread.start();
+
             }
 
             @Override
@@ -158,6 +209,20 @@ public class WalletDepositAct extends BaseActivity {
 
         });
 
+    }
+
+    private boolean payCheck() {
+        mAmount = mEtAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(mAmount)){
+            showToast("充值金额不能为空");
+            return false;
+        }
+
+        if (Double.parseDouble(mAmount)==0){
+            showToast("充值金额不能小于0.01");
+            return false;
+        }
+        return true;
     }
 
     private void showPayPsdDialog() {
@@ -194,7 +259,7 @@ public class WalletDepositAct extends BaseActivity {
                         showToast("支付密码错误");
                         mPayDialog.cleanPasswordView();
                     }else {
-                        callPay();
+                        callALiPay();
                         dismissDialog();
 //                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
                     }
