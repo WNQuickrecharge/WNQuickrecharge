@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -64,27 +66,31 @@ public class WalletDepositAct extends BaseActivity {
                 Map mapresult =(Map) msg.obj;
                 JSONObject dataJson = new JSONObject(mapresult);
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
-                //PayResult payResult= JSON.parseObject(dataJson.toString(),PayResult.class);
                 switch (resultStatus){
-                    case "9000":
+                    case "9000"://支付成功
+                    case "8000"://正在处理,支付结果确认中
+                    case "6004"://支付结果未知
                         showToast("支付成功");
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        float addAmount=Float.valueOf(mAmount);
+                        String formatAddAmount = df.format(addAmount);
+                        Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
+                        intent.putExtra("payway",mChosePayway);
+                        intent.putExtra("amount",formatAddAmount);
+                        startActivity(intent);
+                        finish();
 
                         break;
-                    case "8000":
-                        showToast("支付结果确认中");//正在处理
-                        break;
                     case "4000":
-                    case "5000":
                         showToast("订单支付失败");
+                    case "5000":
+                        showToast("订单不能重复支付");
                         break;
                     case "6001":
                         showToast("取消支付");
                         break;
                     case "6002":
                         showToast("网络连接出错");
-                        break;
-                    case "6004":
-                        showToast("支付结果未知");
                         break;
                     default:
                         showToast("支付异常");
@@ -173,25 +179,7 @@ public class WalletDepositAct extends BaseActivity {
                 super.onSuccess(returnContent);
                 logtesti("returnContent "+returnContent.toString());
 
-                /*String APP_ID="2017041306678802";
-                String APP_PRIVATE_KEY="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCMhyZqQnMVlQ8g3dqK4Ch+KXT8ef0Oj0KI7RozvgmJ92cbU34S0ClLmHWdBxeJToghZRbxFXXppmODcYFwbo7fLMRbqL83GF4CzQuqrFkrSvE6JCO+fgvC0zh/dUfPdR0n205q7GwupjniijbS4Q7X9U/XR0MRoGFnfi+ZjenDLWHVSF9IbWV5cDqV9YJFCjUU+rFTgw3qaNF0EIFqujw0HOCn3A0Mj8Wp7W0Z3egqZ2gGI7kEQOwASVPftVhmU1nTxRaoAiOLE0oLUZNARbTQvidoyk+t9cmvqJ6J0KLvDPCOt5C9etFbzepwlKleaNEAiv3HM0QaoSEd1VVwOv2vAgMBAAECggEAIzRQWVpgPk3jRlaNwzC4tDJqjj15OcaF4ouTftbiyN9jwyK9eLURQ1DkVfxK1ykHTWZnwumfanM2ht1Okf4AaMRsRJIXpRPDqWv4uj8G76OMnwYitjwZcis8AiI9ZSlvrmZwVLT5vQ4Dfk8lwNqEv3FDGSlPEgFdpXGlNxCoOS6qtwCjUWPRMJwrBvozTy1YyxgdKxX2sj7hkO7vEsz7qJi0p4R7Ra6hNQAjI7sUiWJq69iPCQqLoM4t/T3wXgZVdWxcCKuNomiY6DqsQyAUFJUGpdWtZTuquIxSwj6uAReVBOIJvtuQGe0utaqNPyD7cmRZvcEfSTxXNnWX8Zjp4QKBgQDjPaqWUqjQ2P9B2sa3VWUx4UiGPeueqFf1vQGS/OhRavno7/9/ElbtLlJcKOOEWBtAGZk/iuNFlmOh33ifHgTqf6xP9gbcnND363fo9iZTbAPR1enP1LpgIMIGmyyI47qAMQ9RwtFLvaxTxSzGI4LLqNIKbdOBIsg+wQVwb9De6QKBgQCeUBZfnZ7eV5JAgHkSVDT22H79OSgDUpHH+kk3cBh7dfWyw5nGS6X68sZhXsct9Q3fyc8Biq4g+2EtORbO/Out29liixGZ2lv3PNPzXBx2HxLpmMwNyi8oQLvxXNvLdftuJPog9wY4iR+dLI47NXABvCRpuhDwriGJ+JHsT8SI1wKBgAkL3munlMLjsJ29iOWph6LJtipp8qRZTU8iHBru6Iy9Nn+4djJn14APtQWoNw6At20A1+H4tH2DtCmwjMvA1S9Er+ZrA/DqaUNFY3upuPLfPPOwkWNNs7G5/B9pNAerETSjP1ng6JYcUezvz41/wmg7K0lw/9eHO/OLmZzVRrppAoGBAJxqpLB0G7Oy8l2okfb6HBqIbW/kORSPUFo1gIG1z3qsYcXuXND/jU8U78zkyAcwSDUEP/NWAhW0SZ9U+KQqYPG2dmJW5V0N0i/FeeTI7ZYHvbfvsC0vxsgOraMcDE5Kk9GP11Mavpq9YO76Rs1ZTwFn0tJjdLlYUurvHb5OUfChAoGBAITNf7jhc/T+6VxCvpAbjDBOKF67vJO5tdQJziY3AAMWZWHHQhFCDfpM2JQnNBrZNXDLU2n4o0AgPJnEMyDFwV4OOR2Z7f8gnc9TNnFo1x1hIs53nhjxdu7wJr51D/tlex4PRFPZ/H5tCB+ihQjyEojgjObY7aeRqJFY1rZ3B2AM";
-
-                JSONObject dataJson = null;
-                try {
-                    dataJson = new JSONObject(returnContent.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String orderNum = dataJson.optString("d_order_no");// 订单号
-
-                Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APP_ID, true, orderNum, mAmount);
-                String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-                logtesti("orderParam "+orderParam);
-                String sign = OrderInfoUtil2_0.getSign(params, APP_PRIVATE_KEY, true);
-                logtesti("sign "+sign);*/
-//                final String orderInfo = orderParam + "&" + sign;
-                final String orderInfo = "app_id=2017041306678802&method=alipay.trade.app.pay&version=1.0&charset=utf-8&notify_url=http%3a%2f%2f120.77.149.109%3a4720%2fapp%2fpay%2fAlipayAccRecNotify&sign_type=RSA2&timestamp=2017-04-15+10%3a21%3a07&biz_content=%7b%22out_trade_no%22%3a%22D20170415102107001%22%2c%22total_amount%22%3a0.01%2c%22product_code%22%3a%22QUICK_MSECURITY_PAY%22%2c%22body%22%3a%22%e5%85%85%e5%80%bc%22%2c%22subject%22%3a%22%e7%94%a8%e6%88%b7%e8%b4%a6%e6%88%b7%e5%85%85%e5%80%bc%22%7d&sign=ewX8p9%2frCn6HqMTTyGYW8aFzpvPLE5kl4YE1kbkx6kjlwGFFRUnxew9AKgvZp9v%2fRVsHWE%2f%2bd9eGI6o78LusTSl9fnAzGi6YqCIfOVrjdaXtamgnYJ3P202L3oXHUp7DPZgEIWZx6y6797M9s8MUaXKTw7EmvQETHViAQRYMjL3nJpm6%2bVUZSuLbCNqsMJA7fUY0BJxB3soXaJcRFfakDBN2P0Awxvt%2budsZ%2bOHedUUNtJ6S2aQUwp5xdMWQRdvoPJiWc4iz7u0CeWdMdKLM07t4mPlzWdzUDIHsKfw07Aint1zWy1wVMlhv2QewFvbmLT1K1sHAhpcmGBNhhBz2oA%3d%3d";
-
+                final String orderInfo = returnContent.toString();// 签名后的订单信息
                 Runnable payRunnable = new Runnable() {
 
                     @Override
@@ -209,31 +197,6 @@ public class WalletDepositAct extends BaseActivity {
                 Thread payThread = new Thread(payRunnable);
                 payThread.start();
 
-
-                /*showToast("充值成功");
-
-                JSONObject dataJson = null;
-                try {
-                    dataJson = new JSONObject(returnContent.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String newBalanceStr = dataJson.optString("rest_cash");
-                logtesti("newBalanceStr "+newBalanceStr);
-                DecimalFormat df = new DecimalFormat("0.00");
-                float addAmount=Float.valueOf(mAmount);
-                float newBalance=Float.valueOf(newBalanceStr);
-
-                String formatAddAmount = df.format(addAmount);
-                String formatNewBalance = df.format(newBalance);
-                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(formatNewBalance));
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, formatNewBalance);
-
-                Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
-                intent.putExtra("payway",mChosePayway);
-                intent.putExtra("amount",formatAddAmount);
-                startActivity(intent);
-                finish();*/
             }
 
             @Override
