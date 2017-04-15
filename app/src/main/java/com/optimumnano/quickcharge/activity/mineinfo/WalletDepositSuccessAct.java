@@ -1,13 +1,13 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -47,27 +47,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
         int payway = intent.getIntExtra("payway",PayDialog.pay_wx);
         String amount = intent.getStringExtra("amount");
         mMiAmount.setRightText("¥ "+amount);
-        showPayWayStatus(payway);
-    }
-
-    private void showPayWayStatus(int payway) {
-        Drawable drawable=null;
-        switch (payway){
-            case PayDialog.pay_wx:
-                drawable= getResources().getDrawable(R.drawable.wx);
-                mTvPayway.setText("微信");
-                break;
-            case PayDialog.pay_zfb:
-                drawable= getResources().getDrawable(R.drawable.zfb);
-                mTvPayway.setText("支付宝");
-                break;
-            case PayDialog.pay_yue:
-                drawable= getResources().getDrawable(R.drawable.yue);
-                mTvPayway.setText("余额");
-                break;
-        }
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mTvPayway.setCompoundDrawables(drawable,null,null,null);
+        PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
     }
 
     @Override

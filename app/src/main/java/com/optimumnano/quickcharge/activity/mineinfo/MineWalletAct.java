@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -12,6 +11,7 @@ import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
@@ -71,7 +71,7 @@ public class MineWalletAct extends BaseActivity {
         showBack();
         setTitle("我的钱包");
         mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
-        showPayWayStatus(mChosePayway);
+        PayWayViewHelp.showPayWayStatus(MineWalletAct.this,mPayway,mChosePayway);
         String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
         mBalance.setRightText(balance);
     }
@@ -102,28 +102,8 @@ public class MineWalletAct extends BaseActivity {
         }
     }
 
-    private void showPayWayStatus(int payway) {
-        Drawable drawable=null;
-        switch (payway){
-            case PayDialog.pay_wx:
-                drawable= getResources().getDrawable(R.drawable.wx);
-                mPayway.setText("微信");
-                break;
-            case PayDialog.pay_zfb:
-                drawable= getResources().getDrawable(R.drawable.zfb);
-                mPayway.setText("支付宝");
-                break;
-            case PayDialog.pay_yue:
-                drawable= getResources().getDrawable(R.drawable.yue);
-                mPayway.setText("余额");
-                break;
-        }
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mPayway.setCompoundDrawables(drawable,null,null,null);
-    }
-
     private void changePayWayStatus(int payway) {
-        showPayWayStatus(payway);
+        PayWayViewHelp.showPayWayStatus(MineWalletAct.this,mPayway,payway);
         SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,payway);
     }
 

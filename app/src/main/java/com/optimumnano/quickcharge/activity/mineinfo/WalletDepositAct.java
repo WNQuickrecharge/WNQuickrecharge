@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -17,6 +16,7 @@ import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
@@ -73,8 +73,7 @@ public class WalletDepositAct extends BaseActivity {
         }
         mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logtesti("mPayPsd "+mPayPsd);
-        showPayWayStatus(mChosePayway);
-
+        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,mChosePayway);
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
         mPayWayDialog = new PayWayDialog(WalletDepositAct.this);
@@ -208,29 +207,8 @@ public class WalletDepositAct extends BaseActivity {
         mPayDialog.show();
     }
 
-
-    private void showPayWayStatus(int payway) {
-        Drawable drawable=null;
-        switch (payway){
-            case PayDialog.pay_wx:
-                drawable= getResources().getDrawable(R.drawable.wx);
-                mTvPayway.setText("微信");
-                break;
-            case PayDialog.pay_zfb:
-                drawable= getResources().getDrawable(R.drawable.zfb);
-                mTvPayway.setText("支付宝");
-                break;
-            case PayDialog.pay_yue:
-                drawable= getResources().getDrawable(R.drawable.yue);
-                mTvPayway.setText("余额");
-                break;
-        }
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mTvPayway.setCompoundDrawables(drawable,null,null,null);
-    }
-
     private void changePayWayStatus(int payway) {
-        showPayWayStatus(payway);
+        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,payway);
         mPayDialog.setPayway(payway);
     }
 
