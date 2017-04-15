@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -27,6 +28,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
+import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
@@ -34,6 +36,9 @@ import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.manager.CollectManager;
+import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
@@ -42,6 +47,7 @@ import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -431,5 +437,23 @@ public class MainActivity extends BaseActivity {
         public void onRoutePlanFailed() {
             Log.d("TAG", "算路失败");
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void openStationDetail(EventManager.openStationDetail event) {
+        int id = event.id;
+        new CollectManager().addCollectStation(id, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                showToast("收藏成功!");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
     }
 }

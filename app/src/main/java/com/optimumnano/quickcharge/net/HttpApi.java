@@ -48,6 +48,8 @@ public class HttpApi {
     public static final String get_collection = "capp/user/get_collection";//获取个人收藏站点信息
     public static final String add_collection = "capp/user/add_collection";//增加收藏站点
     public static final String about_url = baseUrl+"aboutus.html";//关于我们
+    public static final String delete_collection = "capp/user/delete_collection";//增加收藏站点
+
 
 
 }
