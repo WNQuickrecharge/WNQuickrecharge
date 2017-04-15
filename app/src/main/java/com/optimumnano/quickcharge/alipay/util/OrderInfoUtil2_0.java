@@ -102,13 +102,13 @@ public class OrderInfoUtil2_0 {
 		for (int i = 0; i < keys.size() - 1; i++) {
 			String key = keys.get(i);
 			String value = map.get(key);
-			sb.append(buildKeyValue(key, value, true));
+			sb.append(buildKeyValue(key, value, false));//TODO 后面要转成true进行加密
 			sb.append("&");
 		}
 
 		String tailKey = keys.get(keys.size() - 1);
 		String tailValue = map.get(tailKey);
-		sb.append(buildKeyValue(tailKey, tailValue, true));
+		sb.append(buildKeyValue(tailKey, tailValue, false));//TODO 后面要转成true进行加密
 
 		return sb.toString();
 	}

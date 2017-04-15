@@ -185,8 +185,11 @@ public class WalletDepositAct extends BaseActivity {
 
                 Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APP_ID, true, orderNum, mAmount);
                 String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+                logtesti("orderParam "+orderParam);
                 String sign = OrderInfoUtil2_0.getSign(params, APP_PRIVATE_KEY, true);
-                final String orderInfo = orderParam + "&" + sign;
+                logtesti("sign "+sign);
+//                final String orderInfo = orderParam + "&" + sign;
+                final String orderInfo = "app_id=2017041306678802&method=alipay.trade.app.pay&version=1.0&charset=utf-8&notify_url=http://120.77.149.109:4720/app/pay/AlipayAccRecNotify&sign_type=RSA2&timestamp=2017-04-14 21:22:43&biz_content={\"out_trade_no\":\"D20170414212243001\",\"total_amount\":\"0.01\",\"product_code\":\"QUICK_MSECURITY_PAY\",\"body\":\"充值\",\"subject\":\"用户账户充值\"}&sign=N7Yvxc28u9fwR7luPRI4zUSsMxo7RtRFb2h7yDnRVD/GxbrCAxKhMopxAR5E6ESiKMo+UBq7KXag/jMoF/DiJQEo6brd2o6Qjpyf27LsbFW8MTSG9EgDmNGNxXWWSdn272OQi5dkNDgVK4kC/XQd7n8WAeucXYUyZvvNJXBmKRhjS4DWFxGfr84OKFxAb0H0PCqZFwhD4kXO9idGe7pu5AEYlvLl1Fq6v494s/1+0uH5c6ls+ZOcgs8amvOtE6jTT0yJfVHEFfhrXlReKs8Y26jomx+/z3i5Vd6kSYSJEPwiAXmeWm2uN/X1Ky3RbMxng/7XrNaxrv+CndSA6cgjDA==";
 
                 Runnable payRunnable = new Runnable() {
 
