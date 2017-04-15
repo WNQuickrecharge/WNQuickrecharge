@@ -71,7 +71,7 @@ public class WalletBalanceAct extends BaseActivity {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(WalletBalanceAct.this)
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.icon_text_tip).into(mHeadview);
+                .error(R.drawable.wd).into(mHeadview);
 
         String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
         mBalanceValue.setText(balance);

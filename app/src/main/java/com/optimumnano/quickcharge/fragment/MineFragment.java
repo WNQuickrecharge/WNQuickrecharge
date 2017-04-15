@@ -82,7 +82,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(getActivity())
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.icon_text_tip).into(ivHead);
+                .error(R.drawable.wd).into(ivHead);
         String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
         mTvBalance.setText(balance);
         String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
