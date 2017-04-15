@@ -23,6 +23,7 @@ import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import org.json.JSONObject;
 
@@ -154,10 +155,12 @@ public class WalletDepositAct extends BaseActivity {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
 //                        showPayPsdDialog();
+                        Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
+                        if (!payCheck()) return;
                         if (mChosePayway==PayDialog.pay_zfb)
                             callALiPay();
                         else if (mChosePayway==PayDialog.pay_wx){
-                            //callWXPay();
+                            callWXPay();
                         }
                         break;
                     case R.id.act_wallet_deposit_rl_payway:
@@ -166,12 +169,11 @@ public class WalletDepositAct extends BaseActivity {
                 }
     }
 
+    private void callWXPay() {
+        showToast("还未实现微信支付");
+    }
+
     private void callALiPay() {
-        mAmount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)){
-            showToast("充值金额不能为空");
-            return;
-        }
 
         GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount, new ManagerCallback() {
             @Override
@@ -207,6 +209,20 @@ public class WalletDepositAct extends BaseActivity {
 
         });
 
+    }
+
+    private boolean payCheck() {
+        mAmount = mEtAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(mAmount)){
+            showToast("充值金额不能为空");
+            return false;
+        }
+
+        if (Double.parseDouble(mAmount)==0){
+            showToast("充值金额不能小于0.01");
+            return false;
+        }
+        return true;
     }
 
     private void showPayPsdDialog() {
