@@ -26,12 +26,12 @@ import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
@@ -62,7 +62,7 @@ import static com.optimumnano.quickcharge.adapter.DistDetailAcapter.DoubleDP;
  */
 public class RechargeFragment extends BaseFragment {
     @Bind(R.id.mapView)
-    MapView mapView;
+    TextureMapView mapView;
     @Bind(R.id.iv_location)
     ImageView ivLocation;
     @Bind(R.id.et_address)

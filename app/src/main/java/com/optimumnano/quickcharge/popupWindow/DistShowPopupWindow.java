@@ -56,8 +56,10 @@ public class DistShowPopupWindow extends BasePopupWindowForListView {
             mSet.add(select);
 
         }
-        if (mLeft != null)
+        if (mLeft != null) {
+            mLeft.clear();
             mLeft.addAll(mSet);
+        }
         else
             mLeft=new ArrayList<>(mSet);
 

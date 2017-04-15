@@ -646,6 +646,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         switch (viewType) {
             case 0:
                 convert(holder, mData.get(holder.getLayoutPosition() - getHeaderLayoutCount()));
+                convert(holder, mData.get(holder.getLayoutPosition() - getHeaderLayoutCount()),positions);
                 break;
             case LOADING_VIEW:
                 mLoadMoreView.convert(holder);
@@ -658,6 +659,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
                 break;
             default:
                 convert(holder, mData.get(holder.getLayoutPosition() - getHeaderLayoutCount()));
+                convert(holder, mData.get(holder.getLayoutPosition() - getHeaderLayoutCount()),positions);
                 break;
         }
     }
@@ -1103,6 +1105,8 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      * @param item   The item that needs to be displayed.
      */
     protected abstract void convert(K helper, T item);
+
+    protected  void convert(K helper, T item,int position){};
 
     /**
      * Get the row id associated with the specified position in the list.

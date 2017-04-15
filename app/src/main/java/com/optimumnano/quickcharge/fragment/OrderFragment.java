@@ -21,6 +21,7 @@ import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 import com.optimumnano.quickcharge.listener.RecyclerItemClickListener;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -68,49 +69,6 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                OrderBean orderBean = orderList.get(position);
-                Intent intent;
-                if (orderBean.order_status==2 || orderBean.order_status==4 ||
-                        orderBean.order_status == 1 || orderBean.order_status == 3){
-                    intent = new Intent(getActivity(), OrderlistDetailActivity.class);
-                }
-                else {
-                    intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("orderbean",orderList.get(position));
-                intent.putExtras(bundle);
-                getActivity().startActivity(intent);
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        }));
-
-//        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
-//            @Override
-//            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                OrderBean orderBean = orderList.get(position);
-//                Intent intent;
-//                if (orderBean.order_status==2 || orderBean.order_status==4){
-//                    intent = new Intent(getActivity(), OrderlistDetailActivity.class);
-//                }
-//                else {
-//                    intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
-//                }
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("orderbean",orderList.get(position));
-//                intent.putExtras(bundle);
-//                getActivity().startActivity(intent);
-//            }
-//        });
     }
 
     @Override
@@ -149,6 +107,26 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
             adapter = new OrderAdapter(R.layout.adapter_order,orderList);
             recyclerView.setAdapter(adapter);
             adapter.setOnLoadMoreListener(this);
+            adapter.setContext(getActivity());
+            adapter.setOnitemClickListener(new MyOnitemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    OrderBean orderBean = orderList.get(position);
+                    Intent intent;
+                    if (orderBean.order_status==2 || orderBean.order_status==4 ||
+                            orderBean.order_status == 1 || orderBean.order_status == 3){
+                        intent = new Intent(getActivity(), OrderlistDetailActivity.class);
+                    }
+                    else {
+                        intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
+                    }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("orderbean",orderList.get(position));
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                }
+            });
         }
         else {
             adapter.notifyDataSetChanged();

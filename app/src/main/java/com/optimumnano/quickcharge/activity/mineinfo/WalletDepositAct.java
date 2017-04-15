@@ -115,8 +115,11 @@ public class WalletDepositAct extends BaseActivity {
     private void initData() {
         mManager = new ModifyUserInformationManager();
         int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
-        if (payway == PayDialog.pay_yue)
+        if (payway == PayDialog.pay_yue){
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
+        }else {
+            mChosePayway = payway;
+        }
         mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
         logtesti("mPayPsd "+mPayPsd);
         showPayWayStatus(mChosePayway);

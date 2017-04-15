@@ -143,8 +143,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         });
     }
 
+
     @Override
-    public void paySuccess() {
+    public void paySuccess(String order_no) {
         Bundle bundle = new Bundle();
         bundle.putString("order_no",orderBean.order_no);
         bundle.putInt("order_status", Constants.STARTCHARGE);

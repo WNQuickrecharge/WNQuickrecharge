@@ -98,13 +98,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,edtUsername.getText().toString());
-                    SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,true);
-                    return;
-                }
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,"");
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,false);
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isChecked);
             }
         });
     }
