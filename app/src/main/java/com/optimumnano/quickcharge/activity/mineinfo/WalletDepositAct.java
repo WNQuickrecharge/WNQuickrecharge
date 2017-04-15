@@ -66,18 +66,17 @@ public class WalletDepositAct extends BaseActivity {
                 Map mapresult =(Map) msg.obj;
                 JSONObject dataJson = new JSONObject(mapresult);
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
+                //PayResult payResult= JSON.parseObject(dataJson.toString(),PayResult.class);
                 switch (resultStatus){
                     case "9000":
                         showToast("支付成功");
                         break;
                     case "8000":
-                        showToast("正在处理中");
+                        showToast("支付结果确认中");//正在处理
                         break;
                     case "4000":
-                        showToast("订单支付失败");
-                        break;
                     case "5000":
-                        showToast("重复请求");
+                        showToast("订单支付失败");
                         break;
                     case "6001":
                         showToast("取消支付");
