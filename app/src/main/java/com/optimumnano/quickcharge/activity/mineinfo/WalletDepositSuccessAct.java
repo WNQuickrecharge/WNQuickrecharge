@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -48,6 +50,23 @@ public class WalletDepositSuccessAct extends BaseActivity {
         String amount = intent.getStringExtra("amount");
         mMiAmount.setRightText("¥ "+amount);
         showPayWayStatus(payway);
+
+        GetMineInfoManager.getMyBalance("",new ManagerCallback(){
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                logtesti("returnContent "+returnContent.toString());
+
+                //SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, NewBalance);
+                //EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(NewBalance));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+                super.onFailure(msg);
+            }
+        } );
     }
 
     private void showPayWayStatus(int payway) {

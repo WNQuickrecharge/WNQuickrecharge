@@ -19,7 +19,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
-import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -51,7 +51,6 @@ public class WalletDepositAct extends BaseActivity {
     EditText mEtAmount;
     @Bind(R.id.act_wallet_deposit_tv_next)
     TextView mTvNext;
-    private ModifyUserInformationManager mManager;
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
     private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
@@ -117,7 +116,6 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void initData() {
-        mManager = new ModifyUserInformationManager();
         int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
         if (payway == PayDialog.pay_yue){
             mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
@@ -175,7 +173,7 @@ public class WalletDepositAct extends BaseActivity {
             return;
         }
 
-        ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
+        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
