@@ -13,6 +13,10 @@ public class StationBean implements Serializable{
      * yydistrict : 南山区
      * TotalPiles : 4
      * FreePiles : 4
+     * max_price : 45.0
+     * min_price : 1.5
+     * max_service : 0.2
+     * min_service : 0.2
      * Id : 3006
      * StationNo : 44030501000002
      * StationName : 壮辉充电站
@@ -36,6 +40,10 @@ public class StationBean implements Serializable{
     private String yydistrict;
     private int TotalPiles;
     private int FreePiles;
+    private double max_price;
+    private double min_price;
+    private double max_service;
+    private double min_service;
     private int Id;
     private String StationNo;
     private String StationName;
@@ -51,16 +59,8 @@ public class StationBean implements Serializable{
     private String RunTimeSpan;
     private String CreateTime;
     private String UpdateTime;
-    private String distance;
     private boolean IsDel;
-
-    public String getDistance() {
-        return distance;
-    }
-
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
+    private String distance;
 
     public boolean isDel() {
         return IsDel;
@@ -68,6 +68,14 @@ public class StationBean implements Serializable{
 
     public void setDel(boolean del) {
         IsDel = del;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public StationBean() {
@@ -111,6 +119,38 @@ public class StationBean implements Serializable{
 
     public void setFreePiles(int FreePiles) {
         this.FreePiles = FreePiles;
+    }
+
+    public double getMax_price() {
+        return max_price;
+    }
+
+    public void setMax_price(double max_price) {
+        this.max_price = max_price;
+    }
+
+    public double getMin_price() {
+        return min_price;
+    }
+
+    public void setMin_price(double min_price) {
+        this.min_price = min_price;
+    }
+
+    public double getMax_service() {
+        return max_service;
+    }
+
+    public void setMax_service(double max_service) {
+        this.max_service = max_service;
+    }
+
+    public double getMin_service() {
+        return min_service;
+    }
+
+    public void setMin_service(double min_service) {
+        this.min_service = min_service;
     }
 
     public int getId() {

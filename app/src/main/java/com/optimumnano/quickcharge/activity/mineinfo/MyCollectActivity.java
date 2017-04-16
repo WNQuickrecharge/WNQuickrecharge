@@ -4,23 +4,16 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
-import com.baidu.navisdk.adapter.BNRoutePlanNode;
-import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.MainActivity;
-import com.optimumnano.quickcharge.activity.test.BNDemoMainActivity;
 import com.optimumnano.quickcharge.adapter.CollectionStationAdapter;
 import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.baiduUtil.WTMBaiduLocation;
@@ -30,7 +23,6 @@ import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MyDivier;
 
 import org.greenrobot.eventbus.EventBus;
@@ -110,6 +102,7 @@ public class MyCollectActivity extends BaseActivity {
             @Override
             public void onLocationReceived(BDLocation bdLocation) {
                 myPoint=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+                location.stopLocation();
             }
         });
         progressDialog=new ProgressDialog(this);
@@ -185,6 +178,12 @@ public class MyCollectActivity extends BaseActivity {
                 hideLoading();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        location.start();
     }
 
     @Override
