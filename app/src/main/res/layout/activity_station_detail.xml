@@ -8,13 +8,15 @@
 
     <LinearLayout
         android:background="@color/white"
-        android:padding="@dimen/dimen_10"
+        android:paddingLeft="@dimen/dimen_25"
+        android:paddingRight="@dimen/dimen_25"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content" >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/dimen_10"
             android:orientation="horizontal">
             <TextView
@@ -37,16 +39,20 @@
                 android:drawableLeft="@mipmap/dinwei"/>
         </LinearLayout>
 
-       <RelativeLayout
+       <LinearLayout
            android:layout_width="match_parent"
-           android:layout_height="wrap_content"
+           android:layout_height="40dp"
+           android:gravity="center_vertical"
+           android:layout_marginBottom="@dimen/dimen_15"
            android:orientation="horizontal">
            <TextView
                android:id="@+id/station_detail_address"
-               android:layout_width="200dp"
+               android:layout_width="0dp"
+               android:layout_weight="1"
                android:layout_height="wrap_content"
                android:maxLength="40"
-               android:lines="2"
+               android:lines="1"
+               android:ellipsize="marquee"
                android:text="充电站地址充电站地址充电站地址充电站地址充电站地址"
                />
 
@@ -77,12 +83,13 @@
                    android:text="导航"
                    android:textColor="@color/white" />
            </LinearLayout>
-       </RelativeLayout>
+       </LinearLayout>
         <include layout="@layout/view_line"/>
         <LinearLayout
             android:layout_marginTop="@dimen/dimen_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/dimen_10"
             android:orientation="horizontal">
            <TextView
@@ -101,10 +108,9 @@
         </LinearLayout>
         <include layout="@layout/view_line"/>
         <LinearLayout
-            android:layout_marginTop="@dimen/dimen_10"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_10"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="0dp"
@@ -123,17 +129,19 @@
 
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="@dimen/dimen_15"
+        android:layout_marginTop="@dimen/dimen_10"
         android:background="@color/white"
-        android:padding="@dimen/dimen_10"
+        android:paddingLeft="@dimen/dimen_25"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/dimen_25"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/zhuang"
-            android:drawablePadding="@dimen/dimen_6"
+            android:drawablePadding="@dimen/dimen_15"
             android:text="空闲" />
 
         <TextView
@@ -160,6 +168,11 @@
             android:layout_weight="1"
             android:text="个" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray_F2"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:background="@color/white"
