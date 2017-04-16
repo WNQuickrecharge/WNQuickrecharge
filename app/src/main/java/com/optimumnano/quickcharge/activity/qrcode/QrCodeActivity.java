@@ -182,7 +182,9 @@ public class QrCodeActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_submit:
                 //跳转支付
-                skipActivity(OrderActivity.class,null);
+                Bundle bundle = new Bundle();
+                bundle.putString("gun_no","67867678901234517");
+                skipActivity(OrderActivity.class,bundle);
                 break;
             case R.id.iv_deng:
                 if (!isLightOpen)

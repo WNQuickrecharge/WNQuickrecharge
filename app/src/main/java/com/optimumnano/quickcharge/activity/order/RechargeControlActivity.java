@@ -42,6 +42,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public static final int GETCONNECT = 0;
     public static final int GETCHARGEPROGRESS = 1;
     public static final int STARTCHARGE = 2;
+    public static final int STOPCHARGE = 3;
     private int progress = 1;
 
     private int orderStatus;
@@ -91,8 +92,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rechargecon_tvStop:
-//                waveLoadingView
-                skipActivity(OrderDetlActivity.class,null);
+                orderManager.stopCharge(orderNo,callback,STOPCHARGE);
                 break;
             case R.id.rechargecon_tvStart:
                 startRecharge();
@@ -165,6 +165,11 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                 dialog.cancelDialog();
                 tvStart.setVisibility(View.GONE);
                 tvStop.setVisibility(View.VISIBLE);
+            }
+            //结束充电
+            else if (requestCode == STOPCHARGE){
+                skipActivity(OrderDetlActivity.class,null);
+                finish();
             }
             //充电进度查询
             else {

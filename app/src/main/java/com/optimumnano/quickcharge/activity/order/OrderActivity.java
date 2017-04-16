@@ -1,6 +1,8 @@
 package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import java.util.HashMap;
@@ -58,9 +61,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         ButterKnife.bind(this);
+        getExtras();
         initViews();
         initData();
         initDialog();
+    }
+    private void getExtras(){
+        gunNo = getIntent().getExtras().getString("gun_no");
     }
 
     @Override
@@ -70,6 +77,23 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
         tvConfirm.setOnClickListener(this);
         miPayway.setOnClickListener(this);
+        edtMoney.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!StringUtils.isEmpty(s.toString())){
+                    tvAllkwh.setText(Double.parseDouble(s.toString())/gunBean.price+"kwh");
+                }
+                else {
+                    tvAllkwh.setText("0.0kwh");
+                }
+            }
+        });
     }
     private void initData(){
         orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
@@ -86,7 +110,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void loadData(){
-        miRechargenum.setRightText("67867678901234517");
+        miRechargenum.setRightText(gunNo);
         miType.setRightText(gunBean.pile_type);
         miElectric.setRightText(gunBean.elec_current+"A");
         miPower.setRightText(gunBean.power+"kwh");
@@ -141,7 +165,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
     //下单
     private void addOrder(){
-        orderManager.addOrder("67867678901234517", edtMoney.getText().toString(), new ManagerCallback<String>() {
+        orderManager.addOrder(gunNo, edtMoney.getText().toString(), new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
                 super.onSuccess(returnContent);
@@ -171,7 +195,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void payFail() {
-
+    public void payFail(String msg) {
+        showToast(msg);
+        payDialog.close();
     }
 }
