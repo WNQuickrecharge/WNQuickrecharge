@@ -19,9 +19,6 @@ import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -48,7 +45,6 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     private PayCallback payCallback;
     private double money;
     private String order_no;
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
     Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
