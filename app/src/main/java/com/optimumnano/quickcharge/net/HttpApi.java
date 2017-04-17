@@ -28,7 +28,7 @@ public class HttpApi {
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
-    public static final String balance_deposit_url = "capp/order/add_deposit";//钱包余额充值
+    public static final String balance_deposit_url = "capp/user/pay_deposit";//钱包余额充值
     public static final String  region_station_url = "capp/bs/region_stations";//获取附近的充电站点信息
     public static final String  get_city_station_url = "capp/bs/get_city_stations";//根据城市获取充电站信息
     public static final String logout_url = "capp/user/logout";//登出
@@ -51,6 +51,7 @@ public class HttpApi {
     public static final String stop_charge = "capp/bs/stop_charge";//结束付款
     public static final String get_station_detail = "capp/user/get_station_detail";//增加收藏站点
 
+    public static final String ask_charge="capp/bs/ask_charge";
 
 
 }

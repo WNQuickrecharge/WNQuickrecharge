@@ -26,6 +26,7 @@
   **[] $VALUES;
   public *;
 }
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 #保护JavaBean
 -dontwarn com.optimumnano.quickcharge.bean.**
@@ -34,6 +35,15 @@
 #BASE64Encoder
 -dontwarn Decoder.**
 -keep class Decoder.** {*;}
+#支付宝
+-libraryjars libs/alipaySDK-20150602.jar
+
+-keep class com.alipay.android.app.IAlixPay{*;}
+-keep class com.alipay.android.app.IAlixPay$Stub{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
+-keep class com.alipay.sdk.app.PayTask{ public *;}
+-keep class com.alipay.sdk.app.AuthTask{ public *;}
 -libraryjars sun.misc.BASE64Decoder.jar
 
 #个推
