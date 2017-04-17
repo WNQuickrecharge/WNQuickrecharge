@@ -36,6 +36,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
@@ -57,6 +58,7 @@ import com.optimumnano.quickcharge.utils.Tool;
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.Bind;
@@ -142,7 +144,15 @@ public class RechargeFragment extends BaseFragment {
                 ViewHolder holder = new ViewHolder(view);
                 holder.mItem = infoUtil;
                 holder.tvAddress.setText(holder.mItem.StationName);
-                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                String lat = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LAT, "");
+                String lon = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LON, "");
+                double v = Double.parseDouble(lat);
+                double v1 = Double.parseDouble(lon);
+                double distance = DistanceUtil.getDistance(new LatLng(v, v1), new LatLng(Double.parseDouble(infoUtil.getLat()), Double.parseDouble(infoUtil.getLng())));
+                distance/=1000;
+                DecimalFormat decimalFormat=new DecimalFormat("0.00");
+                String format = decimalFormat.format(distance);
+                holder.tvDistance.setText(format+" km");
                 holder.tvDetailAddress.setText(holder.mItem.Address);
                 String sb = "电费:1.5元/度,服务费:0.5元/度";
                 SimpleText st = SimpleText.create(holder.mView.getContext(), sb)

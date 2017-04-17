@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
