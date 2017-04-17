@@ -1,17 +1,24 @@
 package com.optimumnano.quickcharge.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,14 +52,26 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        String lat = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LAT, "");
+        String lon = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LON, "");
+
         holder.mItem = mValues.get(position);
-        holder.tvAddress.setText(holder.mItem.StationName);
-        holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
-        holder.tvDetailAddress.setText(holder.mItem.Address);
-        holder.tvPricePer.setText("电费");
-        String ss="空闲"+holder.mItem.FreePiles+"/共"+holder.mItem.TotalPiles+"个";
+        holder.tvAddress.setText(holder.mItem.getStationName());
+        double getLat = Double.parseDouble(holder.mItem.getLat());
+        double getLon = Double.parseDouble(holder.mItem.getLng());
+        double distance = DistanceUtil.getDistance(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)), new LatLng(getLat, getLon));
+        holder.tvDistance.setText(DoubleDP(distance, "#.00"));
+        holder.tvDetailAddress.setText(holder.mItem.getAddress());
+        double min_price = holder.mItem.getMin_price();
+        double max_price = holder.mItem.getMax_price();
+        double min_service = holder.mItem.getMin_service();
+        double max_service = holder.mItem.getMax_service();
+
+        holder.tvPricePer.setText(min_price+"~"+max_price);
+        holder.tvServicePrice.setText(min_service+"~"+max_service);
+        String ss="空闲"+holder.mItem.getFreePiles()+"/共"+holder.mItem.getTotalPiles()+"个";
         SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
-                .first(holder.mItem.FreePiles).textColor(R.color.main_color);
+                .first(holder.mItem.getFreePiles()+"").textColor(R.color.main_color);
 
         simpleText.linkify(holder.tvNum);
         holder.tvNum.setText(simpleText);
@@ -67,7 +86,13 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         holder.tvFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new EventManager.openStationDetail(holder.mItem.Id));
+                EventBus.getDefault().post(new EventManager.openStationDetail(holder.mItem.getId()));
+            }
+        });
+        holder.linearLayout_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new EventManager.onStartStationDetailActivity(holder.mItem));
             }
         });
 
@@ -117,12 +142,16 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         TextView tvDetailAddress;
         @Bind(R.id.tv_price_per)
         TextView tvPricePer;
+        @Bind(R.id.tv_service_price1)
+        TextView tvServicePrice;
         @Bind(R.id.tv_num)
         TextView tvNum;
         @Bind(R.id.tv_nav)
         TextView tvNav;
         @Bind(R.id.tv_fav)
         TextView tvFav;
+        @Bind(R.id.ll_list_item_root)
+        LinearLayout linearLayout_root;
         public Point mItem;
 
         public ViewHolder(View view) {

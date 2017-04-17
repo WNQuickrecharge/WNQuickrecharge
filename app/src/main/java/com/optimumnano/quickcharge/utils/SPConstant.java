@@ -27,5 +27,7 @@ public interface SPConstant {
     String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
     String KEY_USERINFO_IS_REMEMBER="userinfo_is_remember";
     String KEY_USERINFO_PASSWORD="userinfo_password";
+    String KEY_USERINFO_LAT="userinfo_Lat";
+    String KEY_USERINFO_LON="userinfo_Lon";
 
 }

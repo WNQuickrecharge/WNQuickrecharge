@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.popupWindow;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

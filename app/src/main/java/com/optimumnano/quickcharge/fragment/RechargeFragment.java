@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -39,12 +40,17 @@ import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
+import com.optimumnano.quickcharge.manager.CityStationListManager;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
@@ -134,12 +140,12 @@ public class RechargeFragment extends BaseFragment {
                 ViewHolder holder = new ViewHolder(view);
                 holder.mItem = infoUtil;
                 holder.tvAddress.setText(holder.mItem.StationName);
-                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                //holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
                 holder.tvDetailAddress.setText(holder.mItem.Address);
                 holder.tvPricePer.setText("电费");
                 String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
                 SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
-                        .first(holder.mItem.FreePiles).textColor(R.color.main_color);
+                        .first(holder.mItem.FreePiles+"").textColor(R.color.main_color);
                 simpleText.linkify(holder.tvNum);
                 holder.tvNum.setText(simpleText);
                 view.setBackgroundResource(R.drawable.sp_map_infowindow);
@@ -268,6 +274,10 @@ public class RechargeFragment extends BaseFragment {
             if (location == null || mapView == null) {
                 return;
             }
+            final double longitude = location.getLongitude();
+            final double latitude = location.getLatitude();
+            SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_LAT,latitude+"");
+            SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_LON,longitude+"");
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
@@ -294,12 +304,43 @@ public class RechargeFragment extends BaseFragment {
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
+
+                new CityStationListManager().getCityStations(location.getCity(), new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                        String list = (String) returnContent;
+                        List<Point> stationBeanList = JSON.parseArray(list, Point.class);
+                        EventBus.getDefault().post(new EventManager.getCityStationList(stationBeanList));
+                        LogUtil.i(returnContent.toString());
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                    }
+                });
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
                 mHelper.updateCity(location.getCity());
                 mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
+                new CityStationListManager().getCityStations(location.getCity(), new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                        String list = (String) returnContent;
+                        List<Point> stationBeanList = JSON.parseArray(list, Point.class);
+                        EventBus.getDefault().post(new EventManager.getCityStationList(stationBeanList));
+                        LogUtil.i(returnContent.toString());
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                    }
+                });
             }
             //定位失败
             else {
@@ -349,7 +390,7 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         for (Point info : mPiont) {
             //获取经纬度
-            latLng = new LatLng(info.Lat, info.Lng);
+            latLng = new LatLng(Double.parseDouble(info.Lat), Double.parseDouble(info.Lng));
             //设置marker
             options = new MarkerOptions()
                     .position(latLng)//设置位置
