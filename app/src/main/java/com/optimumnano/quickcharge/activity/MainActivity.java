@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -9,12 +10,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -27,6 +31,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
+import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
@@ -46,6 +51,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends BaseActivity {
 
@@ -86,7 +92,7 @@ public class MainActivity extends BaseActivity {
         mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                isShow=false;
+                isShow = false;
                 setLeftTitle("筛选");
             }
         });
@@ -253,9 +259,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow==true){
+        if (isShow == true) {
             mShowHelper.getmPopupWindow().dismiss();
-        }else {
+        } else {
             FilterActivity.start(this);
         }
     }
@@ -268,9 +274,9 @@ public class MainActivity extends BaseActivity {
         mShowHelper.setData(mData);
         mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
         isShow = mShowHelper.getmPopupWindow().isShowing();
-        if (isShow){
+        if (isShow) {
             setLeftTitle("定位");
-        }else{
+        } else {
             setLeftTitle("筛选");
         }
     }
@@ -432,4 +438,61 @@ public class MainActivity extends BaseActivity {
             Log.d("TAG", "算路失败");
         }
     }
+
+
+    public void pay(String order) {
+
+        final String orderInfo = order;   // 订单信息
+        Runnable payRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(MainActivity.this);
+                Map<String, String> result = alipay.payV2(orderInfo, true);
+
+                Message msg = new Message();
+                msg.what = SDK_PAY_FLAG;
+                msg.obj = result;
+                mHandler.sendMessage(msg);
+            }
+        };
+        // 必须异步调用
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
+    }
+
+
+    private static final int SDK_PAY_FLAG = 1;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @SuppressWarnings("unused")
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    @SuppressWarnings("unchecked")
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    /**
+                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为9000则代表支付成功
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+                        Toast.makeText(MainActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        Toast.makeText(MainActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        ;
+    };
+
 }

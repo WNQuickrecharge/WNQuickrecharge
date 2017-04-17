@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -45,6 +47,7 @@ import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
@@ -136,7 +139,11 @@ public class RechargeFragment extends BaseFragment {
                 holder.tvAddress.setText(holder.mItem.StationName);
                 holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
                 holder.tvDetailAddress.setText(holder.mItem.Address);
-                holder.tvPricePer.setText("电费");
+                String sb = "电费:1.5元/度,服务费:0.5元/度";
+                SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
+                        .first("1.5").first("0.5").textColor(R.color.red);
+                st.linkify(holder.tvPricePer);
+                holder.tvPricePer.setText(st);
                 String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
                 SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
                         .first(holder.mItem.FreePiles).textColor(R.color.main_color);
@@ -146,8 +153,8 @@ public class RechargeFragment extends BaseFragment {
                 holder.tvNav.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OnNaviEvent event=new OnNaviEvent();
-                        event.end=infoUtil;
+                        OnNaviEvent event = new OnNaviEvent();
+                        event.end = infoUtil;
                         EventBus.getDefault().post(event);
                     }
                 });
@@ -161,7 +168,6 @@ public class RechargeFragment extends BaseFragment {
 
 
     }
-
 
 
     public class ViewHolder {
@@ -247,11 +253,15 @@ public class RechargeFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
+                isFirstLoc = true;
+                if (locationClient != null)
+                    locationClient.start();
                 break;
             case R.id.et_address:
                 SelectAddressActivity.start(getActivity());
                 break;
             case R.id.tv_charge_now:
+                ask();
                 break;
             case R.id.tv_charge_late:
                 break;
@@ -259,6 +269,39 @@ public class RechargeFragment extends BaseFragment {
                 QrCodeActivity.start(getActivity());
                 break;
         }
+    }
+
+    private void ask() {
+        String phoneNumber = null;
+        if (!Tool.isMobileNO(etPhone.getText().toString().trim())) {
+
+            Toast.makeText(getActivity(), "请输入正确的电话号码", Toast.LENGTH_LONG).show();
+            return;
+        }
+        phoneNumber = etPhone.getText().toString().trim();
+        String carNumber = null;
+        if (!Tool.isCarnumberNO(etPlate.getText().toString().trim())) {
+            Toast.makeText(getActivity(), "请输入车牌号", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String address = null;
+        if (TextUtils.isEmpty(etAddress.getText().toString().trim())) {
+            Toast.makeText(getActivity(), "地址不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        address = etAddress.getText().toString().trim();
+        carNumber = etPlate.getText().toString().trim();
+        mManager.getAskCharge(mHelper, phoneNumber, "Hl", address, carNumber, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     public class MyLocationListener implements BDLocationListener {

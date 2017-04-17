@@ -47,11 +47,14 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         holder.tvAddress.setText(holder.mItem.StationName);
         holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
         holder.tvDetailAddress.setText(holder.mItem.Address);
-        holder.tvPricePer.setText("电费");
+        String sb="电费:1.5元/度,服务费:0.5元/度";
+        SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
+                .first("1.5").first("0.5").textColor(R.color.red);
+        st.linkify(holder.tvPricePer);
+        holder.tvPricePer.setText(st);
         String ss="空闲"+holder.mItem.FreePiles+"/共"+holder.mItem.TotalPiles+"个";
         SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
                 .first(holder.mItem.FreePiles).textColor(R.color.main_color);
-
         simpleText.linkify(holder.tvNum);
         holder.tvNum.setText(simpleText);
         holder.tvNav.setOnClickListener(new View.OnClickListener() {
