@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -32,6 +32,7 @@ import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
+import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
@@ -39,6 +40,9 @@ import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.manager.CollectManager;
+import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
@@ -47,6 +51,7 @@ import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -92,7 +97,7 @@ public class MainActivity extends BaseActivity {
         mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                isShow = false;
+                isShow=false;
                 setLeftTitle("筛选");
             }
         });
@@ -259,9 +264,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow == true) {
+        if (isShow==true){
             mShowHelper.getmPopupWindow().dismiss();
-        } else {
+        }else {
             FilterActivity.start(this);
         }
     }
@@ -274,9 +279,9 @@ public class MainActivity extends BaseActivity {
         mShowHelper.setData(mData);
         mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
         isShow = mShowHelper.getmPopupWindow().isShowing();
-        if (isShow) {
+        if (isShow){
             setLeftTitle("定位");
-        } else {
+        }else{
             setLeftTitle("筛选");
         }
     }
@@ -495,4 +500,22 @@ public class MainActivity extends BaseActivity {
         ;
     };
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void openStationDetail(EventManager.openStationDetail event) {
+        int id = event.id;
+        new CollectManager().addCollectStation(id, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                showToast("收藏成功!");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
+    }
 }

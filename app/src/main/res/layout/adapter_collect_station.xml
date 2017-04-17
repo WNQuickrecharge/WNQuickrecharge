@@ -25,7 +25,7 @@
                 android:layout_weight="1"
                 android:hint="燕子岭充电站"
                 android:textColor="@color/color33"
-                android:textSize="24sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/collect_station_distance"
@@ -39,6 +39,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/item_collect_station_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="天俊工业园"

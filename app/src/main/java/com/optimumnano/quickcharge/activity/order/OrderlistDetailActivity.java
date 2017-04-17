@@ -153,7 +153,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     }
 
     @Override
-    public void payFail() {
-
+    public void payFail(String msg) {
+        showToast(msg);
     }
 }

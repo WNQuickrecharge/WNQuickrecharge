@@ -50,5 +50,7 @@
     <string name="edit_sai_xuan_success">修改筛选条件成功</string>
 
     <string name="dialog_pay_way_balance">%1$s (剩余%2$.2f)</string>
+    <string name="station_electric_price">电费 <Data><![CDATA[<font color="#ff3b30">%1$s</font>]]></Data></string>
+    <string name="station_service_price">服务费 <Data><![CDATA[<font color="#ff3b30">%1$s</font>]]></Data></string>
 
 </resources>

@@ -105,7 +105,7 @@ public class MineInfoAct extends BaseActivity {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(MineInfoAct.this)
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.icon_text_tip).into(mHeadview);
+                .error(R.drawable.wd).into(mHeadview);
         //初始化昵称
         mNickname = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, "");
         mTvNickname.setRightText(mNickname);
@@ -281,7 +281,7 @@ public class MineInfoAct extends BaseActivity {
 
                 String netHeadUrl = dataJson.optString("url");
                 Glide.with(MineInfoAct.this)
-                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(mHeadview);
+                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.wd).into(mHeadview);
                 SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
                 LogUtil.i("test==modifyHeadView onSuccess "+netHeadUrl);
                 EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());

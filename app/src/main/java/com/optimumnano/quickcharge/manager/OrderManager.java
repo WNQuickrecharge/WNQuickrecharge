@@ -283,5 +283,32 @@ public class OrderManager {
         });
     }
 
+    /**
+     * 充电控制中的结束充电
+     * @param order_no 订单号
+     * @param callback 回调
+     */
+    public void stopCharge(String order_no,final ManagerCallback callback,final int requestCode){
+        String url = HttpApi.getInstance().getUrl(HttpApi.stop_charge);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("order_no",order_no);
+        params.setBodyContent(JSON.toJSONString(ha));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result,requestCode);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg,requestCode);
+            }
+        });
+    }
+
 
 }

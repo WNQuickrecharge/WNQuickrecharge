@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
+import com.optimumnano.quickcharge.manager.EventManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -63,6 +65,12 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
                 OnNaviEvent event=new OnNaviEvent();
                 event.end=holder.mItem;
                 EventBus.getDefault().post(event);
+            }
+        });
+        holder.tvFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new EventManager.openStationDetail(holder.mItem.Id));
             }
         });
 

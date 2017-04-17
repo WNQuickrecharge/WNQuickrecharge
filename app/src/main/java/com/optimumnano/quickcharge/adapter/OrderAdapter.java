@@ -137,7 +137,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
     }
 
     @Override
-    public void payFail() {
+    public void payFail(String msg) {
 
     }
 }

@@ -6,15 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.baidu.mapapi.model.LatLng;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.bean.StationBean;
+import com.optimumnano.quickcharge.manager.EventManager;
 
-import org.xutils.common.util.LogUtil;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -38,16 +39,26 @@ public class CollectionStationAdapter extends BaseQuickAdapter<StationBean,BaseV
         TextView freeGuns=helper.getView(R.id.item_collect_free_guns);
         TextView totalGuns=helper.getView(R.id.item_collect_total_guns);
         TextView stationName=helper.getView(R.id.collect_station_name);
+        TextView stationAddress=helper.getView(R.id.item_collect_station_address);
         LinearLayout linearLayout=helper.getView(R.id.item_collect_GPS);
+        TextView distance=helper.getView(R.id.collect_station_distance);
         LinearLayout root=helper.getView(R.id.ll_root);
-        electricPrice.setText(item.electricPrice);
-        servicePrice.setText(item.servicePrice);
-        freeGuns.setText(item.freeGuns);
-        totalGuns.setText(item.totalGuns);
-        stationName.setText(item.stationName);
+//        electricPrice.setText(item.electricPrice);
+//        servicePrice.setText(item.servicePrice);
+        freeGuns.setText(item.getFreePiles()+"");
+        totalGuns.setText(item.getTotalPiles()+"");
+        stationName.setText(item.getStationName());
+        stationAddress.setText(item.getAddress());
+        distance.setText(item.getDistance()+"");
+        String price = item.getMin_price() + "~" + item.getMax_price();
+        electricPrice.setText(price);
+        String service = item.getMin_service() + "~" + item.getMax_service();
+        servicePrice.setText(service);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LatLng latLng=new LatLng(Double.parseDouble(item.getLat()),Double.parseDouble(item.getLng()));
+                EventBus.getDefault().post(new EventManager.startGPS(latLng));
 
             }
         });

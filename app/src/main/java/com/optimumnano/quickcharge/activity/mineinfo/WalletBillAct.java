@@ -67,7 +67,7 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("获取成功");
-
+                mRefreshLayout.setAdapter(mAdapter);//设置数据源
                 LogUtil.i("test==getTransactionBill onSuccess "+returnContent);
             }
 
@@ -101,7 +101,7 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
         mRefreshLayout.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式
         mRefreshLayout.setLayoutManager(new LinearLayoutManager(this));//设置列表布局方式
         mRefreshLayout.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        mRefreshLayout.setAdapter(mAdapter);//设置数据源
+
         mRefreshLayout.setOnLoadMoreListener(this);//实现OnLoadMoreListener接口
         mRefreshLayout.setOnRefreshListener(this);//实现OnRefreshListener接口
         mRefreshLayout.setLoadMoreViewShow(true);

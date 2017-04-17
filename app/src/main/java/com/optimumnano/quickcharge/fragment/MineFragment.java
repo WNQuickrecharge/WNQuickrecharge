@@ -17,6 +17,7 @@ import com.optimumnano.quickcharge.activity.AboutActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MineInfoAct;
 import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
 import com.optimumnano.quickcharge.activity.mineinfo.MyCollectActivity;
+import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.activity.setting.SettingActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.manager.EventManager;
@@ -41,6 +42,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private MenuItem1 mywallet;
     private TextView mTvBalance;
     private TextView mTvNickName;
+    private TextView mTvDeposit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,11 +69,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mineCollect = (MenuItem1) mainView.findViewById(R.id.mine_collect);
         mTvBalance = (TextView) mainView.findViewById(R.id.mine_tv_balance);
         mTvNickName = (TextView) mainView.findViewById(R.id.mine_tv_nickname);
+        mTvDeposit = (TextView) mainView.findViewById(R.id.mine_tv_deposit);
 
         mywallet.setOnClickListener(this);
         mineAbout.setOnClickListener(this);
         mineCollect.setOnClickListener(this);
-
+        mTvDeposit.setOnClickListener(this);
         initUserInfo();
     }
 
@@ -79,7 +82,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         String headimgurl = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, "");
         Glide.with(getActivity())
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.icon_text_tip).into(ivHead);
+                .error(R.drawable.wd).into(ivHead);
         String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
         mTvBalance.setText(balance);
         String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
@@ -103,6 +106,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.mine_collect:
                 startActivity(new Intent(getActivity(), MyCollectActivity.class));
+                break;
+            case R.id.mine_tv_deposit:
+                startActivity(new Intent(getActivity(), WalletDepositAct.class));
                 break;
             default:
                 break;

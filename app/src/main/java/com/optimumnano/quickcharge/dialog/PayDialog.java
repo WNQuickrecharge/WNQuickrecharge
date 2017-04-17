@@ -2,21 +2,25 @@ package com.optimumnano.quickcharge.dialog;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
-import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by ds on 2017/4/9.
@@ -41,6 +45,14 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     private PayCallback payCallback;
     private double money;
     private String order_no;
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            close();
+            payCallback.paySuccess(order_no);
+        }
+    };
     public PayDialog(Activity mAty) {
         super(mAty);
         activity = mAty;
@@ -93,20 +105,32 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 6) {
-                    if (s.toString().equals("123456")) {
+                    String payPwd = SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,"");
+                    String Md5Paypassword = MD5Utils.encodeMD5(s.toString());
+                    String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
+                    if (finalPayPassword.equals(payPwd)) {
                         orderManager.startPay(order_no, money, new ManagerCallback() {
                             @Override
                             public void onSuccess(Object returnContent) {
                                 super.onSuccess(returnContent);
-                                close();
-//                                payCallback.paySuccess();
-                                payCallback.paySuccess(order_no);
+                                setStatus(PAYSUCCESS);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Thread.sleep(2000);
+                                            handler.sendEmptyMessage(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }).start();
                             }
 
                             @Override
                             public void onFailure(String msg) {
                                 super.onFailure(msg);
-                                payCallback.payFail();
+                                payCallback.payFail(msg);
                             }
                         });
                     } else {
@@ -271,6 +295,6 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
 
     public interface PayCallback{
         void paySuccess(String oder_no);
-        void payFail();
+        void payFail(String msg);
     }
 }
