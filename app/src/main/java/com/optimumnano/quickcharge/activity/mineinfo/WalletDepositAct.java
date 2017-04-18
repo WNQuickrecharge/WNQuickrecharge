@@ -1,6 +1,9 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.PayDialog;
@@ -19,6 +23,11 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,7 +41,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  * 邮箱：dengchuanliang@optimumchina.com
  */
 public class WalletDepositAct extends BaseActivity {
-
+    private static final int SDK_PAY_FLAG = 001;
     @Bind(R.id.act_wallet_deposit_tv_payway)
     TextView mTvPayway;
     @Bind(R.id.act_wallet_deposit_rl_payway)
@@ -48,6 +57,49 @@ public class WalletDepositAct extends BaseActivity {
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==SDK_PAY_FLAG){
+                Map mapresult =(Map) msg.obj;
+                JSONObject dataJson = new JSONObject(mapresult);
+                logtesti("alipayresult "+dataJson.toString());
+                String resultStatus = dataJson.optString("resultStatus");// 结果码
+                switch (resultStatus){
+                    case "9000"://支付成功
+                    case "8000"://正在处理,支付结果确认中
+                    case "6004"://支付结果未知
+                        showToast("支付成功");
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        float addAmount=Float.valueOf(mAmount);
+                        String formatAddAmount = df.format(addAmount);
+                        Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
+                        intent.putExtra("payway",mChosePayway);
+                        intent.putExtra("amount",formatAddAmount);
+                        startActivity(intent);
+                        finish();
+
+                        break;
+                    case "4000":
+                        showToast("订单支付失败");
+                    case "5000":
+                        showToast("订单不能重复支付");
+                        break;
+                    case "6001":
+                        showToast("取消支付");
+                        break;
+                    case "6002":
+                        showToast("网络连接出错");
+                        break;
+                    default:
+                        showToast("支付异常");
+                        break;
+                }
+
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +200,23 @@ public class WalletDepositAct extends BaseActivity {
                 intent.putExtra("amount",formatAddAmount);
                 startActivity(intent);
                 finish();*/
+                final String orderInfo = returnContent.toString();// 签名后的订单信息
+                Runnable payRunnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        PayTask alipay = new PayTask(WalletDepositAct.this);
+                        Map<String, String> result = alipay.payV2(orderInfo, true);//true表示唤起loading等待界面
+
+                        Message msg = new Message();
+                        msg.what = SDK_PAY_FLAG;
+                        msg.obj = result;
+                        mHandler.sendMessage(msg);
+                    }
+                };
+                // 必须异步调用
+                Thread payThread = new Thread(payRunnable);
+                payThread.start();
             }
 
             @Override

@@ -201,6 +201,7 @@
         android:paddingRight="@dimen/default_lrmargin"
         android:paddingBottom="@dimen/default_lrmargin"
         android:background="@color/white"
+        android:visibility="gone"
         android:layout_marginTop="-8dp">
         <TextView
             android:layout_width="wrap_content"
