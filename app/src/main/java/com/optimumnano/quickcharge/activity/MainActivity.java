@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.baidu.mapapi.model.LatLng;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -32,7 +32,6 @@ import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
-import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
