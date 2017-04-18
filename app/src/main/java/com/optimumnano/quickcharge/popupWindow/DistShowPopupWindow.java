@@ -46,6 +46,8 @@ public class DistShowPopupWindow extends BasePopupWindowForListView {
     }
 
     public void setData(List<Point> mDatas) {
+        if (mDatas==null)
+            return;
 
 //        mDatas.addAll(mDatas);
         for (int i = 0; i < mDatas.size(); i++) {
