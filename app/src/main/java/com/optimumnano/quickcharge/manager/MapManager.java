@@ -31,7 +31,7 @@ public class MapManager {
 //        requestJson.put("lng", mHelper.getLocation().lng);
         requestJson.put("lat", 22.647552);
         requestJson.put("lng", 114.06667);
-//        requestJson.put("city", "深圳市");
+        requestJson.put("city", "深圳市");
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);

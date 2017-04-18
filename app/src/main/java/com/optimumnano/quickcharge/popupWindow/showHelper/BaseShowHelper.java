@@ -88,8 +88,18 @@ public abstract class BaseShowHelper {
 
     protected void showView(View view) {
         if (view != null) {
+
             mPopupWindow.setAnimationStyle(R.style.anim_popup_fadeOut_dir_in);
-            mPopupWindow.showAsDropDown(view, 0, dpToPx(context, 0));
+
+            if (android.os.Build.VERSION.SDK_INT >=24) {
+                int[] a = new int[2];
+                view.getLocationInWindow(a);
+                mPopupWindow.showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.NO_GRAVITY, 0 , a[1]+view.getHeight());
+            } else{
+                mPopupWindow.showAsDropDown(view, 0, dpToPx(context, 0));
+            }
+
+
         } else {
             mPopupWindow.setAnimationStyle(R.style.anim_popup_fadeInOrOut);
             mPopupWindow.showAtLocation(getRootView(context), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
