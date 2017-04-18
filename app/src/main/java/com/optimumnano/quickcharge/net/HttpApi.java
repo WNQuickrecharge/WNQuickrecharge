@@ -14,7 +14,8 @@ public class HttpApi {
         }
         return instance;
     }
-    private static final String baseUrl = "http://112.74.44.166:4840/";
+//    private static final String baseUrl = "http://112.74.44.166:4840/";
+    private static final String baseUrl="http://120.77.149.109:4720/";
 //    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
     public String getUrl(String api){
         return baseUrl+api;
@@ -28,7 +29,7 @@ public class HttpApi {
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
-    public static final String balance_deposit_url = "capp/user/pay_deposit";//钱包余额充值
+    public static final String balance_deposit_url = "capp/order/add_deposit";//钱包余额充值
     public static final String  region_station_url = "capp/bs/region_stations";//获取附近的充电站点信息
     public static final String  get_city_station_url = "capp/bs/get_city_stations";//根据城市获取充电站信息
     public static final String logout_url = "capp/user/logout";//登出
