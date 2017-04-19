@@ -17,7 +17,6 @@ public class HttpApi {
     //private static final String baseUrl = "http://112.74.44.166:4840/";
 //    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
     private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
-    //    private static final String baseUrl = "http://112.74.44.166:4840/";
     public String getUrl(String api){
         return baseUrl+api;
     }
@@ -53,6 +52,8 @@ public class HttpApi {
     public static final String get_station_detail = "capp/user/get_station_detail";//获取站点详情信息
 
     public static final String ask_charge="capp/bs/ask_charge";
+
+    public static final String  get_ordersign = "capp/pay/get_ordersign";//获取签名
 
 
 }

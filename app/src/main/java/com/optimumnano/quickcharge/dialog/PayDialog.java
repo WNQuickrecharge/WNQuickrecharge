@@ -11,21 +11,18 @@ import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositSuccessAct;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
-import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
@@ -45,9 +42,9 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     public static final int PAYSUCCESS = 2;
     public static final int PAYFAIL = 3;
 
-    public static final int pay_wx = 0;
-    public static final int pay_zfb = 1;
-    public static final int pay_yue = 2;
+    public static final int pay_wx = 1;
+    public static final int pay_zfb = 0;
+    public static final int pay_yue = 3;
     private Activity activity;
     private TextView payName;
     private OrderManager orderManager = new OrderManager();
@@ -55,6 +52,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     private double money;
     private String order_no;
     private int payWay;//支付方式
+    private String sign;//支付宝支付的签名
     Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -194,38 +192,43 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
         });
     }
     private void payZFB(){
-//待修改
-//        ModifyUserInformationManager.walletBalanceDeposit(money+"", new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                setStatus(PAYSUCCESS);
-//                super.onSuccess(returnContent);
-//                final String orderInfo = returnContent.toString();// 签名后的订单信息
-//                Runnable payRunnable = new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        PayTask alipay = new PayTask(activity);
-//                        Map<String, String> result = alipay.payV2(orderInfo, true);//true表示唤起loading等待界面
-//
-//                        Message msg = new Message();
-//                        msg.what = 1000;
-//                        msg.obj = result;
-//                        handler.sendMessage(msg);
-//                    }
-//                };
-//                // 必须异步调用
-//                Thread payThread = new Thread(payRunnable);
-//                payThread.start();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                payCallback.payFail(msg);
-//            }
-//
-//        });
+        if (StringUtils.isEmpty(sign)){
+            orderManager.getSign(order_no, payWay, new ManagerCallback<String>() {
+                @Override
+                public void onSuccess(String returnContent) {
+                    super.onSuccess(returnContent);
+                    sign = returnContent;
+                    startPay();
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    super.onFailure(msg);
+                }
+            });
+        }
+        else {
+            startPay();
+        }
+
+    }
+
+    private void startPay() {
+        Runnable payRunnable = new Runnable() {
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(activity);
+                Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+
+                Message msg = new Message();
+                msg.what = 1000;
+                msg.obj = result;
+                handler.sendMessage(msg);
+            }
+        };
+        // 必须异步调用
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
     }
 
 
@@ -248,6 +251,13 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     public void setMoney(double money,String order_no){
         this.money = money;
         this.order_no  = order_no;
+        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+    }
+
+    public void setMoney(double money,String order_no,String sign){
+        this.money = money;
+        this.order_no  = order_no;
+        this.sign = sign;
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
     }
 

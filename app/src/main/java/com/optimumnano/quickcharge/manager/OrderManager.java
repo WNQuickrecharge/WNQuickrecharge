@@ -88,7 +88,7 @@ public class OrderManager {
      * @param frozen_cash 预交金额
      * @param callback 回调
      */
-    public void addOrder(String gun_code,String frozen_cash,final ManagerCallback callback){
+    public void addOrder(String gun_code,String frozen_cash,int payway,final ManagerCallback callback){
         if (StringUtils.isEmpty(frozen_cash)){
             callback.onFailure("预付金额不能为空");
             return;
@@ -96,6 +96,7 @@ public class OrderManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.add_order);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
+        ha.put("pay_type",payway);
         ha.put("gun_code",gun_code);
         ha.put("frozen_cash",frozen_cash);
         params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
@@ -306,6 +307,36 @@ public class OrderManager {
             public void onFailure(String msg, String errorCode, int httpCode) {
                 super.onFailure(msg, errorCode, httpCode);
                 callback.onFailure(msg,requestCode);
+            }
+        });
+    }
+
+    /**
+     * 获取签名
+     * @param order_no 订单号
+     * @param payway 支付方式
+     * @param callback 回调
+     */
+    public void getSign(String order_no,int payway,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_ordersign);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("pay_type",payway);
+        ha.put("order_no",order_no);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+//        ha.put(" ask_no"," ask_no");//如果是移动补电车呼叫则添加该参数
+        params.setBodyContent(JSON.toJSONString(ha));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
             }
         });
     }
