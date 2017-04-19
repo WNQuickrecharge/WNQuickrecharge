@@ -13,9 +13,11 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
@@ -25,6 +27,7 @@ import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.json.JSONObject;
+import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -57,6 +60,7 @@ public class WalletDepositAct extends BaseActivity {
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
+    private int payWay;
     private Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -170,8 +174,22 @@ public class WalletDepositAct extends BaseActivity {
         }
         //TODO
         showToast("调起支付");
+        String s = mTvPayway.getText().toString();
+        switch (s) {
+            case "支付宝":
+                payWay=0;
+                break;
 
-        ModifyUserInformationManager.walletBalanceDeposit(mAmount, new ManagerCallback() {
+            case "微信":
+                payWay=1;
+                break;
+            case "银联":
+                payWay=2;
+                break;
+            default:
+                break;
+        }
+        ModifyUserInformationManager.walletBalanceDeposit(mAmount, payWay ,new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -206,7 +224,11 @@ public class WalletDepositAct extends BaseActivity {
                     @Override
                     public void run() {
                         PayTask alipay = new PayTask(WalletDepositAct.this);
-                        Map<String, String> result = alipay.payV2(orderInfo, true);//true表示唤起loading等待界面
+//                        JSON.parse(orderInfo,)
+                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
+                        String sign = alipayBean.getSign();
+                        LogUtil.i("sign=="+sign);
+                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
 
                         Message msg = new Message();
                         msg.what = SDK_PAY_FLAG;
