@@ -207,7 +207,7 @@ public class OrderManager {
      * @param callback 回调
      */
     public void startPay (String order_no,double pay_cash,final ManagerCallback callback){
-        String url = HttpApi.getInstance().getUrl(HttpApi.pay_success);
+        String url = HttpApi.getInstance().getUrl(HttpApi.pay_charge_balance);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);

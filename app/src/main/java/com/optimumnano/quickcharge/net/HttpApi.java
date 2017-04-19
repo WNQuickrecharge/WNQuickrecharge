@@ -18,8 +18,6 @@ public class HttpApi {
 //    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
     private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
     //    private static final String baseUrl = "http://112.74.44.166:4840/";
-    private static final String baseUrl="http://120.77.149.109:4720/";
-    //    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
     public String getUrl(String api){
         return baseUrl+api;
     }
