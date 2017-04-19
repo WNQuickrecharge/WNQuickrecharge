@@ -20,6 +20,13 @@ import java.util.List;
  */
 
 public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolder> {
+    public static final int PROMPTLY_CHARGE=1;//立即充电
+    public static final int CHARGEING=2;       //充电中
+    public static final int MAINTAIN=3;         //维护
+    public static final int APPOINTMENT=4;      //预约
+    private boolean isChargeing=true;
+    private boolean isMaintain=true;
+
     private Activity activity;
     public StationPilesAdapter(int layoutResId, List<PileBean> data,Activity context) {
         super(layoutResId, data);
