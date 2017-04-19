@@ -34,6 +34,7 @@ import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.dialog.AsyncOperatorView;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
@@ -96,7 +97,7 @@ public class MainActivity extends BaseActivity {
         mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                isShow=false;
+                isShow = false;
                 setLeftTitle("筛选");
             }
         });
@@ -244,6 +245,8 @@ public class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+        if (operatorView != null)
+            operatorView.finish();
     }
 
     @Override
@@ -263,9 +266,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow==true){
+        if (isShow == true) {
             mShowHelper.getmPopupWindow().dismiss();
-        }else {
+        } else {
             FilterActivity.start(this);
         }
     }
@@ -278,9 +281,9 @@ public class MainActivity extends BaseActivity {
         mShowHelper.setData(mData);
         mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
         isShow = mShowHelper.getmPopupWindow().isShowing();
-        if (isShow){
+        if (isShow) {
             setLeftTitle("定位");
-        }else{
+        } else {
             setLeftTitle("筛选");
         }
     }
@@ -376,11 +379,14 @@ public class MainActivity extends BaseActivity {
         mData = (List<Point>) event.getObj();
     }
 
+    AsyncOperatorView operatorView;
+
     @Subscribe
     public void onNavi(OnNaviEvent event) {
         if (event == null)
             return;
-
+        operatorView = new AsyncOperatorView(this);
+        operatorView.start("正在部署导航,请稍后....");
         navi(event.end);
     }
 

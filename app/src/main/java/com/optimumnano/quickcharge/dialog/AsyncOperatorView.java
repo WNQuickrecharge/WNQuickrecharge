@@ -1,4 +1,4 @@
-package cdn.cdn_app.dialog;
+package com.optimumnano.quickcharge.dialog;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.os.Handler;
  * @author YSJZ
  * 
  */
-public class AsyncOperatorView extends ProgressDialog implements IAsyncOpteratorView {
+public class AsyncOperatorView extends ProgressDialog  {
 
 	private Context context;
 	public AsyncOperatorView(Context context) {
@@ -26,12 +26,10 @@ public class AsyncOperatorView extends ProgressDialog implements IAsyncOpterator
 		show();
 	}
 
-	@Override
 	public void finish() {
 		dismiss();
 	}
 
-	@Override
 	public  void finish(String alertMessage) {
 		setMessage(alertMessage);
 		Handler handler = new Handler();
@@ -44,12 +42,10 @@ public class AsyncOperatorView extends ProgressDialog implements IAsyncOpterator
 		}, 1500);
 	}
 
-	@Override
-	public void start(int resStringId) {		
+	public void start(int resStringId) {
 		start(context.getString(resStringId));
 	}
 
-	@Override
 	public void finish(int resStringId) {
 
 		finish(context.getString(resStringId));

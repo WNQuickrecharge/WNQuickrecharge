@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -366,11 +365,7 @@ public class RechargeFragment extends BaseFragment {
                 super.onSuccess(returnContent);
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
-                Log.d("TAG", "sss");
                 mPiont = (List<Point>) returnContent;
-//                for (int i = 0; i < mPiont.size(); i++) {
-//                    marker(new LatLng(mPiont.get(i).Lat, mPiont.get(i).Lng), R.drawable.che);
-//                }
                 marker(mPiont, R.drawable.che);
                 EventBus.getDefault().post(new OnPushDataEvent(mPiont));
             }
@@ -407,16 +402,6 @@ public class RechargeFragment extends BaseFragment {
             bundle.putSerializable("info", info);
             marker.setExtraInfo(bundle);
         }
-        //将地图显示在最后一个marker的位置
-//
-//        BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                .fromResource(pic);
-//        //构建MarkerOption，用于在地图上添加Marker
-//        OverlayOptions option = new MarkerOptions()
-//                .position(point)
-//                .icon(bitmap);
-//        //在地图上添加Marker，并显示
-//        mapView.getMap().addOverlay(option);
     }
 
     @Override

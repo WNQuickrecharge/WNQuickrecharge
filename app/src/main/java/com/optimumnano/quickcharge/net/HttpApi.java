@@ -6,6 +6,7 @@ package com.optimumnano.quickcharge.net;
  */
 public class HttpApi {
     private static HttpApi instance;
+
     public static HttpApi getInstance(){
         if (instance == null){
             synchronized (HttpApi.class){
@@ -51,6 +52,7 @@ public class HttpApi {
     public static final String get_station_detail = "capp/user/get_station_detail";//增加收藏站点
 
     public static final String ask_charge="capp/bs/ask_charge";
+    public static final String  region_stations="capp/bs/region_stations";
 
 
 }
