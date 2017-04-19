@@ -14,8 +14,7 @@ public class HttpApi {
         }
         return instance;
     }
-//    private static final String baseUrl = "http://112.74.44.166:4840/";
-    private static final String baseUrl="http://120.77.149.109:4720/";
+    private static final String baseUrl = "http://112.74.44.166:4840/";
 //    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
     public String getUrl(String api){
         return baseUrl+api;
@@ -29,9 +28,8 @@ public class HttpApi {
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
-    public static final String balance_deposit_url = "capp/order/add_deposit";//钱包余额充值
-    public static final String  region_station_url = "capp/bs/region_stations";//获取附近的充电站点信息
-    public static final String  get_city_station_url = "capp/bs/get_city_stations";//根据城市获取充电站信息
+    public static final String balance_deposit_url = "capp/user/pay_deposit";//钱包余额充值
+    public static final String  region_pile_url = "capp/bs/region_pile";//修改个人资料
     public static final String logout_url = "capp/user/logout";//登出
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//
     public static final String get_password_url = "capp/user/get_paypwd";//
@@ -42,15 +40,15 @@ public class HttpApi {
     public static final String get_gunConnect= "capp/bs/get_gunConnect";//获取握手状态
     public static final String start_charge = "capp/bs/start_charge";//开始充电
     public static final String get_chargeProgress = "capp/bs/get_chargeProgress";//获取充电过程中的时间和电量
-    public static final String pay_charge_balance = "capp/order/pay_charge_balance";//余额支付  测试
+    public static final String pay_success = "capp/order/pay_succ";//支付成功  测试
     public static final String cancel_order = "capp/order/cancel_order";//取消订单
     public static final String delete_order = "capp/order/delete_order";//删除订单
     public static final String get_collection = "capp/user/get_collection";//获取个人收藏站点信息
     public static final String add_collection = "capp/user/add_collection";//增加收藏站点
-    public static final String about_url = "http://112.74.44.166:4830/"+"aboutus.html";//关于我们
-    public static final String delete_collection = "capp/user/delete_collection";//删除收藏站点
+    public static final String about_url = baseUrl+"aboutus.html";//关于我们
+    public static final String delete_collection = "capp/user/delete_collection";//增加收藏站点
     public static final String stop_charge = "capp/bs/stop_charge";//结束付款
-    public static final String get_station_detail = "capp/user/get_station_detail";//获取城市的所有站点信息
+    public static final String get_station_detail = "capp/user/get_station_detail";//增加收藏站点
 
     public static final String ask_charge="capp/bs/ask_charge";
 

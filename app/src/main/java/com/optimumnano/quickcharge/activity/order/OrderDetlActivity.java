@@ -45,7 +45,6 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_order_detl);
         ButterKnife.bind(this);
         initViews();
-        initData();
     }
 
     @Override

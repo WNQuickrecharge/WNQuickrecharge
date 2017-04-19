@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.popupWindow;
 
-import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -47,6 +46,8 @@ public class DistShowPopupWindow extends BasePopupWindowForListView {
     }
 
     public void setData(List<Point> mDatas) {
+        if (mDatas==null)
+            return;
 
 //        mDatas.addAll(mDatas);
         for (int i = 0; i < mDatas.size(); i++) {

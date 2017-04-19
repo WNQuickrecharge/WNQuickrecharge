@@ -24,14 +24,14 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 public class MapManager {
 
     public void getReigonInfo(PreferencesHelper mHelper, final ManagerCallback callback) {
-        String url = HttpApi.getInstance().getUrl(HttpApi.region_station_url);
+        String url = HttpApi.getInstance().getUrl(HttpApi.region_pile_url);
         RequestParams params = new RequestParams(url);
         HashMap<String, Object> requestJson = new HashMap<>();
 //        requestJson.put("lat", mHelper.getLocation().lat);
 //        requestJson.put("lng", mHelper.getLocation().lng);
         requestJson.put("lat", 22.647552);
         requestJson.put("lng", 114.06667);
-//        requestJson.put("city", "深圳市");
+        requestJson.put("city", "深圳市");
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);

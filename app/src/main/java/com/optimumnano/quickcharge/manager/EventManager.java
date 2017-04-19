@@ -1,10 +1,7 @@
 package com.optimumnano.quickcharge.manager;
 
 import com.baidu.mapapi.model.LatLng;
-import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.StationBean;
-
-import java.util.List;
 
 /**
  * Created by mfwn on 2017/4/8.
@@ -50,20 +47,5 @@ public class EventManager {
             this.id=id;
         }
 
-    }
-    public static class onStartStationDetailActivity{
-        public Point point;
-
-        public onStartStationDetailActivity(Point point) {
-            this.point=point;
-        }
-
-    }
-    public static class getCityStationList{
-        public List<Point>  list;
-        public getCityStationList(List<Point>  list){
-            this.list=list;
-
-        }
     }
 }

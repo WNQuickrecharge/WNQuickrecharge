@@ -19,8 +19,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.DistanceUtil;
 import com.baidu.navisdk.adapter.BNCommonSettingParam;
 import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
@@ -34,10 +32,8 @@ import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
-import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
-import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
@@ -50,8 +46,6 @@ import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
-import com.optimumnano.quickcharge.utils.SPConstant;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,7 +53,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -380,12 +373,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void onPushData(OnPushDataEvent event) {
-        //mData = (List<Point>) event.getObj();
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCityStationList(EventManager.getCityStationList event) {
-        mData=new ArrayList<>();
-        mData.addAll(event.list);
+        mData = (List<Point>) event.getObj();
     }
 
     @Subscribe
@@ -412,7 +400,7 @@ public class MainActivity extends BaseActivity {
         BNRoutePlanNode sNode = null;
         BNRoutePlanNode eNode = null;
         sNode = new BNRoutePlanNode(mHelper.getLocation().lng, mHelper.getLocation().lat, "我的位置", null, coType);
-        eNode = new BNRoutePlanNode(Double.parseDouble(mPoint.getLng()), Double.parseDouble(mPoint.getLat()), mPoint.getStationName(), null, coType);
+        eNode = new BNRoutePlanNode(mPoint.Lng, mPoint.Lat, mPoint.StationName, null, coType);
         if (sNode != null && eNode != null) {
             List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
             list.add(sNode);
@@ -528,77 +516,5 @@ public class MainActivity extends BaseActivity {
                 showToast(msg);
             }
         });
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onStartStationDetailActivity(EventManager.onStartStationDetailActivity event) {
-        Point point = event.point;
-        StationBean bean = transPointToStationBean(point);
-        Intent intent=new Intent(this, StationActivity.class);
-        Bundle bundle=new Bundle();
-        String lat = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LAT, "");
-        String lon = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_LON, "");
-        double distance = DistanceUtil.getDistance(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)), new LatLng(Double.parseDouble(bean.getLat()), Double.parseDouble(bean.getLng())));
-        distance/=1000;
-        DecimalFormat decimalFormat=new DecimalFormat("0.00");
-        String format = decimalFormat.format(distance);
-        bean.setDistance(format+"km");
-        bundle.putSerializable("Station",bean);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    private StationBean transPointToStationBean(Point point) {
-//        Phone : 18766662256
-//                * yyprovince : 广东省
-//                * ManagementCompany : wtm
-//                * Id : 3006
-//                * ChargingStationId : 3006
-//                * Lng : 113.950075
-//                * min_service : 0.2
-//                * Address : 深圳市坪山新区兰景北路68号
-//                * max_price : 4.56
-//                * IsDel : false
-//                * OperationDate : 2017-02-26T00:00:00
-//                * FreePiles : 4
-//                * max_service : 0.2
-//                * yydistrict : 南山区
-//                * TotalPiles : 4
-//                * min_price : 4.56
-//                * BuiltDate : 2017-02-01T00:00:00
-//                * Lat : 22.571174
-//                * yycity : 深圳市
-//                * StationName : 壮辉充电站
-//                * State : 3
-//                * CreateTime : 2017-02-15T14:27:07.517
-//                * UpdateTime : 2017-02-15T14:27:07.517
-//                * StationNo : 44030501000002
-//                * RunTimeSpan : 0点到24点
-//                * City : 广东省-深圳市-南山区
-
-        StationBean bean = new StationBean();
-        bean.setAddress(point.getAddress());
-        bean.setPhone(point.getPhone());
-        bean.setYycity(point.getYycity());
-        bean.setManagementCompany(point.getManagementCompany());
-        bean.setYydistrict(point.getYydistrict());
-        bean.setYyprovince(point.getYyprovince());
-        bean.setMin_price(point.getMin_price());
-        bean.setMax_price(point.getMax_price());
-        bean.setMin_service(point.getMin_service());
-        bean.setMax_service(point.getMax_service());
-        bean.setState(point.getState());
-        bean.setFreePiles(point.FreePiles);
-        bean.setTotalPiles(point.TotalPiles);
-        bean.setDel(point.IsDel);
-        bean.setId(point.Id);
-        bean.setCreateTime(point.CreateTime);
-        bean.setStationName(point.getStationName());
-        bean.setStationNo(point.getStationNo());
-        bean.setBuiltDate(point.getBuiltDate());
-        bean.setLng(point.getLng());
-        bean.setLat(point.getLat());
-        bean.setRunTimeSpan(point.RunTimeSpan);
-        bean.setUpdateTime(point.UpdateTime);
-        return bean;
     }
 }
