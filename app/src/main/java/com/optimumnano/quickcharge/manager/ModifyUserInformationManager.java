@@ -204,11 +204,12 @@ public class ModifyUserInformationManager {
         });
     }
 
-    public static void walletBalanceDeposit(String cash, final ManagerCallback callback){
+    public static void walletBalanceDeposit(String cash, int pay_type,final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.balance_deposit_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("cash",cash);
+        requestJson.put("pay_type",pay_type);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
