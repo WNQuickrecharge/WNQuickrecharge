@@ -3,6 +3,8 @@ package com.optimumnano.quickcharge.adapter;
 import android.app.Activity;
 import android.text.Html;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,9 +37,10 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
     protected void convert(BaseViewHolder helper, PileBean item) {
         TextView eletricPrice=helper.getView(R.id.tv_electric_price);
         TextView servicePrice=helper.getView(R.id.tv_service_price);
-        TextView pileStatus=helper.getView(R.id.pile_status_operation);
+        Button pileStatus=helper.getView(R.id.pile_status_operation);
         TextView pileNo=helper.getView(R.id.tv_station_item_pileNo);
         LinearLayout linearLayout=helper.getView(R.id.ll_gunList);
+        ImageView imageView=helper.getView(R.id.gun_status_img);
 
         for (int i=0;i<item.getGunList().size();i++) {
             View inflate = activity.getLayoutInflater().inflate(R.layout.itemview_station_pile_gun, null);
@@ -70,6 +73,30 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
                     break;
                 }
             }
+        }
+        int status = item.getStatus();
+        switch (status) {
+            case PROMPTLY_CHARGE:
+                pileStatus.setText("立即充电");
+                pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.main_color));
+                pileStatus.setTextColor(activity.getResources().getColor(R.color.white));
+                imageView.setImageResource(R.mipmap.cdzhuang01);
+                break;
+
+            case CHARGEING:
+                pileStatus.setText("正在充电");
+                pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.white));
+                pileStatus.setTextColor(activity.getResources().getColor(R.color.color99));
+                imageView.setImageResource(R.mipmap.cdzhuang02);
+                break;
+            case MAINTAIN:
+                pileStatus.setText("正在维护");
+                pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.white));
+                pileStatus.setTextColor(activity.getResources().getColor(R.color.colorCC));
+                imageView.setImageResource(R.mipmap.cdzhuang03);
+                break;
+            default:
+                break;
         }
 
 
