@@ -54,6 +54,7 @@ public class HttpApi {
     public static final String ask_charge="capp/bs/ask_charge";
 
     public static final String  get_ordersign = "capp/pay/get_ordersign";//获取签名
+    public static final String  get_accountinfo = "capp/user/get_accountinfo";//获取个人账户信息
 
 
 }
