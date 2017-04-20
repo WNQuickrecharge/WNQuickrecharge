@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.text.TextUtils;
@@ -45,6 +46,7 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
+import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
@@ -79,6 +81,7 @@ public class MainActivity extends BaseActivity {
     KeyboardWatcher keyboardWatcher;
 
     private DistShowHepler mShowHelper;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -516,5 +519,23 @@ public class MainActivity extends BaseActivity {
                 showToast(msg);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            AppManager.getAppManager().finishAllActivity();
+            return;
+        }
+        doubleBackToExitPressedOnce = true;
+        showToast(getString(R.string.exit_hint));
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                SystemClock.sleep(2000);
+                doubleBackToExitPressedOnce=false;
+            }
+        }.start();
     }
 }
