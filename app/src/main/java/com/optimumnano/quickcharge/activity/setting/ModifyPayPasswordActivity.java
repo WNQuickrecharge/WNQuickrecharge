@@ -325,4 +325,10 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         super.onResume();
         manager.getPayPassword(new PayPasswordManager());
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
