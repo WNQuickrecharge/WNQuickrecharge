@@ -12,7 +12,7 @@ import org.xutils.http.RequestParams;
 import java.util.HashMap;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
 
 /**
@@ -30,7 +30,7 @@ public class GetMineInfoManager {
         requestJson.put("page_size",pagesize);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -52,7 +52,7 @@ public class GetMineInfoManager {
         HashMap<String ,Object> requestJson=new HashMap<>();
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

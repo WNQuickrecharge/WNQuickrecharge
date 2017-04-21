@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
 /**
  * Created by 秋平 on 2017/4/8 0008.
@@ -63,7 +63,7 @@ public class MapManager {
         requestJson.put("address", address);
         requestJson.put("plate", plate);
         String json = JSON.toJSONString(requestJson);
-        String value=SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,"");
+        String value=SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,"");
         params.setHeader("Cookie", value);
         params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {

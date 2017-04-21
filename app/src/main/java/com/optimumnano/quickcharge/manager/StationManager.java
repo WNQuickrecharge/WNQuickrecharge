@@ -12,7 +12,7 @@ import org.xutils.http.RequestParams;
 import java.util.HashMap;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
 /**
  * Created by chenwenguang on 2017/4/16.
@@ -24,7 +24,7 @@ public class StationManager {
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("station_id",stationId);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
 

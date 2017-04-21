@@ -14,7 +14,7 @@ import org.xutils.http.RequestParams;
 import java.util.HashMap;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
 /**
  * Created by mfwn on 2017/4/6.
@@ -39,7 +39,7 @@ public class ModifyUserInformationManager {
             requestJson.put("mobile",mobile);
             requestJson.put("oldpwd",oldpwd);
             requestJson.put("newpwd",newpwd);
-            params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+            params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
             String json = JSON.toJSONString(requestJson);
             params.setBodyContent(json);
 
@@ -67,7 +67,7 @@ public class ModifyUserInformationManager {
         requestJson.put("sex",sex);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -90,7 +90,7 @@ public class ModifyUserInformationManager {
         requestJson.put("imagebase64",imagebase64);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -110,7 +110,7 @@ public class ModifyUserInformationManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.logout_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
@@ -133,7 +133,7 @@ public class ModifyUserInformationManager {
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("pay_pwd",pay_pwd);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
@@ -156,7 +156,7 @@ public class ModifyUserInformationManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.get_password_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
@@ -184,7 +184,7 @@ public class ModifyUserInformationManager {
         requestJson.put("purpose",purpose);
         requestJson.put("validate_code",validate_code);
         requestJson.put("new_paypwd",new_paypwd);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         MyHttpUtils.getInstance().post(params ,new HttpCallback<String>(){
@@ -212,7 +212,7 @@ public class ModifyUserInformationManager {
         requestJson.put("pay_type",pay_type);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

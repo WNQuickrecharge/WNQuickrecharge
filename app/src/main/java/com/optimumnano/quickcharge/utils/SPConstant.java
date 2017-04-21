@@ -8,6 +8,7 @@ package com.optimumnano.quickcharge.utils;
 public interface SPConstant {
     /***sharedpreferences****用户信息的xml名******/
     String SP_USERINFO = "sp_userinfo";
+    String SP_COOKIE = "sp_cookie";
 
     /***sharedpreferences****用户头像地址key******/
     String KEY_USERINFO_HEADIMG_URL="userinfo_headimg_url";

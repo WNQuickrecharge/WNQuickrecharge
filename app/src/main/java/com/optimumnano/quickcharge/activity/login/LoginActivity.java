@@ -21,6 +21,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.DESEncryptTools;
 import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
@@ -34,6 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
@@ -41,6 +43,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
@@ -163,9 +166,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-            showToast("登陆成功!");
-            LogUtil.i("test==returnContent "+returnContent);
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
             JSONObject dataJson = null;
             try {
@@ -205,7 +205,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
-
+            showToast("登陆成功!");
+            LogUtil.i("Cookie=="+SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
             hideLoading();
             finish();
         }
@@ -238,5 +240,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AppManager.getAppManager().finishAllActivity();
+        finish();
     }
 }

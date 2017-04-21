@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -37,7 +38,7 @@ public class OrderManager {
         ha.put("page_size",pageCount);
         ha.put("cur_page",pageSize);
 
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         params.setBodyContent(JSON.toJSONString(ha));
         MyHttpUtils.getInstance().post(params, new HttpCallback<List<OrderBean>>() {
             @Override
@@ -66,7 +67,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("gun_code",gun_code);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<RechargeGunBean>() {
             @Override
             public void onSuccess(RechargeGunBean result, int httpCode) {
@@ -99,7 +100,7 @@ public class OrderManager {
         ha.put("pay_type",payway);
         ha.put("gun_code",gun_code);
         ha.put("frozen_cash",frozen_cash);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
 //        ha.put(" ask_no"," ask_no");//如果是移动补电车呼叫则添加该参数
         params.setBodyContent(JSON.toJSONString(ha));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
@@ -129,7 +130,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("gun_code",gun_code);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -156,7 +157,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -185,7 +186,7 @@ public class OrderManager {
         ha.put("order_no",order_no);
         ha.put("test_no",test_no);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -214,7 +215,7 @@ public class OrderManager {
         ha.put("order_no",order_no);
         ha.put("pay_cash",pay_cash);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -241,7 +242,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -268,7 +269,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -295,7 +296,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("order_no",order_no);
         params.setBodyContent(JSON.toJSONString(ha));
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
@@ -323,7 +324,7 @@ public class OrderManager {
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("pay_type",payway);
         ha.put("order_no",order_no);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
 //        ha.put(" ask_no"," ask_no");//如果是移动补电车呼叫则添加该参数
         params.setBodyContent(JSON.toJSONString(ha));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
