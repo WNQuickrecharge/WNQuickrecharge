@@ -158,6 +158,7 @@
         app:showtvRight="true"
         android:layout_marginTop="1dp"/>
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:visibility="gone"
         android:id="@+id/orderdetl_miRechargeCash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -171,6 +172,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:paddingLeft="@dimen/default_lrmargin"
         android:paddingRight="@dimen/default_lrmargin"
         android:paddingBottom="@dimen/default_lrmargin"
@@ -192,6 +194,7 @@
     </RelativeLayout>
 
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:visibility="gone"
         android:id="@+id/orderdetl_miAllMoney"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -204,6 +207,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:paddingLeft="@dimen/default_lrmargin"
         android:paddingRight="@dimen/default_lrmargin"
         android:paddingBottom="@dimen/default_lrmargin"
