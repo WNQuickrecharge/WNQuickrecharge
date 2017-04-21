@@ -9,19 +9,23 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 作者：邓传亮 on 2017/4/11 12:07
@@ -65,6 +69,8 @@ public class WalletDepositSuccessAct extends BaseActivity {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(restCash));
                 EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
             }
 

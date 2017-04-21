@@ -1,8 +1,6 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +13,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alipay.sdk.app.PayTask;
 import com.alibaba.fastjson.JSON;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
@@ -29,11 +26,6 @@ import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
-
-import org.json.JSONObject;
-
-import java.text.DecimalFormat;
-import java.util.Map;
 
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
@@ -185,7 +177,7 @@ public class WalletDepositAct extends BaseActivity {
 
     private void callALiPay() {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount, new ManagerCallback() {
+        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -197,7 +189,6 @@ public class WalletDepositAct extends BaseActivity {
                     @Override
                     public void run() {
                         PayTask alipay = new PayTask(WalletDepositAct.this);
-//                        JSON.parse(orderInfo,)
                         AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
                         String sign = alipayBean.getSign();
                         LogUtil.i("sign=="+sign);
