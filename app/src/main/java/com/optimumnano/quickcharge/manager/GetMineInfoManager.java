@@ -76,7 +76,7 @@ public class GetMineInfoManager {
         HashMap<String, Object> requestJson = new HashMap<>();
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_COOKIE, ""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE, KEY_USERINFO_COOKIE, ""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
