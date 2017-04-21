@@ -46,13 +46,37 @@ public class GetMineInfoManager {
         });
     }
 
-    public static void getAccountInfo(final ManagerCallback callback){
-        String url = HttpApi.getInstance().getUrl(HttpApi.get_accountinfo);
+    public static void getALiPayOrderInfoDeposit(String cash,int payway, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_alipay_orderinfo_deposit);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("cash",cash);
+        requestJson.put("pay_type",payway);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
         params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
+    public static void getAccountInfo(final ManagerCallback callback) {
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_accountinfo);
+        RequestParams params = new RequestParams(url);
+        HashMap<String, Object> requestJson = new HashMap<>();
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_COOKIE, ""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

@@ -1,5 +1,11 @@
 package com.optimumnano.quickcharge.net;
 
+import android.os.Build;
+
+import com.optimumnano.quickcharge.BuildConfig;
+
+import java.util.Locale;
+
 /**
  * Created by ds on 2017/4/1.
  * url管理
@@ -29,7 +35,8 @@ public class HttpApi {
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
-    public static final String balance_deposit_url = "capp/order/add_deposit";//钱包余额充值
+    public static final String get_alipay_orderinfo_deposit = "capp/order/add_deposit";//上传支付金额获取调起支付宝的orderInfo
+    public static final String get_accountinfo = "capp/user/get_accountinfo";//获取账户信息
     public static final String  region_pile_url = "capp/bs/region_stations";//获取当前城市的所有站点信息
     public static final String logout_url = "capp/user/logout";//登出
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//
@@ -50,11 +57,13 @@ public class HttpApi {
     public static final String delete_collection = "capp/user/delete_collection";//增加收藏站点
     public static final String stop_charge = "capp/bs/stop_charge";//结束付款
     public static final String get_station_detail = "capp/bs/get_station_detail";//获取站点详情信息
+    public static final String set_registerid_url = "capp/user/set_registerid";//提交推送ID
+    public static final String USER_AGENT = "android/" + Build.VERSION.SDK_INT + "/quickcharge/" + BuildConfig.VERSION_NAME+"/"
+            + Locale.getDefault();
 
     public static final String ask_charge="capp/bs/ask_charge";
 
     public static final String  get_ordersign = "capp/pay/get_ordersign";//获取签名
-    public static final String  get_accountinfo = "capp/user/get_accountinfo";//获取个人账户信息
 
 
 }

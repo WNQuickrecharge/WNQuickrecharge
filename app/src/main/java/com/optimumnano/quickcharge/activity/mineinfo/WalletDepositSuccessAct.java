@@ -13,7 +13,6 @@ import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
-import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
@@ -24,6 +23,9 @@ import java.text.DecimalFormat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 作者：邓传亮 on 2017/4/11 12:07
@@ -59,6 +61,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
         String amount = intent.getStringExtra("amount");
         mMiAmount.setRightText("¥ "+amount);
         PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
+
         GetMineInfoManager.getAccountInfo(new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
@@ -66,15 +69,14 @@ public class WalletDepositSuccessAct extends BaseActivity {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
-                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
                 DecimalFormat df = new DecimalFormat("0.00");
-                SharedPreferencesUtil.putValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_BALANCE,df.format(restCash));
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(restCash));
+                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
             }
 
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
-                showToast(msg);
             }
         });
     }
