@@ -9,6 +9,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -55,6 +57,22 @@ public class WalletDepositSuccessAct extends BaseActivity {
         String amount = intent.getStringExtra("amount");
         mMiAmount.setRightText("¥ "+amount);
         PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
+
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override
@@ -77,21 +95,6 @@ public class WalletDepositSuccessAct extends BaseActivity {
 
     @OnClick(R.id.act_wallet_deposit_suc_tv_back)
     public void onClick() {
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
         Intent intent = new Intent(WalletDepositSuccessAct.this, MineWalletAct.class);
         startActivity(intent);
         finish();

@@ -204,27 +204,4 @@ public class ModifyUserInformationManager {
         });
     }
 
-    public static void walletBalanceDeposit(String cash, int pay_type,final ManagerCallback callback){
-        String url = HttpApi.getInstance().getUrl(HttpApi.balance_deposit_url);
-        RequestParams params= new RequestParams(url);
-        HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("cash",cash);
-        requestJson.put("pay_type",pay_type);
-        String json = JSON.toJSONString(requestJson);
-        params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_COOKIE,""));
-        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
-            @Override
-            public void onSuccess(String result, int httpCode) {
-                super.onSuccess(result, httpCode);
-                callback.onSuccess(result);
-            }
-
-            @Override
-            public void onFailure(String msg, String errorCode, int httpCode) {
-                super.onFailure(msg, errorCode, httpCode);
-                callback.onFailure(msg);
-            }
-        });
-    }
 }
