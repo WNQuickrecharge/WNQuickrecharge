@@ -51,7 +51,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
         mMiAmount.setRightText("¥ "+amount);
         PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
 
-        GetMineInfoManager.getMyBalance("",new ManagerCallback(){
+        GetMineInfoManager.geAccountInfo("",new ManagerCallback(){
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);

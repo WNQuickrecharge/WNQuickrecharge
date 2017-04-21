@@ -69,7 +69,7 @@ public class GetMineInfoManager {
         });
     }
 
-    public static void getMyBalance(String cash, final ManagerCallback callback){
+    public static void geAccountInfo(String cash, final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.get_accountinfo);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
