@@ -1,5 +1,11 @@
 package com.optimumnano.quickcharge.net;
 
+import android.os.Build;
+
+import com.optimumnano.quickcharge.BuildConfig;
+
+import java.util.Locale;
+
 /**
  * Created by ds on 2017/4/1.
  * url管理
@@ -51,6 +57,9 @@ public class HttpApi {
     public static final String delete_collection = "capp/user/delete_collection";//增加收藏站点
     public static final String stop_charge = "capp/bs/stop_charge";//结束付款
     public static final String get_station_detail = "capp/bs/get_station_detail";//获取站点详情信息
+    public static final String set_registerid_url = "capp/user/set_registerid";//提交推送ID
+    public static final String USER_AGENT = "android/" + Build.VERSION.SDK_INT + "/quickcharge/" + BuildConfig.VERSION_NAME+"/"
+            + Locale.getDefault();
 
     public static final String ask_charge="capp/bs/ask_charge";
 

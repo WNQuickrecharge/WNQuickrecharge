@@ -1,18 +1,12 @@
 package com.optimumnano.quickcharge.manager;
 
-import android.app.ProgressDialog;
-
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.net.MyHttpUtils;
-import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
-import com.optimumnano.quickcharge.utils.ToastUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.http.RequestParams;
 
 import java.util.HashMap;
@@ -38,6 +32,7 @@ public class LoginManager {
             requestJson.put("type",userType);
             String json = JSON.toJSONString(requestJson);
             params.setBodyContent(json);
+            params.setHeader("User-Agent", HttpApi.USER_AGENT);
             MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
                 @Override
                 public void onSuccess(String result, int httpCode) {

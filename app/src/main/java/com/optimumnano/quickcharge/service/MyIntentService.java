@@ -5,6 +5,8 @@ import android.content.Context;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
+import com.optimumnano.quickcharge.manager.GetuiPushManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 
 import org.xutils.common.util.LogUtil;
 
@@ -35,6 +37,19 @@ public class MyIntentService extends GTIntentService {
     @Override
     public void onReceiveClientId(Context context, String clientid) {
         LogUtil.i("test==onReceiveClientId "+clientid);
+        GetuiPushManager.setGetuiRegisterid(clientid,new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                LogUtil.i("test==setRegistId success ");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                LogUtil.i("test==setRegistId failure "+msg);
+            }
+        });
     }
 
     @Override
