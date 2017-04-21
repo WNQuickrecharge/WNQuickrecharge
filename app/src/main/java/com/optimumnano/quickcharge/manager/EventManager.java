@@ -48,4 +48,7 @@ public class EventManager {
         }
 
     }
+    public static class cookieTimeOut{
+
+    }
 }

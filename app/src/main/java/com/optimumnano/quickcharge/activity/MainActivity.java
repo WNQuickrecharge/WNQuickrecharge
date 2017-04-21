@@ -30,6 +30,7 @@ import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
+import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
@@ -240,13 +241,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!EventBus.getDefault().isRegistered(this))
         EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -363,6 +365,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
 
@@ -537,5 +540,10 @@ public class MainActivity extends BaseActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }.start();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void cookieTimeOut(EventManager.cookieTimeOut event) {
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }
