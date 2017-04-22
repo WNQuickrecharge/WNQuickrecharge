@@ -140,7 +140,7 @@
             android:paddingTop="@dimen/dimen_8"
             android:clickable="true"
             android:text="导航"
-            android:textColor="@drawable/sl_other_rb_text_state"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_14" />
 
 

@@ -46,7 +46,7 @@
         <TextView
             android:layout_marginRight="@dimen/dimen_4"
             android:id="@+id/dialog_input_info_tv_ok"
-            android:background="@drawable/text_view_background"
+            android:background="@drawable/sl_rb_state_btn"
             android:text="确认"
             android:textColor="@color/white"
             android:textSize="@dimen/font_16"
@@ -60,7 +60,7 @@
             android:id="@+id/dialog_input_info_tv_cancel"
             android:background="@drawable/shape_maincolor_kuang"
             android:text="取消"
-            android:textColor="@color/main_color"
+            android:textColor="@drawable/sl_other_rb_text_state_two"
             android:textSize="@dimen/font_16"
             android:gravity="center"
             android:padding="@dimen/dimen_8"
