@@ -45,8 +45,11 @@ import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 
@@ -361,6 +364,10 @@ public class RechargeFragment extends BaseFragment {
             if (location == null || mapView == null) {
                 return;
             }
+            String city = location.getCity();
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,location.getLatitude()+"");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,location.getLongitude()+"");
+            EventBus.getDefault().post(new EventManager.getCurrentCity(city));
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
