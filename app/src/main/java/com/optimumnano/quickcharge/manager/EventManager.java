@@ -51,4 +51,18 @@ public class EventManager {
     public static class cookieTimeOut{
 
     }
+    public static class getCurrentCity{
+        public String city;
+
+        public getCurrentCity(String city) {
+            this.city = city;
+        }
+    }
+    public static class openStationActivity{
+        public StationBean bean;
+
+        public openStationActivity(StationBean bean) {
+            this.bean = bean;
+        }
+    }
 }

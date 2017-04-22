@@ -29,6 +29,11 @@ public class Point implements Serializable{
     public String CreateTime;//": "2017-04-05T10:13:46.877",
     public String UpdateTime;//": "2017-04-05T10:13:46.877",
     public boolean IsDel;//": false
+    public double max_price;
+    public double min_price;
+    public double max_service;
+    public double min_service;
+    public String RunTimeSpan;
 
     @Override
     public boolean equals(Object obj) {

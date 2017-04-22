@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.popupWindow;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -40,9 +41,14 @@ public class DistShowPopupWindow extends BasePopupWindowForListView {
 
     private DistDetailAcapter mAdapterDist;
     private RegionAdatper mAdapterRegion;
+    private Context context;
 
     public DistShowPopupWindow(View contentView, int width, int height, List mDatas) {
         super(contentView, width, height, true, mDatas);
+    }
+    public DistShowPopupWindow(View contentView, int width, int height, List mDatas,Context context) {
+        super(contentView, width, height, true, mDatas);
+        this.context=context;
     }
 
     public void setData(List<Point> mDatas) {
@@ -109,7 +115,7 @@ public class DistShowPopupWindow extends BasePopupWindowForListView {
 
 
             }
-        });
+        },context);
         mAdapterRegion = new RegionAdatper(mLeft, new OnListClickListener() {
             @Override
             public void onShowMessage(Object item) {
