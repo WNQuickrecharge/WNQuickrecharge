@@ -11,7 +11,9 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -332,6 +334,33 @@ public class MainActivity extends BaseActivity {
                             }
                         });
                         break;
+                    default:
+                        break;
+                }
+            }
+        });
+        tvRight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                switch (s.toString()) {
+                    case "列表":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        break;
+
+                    case "地图":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        break;
+
                     default:
                         break;
                 }
