@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.MPagerAdapter;
+import com.optimumnano.quickcharge.animation.ZoomOutPageTransformer;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.views.CustomViewPager;
 
@@ -48,6 +49,7 @@ public class RechargerViewPagerFrag extends BaseFragment {
         viewPager= (CustomViewPager) getActivity().findViewById(R.id.frag_recharge_viewpager);
         mFragments.add(new RechargeFragment());
         mFragments.add(new RechargerListFrag(null));
+        viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
     }
     private void initData() {
         viewPager.setCurrentItem(0);

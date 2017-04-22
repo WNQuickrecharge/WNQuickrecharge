@@ -41,8 +41,7 @@ public class Point implements Serializable{
         if (!(obj instanceof Point)) return false;
         final Point other = (Point)obj;
 
-        if(this.Id==(other.Id)&& this.State==other.State&&this.StationName.equals(other.StationName)
-                &&this.UpdateTime.equals(other.UpdateTime))
+        if(this.Id==(other.Id)&& this.State==other.State&&this.StationName.equals(other.StationName))
             return true;
         else
             return false;

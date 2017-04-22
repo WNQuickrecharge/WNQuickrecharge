@@ -585,6 +585,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
+        AppManager.getAppManager().finishAllActivity();
         startActivity(new Intent(this, LoginActivity.class));
     }
 }
