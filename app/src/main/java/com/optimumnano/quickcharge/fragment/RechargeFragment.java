@@ -364,6 +364,7 @@ public class RechargeFragment extends BaseFragment {
             if (location == null || mapView == null) {
                 return;
             }
+            locationClient.stop();
             String city = location.getCity();
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,location.getLatitude()+"");
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,location.getLongitude()+"");

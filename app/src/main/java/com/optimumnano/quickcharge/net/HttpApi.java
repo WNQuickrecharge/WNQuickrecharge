@@ -40,7 +40,7 @@ public class HttpApi {
     public static final String  region_pile_url = "capp/bs/region_stations";//获取附近站点信息
     public static final String logout_url = "capp/user/logout";//登出
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//
-    public static final String get_password_url = "capp/user/get_paypwd";//
+    public static final String get_password_url = "capp/user/get_paypwd";//获取支付密码
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
     public static final String order_list = "capp/order/all_orders";//
     public static final String get_guninfo = "capp/bs/get_gunInfo";//获取充电枪详情

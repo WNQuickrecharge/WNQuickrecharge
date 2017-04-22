@@ -72,7 +72,7 @@ public class RechargerListFrag extends BaseFragment{
     public RechargerListFrag(List<Point> mDatas) {
         this.mDatas = mDatas;
     }
-
+    public RechargerListFrag(){}
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

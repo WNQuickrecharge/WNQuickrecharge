@@ -41,7 +41,6 @@ import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEM
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
@@ -184,10 +183,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             }
 
             String data = dataJson.optString("userinfo");
-            String payPassword = dataJson.optString("PayPassword");
-            if (!TextUtils.isEmpty(payPassword)){
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
-            }
+//            String payPassword = dataJson.optString("PayPassword");
+//            if (!TextUtils.isEmpty(payPassword)){
+//                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,payPassword);
+//            }
             UserInfo userinfoBean = JSON.parseObject(dataJson.toString(), UserInfo.class);
             //LogUtil.i("test==http NickName "+userinfoBean.userinfo.NickName+" Gender "+userinfoBean.userinfo.Gender+" PhoneNum "+userinfoBean.userinfo.PhoneNum+" headurl "+userinfoBean.userinfo.AvatarUrl+" RestCash balance "+userinfoBean.account.RestCash);
 

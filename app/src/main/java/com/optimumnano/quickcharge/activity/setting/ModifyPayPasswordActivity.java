@@ -17,20 +17,16 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.common.util.LogUtil;
-
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by mfwn on 2017/4/8.
@@ -100,26 +96,44 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
 
     private void setTextValue() {
 
-        String str = mStringBuffer.toString();
+        final String str = mStringBuffer.toString();
         int len = str.length();
 
         if (len <= 6) {
             imageViews[len - 1].setVisibility(View.VISIBLE);
         }
         if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_OLD_PAY_PASSWORD)) {
-            String Md5Paypassword = MD5Utils.encodeMD5(str);
-            String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
             showLoading();
-            String payPassword = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PAYPASSWORD, "");
-            if (!finalPayPassword.equals(payPassword)) {
+            GetMineInfoManager.getPayPwd(new ManagerCallback() {
+                @Override
+                public void onSuccess(Object returnContent) {
+                    super.onSuccess(returnContent);
+                    hideLoading();
+                    JSONObject dataJson = null;
+                    try {
+                        dataJson = new JSONObject(returnContent.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String paypwd = dataJson.optString("paypwd");
+                    String Md5Paypassword = MD5Utils.encodeMD5(str.toString());
+                    String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
+                    if (!finalPayPassword.equals(paypwd)) {
+                        EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
+                    } else {
+                        inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
+                        EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
+                    }
 
-                EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
+                }
 
-            } else {
-                hideLoading();
-                inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
-                EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
-            }
+                @Override
+                public void onFailure(String msg) {
+                    hideLoading();
+                    showToast(msg);
+                }
+            });
+
 
         } else if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_NEW_PAY_PASSWORD)) {
             tempPayPassword = mStringBuffer.toString();
@@ -308,8 +322,6 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
                         })
                         .show();
 
-            }else {
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,paypwd);
             }
         }
 
