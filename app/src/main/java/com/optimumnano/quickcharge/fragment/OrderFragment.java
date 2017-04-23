@@ -87,17 +87,14 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
             @Override
             public void onSuccess(List<OrderBean> returnContent) {
                 super.onSuccess(returnContent);
+                recyclerView.setRefreshCompleted(true);
                 if (pageSize == 1){
                     pageSize = 1;
                     orderList.clear();
                     refreshLayout.setRefreshing(false);
-//                    adapter.setCanLoadMore(true);
-                    recyclerView.setRefreshCompleted(true);
                 }
                 if (returnContent.size() == 0){
-//                    adapter.setEnableLoadMore(false);
-//                    adapter.loadMoreEnd(true);
-                    recyclerView.setRefreshCompleted(false);
+                    recyclerView.setRefreshCompleted(true);
                 }
                 orderList.addAll(returnContent);
                 dataChanged();

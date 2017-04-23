@@ -32,6 +32,7 @@ import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
+import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
@@ -293,14 +294,25 @@ public class MainActivity extends BaseActivity {
 //        }else{
 //           // setLeftTitle("筛选");
 //        }
-        String s = tvRight.getText().toString();
-        if ("列表".equals(s)){
-            tvRight.setText("地图");
-            rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
-        }else if ("地图".equals(s)){
-            tvRight.setText("列表");
-            rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+        switch (viewPager.getCurrentItem()){
+            case 0:
+                String s = tvRight.getText().toString();
+                if ("列表".equals(s)){
+                    tvRight.setText("地图");
+                    rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                }else if ("地图".equals(s)){
+                    tvRight.setText("列表");
+                    rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                }
+                break;
+            case 1:
+                skipActivity(InvoiceActivity.class,null);
+                break;
+            case 2:
+
+                break;
         }
+
     }
 
     private void initListener() {
@@ -318,7 +330,7 @@ public class MainActivity extends BaseActivity {
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
 
-                        setRightTitle("");
+                        setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:
