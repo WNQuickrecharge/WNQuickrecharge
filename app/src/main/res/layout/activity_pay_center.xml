@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_pay_center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.optimumnano.quickcharge.activity.invoice.PayCenterActivity">
+
+    <include layout="@layout/title_main"/>
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="订单编号"
+        app:tvRightText="000"
+        app:showtvRight="true"
+        android:layout_marginTop="@dimen/default_padding"
+        app:LeftTextColor="@color/color66"
+        app:rightTextColor="@color/color33"/>
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="支付类型"
+        app:tvRightText="快递费用"
+        app:showtvRight="true"
+        android:layout_marginTop="1dp"
+        app:LeftTextColor="@color/color66"
+        app:rightTextColor="@color/color33"/>
+
+    <RelativeLayout
+        android:id="@+id/paycenter_rlPayway"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_lrmargin"
+        android:layout_marginTop="1dp"
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color66"
+            android:textSize="@dimen/default_textsize"
+            android:text="支付方式"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+            <ImageView
+                android:id="@+id/paycenter_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/yue"/>
+            <TextView
+                android:id="@+id/paycenter_tvPayway"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color66"
+                android:textSize="@dimen/default_textsize"
+                android:text="余额(剩余0.00)"
+                android:layout_marginLeft="@dimen/default_padding"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/paycenter_miMoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="订单金额"
+        app:tvRightText="10"
+        app:showtvRight="true"
+        android:layout_marginTop="@dimen/default_padding"
+        app:LeftTextColor="@color/color66"
+        app:rightTextColor="@color/main_color_red"/>
+
+    <TextView
+        android:id="@+id/paycenter_tvNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ButtonStyle"
+        android:text="@string/next_step"
+        android:layout_marginLeft="@dimen/default_lrmargin"
+        android:layout_marginRight="@dimen/default_lrmargin"
+        android:layout_marginBottom="@dimen/default_padding40"
+        android:layout_marginTop="@dimen/default_padding40"/>
+
+</LinearLayout>

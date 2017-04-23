@@ -64,6 +64,8 @@ public class HttpApi {
     public static final String ask_charge="capp/bs/ask_charge";
 
     public static final String  get_ordersign = "capp/pay/get_ordersign";//获取签名
+    public static final String get_invoice_consume = "capp/invoice/get_invoice_consume";//获取没有开发票的交易记录
+    public static final String pay_invoice_balance = "capp/invoice/pay_invoice_balance";//发票订单余额支付成功时调用
 
 
 }
