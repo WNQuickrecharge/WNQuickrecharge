@@ -1,17 +1,26 @@
 package com.optimumnano.quickcharge.adapter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,16 +39,18 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
 
     private final List<Point> mValues;
     private final OnListClickListener mListener;
+    private Context context;
 
-    public DistDetailAcapter(List<Point> mValues, OnListClickListener mListener) {
+    public DistDetailAcapter(List<Point> mValues, OnListClickListener mListener,Context context) {
         this.mValues = mValues;
         this.mListener = mListener;
+        this.context=context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_dist_point, parent, false);
+                .inflate(R.layout.adapter_dist_point_1, parent, false);
         return new ViewHolder(view);
     }
 
@@ -47,13 +58,23 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.tvAddress.setText(holder.mItem.StationName);
-        holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+        String lat = SharedPreferencesUtil.getValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, "");
+        String lon = SharedPreferencesUtil.getValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, "");
+        double distance = DistanceUtil.getDistance(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)), new LatLng(holder.mItem.Lat, holder.mItem.Lng));
+        holder.tvDistance.setText(DoubleDP(distance, "#.00"));
+        distance/=1000;
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+        String format = decimalFormat.format(distance);
+        holder.mItem.distance=Double.parseDouble(format);
         holder.tvDetailAddress.setText(holder.mItem.Address);
-        String sb="电费:1.5元/度,服务费:0.5元/度";
-        SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
-                .first("1.5").first("0.5").textColor(R.color.red);
-        st.linkify(holder.tvPricePer);
-        holder.tvPricePer.setText(st);
+//        String sb="电费:1.5元/度,服务费:0.5元/度";
+//        SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
+//                .first("1.5").first("0.5").textColor(R.color.red);
+//        st.linkify(holder.tvPricePer);
+        holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
+        holder.tvElectricPricMax.setText(holder.mItem.max_price+"");
+        holder.tvServicePricMin.setText(holder.mItem.min_service+"");
+        holder.tvServicePricMax.setText(holder.mItem.max_service+"");
         String ss="空闲"+holder.mItem.FreePiles+"/共"+holder.mItem.TotalPiles+"个";
         SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
                 .first(holder.mItem.FreePiles).textColor(R.color.main_color);
@@ -73,7 +94,42 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
                 EventBus.getDefault().post(new EventManager.openStationDetail(holder.mItem.Id));
             }
         });
+        holder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StationBean bean = transPointToStationBean(holder.mItem);
+                Intent intent=new Intent(context, StationActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("Station",bean);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
 
+    }
+
+    private StationBean transPointToStationBean(Point mItem) {
+        StationBean bean=new StationBean();
+        bean.setCity(mItem.City);
+        bean.setDistance(mItem.distance+"km");
+        bean.setId(mItem.Id);
+        bean.setAddress(mItem.Address);
+        bean.setDel(mItem.IsDel);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setLat(mItem.Lat+"");
+        bean.setLng(mItem.Lng+"");
+        bean.setFreePiles(Integer.parseInt(mItem.FreePiles));
+        bean.setTotalPiles(Integer.parseInt(mItem.TotalPiles));
+        bean.setStationName(mItem.StationName);
+        bean.setState(mItem.State);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setMax_price(mItem.max_price);
+        bean.setMin_price(mItem.min_price);
+        bean.setMax_service(mItem.max_service);
+        bean.setMin_service(mItem.min_service);
+        bean.setManagementCompany(mItem.ManagementCompany);
+        bean.setRunTimeSpan(mItem.RunTimeSpan);
+        return bean;
     }
 
 
@@ -118,14 +174,23 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         TextView tvDistance;
         @Bind(R.id.tv_detail_address)
         TextView tvDetailAddress;
-        @Bind(R.id.tv_price_per)
-        TextView tvPricePer;
+
         @Bind(R.id.tv_num)
         TextView tvNum;
         @Bind(R.id.tv_nav)
         TextView tvNav;
         @Bind(R.id.tv_fav)
         TextView tvFav;
+        @Bind(R.id.ll_root)
+        LinearLayout root;
+        @Bind(R.id.tv_electric_price_min)
+        TextView tvElectricPricMin;
+        @Bind(R.id.tv_electric_price_max)
+        TextView tvElectricPricMax;
+        @Bind(R.id.tv_service_price_min)
+        TextView tvServicePricMin;
+        @Bind(R.id.tv_service_price_max)
+        TextView tvServicePricMax;
         public Point mItem;
 
         public ViewHolder(View view) {

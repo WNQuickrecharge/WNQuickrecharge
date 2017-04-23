@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -150,6 +151,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         bundle.putString("order_no",orderBean.order_no);
         bundle.putInt("order_status", Constants.STARTCHARGE);
         skipActivity(RechargeControlActivity.class,bundle);
+        finish();
     }
 
     @Override

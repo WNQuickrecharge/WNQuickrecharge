@@ -37,10 +37,10 @@ public class HttpApi {
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
     public static final String get_alipay_orderinfo_deposit = "capp/order/add_deposit";//上传支付金额获取调起支付宝的orderInfo
     public static final String get_accountinfo = "capp/user/get_accountinfo";//获取账户信息
-    public static final String  region_pile_url = "capp/bs/region_stations";//获取当前城市的所有站点信息
+    public static final String  region_pile_url = "capp/bs/region_stations";//获取附近站点信息
     public static final String logout_url = "capp/user/logout";//登出
     public static final String modify_pay_password_url = "capp/user/set_paypwd";//
-    public static final String get_password_url = "capp/user/get_paypwd";//
+    public static final String get_password_url = "capp/user/get_paypwd";//获取支付密码
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
     public static final String order_list = "capp/order/all_orders";//
     public static final String get_guninfo = "capp/bs/get_gunInfo";//获取充电枪详情
@@ -64,6 +64,7 @@ public class HttpApi {
     public static final String ask_charge="capp/bs/ask_charge";
 
     public static final String  get_ordersign = "capp/pay/get_ordersign";//获取签名
+    public static final String  get_city_stations = "capp/bs/get_city_stations";//获取当前城市所有站点信息
     public static final String get_invoice_consume = "capp/invoice/get_invoice_consume";//获取没有开发票的交易记录
     public static final String pay_invoice_balance = "capp/invoice/pay_invoice_balance";//发票订单余额支付成功时调用
 

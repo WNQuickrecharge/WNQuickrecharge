@@ -11,7 +11,9 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -41,6 +43,7 @@ import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.fragment.RechargerViewPagerFrag;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -75,13 +78,14 @@ public class MainActivity extends BaseActivity {
     private RadioButton rbRecharge;
 
     private List<Fragment> listFrg = new ArrayList<>();
-    private RechargeFragment rechargeFragment;
+    //private RechargeFragment rechargeFragment;
     private OrderFragment orderFragment;
     private MineFragment mineFragment;
+    private RechargerViewPagerFrag rechargerViewPagerFrag;
 
     KeyboardWatcher keyboardWatcher;
 
-    private DistShowHepler mShowHelper;
+    //private DistShowHepler mShowHelper;
     private boolean doubleBackToExitPressedOnce;
 
     @Override
@@ -96,14 +100,14 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.CAMERA
         };
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        mShowHelper = new DistShowHepler(this);
-        mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                isShow=false;
-                setLeftTitle("筛选");
-            }
-        });
+//        mShowHelper = new DistShowHepler(this);
+//        mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
+//            @Override
+//            public void onDismiss() {
+//                isShow=false;
+//                //setLeftTitle("筛选");
+//            }
+//        });
         requestPermission(permissions, 0);
         initViews();
         initData();
@@ -268,25 +272,34 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow==true){
-            mShowHelper.getmPopupWindow().dismiss();
-        }else {
-            FilterActivity.start(this);
-        }
+//        if (isShow==true){
+//            mShowHelper.getmPopupWindow().dismiss();
+//        }else {
+//            FilterActivity.start(this);
+//        }
+        FilterActivity.start(this);
     }
 
-    boolean isShow = false;
+    //boolean isShow = false;
 
     @Override
     protected void onRightDoSomething() {
         super.onRightDoSomething();
-        mShowHelper.setData(mData);
-        mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
-        isShow = mShowHelper.getmPopupWindow().isShowing();
-        if (isShow){
-            setLeftTitle("定位");
-        }else{
-            setLeftTitle("筛选");
+//        mShowHelper.setData(mData);
+//        mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
+//        isShow = mShowHelper.getmPopupWindow().isShowing();
+//        if (isShow){
+//            setLeftTitle("定位");
+//        }else{
+//           // setLeftTitle("筛选");
+//        }
+        String s = tvRight.getText().toString();
+        if ("列表".equals(s)){
+            tvRight.setText("地图");
+            rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+        }else if ("地图".equals(s)){
+            tvRight.setText("列表");
+            rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
         }
     }
 
@@ -326,13 +339,41 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        tvRight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                switch (s.toString()) {
+                    case "列表":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        break;
+
+                    case "地图":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     public void initData() {
-        rechargeFragment = new RechargeFragment();
+        rechargerViewPagerFrag=new RechargerViewPagerFrag();
+        //rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
-        listFrg.add(rechargeFragment);
+        listFrg.add(rechargerViewPagerFrag);
         listFrg.add(orderFragment);
         listFrg.add(mineFragment);
         viewPager.setAdapter(fpa);
@@ -372,7 +413,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        rechargeFragment.onActivityResult(requestCode, resultCode, data);
+        rechargerViewPagerFrag.onActivityResult(requestCode, resultCode, data);
     }
 
     List<Point> mData;
@@ -544,6 +585,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
+        AppManager.getAppManager().finishAllActivity();
         startActivity(new Intent(this, LoginActivity.class));
     }
 }

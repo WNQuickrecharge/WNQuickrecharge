@@ -126,8 +126,8 @@ public class WalletDepositAct extends BaseActivity {
         }else {
             mChosePayway = payway;
         }
-        mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
-        logtesti("mPayPsd "+mPayPsd);
+//        mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
+//        logtesti("mPayPsd "+mPayPsd);
         PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,mChosePayway);
 
         mPayDialog = new PayDialog(WalletDepositAct.this);

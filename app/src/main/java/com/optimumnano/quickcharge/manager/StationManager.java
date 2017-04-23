@@ -42,4 +42,27 @@ public class StationManager {
             }
         });
     }
+    public static void getCityStations(String city,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_city_stations);
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("city",city);
+//        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+
+        MyHttpUtils.getInstance().post(params ,new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
 }

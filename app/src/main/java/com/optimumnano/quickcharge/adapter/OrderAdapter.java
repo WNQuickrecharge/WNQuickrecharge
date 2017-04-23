@@ -88,6 +88,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
 
                 break;
         }
+        helper.setText(R.id.order_tvDate,item.start_time);
         helper.setText(R.id.order_tvNo,item.order_no);
         helper.setText(R.id.order_tvMoney,"￥"+item.frozen_cash);
         helper.setOnClickListener(R.id.order_tvPay, new View.OnClickListener() {

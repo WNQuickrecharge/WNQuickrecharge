@@ -12,21 +12,21 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
-
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by ds on 2017/4/9.
@@ -140,26 +140,50 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(final Editable s) {
                 if (s.length() == 6) {
-                    String payPwd = SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,"");
-                    String Md5Paypassword = MD5Utils.encodeMD5(s.toString());
-                    String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
-                    if (finalPayPassword.equals(payPwd)) {
-                        if (payWay == pay_yue){
-                            payYue();
-                        }
-                        else if (payWay == pay_zfb){
-                            payZFB();
-                        }
-                        else {
-                            payCallback.payFail("微信支付开发中");
-                            setStatus(PayDialog.EDTPWD);
+                    BaseActivity.showBaseLoading();
+                    GetMineInfoManager.getPayPwd(new ManagerCallback() {
+                        @Override
+                        public void onSuccess(Object returnContent) {
+                            super.onSuccess(returnContent);
+                            BaseActivity.hideBaseLoading();
+                            JSONObject dataJson = null;
+                            try {
+                                dataJson = new JSONObject(returnContent.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            String paypwd = dataJson.optString("paypwd");
+                            String Md5Paypassword = MD5Utils.encodeMD5(s.toString());
+                            String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
+
+                            if (finalPayPassword.equals(paypwd)) {
+                                if (payWay == pay_yue){
+                                    payYue();
+                                }
+                                else if (payWay == pay_zfb){
+                                    payZFB();
+                                }
+                                else {
+                                    payCallback.payFail("微信支付开发中");
+                                    setStatus(PayDialog.EDTPWD);
+                                }
+
+                            } else {
+                                setStatus(PayDialog.PAYFAIL);
+                            }
                         }
 
-                    } else {
-                        setStatus(PayDialog.PAYFAIL);
-                    }
+                        @Override
+                        public void onFailure(String msg) {
+                            super.onFailure(msg);
+                            BaseActivity.hideBaseLoading();
+                            ToastUtil.showToast(activity,msg);
+                        }
+                    });
+//                    String payPwd = SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,"");
+
                 }
             }
         });

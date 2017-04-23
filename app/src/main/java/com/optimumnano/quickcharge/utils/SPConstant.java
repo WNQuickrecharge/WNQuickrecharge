@@ -9,6 +9,7 @@ public interface SPConstant {
     /***sharedpreferences****用户信息的xml名******/
     String SP_USERINFO = "sp_userinfo";
     String SP_COOKIE = "sp_cookie";
+    String SP_CITY = "sp_city";
 
     /***sharedpreferences****用户头像地址key******/
     String KEY_USERINFO_HEADIMG_URL="userinfo_headimg_url";
@@ -25,8 +26,11 @@ public interface SPConstant {
      */
     String KEY_USERINFO_MOBILE="userinfo_mobile";
     String KEY_USERINFO_COOKIE="userinfo_cookie";
-    String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
+    //String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
     String KEY_USERINFO_IS_REMEMBER="userinfo_is_remember";
     String KEY_USERINFO_PASSWORD="userinfo_password";
+    String KEY_USERINFO_CURRENT_CITY="current_city";
+    String KEY_USERINFO_CURRENT_LAT="lat";
+    String KEY_USERINFO_CURRENT_LON="lon";
 
 }

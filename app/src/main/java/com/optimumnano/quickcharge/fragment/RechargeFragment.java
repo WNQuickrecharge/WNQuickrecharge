@@ -45,9 +45,13 @@ import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
+import com.optimumnano.quickcharge.views.BottomSheetDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
@@ -91,6 +95,8 @@ public class RechargeFragment extends BaseFragment {
     private PreferencesHelper mHelper;
     private List<Point> mPiont;
     boolean isFirstLoc = true; // 是否首次定位
+    private BottomSheetDialog mBsdialog;
+    private View mPopView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,7 +136,7 @@ public class RechargeFragment extends BaseFragment {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //从marker中获取info信息
+                /*//从marker中获取info信息
                 Bundle bundle = marker.getExtraInfo();
                 final Point infoUtil = (Point) bundle.getSerializable("info");
                 View view = View.inflate(getContext(), R.layout.adapter_dist_point, null);
@@ -162,6 +168,49 @@ public class RechargeFragment extends BaseFragment {
                 LatLng ll = marker.getPosition();
                 mInfoWindow = new InfoWindow(view, ll, -47);
                 mBaiduMap.showInfoWindow(mInfoWindow);
+                return true;*/
+
+                mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
+                mBsdialog =new BottomSheetDialog(getActivity());
+                mBsdialog.setContentView(mPopView);
+                mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
+                        setBackgroundResource(android.R.color.transparent);
+
+                Bundle bundle = marker.getExtraInfo();
+                final Point infoUtil = (Point) bundle.getSerializable("info");
+                ViewHolder holder = new ViewHolder(mPopView);
+                holder.mItem = infoUtil;
+                holder.tvAddress.setText(holder.mItem.StationName);
+                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                holder.tvDetailAddress.setText(holder.mItem.Address);
+                holder.tvPhonenum.setText(holder.mItem.Phone);
+                String sb = "电费:1.5元/度,服务费:0.5元/度";
+                SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
+                        .first("1.5").textColor(R.color.red).first("0.5").textColor(R.color.red);
+                st.linkify(holder.tvPricePer);
+                holder.tvPricePer.setText(st);
+                String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
+                SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
+                        .first(holder.mItem.FreePiles).textColor(R.color.main_color);
+                simpleText.linkify(holder.tvNum);
+                holder.tvNum.setText(simpleText);
+                mPopView.setBackgroundResource(R.drawable.sp_map_infowindow);
+                holder.tvNav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OnNaviEvent event = new OnNaviEvent();
+                        event.end = infoUtil;
+                        EventBus.getDefault().post(event);
+                    }
+                });
+                holder.tvCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mBsdialog.dismiss();
+                    }
+                });
+
+                mBsdialog.show();
                 return true;
             }
         });
@@ -187,6 +236,10 @@ public class RechargeFragment extends BaseFragment {
         TextView tvNav;
         @Bind(R.id.tv_fav)
         TextView tvFav;
+        @Bind(R.id.tv_phonenum)
+        TextView tvPhonenum;
+        @Bind(R.id.tv_cancel)
+        TextView tvCancel;
         public Point mItem;
 
         public ViewHolder(View view) {
@@ -311,6 +364,11 @@ public class RechargeFragment extends BaseFragment {
             if (location == null || mapView == null) {
                 return;
             }
+            locationClient.stop();
+            String city = location.getCity();
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,location.getLatitude()+"");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,location.getLongitude()+"");
+            EventBus.getDefault().post(new EventManager.getCurrentCity(city));
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
@@ -457,6 +515,7 @@ public class RechargeFragment extends BaseFragment {
         super.onDestroy();
         if (mapView != null)
             mapView.onDestroy();
+        mBsdialog.dismiss();
     }
 
 
