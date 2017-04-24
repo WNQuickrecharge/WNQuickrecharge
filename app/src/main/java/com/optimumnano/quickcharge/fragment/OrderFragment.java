@@ -7,15 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.netease.hearttouch.htrefreshrecyclerview.HTLoadMoreListener;
-import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshListener;
 import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
@@ -24,7 +20,6 @@ import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
-import com.optimumnano.quickcharge.listener.RecyclerItemClickListener;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MyDivier;
@@ -47,6 +42,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     private OrderManager orderManager = new OrderManager();
 
     private int pageSize = 1;//当前页
+    private int pageCount=10;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,17 +79,19 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void initData(){
-        orderManager.getAllOrderlist(pageSize, 10, new ManagerCallback<List<OrderBean>>() {
+        orderManager.getAllOrderlist(pageSize, pageCount, new ManagerCallback<List<OrderBean>>() {
             @Override
             public void onSuccess(List<OrderBean> returnContent) {
                 super.onSuccess(returnContent);
-                recyclerView.setRefreshCompleted(true);
+
                 if (pageSize == 1){
                     pageSize = 1;
                     orderList.clear();
                     refreshLayout.setRefreshing(false);
                 }
-                if (returnContent.size() == 0){
+                if (returnContent.size() < pageCount){
+                    recyclerView.setRefreshCompleted(false);
+                }else {
                     recyclerView.setRefreshCompleted(true);
                 }
                 orderList.addAll(returnContent);

@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -50,7 +51,21 @@ public class WalletBillDetailAct extends BaseActivity {
 
     private void initData() {
         BillBean billBean = (BillBean) getIntent().getSerializableExtra("BillBean");
-        mAmount.setText(billBean.amount + "");
+        mAmount.setText(billBean.Cash + "");
+        if (billBean.DealType==2){
+            mRlAdvamount.setVisibility(View.GONE);
+            mRlBackamount.setVisibility(View.GONE);
+            mType.setText("收入");
+        }else if (billBean.DealType==1){
+            mType.setText("支出");
+            mAdvanceAmount.setText(billBean.AdvanceCash + "");
+            mBackamount.setText(billBean.BackCash + "");
+        }
+
+        mTime.setText(billBean.CreateTime + "");
+        mBusNum.setText(billBean.OrderNo + "");
+        mPayway.setText(billBean.PayType + "");
+        mRemark.setText(billBean.Remark==null?"":billBean.Remark + "");
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.adapter;
 
 import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -33,8 +32,10 @@ public class WalletBillAdapter extends BaseQuickAdapter<BillBean, BaseViewHolder
                 mListener.onItemClickListener(item,holder.getAdapterPosition());
             }
         });
-        TextView tvStatus = holder.getView(R.id.item_bill_list_tv_busamount);
         DecimalFormat df = new DecimalFormat("0.00");
-        tvStatus.setText(df.format(item.amount));
+        holder.setText(R.id.item_bill_list_tv_busamount,df.format(item.Cash));
+        holder.setText(R.id.item_bill_list_tv_busdescribe,item.Title);
+        holder.setText(R.id.item_bill_list_tv_buspayway,item.PayType);
+        holder.setText(R.id.item_bill_list_tv_bustime,item.CreateTime);
     }
 }

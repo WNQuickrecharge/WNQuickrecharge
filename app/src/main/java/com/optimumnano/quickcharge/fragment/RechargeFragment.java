@@ -515,7 +515,8 @@ public class RechargeFragment extends BaseFragment {
         super.onDestroy();
         if (mapView != null)
             mapView.onDestroy();
-        mBsdialog.dismiss();
+        if (null != mBsdialog)
+            mBsdialog.dismiss();
     }
 
 

@@ -9,9 +9,47 @@ import java.io.Serializable;
  */
 public class BillBean implements Serializable {
     private static final long serialVersionUID = 1L;
-    public String busdescribe;
-    public double amount;
-    public String bustime;
-    public String payway;
 
+    /**
+     * OrderNo : C20170415153613001
+     * Cash : 10
+     * AdvanceCash : 0.01
+     * BackCash : -9.99
+     * TradeNum : 586cbb86-31b9-4ad3-8baf-ae9988671224
+     * PayType : 微信支付
+     * CreateTime : 2017-04-24 08:54:16
+     * ChargeVolume : 10
+     * Remark : null
+     * DealType : 收入
+     * Title : 充电
+     */
+
+    public String OrderNo;
+    public double Cash;
+    public double AdvanceCash;
+    public double BackCash;
+    public String TradeNum;
+    public String PayType;
+    public String CreateTime;
+    public int ChargeVolume;
+    public String Remark;
+    public int DealType;
+    public String Title;
+
+    @Override
+    public String toString() {
+        return "BillBean{" +
+                "OrderNo='" + OrderNo + '\'' +
+                ", Cash=" + Cash +
+                ", FrozenCash=" + AdvanceCash +
+                ", BackCash=" + BackCash +
+                ", TradeNum='" + TradeNum + '\'' +
+                ", PayType=" + PayType +
+                ", CreateTime='" + CreateTime + '\'' +
+                ", ChargeVolume=" + ChargeVolume +
+                ", Remark=" + Remark +
+                ", DealType=" + DealType +
+                ", Title=" + Title +
+                '}';
+    }
 }
