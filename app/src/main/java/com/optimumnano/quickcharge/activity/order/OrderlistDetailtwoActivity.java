@@ -61,6 +61,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
         miBackMoney.setRightText("￥"+(orderBean.frozen_cash-orderBean.charge_cash));
         miAllMoney.setRightText("￥"+orderBean.charge_cash);
+        miUsertime.setRightText(orderBean.power_time+"分钟");
         payWay.setText(orderBean.pay_type);
         showPayWay(orderBean.pay_type);
 

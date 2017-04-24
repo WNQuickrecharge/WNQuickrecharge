@@ -3,6 +3,7 @@ package com.optimumnano.quickcharge.activity.order;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +16,11 @@ import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.WaveLoadingView;
+import com.zsoft.signala.Connection;
+import com.zsoft.signala.ConnectionState;
+import com.zsoft.signala.SendCallback;
+import com.zsoft.signala.transport.StateBase;
+import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -43,6 +49,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public static final int GETCHARGEPROGRESS = 1;
     public static final int STARTCHARGE = 2;
     public static final int STOPCHARGE = 3;
+    private static final String TAG="RechargeControlActivity";
+    private final static String HUB_URL = "http://112.74.44.166:4830/capp_monitor";
     private int progress = 1;
 
     private int orderStatus;
@@ -54,7 +62,19 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         initViews();
         initListener();
         initData();
+        startConnetService();
     }
+
+    private void startConnetService() {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                beginConnect();
+            }
+        }.start();
+    }
+
     private void getExtras(){
         orderNo = getIntent().getExtras().getString("order_no");
 //        gunNo = getIntent().getExtras().getString("gun_no");
@@ -168,6 +188,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             }
             //结束充电
             else if (requestCode == STOPCHARGE){
+
                 skipActivity(OrderDetlActivity.class,null);
                 finish();
             }
@@ -196,4 +217,83 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             }
         }
     }
+
+
+    /**
+     * 开启推送服务 panderman 2013-10-25
+     */
+    private void beginConnect() {
+        try {
+            // conn.setConnectionId(UUID.randomUUID().toString()+"|$9");
+            // hub = conn.CreateHubProxy("ChatHub");
+
+            conn.Start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        hub.On("addNewMessageToPage", new HubOnDataCallback() {
+//            @Override
+//            public void OnReceived(JSONArray args) {
+//                EditText chatText = (EditText) findViewById(R.id.chat_text);
+//                //chatText.setText(args.toString());
+//                for (int i = 0; i < args.length(); i++) {
+//                    chatText.append(args.opt(i).toString());
+//                }
+//
+//
+//
+//
+//                if (chatText.getText().toString()!=null){
+//                    hub.Invoke("result", args, new HubInvokeCallback() {
+//                        @Override
+//                        public void OnResult(boolean succeeded, String response) {
+//                            Log.d("result","success");
+//                        }
+//
+//                        @Override
+//                        public void OnError(Exception ex) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//        });
+
+
+
+    }
+
+    private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
+        @Override
+        public void OnError(Exception exception) {
+            Log.d(TAG, "OnError=" + exception.getMessage());
+        }
+
+        @Override
+        public void OnMessage(String message) {
+            Log.d(TAG, "message=" + message);
+
+
+        }
+
+        @Override
+        public void OnStateChanged(StateBase oldState, StateBase newState) {
+            Log.d(TAG, "OnStateChanged=" + oldState.getState() + " -> " + newState.getState());
+            if (newState.getState()== ConnectionState.Connected){
+                conn.Send("{'data_type':1,'user_id':30}", new SendCallback() {
+                    @Override
+                    public void OnSent(CharSequence messageSent) {
+                        Log.d("onSent","正在传送");
+                    }
+
+                    @Override
+                    public void OnError(Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            }
+        }
+    };
 }

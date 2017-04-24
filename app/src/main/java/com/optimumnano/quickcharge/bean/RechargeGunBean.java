@@ -11,5 +11,5 @@ public class RechargeGunBean {
     public String pile_type;
     public int power;
     public int elec_current;
-    public int price;
+    public Double price;
 }
