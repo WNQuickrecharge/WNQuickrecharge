@@ -98,6 +98,14 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
             showToast("两次密码不一致,请重输入");
             return;
         }
+        if (payPassword.getText().toString().length()<6||confirmPaypassword.getText().toString().length()<6){
+            showToast("请输入6位支付密码");
+            return;
+        }
+        if (TextUtils.isEmpty(verificationCode.getText().toString())){
+            showToast("请输入验证码");
+            return;
+        }
         String newPassword = confirmPaypassword.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
         String finalPaypassword = MD5Utils.encodeMD5(Md5Password);

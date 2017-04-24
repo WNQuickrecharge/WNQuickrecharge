@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTLoadMoreListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshListener;
 import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
@@ -33,9 +35,10 @@ import java.util.List;
 /**
  * 订单
  */
-public class OrderFragment extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
+public class OrderFragment extends BaseFragment implements View.OnClickListener, HTLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
     private View mainView;
-    private RecyclerView recyclerView;
+//    private RecyclerView recyclerView;
+    HTRefreshRecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
     private Context ctx;
 
@@ -65,10 +68,12 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary),
                 getResources().getColor(R.color.colorPrimaryDark),getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
-        recyclerView = (RecyclerView) mainView.findViewById(R.id.order_recyclerView);
+        recyclerView = (HTRefreshRecyclerView) mainView.findViewById(R.id.order_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
+        recyclerView.setOnLoadMoreListener(this);
+        recyclerView.setLoadMoreViewShow(true);
     }
 
     @Override
@@ -82,17 +87,16 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
             @Override
             public void onSuccess(List<OrderBean> returnContent) {
                 super.onSuccess(returnContent);
+                recyclerView.setRefreshCompleted(true);
                 if (pageSize == 1){
                     pageSize = 1;
                     orderList.clear();
-                    adapter.setCanLoadMore(true);
+                    refreshLayout.setRefreshing(false);
                 }
-                if (returnContent.size()<10){
-//                    adapter.setEnableLoadMore(false);
-                    adapter.loadMoreEnd(true);
+                if (returnContent.size() == 0){
+                    recyclerView.setRefreshCompleted(true);
                 }
                 orderList.addAll(returnContent);
-                refreshLayout.setRefreshing(false);
                 dataChanged();
             }
 
@@ -106,7 +110,6 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         if (adapter == null){
             adapter = new OrderAdapter(R.layout.adapter_order,orderList);
             recyclerView.setAdapter(adapter);
-            adapter.setOnLoadMoreListener(this);
             adapter.setContext(getActivity());
             adapter.setOnitemClickListener(new MyOnitemClickListener() {
                 @Override
@@ -147,11 +150,12 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onRefresh() {
         pageSize = 1;
+
         initData();
     }
     //上拉加载
     @Override
-    public void onLoadMoreRequested() {
+    public void onLoadMore() {
         pageSize ++;
         initData();
     }

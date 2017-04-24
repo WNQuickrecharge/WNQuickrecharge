@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -29,23 +32,26 @@ import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
+import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
+import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.Point;
-import com.optimumnano.quickcharge.dialog.AsyncOperatorView;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.fragment.RechargerViewPagerFrag;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
 import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
+import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
@@ -73,13 +79,15 @@ public class MainActivity extends BaseActivity {
     private RadioButton rbRecharge;
 
     private List<Fragment> listFrg = new ArrayList<>();
-    private RechargeFragment rechargeFragment;
+    //private RechargeFragment rechargeFragment;
     private OrderFragment orderFragment;
     private MineFragment mineFragment;
+    private RechargerViewPagerFrag rechargerViewPagerFrag;
 
     KeyboardWatcher keyboardWatcher;
 
-    private DistShowHepler mShowHelper;
+    //private DistShowHepler mShowHelper;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,14 +101,14 @@ public class MainActivity extends BaseActivity {
                 Manifest.permission.CAMERA
         };
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        mShowHelper = new DistShowHepler(this);
-        mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                isShow = false;
-                setLeftTitle("筛选");
-            }
-        });
+//        mShowHelper = new DistShowHepler(this);
+//        mShowHelper.getmPopupWindow().setOnDismissListener(new PopupWindow.OnDismissListener() {
+//            @Override
+//            public void onDismiss() {
+//                isShow=false;
+//                //setLeftTitle("筛选");
+//            }
+//        });
         requestPermission(permissions, 0);
         initViews();
         initData();
@@ -238,15 +246,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!EventBus.getDefault().isRegistered(this))
         EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
-        if (operatorView != null)
-            operatorView.finish();
+        //EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -266,26 +273,46 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onLeftDoSomething() {
-        if (isShow == true) {
-            mShowHelper.getmPopupWindow().dismiss();
-        } else {
-            FilterActivity.start(this);
-        }
+//        if (isShow==true){
+//            mShowHelper.getmPopupWindow().dismiss();
+//        }else {
+//            FilterActivity.start(this);
+//        }
+        FilterActivity.start(this);
     }
 
-    boolean isShow = false;
+    //boolean isShow = false;
 
     @Override
     protected void onRightDoSomething() {
         super.onRightDoSomething();
-        mShowHelper.setData(mData);
-        mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
-        isShow = mShowHelper.getmPopupWindow().isShowing();
-        if (isShow) {
-            setLeftTitle("定位");
-        } else {
-            setLeftTitle("筛选");
+//        mShowHelper.setData(mData);
+//        mShowHelper.show(BaseShowHelper.SHOW_TYPE_VIEW, toolbar);
+//        isShow = mShowHelper.getmPopupWindow().isShowing();
+//        if (isShow){
+//            setLeftTitle("定位");
+//        }else{
+//           // setLeftTitle("筛选");
+//        }
+        switch (viewPager.getCurrentItem()){
+            case 0:
+                String s = tvRight.getText().toString();
+                if ("列表".equals(s)){
+                    tvRight.setText("地图");
+                    rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                }else if ("地图".equals(s)){
+                    tvRight.setText("列表");
+                    rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                }
+                break;
+            case 1:
+                skipActivity(InvoiceActivity.class,null);
+                break;
+            case 2:
+
+                break;
         }
+
     }
 
     private void initListener() {
@@ -303,7 +330,7 @@ public class MainActivity extends BaseActivity {
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
 
-                        setRightTitle("");
+                        setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:
@@ -324,13 +351,41 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        tvRight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                switch (s.toString()) {
+                    case "列表":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        break;
+
+                    case "地图":
+                        rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     public void initData() {
-        rechargeFragment = new RechargeFragment();
+        rechargerViewPagerFrag=new RechargerViewPagerFrag();
+        //rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
-        listFrg.add(rechargeFragment);
+        listFrg.add(rechargerViewPagerFrag);
         listFrg.add(orderFragment);
         listFrg.add(mineFragment);
         viewPager.setAdapter(fpa);
@@ -363,13 +418,14 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        rechargeFragment.onActivityResult(requestCode, resultCode, data);
+        rechargerViewPagerFrag.onActivityResult(requestCode, resultCode, data);
     }
 
     List<Point> mData;
@@ -379,14 +435,11 @@ public class MainActivity extends BaseActivity {
         mData = (List<Point>) event.getObj();
     }
 
-    AsyncOperatorView operatorView;
-
     @Subscribe
     public void onNavi(OnNaviEvent event) {
         if (event == null)
             return;
-        operatorView = new AsyncOperatorView(this);
-        operatorView.start("正在部署导航,请稍后....");
+
         navi(event.end);
     }
 
@@ -522,5 +575,29 @@ public class MainActivity extends BaseActivity {
                 showToast(msg);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            AppManager.getAppManager().finishAllActivity();
+            return;
+        }
+        doubleBackToExitPressedOnce = true;
+        showToast(getString(R.string.exit_hint));
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                SystemClock.sleep(2000);
+                doubleBackToExitPressedOnce=false;
+            }
+        }.start();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void cookieTimeOut(EventManager.cookieTimeOut event) {
+        AppManager.getAppManager().finishAllActivity();
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }

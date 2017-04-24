@@ -56,6 +56,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private String orderNo = "";//订单号
     private String gunNo = "67867678901234517";
 
+    private int payWay = PayDialog.pay_yue;//支付方式
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +108,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                showToast("获取失败，请检查终端号是否正确");
+                finish();
             }
         });
     }
@@ -129,16 +133,19 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                     case PayDialog.pay_wx:
                         miPayway.setIvLeftDrawable(R.drawable.wx);
                         miPayway.setTvLeftText("微信");
+                        payWay = PayDialog.pay_wx;
                         break;
                     //支付寶
                     case PayDialog.pay_zfb:
                         miPayway.setIvLeftDrawable(R.drawable.zfb);
                         miPayway.setTvLeftText("支付宝");
+                        payWay = PayDialog.pay_zfb;
                         break;
                     //余額
                     case PayDialog.pay_yue:
                         miPayway.setIvLeftDrawable(R.drawable.yue);
                         miPayway.setTvLeftText("余额");
+                        payWay = PayDialog.pay_yue;
                         break;
                 }
             }
@@ -165,14 +172,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
     //下单
     private void addOrder(){
-        orderManager.addOrder(gunNo, edtMoney.getText().toString(), new ManagerCallback<String>() {
+        orderManager.addOrder(gunNo, edtMoney.getText().toString(),payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
                 super.onSuccess(returnContent);
                 Gson gson = new Gson();
                 HashMap<String,Object> ha = gson.fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
                 orderNo = ha.get("order_no").toString();
-                payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo);
+                String sign = ha.get("sign").toString();
+                payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo,sign);
                 payDialog.setStatus(0);
                 payDialog.show();
             }

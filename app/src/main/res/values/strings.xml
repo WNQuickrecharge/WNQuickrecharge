@@ -52,5 +52,6 @@
     <string name="dialog_pay_way_balance">%1$s (剩余%2$.2f)</string>
     <string name="station_electric_price">电费 <Data><![CDATA[<font color="#ff3b30">%1$s</font>]]></Data></string>
     <string name="station_service_price">服务费 <Data><![CDATA[<font color="#ff3b30">%1$s</font>]]></Data></string>
-
+    <string name="exit_hint">再按一次退出系统!</string>
+    <string name="finish">完成</string>
 </resources>

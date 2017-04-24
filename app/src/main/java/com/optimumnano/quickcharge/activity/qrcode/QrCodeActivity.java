@@ -19,6 +19,7 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -182,8 +183,12 @@ public class QrCodeActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_submit:
                 //跳转支付
+                String gunno = etRecordNumber.getText().toString();
+                if (StringUtils.isEmpty(gunno)){
+                    gunno = "67867678901234517";
+                }
                 Bundle bundle = new Bundle();
-                bundle.putString("gun_no","67867678901234517");
+                bundle.putString("gun_no",gunno);
                 skipActivity(OrderActivity.class,bundle);
                 break;
             case R.id.iv_deng:

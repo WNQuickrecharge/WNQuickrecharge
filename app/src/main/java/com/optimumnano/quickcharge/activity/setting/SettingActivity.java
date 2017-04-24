@@ -14,6 +14,7 @@ import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -68,6 +69,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
             SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
+            SharedPreferencesUtil.getEditor(SP_COOKIE).clear().commit();
             showToast("您已退出登录");
             AppManager.getAppManager().finishAllActivity();
             startActivity(new Intent(SettingActivity.this, LoginActivity.class));

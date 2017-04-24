@@ -9,18 +9,24 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PAYPASSWORD;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 /**
  * Created by ds on 2017/4/9.
@@ -36,21 +42,52 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     public static final int PAYSUCCESS = 2;
     public static final int PAYFAIL = 3;
 
-    public static final int pay_wx = 0;
-    public static final int pay_zfb = 1;
-    public static final int pay_yue = 2;
+    public static final int pay_wx = 1;
+    public static final int pay_zfb = 0;
+    public static final int pay_yue = 3;
     private Activity activity;
     private TextView payName;
     private OrderManager orderManager = new OrderManager();
     private PayCallback payCallback;
     private double money;
     private String order_no;
+    private int payWay;//支付方式
+    private String sign;//支付宝支付的签名
     Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             close();
-            payCallback.paySuccess(order_no);
+            if (msg.what==1001){
+                payCallback.paySuccess(order_no);
+            }
+            if (msg.what==1000){
+                    Map mapresult =(Map) msg.obj;
+                    JSONObject dataJson = new JSONObject(mapresult);
+                    String resultStatus = dataJson.optString("resultStatus");// 结果码
+                    switch (resultStatus){
+                        case "9000"://支付成功
+                        case "8000"://正在处理,支付结果确认中
+                        case "6004"://支付结果未知
+//                            "支付成功"
+                            payCallback.paySuccess(order_no);
+                            break;
+                        case "4000":
+                            payCallback.payFail("订单支付失败");
+                        case "5000":
+                            payCallback.payFail("订单不能重复支付");
+                            break;
+                        case "6001":
+                            payCallback.payFail("取消支付");
+                            break;
+                        case "6002":
+                            payCallback.payFail("网络连接出错");
+                            break;
+                        default:
+                            payCallback.payFail("支付异常");
+                            break;
+                    }
+            }
         }
     };
     public PayDialog(Activity mAty) {
@@ -103,43 +140,121 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(final Editable s) {
                 if (s.length() == 6) {
-                    String payPwd = SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,"");
-                    String Md5Paypassword = MD5Utils.encodeMD5(s.toString());
-                    String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
-                    if (finalPayPassword.equals(payPwd)) {
-                        orderManager.startPay(order_no, money, new ManagerCallback() {
-                            @Override
-                            public void onSuccess(Object returnContent) {
-                                super.onSuccess(returnContent);
-                                setStatus(PAYSUCCESS);
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Thread.sleep(2000);
-                                            handler.sendEmptyMessage(1000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }).start();
+                    BaseActivity.showBaseLoading();
+                    GetMineInfoManager.getPayPwd(new ManagerCallback() {
+                        @Override
+                        public void onSuccess(Object returnContent) {
+                            super.onSuccess(returnContent);
+                            BaseActivity.hideBaseLoading();
+                            JSONObject dataJson = null;
+                            try {
+                                dataJson = new JSONObject(returnContent.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            String paypwd = dataJson.optString("paypwd");
+                            String Md5Paypassword = MD5Utils.encodeMD5(s.toString());
+                            String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
 
-                            @Override
-                            public void onFailure(String msg) {
-                                super.onFailure(msg);
-                                payCallback.payFail(msg);
+                            if (finalPayPassword.equals(paypwd)) {
+                                if (payWay == pay_yue){
+                                    payYue();
+                                }
+                                else if (payWay == pay_zfb){
+                                    payZFB();
+                                }
+                                else {
+                                    payCallback.payFail("微信支付开发中");
+                                    setStatus(PayDialog.EDTPWD);
+                                }
+
+                            } else {
+                                setStatus(PayDialog.PAYFAIL);
                             }
-                        });
-                    } else {
-                        setStatus(PayDialog.PAYFAIL);
-                    }
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                            super.onFailure(msg);
+                            BaseActivity.hideBaseLoading();
+                            ToastUtil.showToast(activity,msg);
+                        }
+                    });
+//                    String payPwd = SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_PAYPASSWORD,"");
+
                 }
             }
         });
     }
+    //余额支付
+    private void payYue() {
+        orderManager.startPay(order_no, money, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                setStatus(PAYSUCCESS);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                            handler.sendEmptyMessage(1001);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                payCallback.payFail(msg);
+            }
+        });
+    }
+    private void payZFB(){
+        if (StringUtils.isEmpty(sign)){
+            orderManager.getSign(order_no, payWay, new ManagerCallback<String>() {
+                @Override
+                public void onSuccess(String returnContent) {
+                    super.onSuccess(returnContent);
+                    sign = returnContent;
+                    startPay();
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    super.onFailure(msg);
+                }
+            });
+        }
+        else {
+            startPay();
+        }
+
+    }
+
+    private void startPay() {
+        Runnable payRunnable = new Runnable() {
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(activity);
+                Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+
+                Message msg = new Message();
+                msg.what = 1000;
+                msg.obj = result;
+                handler.sendMessage(msg);
+            }
+        };
+        // 必须异步调用
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
+    }
+
 
     /**
      * 选择支付方式
@@ -163,7 +278,15 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
     }
 
+    public void setMoney(double money,String order_no,String sign){
+        this.money = money;
+        this.order_no  = order_no;
+        this.sign = sign;
+        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+    }
+
     public void setPayway(int payway){
+        this.payWay = payway;
         switch (payway){
             //微信
             case pay_wx:

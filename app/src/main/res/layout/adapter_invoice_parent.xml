@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+    <ImageView
+        android:id="@+id/invoice_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_lrmargin"
+        android:src="@drawable/invoice_checked"/>
+    <TextView
+        android:id="@+id/invoice_tvTitleParent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="12月"
+        style="@style/text_mainstyle"
+        android:layout_marginLeft="@dimen/default_padding"/>
+    <TextView
+        android:id="@+id/invoice_tvMoneyParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_gravity="center_vertical"
+        android:text="20000"
+        android:drawableRight="@drawable/zhankai"
+        android:drawablePadding="@dimen/default_padding"
+        android:layout_marginRight="@dimen/default_lrmargin"/>
+</LinearLayout>

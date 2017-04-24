@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
     private OrderBean orderBean;
     private MenuItem1 miUsertime,miAllelec,miRechargeCash,miAllMoney,miSMoney,miYFMoney,miBackMoney;
     private OrderManager orderManager = new OrderManager();
+    private TextView payWay;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miSMoney = (MenuItem1) findViewById(R.id.orderdetl_miSMoney);
         miYFMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miYFCash);
         miBackMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miBackCash);
+        payWay = (TextView) findViewById(R.id.orderlistDetl_tvPayWay);
 
         tvDeleteOrder.setOnClickListener(this);
     }
@@ -55,6 +59,11 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miYFMoney.setRightText("￥"+orderBean.frozen_cash);
         miSMoney.setRightText("￥"+orderBean.charge_cash);
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
+        miBackMoney.setRightText("￥"+(orderBean.frozen_cash-orderBean.charge_cash));
+        miAllMoney.setRightText("￥"+orderBean.charge_cash);
+        payWay.setText(orderBean.pay_type);
+        showPayWay(orderBean.pay_type);
+
     }
 
     @Override
@@ -79,5 +88,31 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
                 showToast(msg);
             }
         });
+    }
+
+    private void showPayWay(String choosepayWay){
+        switch (choosepayWay) {
+            case "余额支付":
+                Drawable img = getResources().getDrawable(R.drawable.yue);
+                // 调用setCompoundDrawables时，必须调用Drawable.setBounds()方法,否则图片不显示
+                img.setBounds(0, 0, img.getMinimumWidth(), img.getMinimumHeight());
+                payWay.setCompoundDrawables(img,null,null,null);
+                break;
+
+            case "支付宝":
+                Drawable img1 = getResources().getDrawable(R.drawable.zfb);
+                // 调用setCompoundDrawables时，必须调用Drawable.setBounds()方法,否则图片不显示
+                img1.setBounds(0, 0, img1.getMinimumWidth(), img1.getMinimumHeight());
+                payWay.setCompoundDrawables(img1,null,null,null);
+                break;
+            case "微信":
+                Drawable img2 = getResources().getDrawable(R.drawable.wx);
+                // 调用setCompoundDrawables时，必须调用Drawable.setBounds()方法,否则图片不显示
+                img2.setBounds(0, 0, img2.getMinimumWidth(), img2.getMinimumHeight());
+                payWay.setCompoundDrawables(img2,null,null,null);
+                break;
+            default:
+                break;
+        }
     }
 }
