@@ -1,1 +1,1 @@
-include ':app', ':library', ':materialanimatedswitch'
+include ':app', ':library', ':materialanimatedswitch', ':SignalA', ':parallel-basic-http-client', ':SignalA.LongPolling'
