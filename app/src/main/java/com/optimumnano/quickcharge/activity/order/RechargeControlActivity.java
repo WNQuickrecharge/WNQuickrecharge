@@ -25,6 +25,8 @@ import com.zsoft.signala.SendCallback;
 import com.zsoft.signala.transport.StateBase;
 import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 
+import org.xutils.common.util.LogUtil;
+
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -112,6 +114,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         }
 
         dialog = new WaitRechargeDialog(this);
+        if (orderStatus==4) {//充电中
+            showLoading();
+        }
     }
 
     @Override
@@ -194,8 +199,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             }
             //结束充电
             else if (requestCode == STOPCHARGE){
-
-                skipActivity(OrderDetlActivity.class,null);
+                LogUtil.i("充电结束");
+                //skipActivity(OrderDetlActivity.class,null);
                 finish();
             }
             //充电进度查询
@@ -236,6 +241,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             conn.Start();
 
         } catch (Exception e) {
+            showToast(String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
 //        hub.On("addNewMessageToPage", new HubOnDataCallback() {
@@ -297,14 +303,22 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
 
                     break;
+                case 3://
+                    dialog.cancelDialog();
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.VISIBLE);
+                    break;
                 case 4://充电中
-                    int charge_soc = longConnectMessageBean.getCharge_soc();
-                    int time_remain = longConnectMessageBean.getTime_remain();
-                    tvTime.setText("充电预计时间"+time_remain+"分钟");
-                    tvPersent.setText(persent+"%");
-                    waveLoadingView.setWaveHeight(persent);
+                    int soc = longConnectMessageBean.getSoc();
+                    String time_remain = longConnectMessageBean.getTime_remain();
+                    tvTime.setVisibility(View.VISIBLE);
+                    tvTime.setText("充电预计完成时间"+time_remain);
+                    tvPersent.setText(soc+"%");
+                    waveLoadingView.setWaveHeight(soc);
                     tvDescone.setText("正在充电中");
                     tvDescTwo.setText("请您稍作休息");
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.VISIBLE);
 
 
                     break;
@@ -313,6 +327,10 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
                     break;
                 case 6://充电完成,跳转界面获取生成的订单信息.
+                    tvDescone.setText("充电已完成！");
+                    tvDescTwo.setVisibility(View.INVISIBLE);
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.GONE);
                     String order_no = longConnectMessageBean.getOrder_no();
                     int power_time = longConnectMessageBean.getPower_time();
                     Double consume_money = longConnectMessageBean.getConsume_money();
@@ -331,8 +349,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         public void OnStateChanged(StateBase oldState, StateBase newState) {
             Log.d(TAG, "OnStateChanged=" + oldState.getState() + " -> " + newState.getState());
             if (newState.getState()== ConnectionState.Connected){
-                String userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID, "");
-                conn.Send("{'data_type':1,'user_id':+"+ userID +"}", new SendCallback() {
+                int userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID,-1);
+                conn.Send("{'data_type':1,'user_id':"+userID+"}", new SendCallback() {
                     @Override
                     public void OnSent(CharSequence messageSent) {
                         Log.d("onSent","正在传送");

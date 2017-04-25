@@ -8,8 +8,8 @@
     <include layout="@layout/title_main"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_height="wrap_content"
+
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingTop="@dimen/default_padding30"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:text="充电预计时间15分钟"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="visible"
             android:textSize="@dimen/default_textsize"
             android:layout_marginTop="@dimen/default_padding"/>
     </LinearLayout>

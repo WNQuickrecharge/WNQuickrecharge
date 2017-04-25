@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -18,12 +17,10 @@ import com.optimumnano.quickcharge.net.HttpApi;
 
 public class AboutActivity extends BaseActivity {
     private WebView mWebView;
-    private ProgressDialog progressDialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        progressDialog=new ProgressDialog(this);
         initViews();
     }
 
@@ -58,28 +55,10 @@ public class AboutActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                hideLoading();
+                closeLoading();
             }
         });
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        progressDialog.dismiss();
-        mWebView.destroy();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 }

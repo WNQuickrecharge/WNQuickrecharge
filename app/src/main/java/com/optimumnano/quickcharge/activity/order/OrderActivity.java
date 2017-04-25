@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity.order;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositSuccessAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
@@ -145,10 +142,14 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void afterTextChanged(Editable s) {
                 if (!StringUtils.isEmpty(s.toString())){
-                    tvAllkwh.setText(Double.parseDouble(s.toString())/gunBean.price+"kwh");
+                    if (tvAllkwh!=null) {
+                        tvAllkwh.setText(Double.parseDouble(s.toString())/gunBean.price+"kwh");
+                    }
                 }
                 else {
-                    tvAllkwh.setText("0.0kwh");
+                    if (tvAllkwh!=null) {
+                        tvAllkwh.setText("0.0kwh");
+                    }
                 }
             }
         });

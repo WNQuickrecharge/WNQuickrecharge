@@ -12,6 +12,8 @@ import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import java.text.DecimalFormat;
+
 public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvDeleteOrder;
     private TextView tvStatus,tvOrdernum,tvCompany,tvAddress,tvDate,tvServiceCash;
@@ -59,7 +61,10 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miYFMoney.setRightText("￥"+orderBean.frozen_cash);
         miSMoney.setRightText("￥"+orderBean.charge_cash);
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
-        miBackMoney.setRightText("￥"+(orderBean.frozen_cash-orderBean.charge_cash));
+        double backMoney = orderBean.frozen_cash - orderBean.charge_cash;
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+        String format = decimalFormat.format(backMoney);
+        miBackMoney.setRightText("￥"+format);
         miAllMoney.setRightText("￥"+orderBean.charge_cash);
         miUsertime.setRightText(orderBean.power_time+"分钟");
         payWay.setText(orderBean.pay_type);
@@ -106,7 +111,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
                 img1.setBounds(0, 0, img1.getMinimumWidth(), img1.getMinimumHeight());
                 payWay.setCompoundDrawables(img1,null,null,null);
                 break;
-            case "微信":
+            case "微信支付":
                 Drawable img2 = getResources().getDrawable(R.drawable.wx);
                 // 调用setCompoundDrawables时，必须调用Drawable.setBounds()方法,否则图片不显示
                 img2.setBounds(0, 0, img2.getMinimumWidth(), img2.getMinimumHeight());

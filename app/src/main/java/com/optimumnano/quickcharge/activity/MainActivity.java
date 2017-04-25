@@ -330,7 +330,7 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
-//                        setRightTitle("消息");//第一版不做消息
+                        setRightTitle("");//第一版不做消息
                         viewPager.setCurrentItem(2);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {
@@ -360,11 +360,15 @@ public class MainActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
                 switch (s.toString()) {
                     case "列表":
-                        rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                            rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        }
                         break;
 
                     case "地图":
-                        rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                            rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        }
                         break;
 
                     default:
