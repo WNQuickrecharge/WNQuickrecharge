@@ -39,11 +39,11 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
-import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -93,6 +93,7 @@ public class RechargeFragment extends BaseFragment {
     private BaiduMap mBaiduMap;
     private PreferencesHelper mHelper;
     private List<Point> mPiont;
+    private List<CarPoint> mCarPiont;
     boolean isFirstLoc = true; // 是否首次定位
     private BottomSheetDialog mBsdialog;
     private View mPopView;
@@ -176,38 +177,43 @@ public class RechargeFragment extends BaseFragment {
                         setBackgroundResource(android.R.color.transparent);
 
                 Bundle bundle = marker.getExtraInfo();
-                final Point infoUtil = (Point) bundle.getSerializable("info");
                 ViewHolder holder = new ViewHolder(mPopView);
-                holder.mItem = infoUtil;
-                holder.tvAddress.setText(holder.mItem.StationName);
-                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
-                holder.tvDetailAddress.setText(holder.mItem.Address);
-                holder.tvPhonenum.setText(holder.mItem.Phone);
-                String sb = "电费:1.5元/度,服务费:0.5元/度";
-                SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
-                        .first("1.5").textColor(R.color.red).first("0.5").textColor(R.color.red);
-                st.linkify(holder.tvPricePer);
-                holder.tvPricePer.setText(st);
-                String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
-                SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
-                        .first(holder.mItem.FreePiles).textColor(R.color.main_color);
-                simpleText.linkify(holder.tvNum);
-                holder.tvNum.setText(simpleText);
-                mPopView.setBackgroundResource(R.drawable.sp_map_infowindow);
-                holder.tvNav.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        OnNaviEvent event = new OnNaviEvent();
-                        event.end = infoUtil;
-                        EventBus.getDefault().post(event);
-                    }
-                });
+                Object obj = bundle.getSerializable("info");
+                if (obj instanceof Point) {
+                    final Point infoUtil = (Point) bundle.getSerializable("info");
+                    holder.mItem = infoUtil;
+                    holder.tvAddress.setText(holder.mItem.StationName);
+                    holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                    holder.tvDetailAddress.setText(holder.mItem.Address);
+                    holder.tvPhonenum.setText(holder.mItem.Phone);
+                    String sb = "电费:1.5元/度,服务费:0.5元/度";
+                    SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
+                            .first("1.5").textColor(R.color.red).first("0.5").textColor(R.color.red);
+                    st.linkify(holder.tvPricePer);
+                    holder.tvPricePer.setText(st);
+                    String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
+                    SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
+                            .first(holder.mItem.FreePiles).textColor(R.color.main_color);
+                    simpleText.linkify(holder.tvNum);
+                    holder.tvNum.setText(simpleText);
+
+                    mPopView.setBackgroundResource(R.drawable.sp_map_infowindow);
+                    holder.tvNav.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            OnNaviEvent event = new OnNaviEvent();
+                            event.end = infoUtil;
+                            EventBus.getDefault().post(event);
+                        }
+                    });
+                }
                 holder.tvCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mBsdialog.dismiss();
                     }
                 });
+
 
                 mBsdialog.show();
                 return true;
@@ -426,8 +432,7 @@ public class RechargeFragment extends BaseFragment {
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
-                marker(mPiont, R.drawable.che);
-                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+                marker();
             }
 
             @Override
@@ -436,49 +441,71 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
-//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                if (mPiont != null && mPiont.equals(returnContent))
-//                    return;
-//                mPiont = (List<Point>) returnContent;
-//                marker(mPiont, R.drawable.che);
-//                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//            }
-//        });
+        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                if (mCarPiont != null && mCarPiont.equals(returnContent))
+                    return;
+                mCarPiont = (List<CarPoint>) returnContent;
+                marker();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
-    private void marker(List<Point> mPiont, int pic) {
+    private void marker() {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(pic);
+        BitmapDescriptor bitmap;
         LatLng latLng = null;
         Marker marker;
         OverlayOptions options;
-        for (Point info : mPiont) {
-            //获取经纬度
-            latLng = new LatLng(info.Lat, info.Lng);
-            //设置marker
-            options = new MarkerOptions()
-                    .position(latLng)//设置位置
-                    .icon(bitmap)//设置图标样式
-                    .zIndex(9) // 设置marker所在层级
-                    .draggable(true); // 设置手势拖拽;
-            //添加marker
-            marker = (Marker) mBaiduMap.addOverlay(options);
-            //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-            Bundle bundle = new Bundle();
-            //info必须实现序列化接口
-            bundle.putSerializable("info", info);
-            marker.setExtraInfo(bundle);
-        }
+        if (mPiont != null && mPiont.size() != 0)
+            for (Point info : mPiont) {
+                bitmap = BitmapDescriptorFactory.fromResource(R.drawable.zhuang);
+                //获取经纬度
+                latLng = new LatLng(info.Lat, info.Lng);
+                //设置marker
+                options = new MarkerOptions()
+                        .position(latLng)//设置位置
+                        .icon(bitmap)//设置图标样式
+                        .zIndex(9) // 设置marker所在层级
+                        .draggable(true); // 设置手势拖拽;
+                //添加marker
+                marker = (Marker) mBaiduMap.addOverlay(options);
+                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+                Bundle bundle = new Bundle();
+                //info必须实现序列化接口
+                bundle.putSerializable("info", info);
+                marker.setExtraInfo(bundle);
+            }
+        if (mCarPiont != null && mCarPiont.size() != 0)
+            for (CarPoint info : mCarPiont) {
+                bitmap = BitmapDescriptorFactory.fromResource(R.drawable.che);
+                //获取经纬度
+                latLng = new LatLng(info.carLat, info.carLon);
+                //设置marker
+                options = new MarkerOptions()
+                        .position(latLng)//设置位置
+                        .icon(bitmap)//设置图标样式
+                        .zIndex(9) // 设置marker所在层级
+                        .draggable(true); // 设置手势拖拽;
+                //添加marker
+                marker = (Marker) mBaiduMap.addOverlay(options);
+                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+                Bundle bundle = new Bundle();
+                //info必须实现序列化接口
+                bundle.putSerializable("info", info);
+                marker.setExtraInfo(bundle);
+            }
+
+
     }
 
     @Override

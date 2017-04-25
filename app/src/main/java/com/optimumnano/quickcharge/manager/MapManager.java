@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.manager;
 
 import com.alibaba.fastjson.JSON;
+import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.net.HttpApi;
@@ -31,8 +32,8 @@ public class MapManager {
         HashMap<String, Object> requestJson = new HashMap<>();
 //        requestJson.put("lat", mHelper.getLocation().lat);
 //        requestJson.put("lng", mHelper.getLocation().lng);
-        requestJson.put("lat", 22.647552);
-        requestJson.put("lng", 114.06667);
+        requestJson.put("lat", 22.731936);
+        requestJson.put("lng", 114.387322);
         requestJson.put("city", "深圳市");
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
@@ -86,16 +87,16 @@ public class MapManager {
         HashMap<String, Object> requestJson = new HashMap<>();
 //        requestJson.put("lat", mHelper.getLocation().lat);
 //        requestJson.put("lng", mHelper.getLocation().lng);
-        requestJson.put("lat", 22.647552);
-        requestJson.put("lng", 114.06667);
-        requestJson.put("city", "深圳市");
+        requestJson.put("lat", 22.731936);
+        requestJson.put("lng", 114.387322);
+//        requestJson.put("city", "深圳市");
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
 
-        MyHttpUtils.getInstance().post(params, new HttpCallback<List<Point>>() {
+        MyHttpUtils.getInstance().post(params, new HttpCallback<List<CarPoint>>() {
             @Override
-            public void onSuccess(List<Point> result, int httpCode) {
+            public void onSuccess(List<CarPoint> result, int httpCode) {
                 super.onSuccess(result, httpCode);
                 callback.onSuccess(result);
             }
