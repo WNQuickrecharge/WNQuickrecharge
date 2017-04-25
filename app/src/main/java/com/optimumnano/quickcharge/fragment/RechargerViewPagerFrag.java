@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,9 +17,6 @@ import com.optimumnano.quickcharge.views.CustomViewPager;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
  * Created by mfwn on 2017/4/21.
  */
@@ -31,6 +29,8 @@ public class RechargerViewPagerFrag extends BaseFragment {
     public CustomViewPager getViewPager() {
         return viewPager;
     }
+
+    RechargeFragment fragment=  new RechargeFragment();
 
     @Nullable
     @Override
@@ -47,7 +47,7 @@ public class RechargerViewPagerFrag extends BaseFragment {
     }
     private void initView() {
         viewPager= (CustomViewPager) getActivity().findViewById(R.id.frag_recharge_viewpager);
-        mFragments.add(new RechargeFragment());
+        mFragments.add(fragment);
         mFragments.add(new RechargerListFrag(null));
         viewPager.setPageTransformer(true,new ZoomOutPageTransformer());
     }
@@ -56,5 +56,9 @@ public class RechargerViewPagerFrag extends BaseFragment {
         viewPager.setAdapter(new MPagerAdapter(getChildFragmentManager(), mFragments));
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        fragment.onActivityResult(requestCode,resultCode,data);
+    }
 }

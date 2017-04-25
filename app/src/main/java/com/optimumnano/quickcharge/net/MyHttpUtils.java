@@ -3,7 +3,6 @@ package com.optimumnano.quickcharge.net;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.httpresponse.MyResponseInfo;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 import static org.xutils.x.http;
 
 /**
