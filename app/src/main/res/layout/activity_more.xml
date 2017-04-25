@@ -1,9 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_invoice"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.optimumnano.quickcharge.activity.invoice.MoreActivity">
+    android:background="@color/bg"
+    tools:context="com.optimumnano.quickcharge.activity.invoice.InvoiceMoreActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <include
+        android:id="@+id/invoice_title"
+        layout="@layout/title_main" />
+
+    <LinearLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invoice_title"
+        android:layout_marginTop="@dimen/default_padding"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_padding5"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingRight="@dimen/default_padding"
+            android:paddingTop="@dimen/default_padding">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/text_mainstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_5"
+                    android:padding="@dimen/default_padding5"
+                    android:text="纳税人识别号"
+                    android:textSize="@dimen/default_textsize" />
+
+                <TextView
+                    style="@style/text_mainstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_5"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:padding="@dimen/default_padding5"
+                    android:text="注册地址"
+                    android:textSize="@dimen/default_textsize" />
+
+                <TextView
+                    style="@style/text_mainstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_5"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:padding="@dimen/default_padding5"
+                    android:text="注册电话"
+                    android:textSize="@dimen/default_textsize" />
+
+                <TextView
+                    style="@style/text_mainstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_5"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:padding="@dimen/default_padding5"
+                    android:text="开户行及账号"
+                    android:textSize="@dimen/default_textsize" />
+
+                <TextView
+                    style="@style/text_mainstyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_5"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:padding="@dimen/default_padding5"
+                    android:text="备注说明:"
+                    android:textSize="@dimen/default_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/et_taxpayer_number"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:background="@drawable/sp_more_edit"
+                    android:hint="填写纳税人识别号" />
+
+                <EditText
+                    android:id="@+id/et_register_address"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:background="@drawable/sp_more_edit"
+                    android:hint="填写注册地址" />
+
+                <EditText
+                    android:id="@+id/et_bank_number"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:background="@drawable/sp_more_edit"
+                    android:hint="填写注册帐号" />
+
+                <EditText
+                    android:id="@+id/et_company_risa"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:layout_marginTop="@dimen/default_padding5"
+                    android:background="@drawable/sp_more_edit"
+                    android:hint="填写开户行及银行号" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_remark"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_padding20"
+            android:layout_marginLeft="@dimen/default_padding20"
+            android:layout_marginRight="@dimen/default_padding20"
+            android:background="@drawable/sp_more"
+            android:gravity="top"
+            android:hint="填写备注说明"
+            android:lines="5"
+            android:padding="@dimen/default_padding5" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_top"
+        android:layout_marginLeft="@dimen/default_padding30"
+        android:layout_marginRight="@dimen/default_padding30"
+        android:layout_marginTop="@dimen/default_padding60"
+        android:background="@drawable/sl_submit"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dimen_8"
+        android:paddingTop="@dimen/dimen_8"
+        android:text="@string/confirm"
+        android:textColor="@drawable/sl_submit_text_state"
+        android:textSize="@dimen/sp_16" />
+</RelativeLayout>

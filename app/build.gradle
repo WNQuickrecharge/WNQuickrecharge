@@ -27,9 +27,9 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         manifestPlaceholders = [
-                GETUI_APP_ID : "EGwqPmPNSiAr6u8WadoaZ",
-                GETUI_APP_KEY : "j9tgnYHQnZ9RR9gpgY4PY4",
-                GETUI_APP_SECRET : "ZSTzy2W71388bZP3HSTzM2"
+                GETUI_APP_ID    : "EGwqPmPNSiAr6u8WadoaZ",
+                GETUI_APP_KEY   : "j9tgnYHQnZ9RR9gpgY4PY4",
+                GETUI_APP_SECRET: "ZSTzy2W71388bZP3HSTzM2"
         ]
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86_64"

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -437,22 +436,22 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                if (mPiont != null && mPiont.equals(returnContent))
-                    return;
-                mPiont = (List<Point>) returnContent;
-                marker(mPiont, R.drawable.che);
-                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
+//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                if (mPiont != null && mPiont.equals(returnContent))
+//                    return;
+//                mPiont = (List<Point>) returnContent;
+//                marker(mPiont, R.drawable.che);
+//                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
     }
 
     private void marker(List<Point> mPiont, int pic) {
