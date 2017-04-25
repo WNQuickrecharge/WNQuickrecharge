@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by ds on 2017/4/10.

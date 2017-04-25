@@ -12,6 +12,8 @@ import java.util.Locale;
  */
 public class HttpApi {
     private static HttpApi instance;
+
+
     public static HttpApi getInstance(){
         if (instance == null){
             synchronized (HttpApi.class){
@@ -21,7 +23,7 @@ public class HttpApi {
         return instance;
     }
     //private static final String baseUrl = "http://112.74.44.166:4840/";
-//    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
+//    private static final String baseUrl = "http://172.200.29.172:4840/";//临时测试
     private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
     public String getUrl(String api){
         return baseUrl+api;
@@ -44,6 +46,7 @@ public class HttpApi {
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
     public static final String order_list = "capp/order/all_orders";//
     public static final String get_guninfo = "capp/bs/get_gunInfo";//获取充电枪详情
+    public static final String get_guninfo1 = "capp/bs/get_gunInfo1";//获取充电枪详情
     public static final String add_order = "capp/order/add_order";//下单
     public static final String get_gunConnect= "capp/bs/get_gunConnect";//获取握手状态
     public static final String start_charge = "capp/bs/start_charge";//开始充电
@@ -56,6 +59,8 @@ public class HttpApi {
     public static final String about_url = baseUrl+"aboutus.html";//关于我们
     public static final String delete_collection = "capp/user/delete_collection";//增加收藏站点
     public static final String stop_charge = "capp/bs/stop_charge";//结束付款
+    public static String region_station_url="capp/bs/region_stations";
+    public static String region_carpile="capp/bs/region_carpile";
     public static final String get_station_detail = "capp/bs/get_station_detail";//获取站点详情信息
     public static final String set_registerid_url = "capp/user/set_registerid";//提交推送ID
     public static final String USER_AGENT = "android/" + Build.VERSION.SDK_INT + "/quickcharge/" + BuildConfig.VERSION_NAME+"/"
@@ -67,6 +72,7 @@ public class HttpApi {
     public static final String  get_city_stations = "capp/bs/get_city_stations";//获取当前城市所有站点信息
     public static final String get_invoice_consume = "capp/invoice/get_invoice_consume";//获取没有开发票的交易记录
     public static final String pay_invoice_balance = "capp/invoice/pay_invoice_balance";//发票订单余额支付成功时调用
+    public static final String long_connet_url = baseUrl+"capp_monitor";//充电过程中长连接地址
 
 
 }

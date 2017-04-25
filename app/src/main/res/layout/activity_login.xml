@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/pwd_hint"
+                android:maxLength="16"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>

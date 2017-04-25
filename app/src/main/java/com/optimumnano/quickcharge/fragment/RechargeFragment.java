@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,7 +170,7 @@ public class RechargeFragment extends BaseFragment {
                 return true;*/
 
                 mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
-                mBsdialog =new BottomSheetDialog(getActivity());
+                mBsdialog = new BottomSheetDialog(getActivity());
                 mBsdialog.setContentView(mPopView);
                 mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
                         setBackgroundResource(android.R.color.transparent);
@@ -334,7 +333,7 @@ public class RechargeFragment extends BaseFragment {
         phoneNumber = etPhone.getText().toString().trim();
         String carNumber = null;
         if (!Tool.isCarnumberNO(etPlate.getText().toString().trim())) {
-            Toast.makeText(getActivity(), "请输入车牌号", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "请输入正确的车牌号", Toast.LENGTH_SHORT).show();
             return;
         }
         String address = null;
@@ -348,11 +347,13 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -366,8 +367,8 @@ public class RechargeFragment extends BaseFragment {
             }
             locationClient.stop();
             String city = location.getCity();
-            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,location.getLatitude()+"");
-            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,location.getLongitude()+"");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, location.getLatitude() + "");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, location.getLongitude() + "");
             EventBus.getDefault().post(new EventManager.getCurrentCity(city));
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
@@ -424,11 +425,7 @@ public class RechargeFragment extends BaseFragment {
                 super.onSuccess(returnContent);
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
-                Log.d("TAG", "sss");
                 mPiont = (List<Point>) returnContent;
-//                for (int i = 0; i < mPiont.size(); i++) {
-//                    marker(new LatLng(mPiont.get(i).Lat, mPiont.get(i).Lng), R.drawable.che);
-//                }
                 marker(mPiont, R.drawable.che);
                 EventBus.getDefault().post(new OnPushDataEvent(mPiont));
             }
@@ -438,6 +435,23 @@ public class RechargeFragment extends BaseFragment {
                 super.onFailure(msg);
             }
         });
+
+//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                if (mPiont != null && mPiont.equals(returnContent))
+//                    return;
+//                mPiont = (List<Point>) returnContent;
+//                marker(mPiont, R.drawable.che);
+//                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
     }
 
     private void marker(List<Point> mPiont, int pic) {
@@ -465,16 +479,6 @@ public class RechargeFragment extends BaseFragment {
             bundle.putSerializable("info", info);
             marker.setExtraInfo(bundle);
         }
-        //将地图显示在最后一个marker的位置
-//
-//        BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                .fromResource(pic);
-//        //构建MarkerOption，用于在地图上添加Marker
-//        OverlayOptions option = new MarkerOptions()
-//                .position(point)
-//                .icon(bitmap);
-//        //在地图上添加Marker，并显示
-//        mapView.getMap().addOverlay(option);
     }
 
     @Override
@@ -515,7 +519,7 @@ public class RechargeFragment extends BaseFragment {
         super.onDestroy();
         if (mapView != null)
             mapView.onDestroy();
-        if (null != mBsdialog)
+        if (mBsdialog != null)
             mBsdialog.dismiss();
     }
 

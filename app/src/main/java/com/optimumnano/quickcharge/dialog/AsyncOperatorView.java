@@ -26,34 +26,30 @@ public class AsyncOperatorView extends ProgressDialog  {
 		show();
 	}
 
-//	@Override
-//	public void finish() {
-//		dismiss();
-//	}
-//
-//	@Override
-//	public  void finish(String alertMessage) {
-//		setMessage(alertMessage);
-//		Handler handler = new Handler();
-//		handler.postDelayed(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				dismiss();
-//			}
-//		}, 1500);
-//	}
-//
-//	@Override
-//	public void start(int resStringId) {
-//		start(context.getString(resStringId));
-//	}
-//
-//	@Override
-//	public void finish(int resStringId) {
-//
-//		finish(context.getString(resStringId));
-//
-//	}
+	public void finish() {
+		dismiss();
+	}
+
+	public  void finish(String alertMessage) {
+		setMessage(alertMessage);
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				dismiss();
+			}
+		}, 1500);
+	}
+
+	public void start(int resStringId) {
+		start(context.getString(resStringId));
+	}
+
+	public void finish(int resStringId) {
+
+		finish(context.getString(resStringId));
+		
+	}
 
 }

@@ -1,11 +1,12 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
@@ -27,6 +28,16 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     RadioButton rbEle;
     @Bind(R.id.invoice_type_tvNext)
     TextView tvNext;
+    @Bind(R.id.et_company_risa)
+    EditText etCompanyRisa;
+    @Bind(R.id.et_battery_charging_price)
+    EditText etBatteryChargingPrice;
+    @Bind(R.id.ll_go_to_more)
+    RelativeLayout llGoToMore;
+    @Bind(R.id.et_email)
+    EditText etEmail;
+    @Bind(R.id.activity_invoice_type)
+    LinearLayout activityInvoiceType;
 
     private double allMoney;
 
@@ -50,13 +61,14 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         setRightTitle("发票记录");
         rbEle.setChecked(true);
 
-        tvMoney.setText("￥"+allMoney);
+        tvMoney.setText("￥" + allMoney);
 
         tvNext.setOnClickListener(this);
+        llGoToMore.setOnClickListener(this);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.invoice_type_rbEle:
                         llEmail.setVisibility(View.VISIBLE);
                         llPaper.setVisibility(View.GONE);
@@ -78,11 +90,14 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.invoice_type_tvNext:
                 Bundle bundle = new Bundle();
-                bundle.putDouble("money",allMoney);
-                skipActivity(PayCenterActivity.class,bundle);
+                bundle.putDouble("money", allMoney);
+                skipActivity(PayCenterActivity.class, bundle);
+                break;
+            case R.id.ll_go_to_more:
+                InvoiceMoreActivity.start(this);
                 break;
         }
 
