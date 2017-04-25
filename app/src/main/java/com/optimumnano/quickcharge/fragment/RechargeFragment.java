@@ -169,17 +169,16 @@ public class RechargeFragment extends BaseFragment {
                 mInfoWindow = new InfoWindow(view, ll, -47);
                 mBaiduMap.showInfoWindow(mInfoWindow);
                 return true;*/
-
-                mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
-                mBsdialog = new BottomSheetDialog(getActivity());
-                mBsdialog.setContentView(mPopView);
-                mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
-                        setBackgroundResource(android.R.color.transparent);
-
                 Bundle bundle = marker.getExtraInfo();
-                ViewHolder holder = new ViewHolder(mPopView);
                 Object obj = bundle.getSerializable("info");
                 if (obj instanceof Point) {
+                    mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
+                    mBsdialog = new BottomSheetDialog(getActivity());
+                    mBsdialog.setContentView(mPopView);
+                    mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
+                            setBackgroundResource(android.R.color.transparent);
+                    ViewHolder holder = new ViewHolder(mPopView);
+
                     final Point infoUtil = (Point) bundle.getSerializable("info");
                     holder.mItem = infoUtil;
                     holder.tvAddress.setText(holder.mItem.StationName);
@@ -206,16 +205,17 @@ public class RechargeFragment extends BaseFragment {
                             EventBus.getDefault().post(event);
                         }
                     });
+                    holder.tvCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mBsdialog.dismiss();
+                        }
+                    });
+
+
+                    mBsdialog.show();
                 }
-                holder.tvCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mBsdialog.dismiss();
-                    }
-                });
 
-
-                mBsdialog.show();
                 return true;
             }
         });
