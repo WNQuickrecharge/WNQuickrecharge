@@ -51,7 +51,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     private PayCallback payCallback;
     private double money;
     private String order_no;
-    private int payWay;//支付方式
+    private int payWay=3;//支付方式
     private String sign;//支付宝支付的签名
     Handler handler = new Handler(){
         @Override
@@ -142,12 +142,12 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             @Override
             public void afterTextChanged(final Editable s) {
                 if (s.length() == 6) {
-                    BaseActivity.showBaseLoading();
+                    //BaseActivity.showBaseLoading();
                     GetMineInfoManager.getPayPwd(new ManagerCallback() {
                         @Override
                         public void onSuccess(Object returnContent) {
                             super.onSuccess(returnContent);
-                            BaseActivity.hideBaseLoading();
+                            //BaseActivity.hideBaseLoading();
                             JSONObject dataJson = null;
                             try {
                                 dataJson = new JSONObject(returnContent.toString());
@@ -178,7 +178,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                         @Override
                         public void onFailure(String msg) {
                             super.onFailure(msg);
-                            BaseActivity.hideBaseLoading();
+                            //BaseActivity.hideBaseLoading();
                             ToastUtil.showToast(activity,msg);
                         }
                     });

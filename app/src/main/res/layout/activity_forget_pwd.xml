@@ -53,7 +53,8 @@
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/edt_checknum"
-                android:inputType="textPassword"
+                android:inputType="number"
+                android:maxLength="6"
                 android:layout_toRightOf="@id/forget_ivicon"
                 android:layout_centerVertical="true"
                 android:padding="12dp"/>
@@ -90,6 +91,7 @@
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/pwd_hint"
+                android:maxLength="16"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>
@@ -114,6 +116,7 @@
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/pwd_hint"
+                android:maxLength="16"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>

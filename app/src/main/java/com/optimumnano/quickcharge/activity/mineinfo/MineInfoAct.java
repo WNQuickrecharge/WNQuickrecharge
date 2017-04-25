@@ -223,6 +223,7 @@ public class MineInfoAct extends BaseActivity {
                     return;
                 }
                 mInPutInfoDialog.dismiss();
+                showLoading("正在上传");
                 modifyUserInfo(inputvalue, mUerSex,1);
             }
         });
@@ -244,7 +245,7 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("修改成功");
-
+                closeLoading();
                 if (1 == modifyType){//改昵称
                     mNickname = nickname;
                     mTvNickname.setRightText(mNickname);
@@ -261,6 +262,7 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onFailure(String msg) {
                 showToast("修改失败"+msg);
+                closeLoading();
                 LogUtil.i("test==modifyUserInfo onFailure "+msg);
             }
         });
@@ -271,7 +273,7 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onSuccess(Object returnContent) {
                 showToast("修改成功");
-
+                closeLoading();
                 JSONObject dataJson = null;
                 try {
                     dataJson = new JSONObject(returnContent.toString());
@@ -290,6 +292,7 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onFailure(String msg) {
                 showToast(msg);
+                closeLoading();
                 LogUtil.i("test==modifyHeadView onFailure "+msg);
             }
         });
@@ -314,6 +317,7 @@ public class MineInfoAct extends BaseActivity {
                     sex =2;
                 }
                 mSetSexDialog.dismiss();
+                showLoading("正在上传");
                 modifyUserInfo(mNickname, sex ,2);
             }
         });
@@ -338,6 +342,7 @@ public class MineInfoAct extends BaseActivity {
             if (images != null && images.size() != 0 && !images.get(0).path.equals("")) {
                 url = images.get(0).path;
                 String headViewBase64 = Base64Image.image2Base64Str(url);
+                showLoading("正在上传");
                 modifyHeadView(url,headViewBase64);
 
             }

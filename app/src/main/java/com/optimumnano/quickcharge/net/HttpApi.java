@@ -23,7 +23,7 @@ public class HttpApi {
         return instance;
     }
     //private static final String baseUrl = "http://112.74.44.166:4840/";
-//    private static final String baseUrl = "http://172.200.31.57:4840/";//临时测试
+//    private static final String baseUrl = "http://172.200.29.172:4840/";//临时测试
     private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
     public String getUrl(String api){
         return baseUrl+api;
@@ -46,6 +46,7 @@ public class HttpApi {
     public static final String forget_pay_password_url = "capp/user/forget_paypwd";//
     public static final String order_list = "capp/order/all_orders";//
     public static final String get_guninfo = "capp/bs/get_gunInfo";//获取充电枪详情
+    public static final String get_guninfo1 = "capp/bs/get_gunInfo1";//获取充电枪详情
     public static final String add_order = "capp/order/add_order";//下单
     public static final String get_gunConnect= "capp/bs/get_gunConnect";//获取握手状态
     public static final String start_charge = "capp/bs/start_charge";//开始充电
@@ -71,6 +72,7 @@ public class HttpApi {
     public static final String  get_city_stations = "capp/bs/get_city_stations";//获取当前城市所有站点信息
     public static final String get_invoice_consume = "capp/invoice/get_invoice_consume";//获取没有开发票的交易记录
     public static final String pay_invoice_balance = "capp/invoice/pay_invoice_balance";//发票订单余额支付成功时调用
+    public static final String long_connet_url = baseUrl+"capp_monitor";//充电过程中长连接地址
 
 
 }

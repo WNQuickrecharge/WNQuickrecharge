@@ -43,7 +43,8 @@ public class OrderBean implements Serializable{
     public String end_time;
     /** 是否已开发票 **/
     public String is_bill;
-
+    /** 充电耗时 **/
+    public int power_time;
     public OrderBean(){
     }
 

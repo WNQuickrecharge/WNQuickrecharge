@@ -91,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
+                android:maxLength="16"
                 android:hint="@string/pwd_hint"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
@@ -115,6 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
+                android:maxLength="16"
                 android:hint="@string/pwd_hint"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>

@@ -132,12 +132,14 @@ public class QrCodeActivity extends BaseActivity {
     CodeUtils.AnalyzeCallback analyzeCallback = new CodeUtils.AnalyzeCallback() {
         @Override
         public void onAnalyzeSuccess(Bitmap mBitmap, final String result) {
-            Intent resultIntent = new Intent();
+            Intent resultIntent = new Intent(QrCodeActivity.this,OrderActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
-            bundle.putString(CodeUtils.RESULT_STRING, result);
+            bundle.putString("gun_no", result);
             resultIntent.putExtras(bundle);
-            QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
+            //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
+            //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);
+            startActivity(resultIntent);
             QrCodeActivity.this.finish();
         }
 
@@ -185,7 +187,7 @@ public class QrCodeActivity extends BaseActivity {
                 //跳转支付
                 String gunno = etRecordNumber.getText().toString();
                 if (StringUtils.isEmpty(gunno)){
-                    gunno = "67867678901234517";
+                    gunno = "44030701004000008100600000000000";
                 }
                 Bundle bundle = new Bundle();
                 bundle.putString("gun_no",gunno);
