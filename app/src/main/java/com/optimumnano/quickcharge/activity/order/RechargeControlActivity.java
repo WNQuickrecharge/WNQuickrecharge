@@ -2,7 +2,6 @@ package com.optimumnano.quickcharge.activity.order;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -18,6 +17,7 @@ import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.WaveLoadingView;
 import com.zsoft.signala.Connection;
 import com.zsoft.signala.ConnectionState;
@@ -28,7 +28,9 @@ import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_USER_ID;
+import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * 充电控制
@@ -329,7 +331,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         public void OnStateChanged(StateBase oldState, StateBase newState) {
             Log.d(TAG, "OnStateChanged=" + oldState.getState() + " -> " + newState.getState());
             if (newState.getState()== ConnectionState.Connected){
-                conn.Send("{'data_type':1,'user_id':21}", new SendCallback() {
+                String userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID, "");
+                conn.Send("{'data_type':1,'user_id':+"+ userID +"}", new SendCallback() {
                     @Override
                     public void OnSent(CharSequence messageSent) {
                         Log.d("onSent","正在传送");

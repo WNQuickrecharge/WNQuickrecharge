@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
-import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
  * Created by ds on 2017/4/10.
@@ -62,7 +61,7 @@ public class OrderManager {
      * @param callback
      */
     public void getGunInfo(String gun_code,final ManagerCallback callback){
-        String url = HttpApi.getInstance().getUrl(HttpApi.get_guninfo1);
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_guninfo);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
         ha.put("gun_code",gun_code);
