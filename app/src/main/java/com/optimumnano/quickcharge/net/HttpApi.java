@@ -73,6 +73,8 @@ public class HttpApi {
     public static final String get_invoice_consume = "capp/invoice/get_invoice_consume";//获取没有开发票的交易记录
     public static final String pay_invoice_balance = "capp/invoice/pay_invoice_balance";//发票订单余额支付成功时调用
     public static final String long_connet_url = baseUrl+"capp_monitor";//充电过程中长连接地址
+    public static final String add_invoice = "capp/invoice/add_invoice";//提交发票订单
+    public static final String get_invoice_orderlist = "capp/invoice/get_invoice_orderlist";//获取已提交的发票历史订单()
 
 
 }
