@@ -86,6 +86,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             showToast("手机号码不能为空!");
             return;
         }
+        if (confirmPassword.length()<6||password.length()<6){
+            showToast("密码长度不能小于6位!");
+            return;
+        }
 
         String Md5Pasword = MD5Utils.encodeMD5(password);
         String finalPassword = MD5Utils.encodeMD5(Md5Pasword);
