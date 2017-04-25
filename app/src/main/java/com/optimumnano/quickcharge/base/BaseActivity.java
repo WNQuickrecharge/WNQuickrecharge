@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.BuildConfig;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.dialog.LoadingDialog;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 
@@ -40,12 +41,15 @@ public class BaseActivity extends AppCompatActivity {
     private static ProgressDialog progressDialog;
 
     protected PreferencesHelper mHelper;
+    private LoadingDialog mLoadingDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         mHelper=new PreferencesHelper(this);
         progressDialog=new ProgressDialog(this);
+        mLoadingDialog = new LoadingDialog(BaseActivity.this);
     }
     public void initViews(){
         tvTitle = (TextView) findViewById(R.id.title_tvTitle);
@@ -78,6 +82,18 @@ public class BaseActivity extends AppCompatActivity {
                 onLeftDoSomething();
             }
         });
+    }
+
+    public void showLoading(String title){
+        mLoadingDialog.show(title);
+    }
+
+    public void showLoading(){
+        mLoadingDialog.show();
+    }
+
+    public void closeLoading(){
+        mLoadingDialog.dismiss();
     }
 
      protected void onLeftDoSomething() {
@@ -121,6 +137,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        closeLoading();
         AppManager.getAppManager().removeActivity(this);
     }
 

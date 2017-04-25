@@ -15,8 +15,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -34,7 +32,6 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
-import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -43,13 +40,10 @@ import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
-import com.optimumnano.quickcharge.fragment.RechargeFragment;
 import com.optimumnano.quickcharge.fragment.RechargerViewPagerFrag;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.popupWindow.showHelper.BaseShowHelper;
-import com.optimumnano.quickcharge.popupWindow.showHelper.DistShowHepler;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
@@ -336,15 +330,15 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
-                        setRightTitle("消息");
+//                        setRightTitle("消息");//第一版不做消息
                         viewPager.setCurrentItem(2);
 
-                        tvRight.setOnClickListener(new View.OnClickListener() {
+                        /*tvRight.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 startActivity(new Intent(MainActivity.this, MyMessageAct.class));
                             }
-                        });
+                        });*/
                         break;
                     default:
                         break;
