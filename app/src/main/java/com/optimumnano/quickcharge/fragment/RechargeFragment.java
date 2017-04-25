@@ -170,7 +170,7 @@ public class RechargeFragment extends BaseFragment {
                 return true;*/
 
                 mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
-                mBsdialog =new BottomSheetDialog(getActivity());
+                mBsdialog = new BottomSheetDialog(getActivity());
                 mBsdialog.setContentView(mPopView);
                 mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
                         setBackgroundResource(android.R.color.transparent);
@@ -333,7 +333,7 @@ public class RechargeFragment extends BaseFragment {
         phoneNumber = etPhone.getText().toString().trim();
         String carNumber = null;
         if (!Tool.isCarnumberNO(etPlate.getText().toString().trim())) {
-            Toast.makeText(getActivity(), "请输入车牌号", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "请输入正确的车牌号", Toast.LENGTH_SHORT).show();
             return;
         }
         String address = null;
@@ -347,11 +347,13 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -365,8 +367,8 @@ public class RechargeFragment extends BaseFragment {
             }
             locationClient.stop();
             String city = location.getCity();
-            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,location.getLatitude()+"");
-            SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,location.getLongitude()+"");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, location.getLatitude() + "");
+            SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, location.getLongitude() + "");
             EventBus.getDefault().post(new EventManager.getCurrentCity(city));
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
@@ -417,7 +419,25 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void initPoint() {
+
         mManager.getReigonInfo(mHelper, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                if (mPiont != null && mPiont.equals(returnContent))
+                    return;
+                mPiont = (List<Point>) returnContent;
+                marker(mPiont, R.drawable.che);
+                EventBus.getDefault().post(new OnPushDataEvent(mPiont));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
+
+        mManager.getregionCarpile(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -500,7 +520,8 @@ public class RechargeFragment extends BaseFragment {
         super.onDestroy();
         if (mapView != null)
             mapView.onDestroy();
-        mBsdialog.dismiss();
+        if (mBsdialog != null)
+            mBsdialog.dismiss();
     }
 
 

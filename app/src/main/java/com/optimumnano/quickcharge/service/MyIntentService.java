@@ -5,6 +5,7 @@ import android.content.Context;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
+import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.manager.GetuiPushManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 
@@ -31,7 +32,7 @@ public class MyIntentService extends GTIntentService {
     public void onReceiveMessageData(Context context, GTTransmitMessage msg) {
         String data = new String(msg.getPayload());
         LogUtil.i("test==onReceiveMessageData "+data);
-
+        PushCustom.inject(data);
     }
 
     @Override
