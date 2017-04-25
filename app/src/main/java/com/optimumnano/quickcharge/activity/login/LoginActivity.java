@@ -42,6 +42,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_USER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -201,6 +202,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.userinfo.AvatarUrl)?"":userinfoBean.userinfo.AvatarUrl);
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_USER_ID,userinfoBean.userinfo.Id);
+
             DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));

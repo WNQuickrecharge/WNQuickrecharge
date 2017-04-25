@@ -135,7 +135,7 @@ public class QrCodeActivity extends BaseActivity {
             Intent resultIntent = new Intent(QrCodeActivity.this,OrderActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
-            bundle.putString("gun_no", result);
+            bundle.putString("gun_no", result+"00000000000");//现在桩上的二维码是21
             resultIntent.putExtras(bundle);
             //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
             //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);
