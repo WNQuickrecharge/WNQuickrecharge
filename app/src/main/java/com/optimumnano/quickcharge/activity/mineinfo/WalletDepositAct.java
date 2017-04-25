@@ -26,6 +26,10 @@ import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
@@ -37,6 +41,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_PARTNER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -172,7 +178,27 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-        showToast("还未实现微信支付");
+
+
+
+//        showToast("还未实现微信支付");
+        final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+        //将该app注册到微信
+        wxApi.registerApp(WX_APP_ID);
+        boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+        if (isPaySupported) {
+            PayReq request = new PayReq();
+            request.appId = WX_APP_ID;
+            request.partnerId = WX_PARTNER_ID;
+            request.prepayId = "1101000000140415649af9fc314aa427";
+            request.packageValue = "Sign=WXPay";
+            request.nonceStr = "1101000000140429eb40476f8896f4c9";
+            request.timeStamp = "1412000000";
+            request.sign = "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
+            wxApi.sendReq(request);
+        }else {
+            showToast("您的微信版本过低不支持支付功能，请升级微信后使用");
+        }
     }
 
     private void callALiPay() {
