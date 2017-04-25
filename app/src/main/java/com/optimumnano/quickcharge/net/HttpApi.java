@@ -25,7 +25,7 @@ public class HttpApi {
     //private static final String baseUrl = "http://112.74.44.166:4840/";
 //    private static final String baseUrl = "http://172.200.29.172:4840/";//临时测试
     private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
-//    private static final String baseUrl="http://112.74.44.166:4830/"; //测试库地址修改了
+    //    private static final String baseUrl="http://112.74.44.166:4830/"; //测试库地址修改了
     public String getUrl(String api){
         return baseUrl+api;
     }
@@ -76,6 +76,5 @@ public class HttpApi {
     public static final String long_connet_url = baseUrl+"capp_monitor";//充电过程中长连接地址
     public static final String add_invoice = "capp/invoice/add_invoice";//提交发票订单
     public static final String get_invoice_orderlist = "capp/invoice/get_invoice_orderlist";//获取已提交的发票历史订单()
-
 
 }
