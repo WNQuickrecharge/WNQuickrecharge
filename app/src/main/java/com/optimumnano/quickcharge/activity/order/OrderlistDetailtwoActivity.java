@@ -3,6 +3,7 @@ package com.optimumnano.quickcharge.activity.order;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
@@ -21,6 +22,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
     private MenuItem1 miUsertime,miAllelec,miRechargeCash,miAllMoney,miSMoney,miYFMoney,miBackMoney;
     private OrderManager orderManager = new OrderManager();
     private TextView payWay;
+    private ImageView orderIcon;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miYFMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miYFCash);
         miBackMoney = (MenuItem1) findViewById(R.id.orderlistDetl_miBackCash);
         payWay = (TextView) findViewById(R.id.orderlistDetl_tvPayWay);
+        orderIcon = (ImageView) findViewById(R.id.iv_order_icon);
 
         tvDeleteOrder.setOnClickListener(this);
     }
@@ -69,6 +72,18 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miUsertime.setRightText(orderBean.power_time+"分钟");
         payWay.setText(orderBean.pay_type);
         showPayWay(orderBean.pay_type);
+        switch (orderBean.charge_from) {
+            case 1:
+                orderIcon.setImageResource(R.mipmap.chongdianzhuang);
+            break;
+            case 2:
+                orderIcon.setImageResource(R.mipmap.budianche);
+            break;
+
+            default :
+
+            break;
+        }
 
     }
 

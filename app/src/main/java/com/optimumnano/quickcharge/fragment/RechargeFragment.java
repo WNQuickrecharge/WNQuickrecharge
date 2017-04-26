@@ -468,7 +468,7 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
             for (Point info : mPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.drawable.zhuang);
+                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.cdzhuang01);
                 //获取经纬度
                 latLng = new LatLng(info.Lat, info.Lng);
                 //设置marker
