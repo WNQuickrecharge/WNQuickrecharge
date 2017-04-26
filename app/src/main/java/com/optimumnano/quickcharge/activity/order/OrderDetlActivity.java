@@ -117,7 +117,7 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void run() {
                         super.run();
-                        SystemClock.sleep(500);
+                        SystemClock.sleep(100);
                         EventBus.getDefault().post(new EventManager.mainActivitySelectOrderTag());
                     }
                 }.start();

@@ -18,6 +18,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
+import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
@@ -112,6 +113,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             }
         }
     };
+    private String formatRestCash;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,6 +180,24 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 finish();
             }
         });
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                formatRestCash = df.format(restCash);
+                miPayway.setTvLeftText("余额"+"("+ formatRestCash +")");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
     }
     private void loadData(){
         miRechargenum.setRightText(gunNo);
@@ -211,7 +231,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                     //余額
                     case PayDialog.pay_yue:
                         miPayway.setIvLeftDrawable(R.drawable.yue);
-                        miPayway.setTvLeftText("余额");
+                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
                         payWay = PayDialog.pay_yue;
                         break;
                 }

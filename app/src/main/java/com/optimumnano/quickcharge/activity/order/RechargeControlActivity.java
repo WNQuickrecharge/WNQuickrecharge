@@ -195,8 +195,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //            //开始充电
 //            else
             if (requestCode == STARTCHARGE){
-                startCountTime(1000*1000,10*1000);
-                dialog.cancelDialog();
+                //startCountTime(1000*1000,10*1000);
+                //dialog.cancelDialog();
                 tvStart.setVisibility(View.GONE);
                 tvStop.setVisibility(View.VISIBLE);
             }
@@ -374,23 +374,6 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     tvStop.setVisibility(View.GONE);
                     tvTime.setVisibility(View.INVISIBLE);
                     String order_no = longConnectMessageBean.getOrder_no();
-//                    int power_time = longConnectMessageBean.getPower_time();
-//                    Double consume_money = longConnectMessageBean.getConsume_money();
-//                    Double forzen_cash = longConnectMessageBean.getForzen_cash();
-//                    Double back_cash = longConnectMessageBean.getBack_cash();
-                    //conn.Stop();
-//                    OrderManager.getOrderByOrderNo(orderNo, new ManagerCallback() {
-//                        @Override
-//                        public void onSuccess(Object returnContent) {
-//                            super.onSuccess(returnContent);
-//
-//                        }
-//
-//                        @Override
-//                        public void onFailure(String msg) {
-//                            super.onFailure(msg);
-//                        }
-//                    });
                     Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
                     Bundle bundle=new Bundle();
                     bundle.putString("order_no",order_no);
