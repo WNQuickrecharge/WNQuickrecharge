@@ -188,6 +188,11 @@
             android:exported="false"
             android:screenOrientation="behind"></activity>
         <activity android:name=".activity.invoice.InvoiceMoreActivity"></activity>
+
+        <activity
+            android:name=".activity.filter.ChoseCityActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

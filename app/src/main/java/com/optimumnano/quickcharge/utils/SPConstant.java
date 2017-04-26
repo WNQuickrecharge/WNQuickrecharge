@@ -32,6 +32,7 @@ public interface SPConstant {
     String KEY_USERINFO_CURRENT_CITY="current_city";
     String KEY_USERINFO_CURRENT_LAT="lat";
     String KEY_USERINFO_CURRENT_LON="lon";
+    String KEY_USERINFO_CURRENT_CITY_CODE="citycode";
     String KEY_USERINFO_USER_ID="id";
 
 }

@@ -19,6 +19,7 @@
     <color name="colorEE">#eeeeee</color>
     <color name="colord6">#d6d6d6</color>
     <color name="black">#000000</color>
+    <color name="bg_black_80">#80000000</color>
     <color name="red">#FF0000</color>
     <color name="default_color">#F8F8F8</color>
 

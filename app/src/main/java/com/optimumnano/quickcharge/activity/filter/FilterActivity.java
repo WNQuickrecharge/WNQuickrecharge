@@ -115,6 +115,7 @@ public class FilterActivity extends BaseActivity {
 
     @OnClick(R.id.ll_location)
     public void onViewLocation() {
-        showToast(getString(R.string.now_no_support));
+//        showToast(getString(R.string.now_no_support));
+        skipActivity(ChoseCityActivity.class,null);
     }
 }
