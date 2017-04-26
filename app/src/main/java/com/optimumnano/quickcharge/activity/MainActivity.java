@@ -323,8 +323,8 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbOrder:
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
-
-                        setRightTitle("开发票");
+                        setRightTitle("");
+                        //setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:

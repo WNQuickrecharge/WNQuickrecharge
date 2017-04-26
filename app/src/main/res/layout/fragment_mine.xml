@@ -70,6 +70,7 @@
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:tvLeftText="我的优惠券"
         android:layout_marginTop="1dp"
         app:showivRight="true"/>
@@ -90,6 +91,7 @@
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:tvLeftText="邀请好友"
         android:layout_marginTop="1dp"
         app:showivRight="true"/>
