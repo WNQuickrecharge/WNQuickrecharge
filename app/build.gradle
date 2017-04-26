@@ -70,6 +70,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.github.jaychang0917:SimpleText:1.2.1'
     compile 'com.getui:sdk:2.10.2.0'
+    compile 'com.belerweb:pinyin4j:2.5.0'
 
     compile project(path: ':SignalA')
     compile project(path: ':SignalA.LongPolling')

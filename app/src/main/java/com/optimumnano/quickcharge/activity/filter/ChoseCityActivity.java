@@ -29,6 +29,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.CityModel;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.utils.AppManager;
+import com.optimumnano.quickcharge.utils.PinyinUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
@@ -65,7 +66,7 @@ public class ChoseCityActivity extends BaseActivity {
     LinearLayout mEmptyView;
     @Bind(R.id.side_letter_bar)
     SideLetterBar mSideLetterBar;
-
+    private String[] citys;
 
     private CityShowAdapter mCityAdapter;//城市列表adapter
     private CityResultAdapter mResultAdapter;//搜索结果列表
@@ -96,6 +97,7 @@ public class ChoseCityActivity extends BaseActivity {
 
 
     private void initialize() {
+        citys=getResources().getStringArray(R.array.citys);
         mIvSearchClear.setVisibility(View.GONE);
         resultModels = new ArrayList<>();
         mListviewAllCity.setLayoutManager(new LinearLayoutManager(ChoseCityActivity.this));
@@ -103,51 +105,12 @@ public class ChoseCityActivity extends BaseActivity {
         mResultAdapter = new CityResultAdapter(ChoseCityActivity.this, resultModels);
         mListviewSearchResult.setAdapter(mResultAdapter);
         initSearch();//搜索功能
-        CityModel dongguan1 = new CityModel("阿拉斯加", "103.565", "23.51","alasijia");
-        CityModel dongguan11 = new CityModel("阿拉斯加", "103.565", "23.51","alasijia");
-        CityModel dongguan2 = new CityModel("北京", "103.565", "23.51","beijing");
-        CityModel dongguan22 = new CityModel("北京", "103.565", "23.51","beijing");
-        CityModel dongguan3 = new CityModel("长春", "103.565", "23.51","changchun");
-        CityModel dongguan33 = new CityModel("长春", "103.565", "23.51","changchun");
-        CityModel dongguan4 = new CityModel("东莞", "103.565", "23.51","dongguan");
-        CityModel dongguan43 = new CityModel("东莞", "103.565", "23.51","dongguan");
-        CityModel dongguan5 = new CityModel("鄂尔多斯", "103.565", "23.51","eerduosi");
-        CityModel dongguan6 = new CityModel("福州", "103.565", "23.51","fuzhou");
-        CityModel dongguan7 = new CityModel("广州", "103.565", "23.51","guagnzhou");
-        CityModel dongguan8 = new CityModel("杭州", "103.565", "23.51","hangzhou");
-        CityModel dongguan9 = new CityModel("吉安", "103.565", "23.51","jian");
-        CityModel shenzhen10 = new CityModel("开封", "103.565", "23.51","kaifeng");
-        ArrayList testcitys = new ArrayList<>();
-        testcitys.add(dongguan1);
-        testcitys.add(dongguan1);
-        testcitys.add(dongguan11);
-        testcitys.add(dongguan2);
-        testcitys.add(dongguan22);
-        testcitys.add(dongguan3);
-        testcitys.add(dongguan33);
-        testcitys.add(dongguan4);
-        testcitys.add(dongguan43);
-        testcitys.add(dongguan5);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan6);
-        testcitys.add(dongguan7);
-        testcitys.add(dongguan8);
-        testcitys.add(dongguan9);
-        testcitys.add(dongguan9);
-        testcitys.add(dongguan9);
-        testcitys.add(shenzhen10);
-        testcitys.add(shenzhen10);
-        testcitys.add(shenzhen10);
-        testcitys.add(shenzhen10);
-        initRecycleCityList(testcitys);
+        ArrayList cityList = new ArrayList<>();
+        for (int i = 0; i < citys.length; i++) {
+            CityModel city=new CityModel(citys[i], PinyinUtils.getPinYin(citys[i]));
+            cityList.add(city);
+        }
+        initRecycleCityList(cityList);
 
     }
 
@@ -236,11 +199,19 @@ public class ChoseCityActivity extends BaseActivity {
             @Override
             public void onLetterChanged(String letter) {
                 int position = mCityAdapter.getLetterPosition(letter);
-                if (position != -1) {
-                    // mRecyclerView.scrollToPosition(position);
+                if (position == -2) {//点到定位时滑动到顶部
                     LinearLayoutManager llm = (LinearLayoutManager) mListviewAllCity.getLayoutManager();
-                    llm.scrollToPositionWithOffset(position, 0);//将指定的position滑动到距离上面第0个的位置，也就是顶部。
+                    llm.scrollToPositionWithOffset(0, 0);
+                    llm.setStackFromEnd(true);
+                    return;
                 }
+
+                if (position != -1) {
+                    LinearLayoutManager llm = (LinearLayoutManager) mListviewAllCity.getLayoutManager();
+                    llm.scrollToPositionWithOffset(position+1, 0);//将指定的position滑动到距离上面第0个的位置，也就是顶部。
+                    llm.setStackFromEnd(true);
+                }
+                //position = -1 时是点到mSideLetterBar的i,u之类的不存在的拼音
             }
         });
     }

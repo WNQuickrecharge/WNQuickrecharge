@@ -77,6 +77,8 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     public int getLetterPosition(String letter) {
         Integer integer = letterIndexes.get(letter);
+        if (TextUtils.equals("定位",letter))
+            return -2;
         return integer == null ? -1 : integer;
     }
 
