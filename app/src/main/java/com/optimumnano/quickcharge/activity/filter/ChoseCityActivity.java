@@ -171,7 +171,13 @@ public class ChoseCityActivity extends BaseActivity {
      */
     public void initRecycleCityList(List<CityModel> cityModels) {
         this.cityModels = cityModels;
-        mCityAdapter = new CityShowAdapter(ChoseCityActivity.this, cityModels);
+        String[] stringArray = getResources().getStringArray(R.array.hotcity);
+
+        ArrayList hotcity = new ArrayList<>();
+        for (int i = 0; i < stringArray.length; i++) {
+            hotcity.add(stringArray[i]);
+        }
+        mCityAdapter = new CityShowAdapter(ChoseCityActivity.this, cityModels,hotcity);
 
         mListviewAllCity.setAdapter(mCityAdapter);
         getLocation();

@@ -173,16 +173,4 @@
         <item name="android:textColor">@color/color88</item>
     </style>
 
-    <style name="text_hotcity_style">
-        <item name="android:padding">5dp</item>
-        <item name="android:textSize">@dimen/default_textsize16</item>
-        <item name="android:textColor">@color/color66</item>
-        <item name="android:background">@color/bg_gray</item>
-        <item name="android:layout_margin">@dimen/default_padding5</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:gravity">center</item>
-    </style>
-
 </resources>

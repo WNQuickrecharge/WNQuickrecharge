@@ -394,4 +394,14 @@
         <item>自贡</item>
         <item>遵义</item>
     </string-array>>
+    <string-array name="hotcity">
+        <item>深圳</item>
+        <item>惠州</item>
+        <item>东莞</item>
+        <item>北京</item>
+        <item>上海</item>
+        <item>广州</item>
+        <item>武汉</item>
+        <item>厦门</item>
+    </string-array>
 </resources>

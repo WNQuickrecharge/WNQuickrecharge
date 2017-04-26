@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge.adapter.city;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.adapter.OnListItemClickListener;
 import com.optimumnano.quickcharge.bean.CityModel;
 import com.optimumnano.quickcharge.utils.PinyinUtils;
 
@@ -27,6 +29,7 @@ import java.util.List;
  * 邮箱：dengchuanliang@optimumchina.com
  */
 public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final List<String> mHotcity;
     private Context mContext;
     private LayoutInflater mInflater;
     private List<CityModel> mCities;
@@ -43,9 +46,10 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_SECONED = 222;
     private static final int VIEW_TYPE_THREAD = 333;
 
-    public CityShowAdapter(Context context, @NonNull Collection<CityModel> cities) {
+    public CityShowAdapter(Context context, @NonNull Collection<CityModel> cities,List<String> hotcity) {
         mContext = context;
         mCities = (List<CityModel>) cities;
+        mHotcity = hotcity;
         mInflater = LayoutInflater.from(mContext);
         letterIndexes = new HashMap<>();
 
@@ -135,7 +139,16 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             });
+            ((LocateCityHolder) holder).hotcity.setLayoutManager(new GridLayoutManager(mContext,4));
 
+            ((LocateCityHolder) holder).hotcity.setAdapter(new hHotCityAdapter(R.layout.item_hotcity_list, mHotcity, new OnListItemClickListener() {
+                @Override
+                public void onItemClickListener(Object item, int position) {
+                    if (mOnCityClickListener != null) {
+                        mOnCityClickListener.onCityClick((String) item);
+                    }
+                }
+            }));
         } else {
             if (position >= 1) {
                 final CityModel cityModel = mCities.get(position - 1);
@@ -178,11 +191,13 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class LocateCityHolder extends RecyclerView.ViewHolder {
         LinearLayout layout_locate;
         TextView tv_located_city;
+        RecyclerView hotcity;
 
         public LocateCityHolder(View itemView) {
             super(itemView);
             layout_locate = (LinearLayout) itemView.findViewById(R.id.layout_locate);
             tv_located_city = (TextView) itemView.findViewById(R.id.tv_located_city);
+            hotcity = (RecyclerView) itemView.findViewById(R.id.hotcity_RecyclerView);
         }
     }
 
