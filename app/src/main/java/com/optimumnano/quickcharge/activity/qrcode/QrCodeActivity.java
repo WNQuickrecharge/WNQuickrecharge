@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +22,6 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
-import com.optimumnano.quickcharge.utils.StringUtils;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -60,6 +62,7 @@ public class QrCodeActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_qr_code);
         ButterKnife.bind(this);
 
@@ -89,6 +92,7 @@ public class QrCodeActivity extends BaseActivity {
                 }
             }
         });
+        hideBottomUIMenu();
 
     }
 
@@ -186,11 +190,13 @@ public class QrCodeActivity extends BaseActivity {
             case R.id.tv_submit:
                 //跳转支付
                 String gunno = etRecordNumber.getText().toString();
-                if (StringUtils.isEmpty(gunno)){
-                    gunno = "44030701004000008100600000000000";
+                if (TextUtils.isEmpty(gunno)) {
+//                    showToast("终端号不能为空");
+//                    return;
+                    gunno="440307010040000081006";
                 }
                 Bundle bundle = new Bundle();
-                bundle.putString("gun_no",gunno);
+                bundle.putString("gun_no",gunno+"00000000000");
                 skipActivity(OrderActivity.class,bundle);
                 break;
             case R.id.iv_deng:
@@ -202,7 +208,19 @@ public class QrCodeActivity extends BaseActivity {
         }
     }
 
-
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
 
 
 }

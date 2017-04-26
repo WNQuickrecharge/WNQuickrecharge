@@ -3,14 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SignalA/SignalA.iml" filepath="$PROJECT_DIR$/SignalA/SignalA.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SignalA/SignalA.iml" filepath="$PROJECT_DIR$/SignalA/SignalA.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SignalA.LongPolling/SignalA.LongPolling.iml" filepath="$PROJECT_DIR$/SignalA.LongPolling/SignalA.LongPolling.iml" />
       <module fileurl="file://$PROJECT_DIR$/SignalA.LongPolling/SignalA.LongPolling.iml" filepath="$PROJECT_DIR$/SignalA.LongPolling/SignalA.LongPolling.iml" />
       <module fileurl="file://$PROJECT_DIR$/WNQuickrecharge.iml" filepath="$PROJECT_DIR$/WNQuickrecharge.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/materialanimatedswitch/materialanimatedswitch.iml" filepath="$PROJECT_DIR$/materialanimatedswitch/materialanimatedswitch.iml" />
-      <module fileurl="file://$PROJECT_DIR$/parallel-basic-http-client/parallel-basic-http-client.iml" filepath="$PROJECT_DIR$/parallel-basic-http-client/parallel-basic-http-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/parallel-basic-http-client/parallel-basic-http-client.iml" filepath="$PROJECT_DIR$/parallel-basic-http-client/parallel-basic-http-client.iml" />
     </modules>
   </component>

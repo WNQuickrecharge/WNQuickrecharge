@@ -83,6 +83,9 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
+    public void setCanceableOutside(boolean flag){
+        mLoadingDialog.setCanceableOutside(flag);
+    }
 
     public void showLoading(String title){
         mLoadingDialog.show(title);

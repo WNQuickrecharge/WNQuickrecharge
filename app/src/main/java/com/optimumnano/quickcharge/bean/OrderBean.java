@@ -26,7 +26,7 @@ public class OrderBean implements Serializable{
     /** 充电桩类型 **/
     public String pile_type;
     /** 预支付金额 **/
-    public int frozen_cash;
+    public Double frozen_cash;
     /** 实际充电费用 **/
     public double charge_cash;
     /** 充电桩功率 **/

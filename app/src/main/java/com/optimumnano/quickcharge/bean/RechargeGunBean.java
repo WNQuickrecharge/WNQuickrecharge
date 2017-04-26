@@ -7,7 +7,7 @@ package com.optimumnano.quickcharge.bean;
 public class RechargeGunBean {
 //    {"service_cost":0,"pile_type":"直流","power":150,"elec_current":150,"price":2}
     public String gun_code;
-    public int service_cost;
+    public Double service_cost;
     public String pile_type;
     public int power;
     public int elec_current;

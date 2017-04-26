@@ -341,5 +341,26 @@ public class OrderManager {
         });
     }
 
+    public static void getOrderByOrderNo(String order_no,final  ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.getby_orderno);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("order_no",order_no);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+//        ha.put(" ask_no"," ask_no");//如果是移动补电车呼叫则添加该参数
+        params.setBodyContent(JSON.toJSONString(ha));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
 
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
 }

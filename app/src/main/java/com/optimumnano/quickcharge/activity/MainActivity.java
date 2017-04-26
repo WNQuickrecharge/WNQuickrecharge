@@ -598,4 +598,9 @@ public class MainActivity extends BaseActivity {
         AppManager.getAppManager().finishAllActivity();
         startActivity(new Intent(this, LoginActivity.class));
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void mainActivitySelectOrderTag(EventManager.mainActivitySelectOrderTag event) {
+       viewPager.setCurrentItem(1);
+        rg.check(R.id.main_rbOrder);
+    }
 }

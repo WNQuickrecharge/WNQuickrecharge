@@ -65,4 +65,11 @@ public class EventManager {
             this.bean = bean;
         }
     }
+    public static class mainActivitySelectOrderTag{
+//        public StationBean bean;
+//
+//        public mainActivitySelectOrderTag(StationBean bean) {
+//            this.bean = bean;
+//        }
+    }
 }

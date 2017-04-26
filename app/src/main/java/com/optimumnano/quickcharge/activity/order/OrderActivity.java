@@ -56,6 +56,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     MenuItem1 miPower;
     @Bind(R.id.order_miSimPrice)
     MenuItem1 miSimprice;
+    @Bind(R.id.order_miSimServicePrice)
+    MenuItem1 miSimServicePrice;
     @Bind(R.id.order_edtMoney)
     EditText edtMoney;
     @Bind(R.id.order_tvAllkwh)
@@ -66,7 +68,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private OrderManager orderManager = new OrderManager();
     private RechargeGunBean gunBean;
     private String orderNo = "";//订单号
-    private String gunNo = "67867678901234517";
+    private String gunNo = "";
     private String mAmount;
 
     private int payWay = PayDialog.pay_yue;//支付方式
@@ -143,7 +145,11 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!StringUtils.isEmpty(s.toString())){
                     if (tvAllkwh!=null) {
-                        tvAllkwh.setText(Double.parseDouble(s.toString())/gunBean.price+"kwh");
+                        double price = Double.parseDouble(s.toString()) / gunBean.price;
+
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String formatPrice = df.format(price);
+                        tvAllkwh.setText(formatPrice+"kwh");
                     }
                 }
                 else {
@@ -155,16 +161,19 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void initData(){
+        showLoading("获取枪状态中请稍等！");
         orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
             @Override
             public void onSuccess(RechargeGunBean returnContent) {
                 super.onSuccess(returnContent);
                 gunBean = returnContent;
                 loadData();
+                closeLoading();
             }
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                closeLoading();
                 showToast("获取失败，请检查终端号是否正确");
                 finish();
             }
@@ -176,6 +185,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         miElectric.setRightText(gunBean.elec_current+"A");
         miPower.setRightText(gunBean.power+"kwh");
         miSimprice.setRightText(gunBean.price+"元/kwh");
+        miSimServicePrice.setRightText(gunBean.service_cost+"元/kwh");
     }
     private void initDialog(){
         payDialog = new PayDialog(this);

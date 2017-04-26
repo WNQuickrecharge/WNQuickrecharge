@@ -1,7 +1,9 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
+import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.HttpApi;
@@ -115,7 +118,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
         dialog = new WaitRechargeDialog(this);
         if (orderStatus==4) {//充电中
-            showLoading();
+            showLoading("请求充电状态中");
         }
     }
 
@@ -200,8 +203,14 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             //结束充电
             else if (requestCode == STOPCHARGE){
                 LogUtil.i("充电结束");
-                //skipActivity(OrderDetlActivity.class,null);
-                finish();
+                showLoading("结束充电计算中，请稍等！");
+//                Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
+//                Bundle bundle=new Bundle();
+//                bundle.putString("order_no",orderNo);
+//                intent.putExtras(bundle);
+//                RechargeControlActivity.this.startActivity(intent);
+                //getOrderInfo(orderNo);
+
             }
             //充电进度查询
             else {
@@ -276,6 +285,37 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
 
     }
+    private void getOrderInfo(final String order_no) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                SystemClock.sleep(3000);
+                OrderManager.getOrderByOrderNo(order_no, new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                        String s = returnContent.toString();
+                        Intent intent=new Intent(RechargeControlActivity.this,OrderlistDetailtwoActivity.class);
+                        OrderBean orderBean = JSON.parseObject(s, OrderBean.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putSerializable("orderbean",orderBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                        showToast(msg);
+                        finish();
+                    }
+                });
+            }
+        }.start();
+
+    }
 
     private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
         @Override
@@ -304,15 +344,16 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
                     break;
                 case 3://
-                    dialog.cancelDialog();
+
                     tvStart.setVisibility(View.GONE);
                     tvStop.setVisibility(View.VISIBLE);
                     break;
                 case 4://充电中
+                    dialog.cancelDialog();
                     int soc = longConnectMessageBean.getSoc();
                     String time_remain = longConnectMessageBean.getTime_remain();
                     tvTime.setVisibility(View.VISIBLE);
-                    tvTime.setText("充电预计完成时间"+time_remain);
+                    tvTime.setText("预计充满还需"+time_remain+"分钟");
                     tvPersent.setText(soc+"%");
                     waveLoadingView.setWaveHeight(soc);
                     tvDescone.setText("正在充电中");
@@ -331,12 +372,31 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     tvDescTwo.setVisibility(View.INVISIBLE);
                     tvStart.setVisibility(View.GONE);
                     tvStop.setVisibility(View.GONE);
+                    tvTime.setVisibility(View.INVISIBLE);
                     String order_no = longConnectMessageBean.getOrder_no();
-                    int power_time = longConnectMessageBean.getPower_time();
-                    Double consume_money = longConnectMessageBean.getConsume_money();
-                    Double forzen_cash = longConnectMessageBean.getForzen_cash();
-                    Double back_cash = longConnectMessageBean.getBack_cash();
-
+//                    int power_time = longConnectMessageBean.getPower_time();
+//                    Double consume_money = longConnectMessageBean.getConsume_money();
+//                    Double forzen_cash = longConnectMessageBean.getForzen_cash();
+//                    Double back_cash = longConnectMessageBean.getBack_cash();
+                    //conn.Stop();
+//                    OrderManager.getOrderByOrderNo(orderNo, new ManagerCallback() {
+//                        @Override
+//                        public void onSuccess(Object returnContent) {
+//                            super.onSuccess(returnContent);
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(String msg) {
+//                            super.onFailure(msg);
+//                        }
+//                    });
+                    Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("order_no",order_no);
+                    intent.putExtras(bundle);
+                    RechargeControlActivity.this.startActivity(intent);
+                    finish();
                     break;
 
                 default:

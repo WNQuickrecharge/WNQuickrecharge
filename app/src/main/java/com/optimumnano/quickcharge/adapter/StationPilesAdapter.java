@@ -44,6 +44,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
         TextView pileNo=helper.getView(R.id.tv_station_item_pileNo);
         LinearLayout linearLayout=helper.getView(R.id.ll_gunList);
         ImageView imageView=helper.getView(R.id.gun_status_img);
+        String fristFreeGunNo="";
 
         for (int i=0;i<item.getGunList().size();i++) {
             View inflate = activity.getLayoutInflater().inflate(R.layout.itemview_station_pile_gun, null);
@@ -72,6 +73,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
 
             for (int i=0;i<item.getGunList().size();i++){
                 if (item.getGunList().get(i).getGunStatus()==PROMPTLY_CHARGE) {
+                    fristFreeGunNo=item.getGunList().get(i).getGun_code();
                     item.setStatus(PROMPTLY_CHARGE);
                     break;
                 }
@@ -85,14 +87,15 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
                 pileStatus.setTextColor(activity.getResources().getColor(R.color.white));
                 imageView.setImageResource(R.mipmap.cdzhuang01);
                 pileStatus.setClickable(true);
+                final String finalFristFreeGunNo = fristFreeGunNo;
                 pileStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(activity, OrderActivity.class);
                         Bundle bundle=new Bundle();
-//                        bundle.putString("gun_no",item.get);
-//                        intent.putExtras(bundle);
-//                        activity.startActivity();
+                        bundle.putString("gun_no", finalFristFreeGunNo);
+                        intent.putExtras(bundle);
+                        activity.startActivity(intent);
                     }
                 });
                 break;
