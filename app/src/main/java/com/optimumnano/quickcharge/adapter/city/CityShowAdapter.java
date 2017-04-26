@@ -22,10 +22,10 @@ import java.util.List;
 
 
 /**
- * 作者：凌章 on 16/9/5 17:06
- * 邮箱：lilingzhang@longshine.com
+ * 作者：邓传亮 on 2017/4/26 10:33
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
  */
-
 public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mInflater;
@@ -116,18 +116,19 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((LocateCityHolder) holder).layout_locate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (localState == CurrentCityState.FAILED) {
+                    if (localState == CurrentCityState.FAILED || localState == CurrentCityState.LOCATING) {
                         if (mOnLocateClickListener != null)
                             mOnLocateClickListener.onLocateClick();
                     } else if (localState == CurrentCityState.SUCCESS) {
                         if (mOnCityClickListener != null) {
-                            for (CityModel city : mCities) {
+                            /*for (CityModel city : mCities) {
                                 if (TextUtils.equals(localCity, city.cityName)) {
                                     mOnCityClickListener.onCityClick(city);
                                     return;
                                 }
                             }
-                            mOnCityClickListener.onCityClick(null);
+                            mOnCityClickListener.onCityClick(null);*/
+                            mOnCityClickListener.onCityClick(localCity);
                         }
                     }
                 }
@@ -149,7 +150,7 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View v) {
                         if (mOnCityClickListener != null) {
-                            mOnCityClickListener.onCityClick(cityModel);
+                            mOnCityClickListener.onCityClick(cityModel.cityName);
                         }
                     }
                 });

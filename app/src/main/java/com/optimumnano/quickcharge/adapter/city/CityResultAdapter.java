@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * description：
- * creater：hyf
- * date：2016/11/19.
+ * 作者：邓传亮 on 2017/4/26 10:33
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
  */
 
 
@@ -122,7 +122,7 @@ public class CityResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             @Override
             public void onClick(View v) {
                 if (mOnCityClickListener != null) {
-                    mOnCityClickListener.onCityClick(cityModel);
+                    mOnCityClickListener.onCityClick(cityModel.cityName);
                 }
             }
         });

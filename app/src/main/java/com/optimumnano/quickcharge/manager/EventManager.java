@@ -65,4 +65,11 @@ public class EventManager {
             this.bean = bean;
         }
     }
+
+    public static class changeCity {
+        public String cityname;
+        public changeCity(String cityname) {
+            this.cityname=cityname;
+        }
+    }
 }

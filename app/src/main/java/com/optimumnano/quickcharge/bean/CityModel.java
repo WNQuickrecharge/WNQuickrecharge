@@ -13,7 +13,6 @@ public class CityModel implements Serializable{
 
     public String cityName;
     public String cityCode;
-    //    private String shortName;
     public String pinyin;
     public String letter;
     public String positionLon;
@@ -28,5 +27,13 @@ public class CityModel implements Serializable{
         this.cityName = cityName;
         this.positionLat = positionLat;
         this.positionLon = positionLon;
+    }
+
+
+    public CityModel(String cityName, String positionLon, String positionLat, String pinyin) {
+        this.cityName = cityName;
+        this.positionLat = positionLat;
+        this.positionLon = positionLon;
+        this.pinyin = pinyin;
     }
 }

@@ -27,12 +27,14 @@ import com.optimumnano.quickcharge.adapter.city.OnCityClickListener;
 import com.optimumnano.quickcharge.adapter.city.OnLocateClickListener;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.CityModel;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.SideLetterBar;
 
-import org.xutils.common.util.LogUtil;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+/**
+ * 作者：邓传亮 on 2017/4/26 10:33
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
+ */
 
 public class ChoseCityActivity extends BaseActivity {
 
@@ -64,8 +72,6 @@ public class ChoseCityActivity extends BaseActivity {
     private List<CityModel> cityModels;//接口返回所有城市的结果集
     private List<CityModel> resultModels;//搜索结果集
 
-    CityModel mCityModel;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,28 +92,71 @@ public class ChoseCityActivity extends BaseActivity {
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        //   EventBus.getDefault().unregister(this);
     }
 
 
     private void initialize() {
+        mIvSearchClear.setVisibility(View.GONE);
         resultModels = new ArrayList<>();
         mListviewAllCity.setLayoutManager(new LinearLayoutManager(ChoseCityActivity.this));
         mListviewSearchResult.setLayoutManager(new LinearLayoutManager(ChoseCityActivity.this));
         mResultAdapter = new CityResultAdapter(ChoseCityActivity.this, resultModels);
         mListviewSearchResult.setAdapter(mResultAdapter);
-        //TODO this.mCityPresenter.initialize();
         initSearch();//搜索功能
-        resultModels.add(new CityModel("东莞","103.565","23.51"));
-        initRecycleCityList(resultModels);
+        CityModel dongguan1 = new CityModel("阿拉斯加", "103.565", "23.51","alasijia");
+        CityModel dongguan11 = new CityModel("阿拉斯加", "103.565", "23.51","alasijia");
+        CityModel dongguan2 = new CityModel("北京", "103.565", "23.51","beijing");
+        CityModel dongguan22 = new CityModel("北京", "103.565", "23.51","beijing");
+        CityModel dongguan3 = new CityModel("长春", "103.565", "23.51","changchun");
+        CityModel dongguan33 = new CityModel("长春", "103.565", "23.51","changchun");
+        CityModel dongguan4 = new CityModel("东莞", "103.565", "23.51","dongguan");
+        CityModel dongguan43 = new CityModel("东莞", "103.565", "23.51","dongguan");
+        CityModel dongguan5 = new CityModel("鄂尔多斯", "103.565", "23.51","eerduosi");
+        CityModel dongguan6 = new CityModel("福州", "103.565", "23.51","fuzhou");
+        CityModel dongguan7 = new CityModel("广州", "103.565", "23.51","guagnzhou");
+        CityModel dongguan8 = new CityModel("杭州", "103.565", "23.51","hangzhou");
+        CityModel dongguan9 = new CityModel("吉安", "103.565", "23.51","jian");
+        CityModel shenzhen10 = new CityModel("开封", "103.565", "23.51","kaifeng");
+        ArrayList testcitys = new ArrayList<>();
+        testcitys.add(dongguan1);
+        testcitys.add(dongguan1);
+        testcitys.add(dongguan11);
+        testcitys.add(dongguan2);
+        testcitys.add(dongguan22);
+        testcitys.add(dongguan3);
+        testcitys.add(dongguan33);
+        testcitys.add(dongguan4);
+        testcitys.add(dongguan43);
+        testcitys.add(dongguan5);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan6);
+        testcitys.add(dongguan7);
+        testcitys.add(dongguan8);
+        testcitys.add(dongguan9);
+        testcitys.add(dongguan9);
+        testcitys.add(dongguan9);
+        testcitys.add(shenzhen10);
+        testcitys.add(shenzhen10);
+        testcitys.add(shenzhen10);
+        testcitys.add(shenzhen10);
+        initRecycleCityList(testcitys);
 
     }
 
     public void initSearch() {
         mResultAdapter.setOnCityClickListener(new OnCityClickListener() {
             @Override
-            public void onCityClick(CityModel cityModel) {
-                //TODO EventBus.getDefault().post(new EventManager.changeCity(cityModel.getCityName()));
+            public void onCityClick(String cityname) {
+                EventBus.getDefault().post(new EventManager.changeCity(cityname));
+                SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
                 AppManager.getAppManager().finishActivity();
             }
         });
@@ -128,9 +177,11 @@ public class ChoseCityActivity extends BaseActivity {
                     mIvSearchClear.setVisibility(View.GONE);
                     mEmptyView.setVisibility(View.GONE);
                     mListviewSearchResult.setVisibility(View.GONE);
+                    mListviewAllCity.setVisibility(View.VISIBLE);
                 } else {
                     mIvSearchClear.setVisibility(View.VISIBLE);
                     mListviewSearchResult.setVisibility(View.VISIBLE);
+                    mListviewAllCity.setVisibility(View.GONE);
                     searchCity(keyword);
                     if (resultModels == null || resultModels.size() == 0) {
                         mEmptyView.setVisibility(View.VISIBLE);
@@ -160,7 +211,6 @@ public class ChoseCityActivity extends BaseActivity {
         mCityAdapter = new CityShowAdapter(ChoseCityActivity.this, cityModels);
 
         mListviewAllCity.setAdapter(mCityAdapter);
-        //    mCityAdapter.updateLocateState(CurrentCityState.SUCCESS,mCityModel.getCityName());
         getLocation();
         mCityAdapter.setOnLocateClickListener(new OnLocateClickListener() {
             @Override
@@ -170,12 +220,12 @@ public class ChoseCityActivity extends BaseActivity {
         });
         mCityAdapter.setOnCityClickListener(new OnCityClickListener() {
             @Override
-            public void onCityClick(CityModel cityModel) {
-                if (cityModel == null) {
+            public void onCityClick(String cityname) {
+                if (cityname == null) {
                     showToast("选择城市出错了");
                 } else {
-                    SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY_CODE,"0");
-                    //TODO EventBus.getDefault().post(new EventManager.changeCity(cityModel.getCityName()));
+                    SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
+                    EventBus.getDefault().post(new EventManager.changeCity(cityname));
                     AppManager.getAppManager().finishActivity();
                 }
             }
@@ -202,6 +252,7 @@ public class ChoseCityActivity extends BaseActivity {
         mIvSearchClear.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.GONE);
         mListviewSearchResult.setVisibility(View.GONE);
+        mListviewAllCity.setVisibility(View.VISIBLE);
     }
 
     public void setLocationSuccess(String city) {
@@ -212,8 +263,6 @@ public class ChoseCityActivity extends BaseActivity {
 
     //定位
     public void getLocation() {
-//        String lat = mActivity.getSPString("lat");
-//        String lon = mActivity.getSPString("lon");
         String lat = SharedPreferencesUtil.getValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,"");
         String lon = SharedPreferencesUtil.getValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,"");
 
@@ -221,11 +270,17 @@ public class ChoseCityActivity extends BaseActivity {
             LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
             getLocationAddress(latLng);
         } else {
-            LogUtil.i("获取当前位置失败");
+            showToast("获取当前位置失败");
         }
     }
 
     private void getLocationAddress(LatLng latLng) {
+        if (!Tool.isConnectingToInternet()){
+            showToast("网络连接异常");
+            mCityAdapter.updateLocateState(CurrentCityState.FAILED,"");
+            return;
+        }
+
         final GeoCoder mSearch = GeoCoder.newInstance();
         mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
         mSearch.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
@@ -237,12 +292,14 @@ public class ChoseCityActivity extends BaseActivity {
             @Override
             public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
                 if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+                    showToast("获取当前位置失败");
                     return;
                 }
-                int i = result.getAddress().indexOf("省");
-                int j = result.getAddress().indexOf("市");
-                String str = result.getAddress().substring(i + 1, j + 1);
-                mCityAdapter.updateLocateState(CurrentCityState.SUCCESS, str);
+//                int i = result.getAddress().indexOf("省");
+//                int j = result.getAddress().indexOf("市");
+//                String str = result.getAddress().substring(i + 1, j + 1);
+                String city = result.getAddressDetail().city;
+                mCityAdapter.updateLocateState(CurrentCityState.SUCCESS, city);
                 mSearch.destroy();
             }
         });
