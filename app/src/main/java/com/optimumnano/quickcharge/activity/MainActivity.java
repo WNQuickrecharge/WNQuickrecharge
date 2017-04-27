@@ -127,8 +127,8 @@ public class MainActivity extends BaseActivity {
             initNavi();
         }
 
-
-        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
+        if (TextUtils.isEmpty(PushManager.getInstance().getClientid(MainActivity.this)))
+            PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
     }
 
     private boolean initDirs() {

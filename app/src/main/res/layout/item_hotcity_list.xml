@@ -4,7 +4,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/default_padding5"
-    android:padding="@dimen/dimen_10"
+    android:paddingTop="@dimen/dimen_10"
+    android:paddingBottom="@dimen/dimen_10"
+    android:paddingRight="@dimen/dimen_15"
+    android:paddingLeft="@dimen/dimen_15"
     android:textColor="@color/color66"
     android:id="@+id/tv_hotcity_name"
     android:background="@color/bg_gray">

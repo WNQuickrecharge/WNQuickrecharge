@@ -118,6 +118,7 @@ public class ChoseCityActivity extends BaseActivity {
         mResultAdapter.setOnCityClickListener(new OnCityClickListener() {
             @Override
             public void onCityClick(String cityname) {
+                mResultAdapter.setOnCityClickListener(null);
                 EventBus.getDefault().post(new EventManager.changeCity(cityname));
                 SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
                 AppManager.getAppManager().finishActivity();
@@ -190,6 +191,7 @@ public class ChoseCityActivity extends BaseActivity {
         mCityAdapter.setOnCityClickListener(new OnCityClickListener() {
             @Override
             public void onCityClick(String cityname) {
+                mCityAdapter.setOnCityClickListener(null);
                 if (cityname == null) {
                     showToast("选择城市出错了");
                 } else {

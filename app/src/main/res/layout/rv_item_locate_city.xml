@@ -58,6 +58,7 @@
             android:text="热门城市"/>
 
         <android.support.v7.widget.RecyclerView
+            android:layout_marginLeft="@dimen/dimen_16"
             android:id="@+id/hotcity_RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

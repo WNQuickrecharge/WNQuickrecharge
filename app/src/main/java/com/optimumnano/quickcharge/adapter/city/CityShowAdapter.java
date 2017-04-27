@@ -139,7 +139,7 @@ public class CityShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             });
-            ((LocateCityHolder) holder).hotcity.setLayoutManager(new GridLayoutManager(mContext,4));
+            ((LocateCityHolder) holder).hotcity.setLayoutManager(new GridLayoutManager(mContext,3));
 
             ((LocateCityHolder) holder).hotcity.setAdapter(new hHotCityAdapter(R.layout.item_hotcity_list, mHotcity, new OnListItemClickListener() {
                 @Override
