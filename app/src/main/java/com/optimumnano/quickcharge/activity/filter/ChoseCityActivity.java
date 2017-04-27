@@ -122,7 +122,6 @@ public class ChoseCityActivity extends BaseActivity {
                 mResultAdapter.setOnCityClickListener(null);
                 EventBus.getDefault().post(new EventManager.changeCity(cityname));
 //                SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
-                mHelper.updateCity(cityname);
                 AppManager.getAppManager().finishActivity();
             }
         });
@@ -210,7 +209,6 @@ public class ChoseCityActivity extends BaseActivity {
                     showToast("选择城市出错了");
                 } else {
 //                    SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
-                    mHelper.updateCity(cityname);
                     EventBus.getDefault().post(new EventManager.changeCity(cityname));
                     AppManager.getAppManager().finishActivity();
                 }

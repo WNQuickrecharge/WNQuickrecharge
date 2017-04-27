@@ -404,7 +404,8 @@ public class RechargeFragment extends BaseFragment {
             if (flag){
                 flag=false;
                 EventBus.getDefault().post(new EventManager.getCurrentCity(city));
-                mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
+                if (TextUtils.isEmpty(mHelper.getCity()))
+                    mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
             }
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
