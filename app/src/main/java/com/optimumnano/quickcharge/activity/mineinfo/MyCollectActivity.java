@@ -177,11 +177,6 @@ public class MyCollectActivity extends BaseActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        location.start();
-    }
 
     @Override
     protected void onDestroy() {

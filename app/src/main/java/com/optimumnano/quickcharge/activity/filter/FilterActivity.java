@@ -32,6 +32,7 @@ public class FilterActivity extends BaseActivity {
     SeekBar mKv;
     @Bind(R.id.tv_submit)
     TextView tvSubmit;
+    private String mCurCity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,11 @@ public class FilterActivity extends BaseActivity {
         mHelper.setKV(mKv.getProgress() * 6 + 60);
         mHelper.setShowDistance(mKm.getProgress() * 6 + 60);
         showToast(getString(R.string.edit_sai_xuan_success));
+
+        if (mCurCity!=null){
+            mHelper.updateCity(mCurCity);
+            EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
+        }
     }
 
     @OnClick(R.id.ll_location)
@@ -135,8 +141,8 @@ public class FilterActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeCity(EventManager.changeCity event) {
-        tvLocation.setText(event.cityname);
-        EventBus.getDefault().post(new EventManager.getCurrentCity(event.cityname));
+        mCurCity = event.cityname;
+        tvLocation.setText(mCurCity);
         logtesti("changeCity "+event.cityname);
     }
 }

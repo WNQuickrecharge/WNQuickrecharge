@@ -74,15 +74,20 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         if (holder.mItem.max_price==holder.mItem.min_price) {
             holder.waveLine1.setVisibility(View.GONE);
             holder.tvElectricPricMax.setVisibility(View.GONE);
+            holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
         }else {
+            holder.waveLine1.setVisibility(View.VISIBLE);
+            holder.tvElectricPricMax.setVisibility(View.VISIBLE);
             holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
             holder.tvElectricPricMax.setText(holder.mItem.max_price+"");
-
         }
         if (holder.mItem.max_service==holder.mItem.min_service) {
             holder.waveLine2.setVisibility(View.GONE);
             holder.tvServicePricMax.setVisibility(View.GONE);
+            holder.tvServicePricMin.setText(holder.mItem.min_service+"");
         }else {
+            holder.waveLine2.setVisibility(View.VISIBLE);
+            holder.tvServicePricMax.setVisibility(View.VISIBLE);
             holder.tvServicePricMin.setText(holder.mItem.min_service+"");
             holder.tvServicePricMax.setText(holder.mItem.max_service+"");
         }
