@@ -99,6 +99,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             public void onSuccess(Object returnContent, int requestCode) {
                 super.onSuccess(returnContent, requestCode);
                 if (requestCode==-1) {
+                    closeLoading();
                     showToast("注册成功,请登陆");
                     startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
                     finish();
@@ -107,6 +108,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onFailure(String msg) {
+                closeLoading();
                 super.onFailure(msg);
             }
         });
