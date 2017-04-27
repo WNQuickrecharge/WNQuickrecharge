@@ -76,6 +76,16 @@
             app:rightTextColor="@color/color33"
             app:showtvRight="true"
             android:layout_marginTop="@dimen/default_padding"/>
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/order_miSimServicePrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tvLeftText="服务费单价"
+                app:tvRightText="0元/kwh"
+                app:LeftTextColor="@color/color66"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                android:layout_marginTop="@dimen/default_padding"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

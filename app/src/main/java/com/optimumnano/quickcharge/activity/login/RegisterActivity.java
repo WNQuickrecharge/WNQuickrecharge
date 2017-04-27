@@ -1,8 +1,8 @@
 package com.optimumnano.quickcharge.activity.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -14,8 +14,6 @@ import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
-
-import org.json.JSONException;
 
 import static com.optimumnano.quickcharge.R.id.register_edtConfirmPwd;
 
@@ -59,6 +57,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 getChecknum();
                 break;
             case R.id.register_tvRegister:
+                showLoading();
                 register();
                 break;
             default:
@@ -95,7 +94,25 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         String finalPassword = MD5Utils.encodeMD5(Md5Pasword);
 
 
-        loginManager.register(edtPhone.getText().toString(), finalPassword, edtChecknum.getText().toString(), requestCallback, 1);
+        loginManager.register(edtPhone.getText().toString(), finalPassword, edtChecknum.getText().toString(), new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent, int requestCode) {
+                super.onSuccess(returnContent, requestCode);
+                if (requestCode==-1) {
+                    closeLoading();
+                    showToast("注册成功,请登陆");
+                    startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                closeLoading();
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
     }
 
     private void getChecknum() {
@@ -109,7 +126,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         tvChecknum.setClickable(false);
-        startCountTime(60*1000,1000);
+        startCountTime(5*60*1000,1000);
         loginManager.getCheckNum(mobile,"RegisterCApp",requestCallback,0);
     }
 

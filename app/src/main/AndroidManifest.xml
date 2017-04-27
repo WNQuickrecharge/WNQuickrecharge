@@ -92,11 +92,16 @@
             android:process=":pushservice"></service>
         <service android:name=".service.MyIntentService" />
 
-        <activity android:name=".activity.login.RegisterActivity" />
-        <activity android:name=".activity.login.ForgetPwdActivity" />
-        <activity android:name=".activity.selectAddress.SelectAddressActivity" />
-        <activity android:name=".activity.order.OrderlistDetailtwoActivity" />
-        <activity android:name=".activity.qrcode.QrCodeActivity" />
+        <activity android:name=".activity.login.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.login.ForgetPwdActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.selectAddress.SelectAddressActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.order.OrderlistDetailtwoActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.qrcode.QrCodeActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.setting.SettingActivity"
             android:screenOrientation="portrait" />

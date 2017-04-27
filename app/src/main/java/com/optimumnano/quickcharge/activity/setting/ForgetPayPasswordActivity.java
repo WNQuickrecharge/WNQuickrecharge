@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.login.ForgetPwdActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
@@ -76,7 +75,7 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
             return;
         }
         tv_code.setClickable(false);
-        startCountTime(60*1000,1000);
+        startCountTime(5*60*1000,1000);
         manager.getCheckNum(phone,"ForgetPayPwdCApp",requestCallback,0);
     }
 

@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 style="@style/EditTextStyle"
                 android:hint="@string/edt_checknum"
-                android:inputType="textPassword"
+                android:inputType="number"
+                android:maxLength="6"
                 android:padding="12dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -93,6 +94,7 @@
                 style="@style/EditTextStyle"
                 android:maxLength="16"
                 android:hint="@string/pwd_hint"
+                android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>
@@ -118,6 +120,7 @@
                 style="@style/EditTextStyle"
                 android:maxLength="16"
                 android:hint="@string/pwd_hint"
+                android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>

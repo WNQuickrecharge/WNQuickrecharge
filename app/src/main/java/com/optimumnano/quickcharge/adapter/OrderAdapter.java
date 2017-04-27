@@ -3,8 +3,8 @@ package com.optimumnano.quickcharge.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -51,6 +51,19 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
     @Override
     protected void convert(BaseViewHolder helper, final OrderBean item,final int position) {
         TextView tvStatus = helper.getView(R.id.order_status);
+        ImageView imageView=helper.getView(R.id.order_iv);
+        switch (item.charge_from) {// 1固定桩 2 移动补电车
+            case 1://
+                imageView.setImageResource(R.mipmap.chongdianzhuang);
+            break;
+            case 2:
+                imageView.setImageResource(R.mipmap.budianche);
+            break;
+
+            default :
+
+            break;
+        }
         switch (item.order_status){
             case 1:
                 helper.setText(R.id.order_status,"已取消");

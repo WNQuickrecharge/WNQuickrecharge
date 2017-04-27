@@ -18,13 +18,13 @@ public class LongConnectMessageBean {
 
     private String order_no;
     private int power_time;
-    private int charge_soc;
+    public int charge_soc;
     private Double forzen_cash;
     private Double back_cash;
     private int status;
     private int signalr_msg_type;
     private int soc;
-    private int time_remain;
+    private String time_remain;
     private int total_power_time;
     private Double consume_money;
 
@@ -40,11 +40,11 @@ public class LongConnectMessageBean {
         this.soc = soc;
     }
 
-    public int getTime_remain() {
+    public String getTime_remain() {
         return time_remain;
     }
 
-    public void setTime_remain(int time_remain) {
+    public void setTime_remain(String time_remain) {
         this.time_remain = time_remain;
     }
 

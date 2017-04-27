@@ -1,6 +1,8 @@
 package com.optimumnano.quickcharge.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.bean.PileBean;
 
 import java.util.List;
@@ -34,13 +37,14 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, PileBean item) {
+    protected void convert(BaseViewHolder helper, final PileBean item) {
         TextView eletricPrice=helper.getView(R.id.tv_electric_price);
         TextView servicePrice=helper.getView(R.id.tv_service_price);
         Button pileStatus=helper.getView(R.id.pile_status_operation);
         TextView pileNo=helper.getView(R.id.tv_station_item_pileNo);
         LinearLayout linearLayout=helper.getView(R.id.ll_gunList);
         ImageView imageView=helper.getView(R.id.gun_status_img);
+        String fristFreeGunNo="";
 
         for (int i=0;i<item.getGunList().size();i++) {
             View inflate = activity.getLayoutInflater().inflate(R.layout.itemview_station_pile_gun, null);
@@ -50,8 +54,8 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
 
         }
         if (item.getGunList().size()>0) {
-            eletricPrice.setText(Html.fromHtml(activity.getString(R.string.station_electric_price,"¥ "+item.getGunList().get(0).getPrice()+"/kw.h")));
-            servicePrice.setText(Html.fromHtml(activity.getString(R.string.station_service_price,"¥ "+item.getGunList().get(0).getServiceCharge()+"/kw.h")));
+            eletricPrice.setText(Html.fromHtml(activity.getString(R.string.station_electric_price,"¥ "+item.getGunList().get(0).max_price+"/kw.h")));
+            servicePrice.setText(Html.fromHtml(activity.getString(R.string.station_service_price,"¥ "+item.getGunList().get(0).max_service+"/kw.h")));
             pileNo.setText(item.getGunList().get(0).getPileNo());
             for (int i=0;i<item.getGunList().size();i++){
                 if (!(item.getGunList().get(i).getGunStatus()==CHARGEING)) {//所有的枪处于正在充电,桩才是正在充电状态
@@ -69,6 +73,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
 
             for (int i=0;i<item.getGunList().size();i++){
                 if (item.getGunList().get(i).getGunStatus()==PROMPTLY_CHARGE) {
+                    fristFreeGunNo=item.getGunList().get(i).getGun_code();
                     item.setStatus(PROMPTLY_CHARGE);
                     break;
                 }
@@ -81,6 +86,18 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
                 pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.main_color));
                 pileStatus.setTextColor(activity.getResources().getColor(R.color.white));
                 imageView.setImageResource(R.mipmap.cdzhuang01);
+                pileStatus.setClickable(true);
+                final String finalFristFreeGunNo = fristFreeGunNo;
+                pileStatus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(activity, OrderActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("gun_no", finalFristFreeGunNo);
+                        intent.putExtras(bundle);
+                        activity.startActivity(intent);
+                    }
+                });
                 break;
 
             case CHARGEING:
@@ -88,12 +105,14 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean,BaseViewHolde
                 pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.white));
                 pileStatus.setTextColor(activity.getResources().getColor(R.color.color99));
                 imageView.setImageResource(R.mipmap.cdzhuang02);
+                pileStatus.setClickable(false);
                 break;
             case MAINTAIN:
                 pileStatus.setText("正在维护");
                 pileStatus.setBackgroundColor(activity.getResources().getColor(R.color.white));
                 pileStatus.setTextColor(activity.getResources().getColor(R.color.colorCC));
                 imageView.setImageResource(R.mipmap.cdzhuang03);
+                pileStatus.setClickable(false);
                 break;
             default:
                 break;
