@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity.mineinfo;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +46,6 @@ public class MyCollectActivity extends BaseActivity {
     private BaiduNavigation navigation;
     private WTMBaiduLocation location;
     private LatLng myPoint;
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,13 +76,13 @@ public class MyCollectActivity extends BaseActivity {
                 }
                 stationBeanList.addAll(list);
                 dataChanged();
-                hideLoading();
+                closeLoading();
             }
 
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
-                hideLoading();
+                closeLoading();
                 showToast(msg);
             }
         });
@@ -105,7 +103,6 @@ public class MyCollectActivity extends BaseActivity {
                 location.stopLocation();
             }
         });
-        progressDialog=new ProgressDialog(this);
         tvLeft.setVisibility(View.VISIBLE);
         myDialog=new MyDialog(this,R.style.MyDialog);
         myDialog.setCancelable(true);
@@ -175,7 +172,7 @@ public class MyCollectActivity extends BaseActivity {
         navigation.setOnRoutePlanDoneListener(new BaiduNavigation.OnRoutePlanDoneListener() {
             @Override
             public void onRoutePlanDone() {
-                hideLoading();
+                closeLoading();
             }
         });
     }
@@ -193,17 +190,5 @@ public class MyCollectActivity extends BaseActivity {
         location.stopLocation();
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
 
-    }
-
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 }
