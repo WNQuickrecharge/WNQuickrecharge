@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.activity.setting;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +41,6 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     private ImageView oneImag, twoImag, threeImag, fourImag, fiveImag, sixImag;
     private MyDialog myDialog;
     private StringBuffer mStringBuffer;
-    private ProgressDialog progressDialog;
     private TextView mTitleView;
     EditText mPayPassword;
     private String payPassword;
@@ -69,7 +67,6 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         fiveImag = (ImageView) findViewById(R.id.iv_five_img);
         sixImag = (ImageView) findViewById(R.id.iv_six_img);
         myDialog = new MyDialog(this, R.style.MyDialog);
-        progressDialog = new ProgressDialog(this);
         myDialog.setCancelable(false);
         EventBus.getDefault().register(this);
         mStringBuffer = new StringBuffer();
@@ -108,7 +105,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
                 @Override
                 public void onSuccess(Object returnContent) {
                     super.onSuccess(returnContent);
-                    hideLoading();
+                    closeLoading();
                     JSONObject dataJson = null;
                     try {
                         dataJson = new JSONObject(returnContent.toString());
@@ -129,7 +126,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
 
                 @Override
                 public void onFailure(String msg) {
-                    hideLoading();
+                    closeLoading();
                     showToast(msg);
                 }
             });
@@ -209,24 +206,11 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         s.delete(0, s.length());
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-
-    }
-
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPayPasswordWrong(EventManager.onInPutWrongOldPayPassword event) {
 
-        hideLoading();
+        closeLoading();
         myDialog.setTitle("支付提醒");
         myDialog.setMessage("密码输入错误,请重试!");
         myDialog.setYesOnclickListener("重新输入", new MyDialog.onYesOnclickListener() {
@@ -285,7 +269,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-            hideLoading();
+            closeLoading();
             showToast("支付密码修改成功!");
             finish();
         }
@@ -293,7 +277,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onFailure(String msg) {
             super.onFailure(msg);
-            hideLoading();
+            closeLoading();
             showToast(msg);
         }
     }

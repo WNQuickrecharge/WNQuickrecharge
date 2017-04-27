@@ -1,6 +1,5 @@
 package com.optimumnano.quickcharge.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,7 +46,6 @@ public class StationActivity extends BaseActivity {
     private WTMBaiduLocation location;
     private LatLng myPoint;
     private BaiduNavigation navigation;
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +75,6 @@ public class StationActivity extends BaseActivity {
         super.initViews();
         setTitle(station.getStationName());
         tvLeft.setVisibility(View.VISIBLE);
-        progressDialog=new ProgressDialog(this);
         stationName= (TextView) findViewById(R.id.station_detail_name);
         stationAddress= (TextView) findViewById(R.id.station_detail_address);
         serviceName= (TextView) findViewById(R.id.station_detail_serviceName);
@@ -102,7 +99,7 @@ public class StationActivity extends BaseActivity {
                 navigation.setOnRoutePlanDoneListener(new BaiduNavigation.OnRoutePlanDoneListener() {
                     @Override
                     public void onRoutePlanDone() {
-                        hideLoading();
+                        closeLoading();
                     }
                 });
             }
@@ -187,17 +184,5 @@ public class StationActivity extends BaseActivity {
         location.onLocationDestroy();
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
 
-    }
-
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 }
