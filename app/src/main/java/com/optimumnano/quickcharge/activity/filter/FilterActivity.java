@@ -9,7 +9,12 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.weijing.materialanimatedswitch.MaterialAnimatedSwitch;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +32,7 @@ public class FilterActivity extends BaseActivity {
     SeekBar mKv;
     @Bind(R.id.tv_submit)
     TextView tvSubmit;
+    private String mCurCity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,8 @@ public class FilterActivity extends BaseActivity {
         ButterKnife.bind(this);
         initViews();
         setTitle(getString(R.string.select_title));
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
 
         if (!TextUtils.isEmpty(mHelper.getCity())) {
             tvLocation.setText(mHelper.getCity());
@@ -111,10 +119,30 @@ public class FilterActivity extends BaseActivity {
         mHelper.setKV(mKv.getProgress() * 6 + 60);
         mHelper.setShowDistance(mKm.getProgress() * 6 + 60);
         showToast(getString(R.string.edit_sai_xuan_success));
+
+        if (mCurCity!=null){
+            mHelper.updateCity(mCurCity);
+            EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
+        }
     }
 
     @OnClick(R.id.ll_location)
     public void onViewLocation() {
-        showToast(getString(R.string.now_no_support));
+//        showToast(getString(R.string.now_no_support));
+        skipActivity(ChoseCityActivity.class,null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeCity(EventManager.changeCity event) {
+        mCurCity = event.cityname;
+        tvLocation.setText(mCurCity);
+        logtesti("changeCity "+event.cityname);
     }
 }
