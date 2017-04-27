@@ -126,7 +126,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         tvChecknum.setClickable(false);
-        startCountTime(60*1000,1000);
+        startCountTime(5*60*1000,1000);
         loginManager.getCheckNum(mobile,"RegisterCApp",requestCallback,0);
     }
 

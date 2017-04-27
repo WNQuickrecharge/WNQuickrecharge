@@ -102,7 +102,7 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         tvChecknum.setClickable(false);
-        startCountTime(60*1000,1000);
+        startCountTime(5*60*1000,1000);
         loginManager.getCheckNum(mobile,"ForgetPwdCApp",requestCallback,0);
     }
 
