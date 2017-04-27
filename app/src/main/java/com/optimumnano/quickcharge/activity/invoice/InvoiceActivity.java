@@ -35,6 +35,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private int month;
     private double allMoney = 0;//发票金额
 
+    private List<Integer> ids = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,8 +141,13 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.invoice_tvNext:
+                String allid = "";
+                for (int x:ids){
+                    allid= allid+x+",";
+                }
                 Bundle bundle = new Bundle();
                 bundle.putDouble("money",allMoney);
+                bundle.putString("ids",allid);
                 skipActivity(InvoiceTypeActivity.class,bundle);
                 break;
             case R.id.title_tvRight:
@@ -148,13 +155,13 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
-
     @Override
     public void onCheck(int position) {
         if (group.get(position).isChecked){
             group.get(position).isChecked = false;
             for (int i = 0;i<child.get(position).size();i++){
                 child.get(position).get(i).isChecked = false;
+                ids.add(child.get(position).get(i).C_ChargeOrderId);
             }
             allMoney = subMoney(allMoney,group.get(position).money);
         }
@@ -162,6 +169,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             group.get(position).isChecked = true;
             for (int i = 0;i<child.get(position).size();i++){
                 child.get(position).get(i).isChecked = true;
+                ids.remove(child.get(position).get(i).C_ChargeOrderId);
             }
             allMoney = addMoney(allMoney,group.get(position).money);
         }
