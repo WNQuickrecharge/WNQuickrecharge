@@ -103,7 +103,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public void initViews() {
         super.initViews();
         setTitle("充电控制");
-        setRightTitle("使用帮助");
+        setRightTitle("");
+        //setRightTitle("使用帮助");
         waveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         tvPersent = (TextView) findViewById(R.id.rechargecon_tvPersent);
         tvDescone = (TextView) findViewById(R.id.rechargecon_tvDescone);

@@ -44,11 +44,13 @@ import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
+import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 
@@ -177,7 +179,7 @@ public class RechargeFragment extends BaseFragment {
                     mBsdialog.setContentView(mPopView);
                     mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
                             setBackgroundResource(android.R.color.transparent);
-                    ViewHolder holder = new ViewHolder(mPopView);
+                    final ViewHolder holder = new ViewHolder(mPopView);
 
                     final Point infoUtil = (Point) bundle.getSerializable("info");
                     holder.mItem = infoUtil;
@@ -212,7 +214,25 @@ public class RechargeFragment extends BaseFragment {
                         }
                     });
 
+                    holder.tvFav.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
+                                @Override
+                                public void onSuccess(Object returnContent) {
+                                    super.onSuccess(returnContent);
+                                    ToastUtil.showToast(getActivity(),"收藏成功！");
+                                }
 
+                                @Override
+                                public void onFailure(String msg) {
+                                    super.onFailure(msg);
+                                    ToastUtil.showToast(getActivity(),msg);
+
+                                }
+                            });
+                        }
+                    });
                     mBsdialog.show();
                 }
 
