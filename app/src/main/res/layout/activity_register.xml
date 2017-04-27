@@ -94,6 +94,7 @@
                 style="@style/EditTextStyle"
                 android:maxLength="16"
                 android:hint="@string/pwd_hint"
+                android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>
@@ -119,6 +120,7 @@
                 style="@style/EditTextStyle"
                 android:maxLength="16"
                 android:hint="@string/pwd_hint"
+                android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:inputType="textPassword"
                 android:padding="@dimen/dp_10"/>
         </LinearLayout>
