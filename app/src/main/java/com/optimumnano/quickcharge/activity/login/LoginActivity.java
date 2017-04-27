@@ -4,9 +4,7 @@ package com.optimumnano.quickcharge.activity.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
 import android.widget.CheckBox;
@@ -46,7 +44,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_USER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvLogin,tvReg,tvForgetpwd,tvUserType;
     private EditText edtUsername,edtPwd;
     private ProgressDialog progressDialog;
@@ -97,7 +95,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         tvReg.setOnClickListener(this);
         tvForgetpwd.setOnClickListener(this);
         tvUserType.setOnClickListener(this);
-        tvUserType.addTextChangedListener(this);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -130,8 +127,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.tv_login_type_textView:
                 if ("企业".equals(tvUserType.getText().toString())){
                     tvUserType.setText("个人");
+                    tvReg.setVisibility(View.INVISIBLE);
+                    tvLogin.setText("企业登录");
+
                 }else if ("个人".equals(tvUserType.getText().toString())){
                     tvUserType.setText("企业");
+                    tvReg.setVisibility(View.VISIBLE);
+                    tvLogin.setText("个人登录");
                 }
                 break;
             default:
@@ -139,28 +141,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        LogUtil.i("变化后的字符串是:"+s);
-        String type = s.toString();
-        if ("企业".equals(type)){
-            tvReg.setVisibility(View.INVISIBLE);
-            tvLogin.setText("企业登录");
-        }else if ("个人".equals(type)){
-            tvReg.setVisibility(View.VISIBLE);
-            tvLogin.setText("个人登录");
-        }
-    }
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//    }
+//
+//    @Override
+//    public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//        LogUtil.i("变化后的字符串是:"+s);
+//        String type = s.toString();
+//        if ("企业".equals(type)){
+//            tvReg.setVisibility(View.INVISIBLE);
+//            tvLogin.setText("企业登录");
+//        }else if ("个人".equals(type)){
+//            tvReg.setVisibility(View.VISIBLE);
+//            tvLogin.setText("个人登录");
+//        }
+//    }
 
     class Manager extends ManagerCallback{
         @Override

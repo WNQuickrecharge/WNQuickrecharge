@@ -199,7 +199,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                 //startCountTime(1000*1000,10*1000);
                 //dialog.cancelDialog();
                 tvStart.setVisibility(View.GONE);
-                tvStop.setVisibility(View.VISIBLE);
+                //tvStop.setVisibility(View.VISIBLE);
             }
             //结束充电
             else if (requestCode == STOPCHARGE){

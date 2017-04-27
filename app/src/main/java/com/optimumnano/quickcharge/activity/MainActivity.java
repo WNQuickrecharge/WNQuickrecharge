@@ -47,6 +47,8 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -596,6 +598,7 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
         AppManager.getAppManager().finishAllActivity();
+        SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
         startActivity(new Intent(this, LoginActivity.class));
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
