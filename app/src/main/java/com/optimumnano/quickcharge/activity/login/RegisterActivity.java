@@ -110,6 +110,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             public void onFailure(String msg) {
                 closeLoading();
                 super.onFailure(msg);
+                showToast(msg);
             }
         });
     }
