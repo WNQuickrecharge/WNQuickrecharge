@@ -52,7 +52,7 @@ public class LoginManager {
     /**
      * 注册
      */
-    public void register(String mobile,String pwd,String checkNum, final ManagerCallback callback,final int httpCode){
+    public void register(String mobile,String pwd,String checkNum, final ManagerCallback callback){
 
         String url = HttpApi.getInstance().getUrl(HttpApi.register_url);
         RequestParams params= new RequestParams(url);
