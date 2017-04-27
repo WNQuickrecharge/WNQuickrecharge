@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -19,6 +22,8 @@ import com.optimumnano.quickcharge.views.MenuItem1;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,7 +44,6 @@ public class MineWalletAct extends BaseActivity {
     TextView mPayway;
     @Bind(R.id.act_mineinfo_wallet_mi_mycard)
     MenuItem1 mMycard;
-    private ModifyUserInformationManager mManager;
     private PayWayDialog mPayWayDialog;
     private int mChosePayway =PayDialog.pay_yue;//默认余额支付
 
@@ -60,8 +64,23 @@ public class MineWalletAct extends BaseActivity {
     }
 
     private void initData() {
-        mManager = new ModifyUserInformationManager();
         mPayWayDialog = new PayWayDialog(MineWalletAct.this);
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                mBalance.setRightText(df.format(restCash));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override
@@ -72,8 +91,6 @@ public class MineWalletAct extends BaseActivity {
         setTitle("我的钱包");
         mChosePayway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
         PayWayViewHelp.showPayWayStatus(MineWalletAct.this,mPayway,mChosePayway);
-        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
-        mBalance.setRightText(balance);
     }
 
     @Override

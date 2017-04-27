@@ -209,6 +209,7 @@ public class RechargeFragment extends BaseFragment {
                             OnNaviEvent event = new OnNaviEvent();
                             event.end = infoUtil;
                             EventBus.getDefault().post(event);
+                            mBsdialog.dismiss();
                         }
                     });
                     holder.tvCancel.setOnClickListener(new View.OnClickListener() {
@@ -226,6 +227,7 @@ public class RechargeFragment extends BaseFragment {
                                 public void onSuccess(Object returnContent) {
                                     super.onSuccess(returnContent);
                                     ToastUtil.showToast(getActivity(),"收藏成功！");
+                                    mBsdialog.dismiss();
                                 }
 
                                 @Override
