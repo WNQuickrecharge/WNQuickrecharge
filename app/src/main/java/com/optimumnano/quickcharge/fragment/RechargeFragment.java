@@ -55,13 +55,12 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.util.LogUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.optimumnano.quickcharge.adapter.DistDetailAcapter.DoubleDP;
 
 /**
  * 充电
@@ -94,6 +93,7 @@ public class RechargeFragment extends BaseFragment {
     private PreferencesHelper mHelper;
     private List<Point> mPiont;
     boolean isFirstLoc = true; // 是否首次定位
+    boolean flag = true; // 城市地址只保存一次
     private BottomSheetDialog mBsdialog;
     private View mPopView;
 
@@ -180,7 +180,11 @@ public class RechargeFragment extends BaseFragment {
                 ViewHolder holder = new ViewHolder(mPopView);
                 holder.mItem = infoUtil;
                 holder.tvAddress.setText(holder.mItem.StationName);
-                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+//                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
+                DecimalFormat decimalFormat=new DecimalFormat("0.00");
+                String format = decimalFormat.format(holder.mItem.distance);
+                holder.tvDistance.setText(format+"km");
+
                 holder.tvDetailAddress.setText(holder.mItem.Address);
                 holder.tvPhonenum.setText(holder.mItem.Phone);
                 String sb = "电费:1.5元/度,服务费:0.5元/度";
@@ -369,7 +373,11 @@ public class RechargeFragment extends BaseFragment {
             String city = location.getCity();
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, location.getLatitude() + "");
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, location.getLongitude() + "");
-            EventBus.getDefault().post(new EventManager.getCurrentCity(city));
+            if (flag){
+                flag=false;
+                EventBus.getDefault().post(new EventManager.getCurrentCity(city));
+                mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
+            }
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 
@@ -393,13 +401,13 @@ public class RechargeFragment extends BaseFragment {
 
             if (location.getLocType() == BDLocation.TypeGpsLocation) {
                 sb.append(location.getAddrStr());    //获取地址信息
-                mHelper.updateCity(location.getCity());
+//                mHelper.updateCity(location.getCity());//只保存一次,防止修改城市时,被当前定位城市覆盖
                 mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 // 网络定位结果
                 sb.append(location.getAddrStr());    //获取地址信息
-                mHelper.updateCity(location.getCity());
+//                mHelper.updateCity(location.getCity());//只保存一次,防止修改城市时,被当前定位城市覆盖
                 mHelper.setLocation(location.getLongitude(), location.getLatitude());
                 initPoint();
             }

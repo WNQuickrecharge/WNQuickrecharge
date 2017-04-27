@@ -21,6 +21,8 @@ public class WalletBillDetailAct extends BaseActivity {
 
     @Bind(R.id.act_bill_detail_tv_amount)
     TextView mAmount;
+    @Bind(R.id.act_bill_detail_tv_amount_title)
+    TextView mAmountTitle;
     @Bind(R.id.act_bill_detail_tv_type)
     TextView mType;
     @Bind(R.id.act_bill_detail_tv_time)
@@ -56,8 +58,10 @@ public class WalletBillDetailAct extends BaseActivity {
             mRlAdvamount.setVisibility(View.GONE);
             mRlBackamount.setVisibility(View.GONE);
             mType.setText("收入");
+            mAmountTitle.setText("余额充值");
         }else if (billBean.DealType==1){
             mType.setText("支出");
+            mAmountTitle.setText("充电金额");
             mAdvanceAmount.setText(billBean.AdvanceCash + "");
             mBackamount.setText(billBean.BackCash + "");
         }

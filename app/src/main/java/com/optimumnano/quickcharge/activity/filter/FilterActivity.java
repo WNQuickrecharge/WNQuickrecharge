@@ -136,6 +136,7 @@ public class FilterActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeCity(EventManager.changeCity event) {
         tvLocation.setText(event.cityname);
+        EventBus.getDefault().post(new EventManager.getCurrentCity(event.cityname));
         logtesti("changeCity "+event.cityname);
     }
 }

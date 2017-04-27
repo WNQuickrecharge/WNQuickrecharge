@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -25,13 +26,12 @@ import com.optimumnano.quickcharge.adapter.city.CityShowAdapter;
 import com.optimumnano.quickcharge.adapter.city.CurrentCityState;
 import com.optimumnano.quickcharge.adapter.city.OnCityClickListener;
 import com.optimumnano.quickcharge.adapter.city.OnLocateClickListener;
+import com.optimumnano.quickcharge.baiduUtil.WTMBaiduLocation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.CityModel;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.PinyinUtils;
-import com.optimumnano.quickcharge.utils.SPConstant;
-import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.SideLetterBar;
 
@@ -72,6 +72,7 @@ public class ChoseCityActivity extends BaseActivity {
     private CityResultAdapter mResultAdapter;//搜索结果列表
     private List<CityModel> cityModels;//接口返回所有城市的结果集
     private List<CityModel> resultModels;//搜索结果集
+    private WTMBaiduLocation mBaiduLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +121,8 @@ public class ChoseCityActivity extends BaseActivity {
             public void onCityClick(String cityname) {
                 mResultAdapter.setOnCityClickListener(null);
                 EventBus.getDefault().post(new EventManager.changeCity(cityname));
-                SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
+//                SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
+                mHelper.updateCity(cityname);
                 AppManager.getAppManager().finishActivity();
             }
         });
@@ -179,8 +181,20 @@ public class ChoseCityActivity extends BaseActivity {
             hotcity.add(stringArray[i]);
         }
         mCityAdapter = new CityShowAdapter(ChoseCityActivity.this, cityModels,hotcity);
-
         mListviewAllCity.setAdapter(mCityAdapter);
+        mBaiduLocation = new WTMBaiduLocation(ChoseCityActivity.this);
+        mBaiduLocation.setLocationListner(new WTMBaiduLocation.OnLocationReceivedListner() {
+            @Override
+            public void onLocationReceived(final BDLocation bdLocation) {
+                mBaiduLocation.stopLocation();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCityAdapter.updateLocateState(CurrentCityState.SUCCESS, bdLocation.getCity());
+                    }
+                });
+            }
+        });
         getLocation();
         mCityAdapter.setOnLocateClickListener(new OnLocateClickListener() {
             @Override
@@ -195,7 +209,8 @@ public class ChoseCityActivity extends BaseActivity {
                 if (cityname == null) {
                     showToast("选择城市出错了");
                 } else {
-                    SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
+//                    SharedPreferencesUtil.putValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_CITY,cityname);
+                    mHelper.updateCity(cityname);
                     EventBus.getDefault().post(new EventManager.changeCity(cityname));
                     AppManager.getAppManager().finishActivity();
                 }
@@ -242,15 +257,12 @@ public class ChoseCityActivity extends BaseActivity {
 
     //定位
     public void getLocation() {
-        String lat = SharedPreferencesUtil.getValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LAT,"");
-        String lon = SharedPreferencesUtil.getValue(SPConstant.SP_CITY,SPConstant.KEY_USERINFO_CURRENT_LON,"");
-
-        if (!lat.equals("") && !lon.equals("")) {
-            LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
-            getLocationAddress(latLng);
-        } else {
-            showToast("获取当前位置失败");
+        if (!Tool.isConnectingToInternet()){
+            showToast("网络连接异常");
+            mCityAdapter.updateLocateState(CurrentCityState.FAILED,"");
+            return;
         }
+        mBaiduLocation.start();
     }
 
     private void getLocationAddress(LatLng latLng) {

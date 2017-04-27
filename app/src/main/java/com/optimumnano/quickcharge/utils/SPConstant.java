@@ -29,10 +29,9 @@ public interface SPConstant {
     //String KEY_USERINFO_PAYPASSWORD="userinfo_pay_password";
     String KEY_USERINFO_IS_REMEMBER="userinfo_is_remember";
     String KEY_USERINFO_PASSWORD="userinfo_password";
-    String KEY_USERINFO_CURRENT_CITY="current_city";
+//    String KEY_USERINFO_CURRENT_CITY="current_city";
     String KEY_USERINFO_CURRENT_LAT="lat";
     String KEY_USERINFO_CURRENT_LON="lon";
-    String KEY_USERINFO_CURRENT_CITY_CODE="citycode";
     String KEY_USERINFO_USER_ID="id";
 
 }

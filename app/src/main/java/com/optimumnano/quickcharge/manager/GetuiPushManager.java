@@ -11,6 +11,7 @@ import org.xutils.http.RequestParams;
 
 import java.util.HashMap;
 
+import static com.optimumnano.quickcharge.MyApplication.getuiflag;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
@@ -22,7 +23,13 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
  */
 
 public class GetuiPushManager {
-    public static void setGetuiRegisterid(String registerId,final ManagerCallback callback){
+
+    public static void setGetuiRegisterid(String registerId, final ManagerCallback callback){
+        if (getuiflag){
+            return;
+        }
+        getuiflag=true;
+
         String url = HttpApi.getInstance().getUrl(HttpApi.set_registerid_url);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
