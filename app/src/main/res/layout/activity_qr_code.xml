@@ -44,6 +44,7 @@
                 android:layout_marginTop="@dimen/default_padding20"
                 android:background="@drawable/sp_edit_number"
                 android:gravity="center"
+                android:inputType="number"
                 android:hint="@string/please_input_number"
                 android:paddingBottom="@dimen/dimen_8"
                 android:paddingTop="@dimen/dimen_8"
