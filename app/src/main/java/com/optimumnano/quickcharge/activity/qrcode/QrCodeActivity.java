@@ -190,9 +190,9 @@ public class QrCodeActivity extends BaseActivity {
                 //跳转支付
                 String gunno = etRecordNumber.getText().toString();
                 if (TextUtils.isEmpty(gunno)) {
-                    showToast("终端号不能为空");
-                    return;
-                    //gunno="440307010040000081006";
+//                    showToast("终端号不能为空");
+//                    return;
+                    gunno="440307010040000081006";
                 }
                 Bundle bundle = new Bundle();
                 bundle.putString("gun_no",gunno+"00000000000");

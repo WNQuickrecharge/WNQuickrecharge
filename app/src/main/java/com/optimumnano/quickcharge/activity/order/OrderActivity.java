@@ -272,6 +272,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                         payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo,sign);
                         payDialog.setStatus(0);
                         payDialog.setPayway(payWay);
+                        payDialog.setPayResultMoney(Double.parseDouble(edtMoney.getText().toString()));
                         payDialog.show();
                         break;
 
