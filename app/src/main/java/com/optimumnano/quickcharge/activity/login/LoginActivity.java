@@ -1,9 +1,9 @@
 package com.optimumnano.quickcharge.activity.login;
 
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -47,7 +47,6 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvLogin,tvReg,tvForgetpwd,tvUserType;
     private EditText edtUsername,edtPwd;
-    private ProgressDialog progressDialog;
     private int userType=1;
     private CheckBox checkBox;
     private String pwdKey = "mfwnydgiyutjyg";
@@ -56,7 +55,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        progressDialog=new ProgressDialog(this);
         initViews();
         initListener();
     }
@@ -110,7 +108,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 String password = edtPwd.getText().toString();
                 String Md5Password = MD5Utils.encodeMD5(password);
                 String finalPassword = MD5Utils.encodeMD5(Md5Password);
-                showLoading();
+                showLoading("登陆中！");
                 if ("企业登录".equals(tvLogin.getText().toString())){
                     userType=3;
                 }else if ("个人登录".equals(tvLogin.getText().toString())){
@@ -209,42 +207,44 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
-            showToast("登陆成功!");
+
             LogUtil.i("Cookie=="+SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
-            hideLoading();
-            finish();
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    SystemClock.sleep(1500);
+                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                    closeLoading();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showToast("登陆成功!");
+                        }
+                    });
+                    finish();
+                }
+            }.start();
+
         }
 
         @Override
         public void onFailure(String msg) {
             super.onFailure(msg);
-            hideLoading();
+            closeLoading();
             showToast(msg);
         }
 
         @Override
         public void onFailure(String msg, int requestCode) {
             super.onFailure(msg, requestCode);
-            hideLoading();
+            closeLoading();
             showToast(msg);
         }
 
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
 
-    }
-
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 
     @Override
     public void onBackPressed() {

@@ -445,7 +445,8 @@ public class MainActivity extends BaseActivity {
 
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
+            //routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,BNRoutePlanNode.CoordinateType.WGS84, mPoint);
         }
     }
 
@@ -460,6 +461,22 @@ public class MainActivity extends BaseActivity {
         BNRoutePlanNode eNode = null;
         sNode = new BNRoutePlanNode(mHelper.getLocation().lng, mHelper.getLocation().lat, "我的位置", null, coType);
         eNode = new BNRoutePlanNode(mPoint.Lng, mPoint.Lat, mPoint.StationName, null, coType);
+        if (sNode != null && eNode != null) {
+            List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
+            list.add(sNode);
+            list.add(eNode);
+            BaiduNaviManager.getInstance().launchNavigator(this, list, 1, true, new DemoRoutePlanListener(sNode));
+        }
+    }
+    private void routeplanToNavi(BNRoutePlanNode.CoordinateType startPonitCoType,BNRoutePlanNode.CoordinateType endPointCoType ,Point mPoint) {
+        //mCoordinateType = coType;
+        if (!hasInitSuccess) {
+            Log.d("TAG", "还未初始化!");
+        }
+        BNRoutePlanNode sNode = null;
+        BNRoutePlanNode eNode = null;
+        sNode = new BNRoutePlanNode(mHelper.getLocation().lng, mHelper.getLocation().lat, "我的位置", null, startPonitCoType);
+        eNode = new BNRoutePlanNode(mPoint.Lng, mPoint.Lat, mPoint.StationName, null, endPointCoType);
         if (sNode != null && eNode != null) {
             List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
             list.add(sNode);
