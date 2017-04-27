@@ -128,24 +128,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
-                GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-                    @Override
-                    public void onSuccess(Object returnContent) {
-                        super.onSuccess(returnContent);
-                        String s = returnContent.toString();
-                        UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                        double restCash = userAccount.getRestCash();
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        String format = df.format(restCash);
-                        mTvBalance.setText(format);
-
-                    }
-
-                    @Override
-                    public void onFailure(String msg) {
-                        super.onFailure(msg);
-                    }
-                });
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                String format = df.format(restCash);
+                mTvBalance.setText(format);
             }
 
             @Override
