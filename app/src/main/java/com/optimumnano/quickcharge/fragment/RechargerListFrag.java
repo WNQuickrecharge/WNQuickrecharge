@@ -21,7 +21,6 @@ import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -110,6 +109,11 @@ public class RechargerListFrag extends BaseFragment{
         rvDcInList.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvCityDist.setAdapter(mAdapterRegion);
         rvDcInList.setAdapter(mAdapterDist);
+    }
+
+    @Override
+    protected void lazyLoad() {
+
     }
 
 

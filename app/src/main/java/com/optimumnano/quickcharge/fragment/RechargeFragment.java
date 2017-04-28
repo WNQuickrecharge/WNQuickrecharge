@@ -249,6 +249,11 @@ public class RechargeFragment extends BaseFragment {
 
     }
 
+    @Override
+    protected void lazyLoad() {
+
+    }
+
 
     public class ViewHolder {
 

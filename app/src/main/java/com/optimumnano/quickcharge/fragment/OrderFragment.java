@@ -75,7 +75,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        initData();
+        //initData();
     }
 
     private void initData(){
@@ -155,6 +155,11 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onLoadMore() {
         pageSize ++;
+        initData();
+    }
+
+    @Override
+    protected void lazyLoad() {
         initData();
     }
 }
