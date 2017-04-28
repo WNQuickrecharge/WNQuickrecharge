@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.manager.InvoiceManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,8 +40,17 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     EditText etEmail;
     @Bind(R.id.activity_invoice_type)
     LinearLayout activityInvoiceType;
+    @Bind(R.id.invoice_type_etName)
+    EditText etName;
+    @Bind(R.id.invoice_type_etPhone)
+    EditText etPhone;
+    @Bind(R.id.invoice_type_etAddress)
+    EditText etAddress;
 
-    private double allMoney;
+    private double allMoney;//发票金额
+    private String ids;//所有的订单id
+    private double orderMoney = 0;//订单金额
+    private InvoiceManager manager = new InvoiceManager();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +63,12 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
 
     private void getExtras() {
         allMoney = getIntent().getExtras().getDouble("money");
+        ids = getIntent().getExtras().getString("ids");
+        //暂定高于500没有邮费
+        if (allMoney<500){
+            orderMoney = 10;
+        }
+
     }
 
     @Override
@@ -93,7 +110,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.invoice_type_tvNext:
                 Bundle bundle = new Bundle();
-                bundle.putDouble("money", allMoney);
+                bundle.putDouble("money", orderMoney);
                 skipActivity(PayCenterActivity.class, bundle);
                 break;
             case R.id.ll_go_to_more:
@@ -101,5 +118,21 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                 break;
         }
 
+    }
+    //提交订单
+    private void addInviceOrder(){
+        manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
+                etName.getText().toString(), etAddress.getText().toString(), etPhone.getText().toString(), 1
+                , new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                    }
+                });
     }
 }
