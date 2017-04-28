@@ -52,18 +52,22 @@ public class FilterActivity extends BaseActivity {
 
         switchMsg.check(mHelper.isShowOnlyFree());
         mKm.setProgress(mHelper.showDistance() - 10);
-        mKv.setProgress(mHelper.showKV() - 60);
+        if (mHelper.showKV()<240) {
+            mKv.setProgress((mHelper.showKV() / 60 - 1) * 10);
+        }else {
+            mKv.setProgress((mHelper.showKV() / 60 - 2) * 10);
+        }
 
-        switchMsg.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+/*        switchMsg.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(int id, boolean isChecked) {
                 mHelper.setIsShowOnlyFree(isChecked);
             }
-        });
+        });*/
         mKm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress % 10 > 0) {
+               /* if (progress % 10 > 0) {
                     if (progress % 10 >= 5) {
                         seekBar.setProgress(progress / 10 * 10 + 10);
                     } else {
@@ -71,7 +75,7 @@ public class FilterActivity extends BaseActivity {
                     }
                 } else {
 //                    mHelper.setShowDistance(progress + 10);
-                }
+                }*/
             }
 
             @Override
@@ -80,13 +84,21 @@ public class FilterActivity extends BaseActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                if (progress % 10 > 0) {
+                    if (progress % 10 >= 5) {
+                        seekBar.setProgress(progress / 10 * 10 + 10);
+                    } else {
+                        seekBar.setProgress(progress / 10 * 10);
+                    }
+                }
             }
         });
 
         mKv.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress % 10 > 0) {
+                /* if (progress % 10 > 0) {
                     if (progress % 10 >= 5) {
                         seekBar.setProgress(progress / 10 * 10 + 10);
                     } else {
@@ -94,7 +106,7 @@ public class FilterActivity extends BaseActivity {
                     }
                 } else {
 //                    mHelper.setKV(progress * 6 + 60);
-                }
+                }*/
             }
 
             @Override
@@ -103,6 +115,14 @@ public class FilterActivity extends BaseActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                if (progress % 10 > 0) {
+                    if (progress % 10 >= 5) {
+                        seekBar.setProgress(progress / 10 * 10 + 10);
+                    } else {
+                        seekBar.setProgress(progress / 10 * 10);
+                    }
+                }
             }
         });
 
@@ -116,14 +136,20 @@ public class FilterActivity extends BaseActivity {
     @OnClick(R.id.tv_submit)
     public void onViewClicked() {
         mHelper.setIsShowOnlyFree(switchMsg.isChecked());
-        mHelper.setKV(mKv.getProgress() * 6 + 60);
-        mHelper.setShowDistance(mKm.getProgress() * 6 + 60);
+        if (mKv.getProgress()/10<2){
+            mHelper.setKV((mKv.getProgress()/10 +1) * 60);
+        }else {
+            mHelper.setKV((mKv.getProgress()/10 +2) * 60);
+        }
+        mHelper.setShowDistance(mKm.getProgress() +10);
         showToast(getString(R.string.edit_sai_xuan_success));
 
         if (mCurCity!=null){
             mHelper.updateCity(mCurCity);
             EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
         }
+
+        finish();
     }
 
     @OnClick(R.id.ll_location)
