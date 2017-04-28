@@ -9,6 +9,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.BillBean;
 
+import java.text.DecimalFormat;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -53,7 +55,8 @@ public class WalletBillDetailAct extends BaseActivity {
 
     private void initData() {
         BillBean billBean = (BillBean) getIntent().getSerializableExtra("BillBean");
-        mAmount.setText(billBean.Cash + "");
+        DecimalFormat df = new DecimalFormat("0.00");
+        mAmount.setText(df.format(billBean.Cash));
         if (billBean.DealType==2){
             mRlAdvamount.setVisibility(View.GONE);
             mRlBackamount.setVisibility(View.GONE);
