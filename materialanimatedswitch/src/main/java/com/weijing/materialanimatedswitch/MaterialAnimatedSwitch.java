@@ -222,7 +222,7 @@ public class MaterialAnimatedSwitch extends View {
         this.onCheckedChangeListener = onCheckedChangeListener;
     }
 
-    public void check(boolean value) {
+ /*   public void check(boolean value) {
         if (value) {
             if (actualState.equals(MaterialAnimatedSwitchState.PRESS)) {
                 actualState = MaterialAnimatedSwitchState.RELEASE;
@@ -231,6 +231,20 @@ public class MaterialAnimatedSwitch extends View {
         } else {
             if (actualState.equals(MaterialAnimatedSwitchState.RELEASE)) {
                 actualState = MaterialAnimatedSwitchState.PRESS;
+                setState(actualState);
+            }
+        }
+    }*/
+
+    public void check(boolean value) {
+        if (value) {
+            if (actualState.equals(MaterialAnimatedSwitchState.RELEASE)) {
+                actualState = MaterialAnimatedSwitchState.PRESS;
+                setState(actualState);
+            }
+        } else {
+            if (actualState.equals(MaterialAnimatedSwitchState.PRESS)) {
+                actualState = MaterialAnimatedSwitchState.RELEASE;
                 setState(actualState);
             }
         }

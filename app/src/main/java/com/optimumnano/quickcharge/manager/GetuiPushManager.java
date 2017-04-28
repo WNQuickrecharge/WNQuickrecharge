@@ -28,7 +28,6 @@ public class GetuiPushManager {
         if (getuiflag){
             return;
         }
-        getuiflag=true;
 
         String url = HttpApi.getInstance().getUrl(HttpApi.set_registerid_url);
         RequestParams params= new RequestParams(url);
@@ -43,6 +42,7 @@ public class GetuiPushManager {
             public void onSuccess(String result, int httpCode) {
                 super.onSuccess(result, httpCode);
                 callback.onSuccess(result);
+                getuiflag=true;//成功后不再上传GetuiRegisterid
             }
 
             @Override
