@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:checked="true"
+            android:enabled="false"
             android:focusable="false"
             android:layout_marginRight="@dimen/default_lrmargin"
             android:button="@drawable/selector_invoice_checkbox"/>

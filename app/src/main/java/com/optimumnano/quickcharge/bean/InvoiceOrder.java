@@ -15,6 +15,20 @@ public class InvoiceOrder {
 //    TradeNum 交易流水号
 //    ConsumeMonth 消费月份
 //    Address 充电桩地址
+
+//    "Id": 78,
+//            "B_UserAccountId": 9,
+//            "C_ChargeOrderId": 437,
+//            "C_ChargeOrderNum": "C20170425215421001",
+//            "ConsumeCash": 50.00,
+//            "BeforeCash": 100.00,
+//            "AfterCash": 50.00,
+//            "PayType": 0,
+//            "TradeNum": "1",
+//            "ConsumeMonth": 4,
+//            "Address": "深圳市坪山新区兰景北路68号",
+//            "EndTime": "2017-04-26 08:58:00",
+//            "ChargeFrom": 1
     public  int Id;
     public  int B_UserAccountId;
     public  int C_ChargeOrderId;
@@ -27,4 +41,5 @@ public class InvoiceOrder {
     public  int ConsumeMonth;
     public  String Address;
     public boolean isChecked;
+    public String EndTime;
 }

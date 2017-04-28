@@ -221,6 +221,7 @@
                         android:text="收件姓名" />
 
                     <EditText
+                        android:id="@+id/invoice_type_etName"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -245,6 +246,7 @@
                         android:text="收件电话" />
 
                     <EditText
+                        android:id="@+id/invoice_type_etPhone"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -269,6 +271,7 @@
                         android:text="所在地区" />
 
                     <EditText
+                        android:id="@+id/invoice_type_etArea"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -293,6 +296,7 @@
                         android:text="详细地址" />
 
                     <EditText
+                        android:id="@+id/invoice_type_etAddress"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

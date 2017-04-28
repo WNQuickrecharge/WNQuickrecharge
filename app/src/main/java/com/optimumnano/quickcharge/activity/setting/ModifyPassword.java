@@ -13,8 +13,6 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
-import org.xutils.common.util.LogUtil;
-
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -51,7 +49,10 @@ public class ModifyPassword extends BaseActivity implements View.OnClickListener
             String oldPwd = oldPassword.getText().toString();
             String newPwd = newPassword.getText().toString();
             String confirmPwd = confirmPassword.getText().toString();
-
+            if (newPwd.length()<6||confirmPwd.length()<6) {
+                showToast("密码长度不能小于6位");
+                return;
+            }
             if (!TextUtils.equals(newPwd,confirmPwd)){
                 showToast("两次密码不一致,请重新输入");
                 return;
