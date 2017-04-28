@@ -50,9 +50,9 @@ public class CollectionStationAdapter extends BaseQuickAdapter<StationBean,BaseV
         stationName.setText(item.getStationName());
         stationAddress.setText(item.getAddress());
         distance.setText(item.getDistance()+"");
-        String price = item.getMin_price() + "~" + item.getMax_price();
+        String price=(item.getMin_price()==item.getMax_price())?item.getMin_price()+"":(item.getMin_price() + "~" + item.getMax_price());
         electricPrice.setText(price);
-        String service = item.getMin_service() + "~" + item.getMax_service();
+        String service = (item.getMin_service()==item.getMax_service())?item.getMin_service()+"":item.getMin_service() + "~" + item.getMax_service();
         servicePrice.setText(service);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

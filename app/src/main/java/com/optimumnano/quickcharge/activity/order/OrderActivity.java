@@ -206,6 +206,11 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         miPower.setRightText(gunBean.power+"kwh");
         miSimprice.setRightText(gunBean.price+"元/kwh");
         miSimServicePrice.setRightText(gunBean.service_cost+"元/kwh");
+        double price = Double.parseDouble(edtMoney.getText().toString()) / (gunBean.price+gunBean.service_cost);
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formatPrice = df.format(price);
+        tvAllkwh.setText(formatPrice+"kwh");
     }
     private void initDialog(){
         payDialog = new PayDialog(this);

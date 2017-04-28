@@ -72,7 +72,7 @@
             app:showivLeft="true"
             app:showivRight="true"
             app:showtvRight="true"
-            app:tvLeftText="余额（0.00）" />
+            app:tvLeftText="余额" />
 
         <TextView
             android:layout_width="match_parent"

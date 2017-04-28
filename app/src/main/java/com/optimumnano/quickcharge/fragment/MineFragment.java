@@ -122,23 +122,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                DecimalFormat df = new DecimalFormat("0.00");
-                String format = df.format(restCash);
-                mTvBalance.setText(format);
-            }
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
     }
 
     @Override
@@ -161,5 +145,26 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserInfoChangeEvent(EventManager.onUserInfoChangeEvent event) {
         initUserInfo();
+    }
+
+    @Override
+    protected void lazyLoad() {
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                String format = df.format(restCash);
+                mTvBalance.setText(format);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 }

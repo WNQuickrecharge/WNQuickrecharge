@@ -111,6 +111,11 @@ public class RechargerListFrag extends BaseFragment{
         rvDcInList.setAdapter(mAdapterDist);
     }
 
+    @Override
+    protected void lazyLoad() {
+
+    }
+
 
     public class TypeSelect {
         public String dist;

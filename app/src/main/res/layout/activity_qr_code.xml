@@ -30,8 +30,7 @@
         <LinearLayout
             android:id="@+id/ll_sence_two_Top"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="invisible">
 
@@ -66,77 +65,89 @@
                 android:textSize="@dimen/sp_16" />
         </LinearLayout>
 
-
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/iv_zhongduanhao_icon"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="70dp"
+            android:layout_marginLeft="@dimen/dimen_20"
+            android:layout_marginRight="@dimen/dimen_20"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:background="@mipmap/zhongduanhao"/>
 
-            <LinearLayout
-                android:id="@+id/ll_button"
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/default_padding">
+
+            <RadioGroup
+                android:id="@+id/rg_buttom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/default_padding">
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/default_padding30"
+                android:layout_marginRight="@dimen/default_padding30"
+                android:background="@drawable/shape_maincolor_kuang"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <RadioGroup
-                    android:id="@+id/rg_buttom"
-                    android:layout_width="match_parent"
+
+                <RadioButton
+                    android:id="@+id/rb_qr"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/default_padding30"
-                    android:layout_marginRight="@dimen/default_padding30"
-                    android:background="@drawable/shape_maincolor_kuang"
+                    android:layout_weight="1"
+                    android:background="@drawable/sl_rb_state"
+                    android:button="@null"
+                    android:checked="true"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:paddingBottom="@dimen/dimen_8"
+                    android:paddingLeft="@dimen/dimen_18"
+                    android:paddingRight="@dimen/dimen_18"
+                    android:paddingTop="@dimen/dimen_8"
+                    android:text="@string/qr_el"
+                    android:textColor="@drawable/sl_rb_text_state"
+                    android:textSize="@dimen/sp_16" />
+
+                <RadioButton
+                    android:id="@+id/rb_write"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/sl_rb_state"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dimen_8"
+                    android:paddingLeft="@dimen/dimen_18"
+                    android:paddingRight="@dimen/dimen_18"
+                    android:paddingTop="@dimen/dimen_8"
+                    android:text="@string/input_number"
+                    android:textColor="@drawable/sl_rb_text_state"
+                    android:textSize="@dimen/sp_16" />
 
 
-                    <RadioButton
-                        android:id="@+id/rb_qr"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/sl_rb_state"
-                        android:button="@null"
-                        android:checked="true"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/dimen_8"
-                        android:paddingLeft="@dimen/dimen_18"
-                        android:paddingRight="@dimen/dimen_18"
-                        android:paddingTop="@dimen/dimen_8"
-                        android:text="@string/qr_el"
-                        android:textColor="@drawable/sl_rb_text_state"
-                        android:textSize="@dimen/sp_16" />
-
-                    <RadioButton
-                        android:id="@+id/rb_write"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/sl_rb_state"
-                        android:button="@null"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/dimen_8"
-                        android:paddingLeft="@dimen/dimen_18"
-                        android:paddingRight="@dimen/dimen_18"
-                        android:paddingTop="@dimen/dimen_8"
-                        android:text="@string/input_number"
-                        android:textColor="@drawable/sl_rb_text_state"
-                        android:textSize="@dimen/sp_16" />
+            </RadioGroup>
+        </LinearLayout>
 
 
-                </RadioGroup>
-            </LinearLayout>
-
-
-            <ImageView
-                android:id="@+id/iv_deng"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_qr_deng" />
-        </RelativeLayout>
-    </LinearLayout>
+        <ImageView
+            android:layout_marginTop="400dp"
+            android:id="@+id/iv_deng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_qr_deng" />
+    </RelativeLayout>
 </RelativeLayout>

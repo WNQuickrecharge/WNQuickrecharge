@@ -52,6 +52,8 @@ public class QrCodeActivity extends BaseActivity {
     RadioGroup rgButtom;
     @Bind(R.id.ll_sence_two_Top)
     LinearLayout llSenceTwoTop;
+    @Bind(R.id.iv_zhongduanhao_icon)
+    ImageView zhongduanhaoIcon;
 
     private boolean isLightOpen = false;
 
@@ -79,6 +81,7 @@ public class QrCodeActivity extends BaseActivity {
                         llSenceTwo.setBackgroundColor(Color.parseColor("#00000000"));
                         llSenceTwoTop.setVisibility(View.INVISIBLE);
                         ivDeng.setVisibility(View.VISIBLE);
+                        zhongduanhaoIcon.setVisibility(View.INVISIBLE);
                         setTitle(getString(R.string.qr_title));
                         break;
                     case R.id.rb_write:
@@ -86,6 +89,7 @@ public class QrCodeActivity extends BaseActivity {
                         tvTitle.setText(R.string.client_number);
                         llSenceTwo.setBackgroundColor(Color.parseColor("#999999"));
                         ivDeng.setVisibility(View.GONE);
+                        zhongduanhaoIcon.setVisibility(View.VISIBLE);
                         closeLight();
                         break;
                 }
