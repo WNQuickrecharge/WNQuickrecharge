@@ -21,7 +21,6 @@ import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -148,8 +147,15 @@ public class RechargerListFrag extends BaseFragment{
         }
     }
     public void setData(List<Point> mDatas) {
-        if (mDatas==null)
+        if (mDatas==null || mDatas.size()==0){
+            if (null != this.mDatas)
+                this.mDatas.clear();
+            if (null != mLeft)
+                mLeft.clear();
+            mAdapterDist.notifyDataSetChanged();
+            mAdapterRegion.notifyDataSetChanged();
             return;
+        }
 
 //        mDatas.addAll(mDatas);
         for (int i = 0; i < mDatas.size(); i++) {

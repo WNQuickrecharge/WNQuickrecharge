@@ -148,6 +148,8 @@ public class FilterActivity extends BaseActivity {
             mHelper.updateCity(mCurCity);
             EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
         }
+
+        finish();
     }
 
     @OnClick(R.id.ll_location)

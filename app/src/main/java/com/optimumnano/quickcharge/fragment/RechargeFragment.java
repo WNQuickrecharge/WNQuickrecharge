@@ -403,9 +403,12 @@ public class RechargeFragment extends BaseFragment {
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, location.getLongitude() + "");
             if (flag){
                 flag=false;
-                EventBus.getDefault().post(new EventManager.getCurrentCity(city));
-                if (TextUtils.isEmpty(mHelper.getCity()))
+                if (TextUtils.isEmpty(mHelper.getCity())){
                     mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
+                    EventBus.getDefault().post(new EventManager.getCurrentCity(city));
+                }else {
+                    EventBus.getDefault().post(new EventManager.getCurrentCity(mHelper.getCity()));
+                }
             }
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
