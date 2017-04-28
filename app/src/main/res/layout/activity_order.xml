@@ -163,9 +163,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="实际费用 = 实际充电度数 * 单价"
-            android:layout_marginLeft="@dimen/default_padding40"
-            android:layout_marginRight="@dimen/default_padding40"
+            android:text="实际费用 = 实际充电度数 * （单价+服务费单价）"
+            android:layout_marginLeft="@dimen/default_padding20"
+            android:layout_marginRight="@dimen/default_padding20"
             android:layout_marginTop="@dimen/default_lrmargin"
             android:gravity="center_horizontal"
             style="@style/text_mainstyle"

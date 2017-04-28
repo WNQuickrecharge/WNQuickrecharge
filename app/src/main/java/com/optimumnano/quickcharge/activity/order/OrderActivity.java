@@ -147,7 +147,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 if (!StringUtils.isEmpty(s.toString())){
                     if (tvAllkwh!=null) {
-                        double price = Double.parseDouble(s.toString()) / gunBean.price;
+                        double price = Double.parseDouble(s.toString()) / (gunBean.price+gunBean.service_cost);
 
                         DecimalFormat df = new DecimalFormat("0.00");
                         String formatPrice = df.format(price);
