@@ -109,12 +109,15 @@
         <activity
             android:name=".activity.setting.ModifyPassword"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.order.OrderlistDetailActivity" />
+        <activity android:name=".activity.order.OrderlistDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.mineinfo.MineInfoAct"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.filter.FilterActivity" />
-        <activity android:name=".activity.order.RechargeControlActivity"></activity>
+        <activity android:name=".activity.filter.FilterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.order.RechargeControlActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.mineinfo.MineWalletAct"
             android:launchMode="singleTask"
@@ -138,7 +141,8 @@
             android:name=".activity.mineinfo.WalletDepositSuccessAct"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.order.OrderDetlActivity" />
+        <activity android:name=".activity.order.OrderDetlActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.setting.ModifyPayPasswordActivity"
             android:screenOrientation="portrait" />
@@ -178,11 +182,16 @@
             <!-- <category android:name="android.intent.category.DEFAULT" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.order.OrderActivity" />
-        <activity android:name=".activity.invoice.InvoiceActivity"></activity>
-        <activity android:name=".activity.invoice.InvoiceTypeActivity" />
-        <activity android:name=".activity.invoice.PayCenterActivity" />
-        <activity android:name=".activity.invoice.InvoiceApplyActivity" />
+        <activity android:name=".activity.order.OrderActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.invoice.InvoiceActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.invoice.InvoiceTypeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.invoice.PayCenterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.invoice.InvoiceApplyActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
@@ -193,7 +202,8 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"></activity>
-        <activity android:name=".activity.invoice.InvoiceMoreActivity"></activity>
+        <activity android:name=".activity.invoice.InvoiceMoreActivity"
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".activity.filter.ChoseCityActivity"
