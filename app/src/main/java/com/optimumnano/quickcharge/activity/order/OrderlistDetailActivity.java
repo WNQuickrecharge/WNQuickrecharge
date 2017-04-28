@@ -98,7 +98,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         miGunNum.setRightText(orderBean.gun_code);
         miPileType.setRightText(orderBean.pile_type);
         miElec.setRightText(orderBean.elec_current+"A");
-        miPower.setRightText(orderBean.power+"/kwh");
+        miPower.setRightText(orderBean.power+"kw");
         miForzenCatsh.setRightText("￥"+orderBean.frozen_cash);
         tvDate.setText(orderBean.start_time);
         switch (orderBean.charge_from) {
