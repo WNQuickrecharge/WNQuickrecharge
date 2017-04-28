@@ -203,7 +203,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         miRechargenum.setRightText(gunNo);
         miType.setRightText(gunBean.pile_type);
         miElectric.setRightText(gunBean.elec_current+"A");
-        miPower.setRightText(gunBean.power+"kwh");
+        miPower.setRightText(gunBean.power+"kw");
         miSimprice.setRightText(gunBean.price+"元/kwh");
         miSimServicePrice.setRightText(gunBean.service_cost+"元/kwh");
         double price = Double.parseDouble(edtMoney.getText().toString()) / (gunBean.price+gunBean.service_cost);

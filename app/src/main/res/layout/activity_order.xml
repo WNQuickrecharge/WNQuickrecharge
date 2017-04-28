@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="额定功率"
-            app:tvRightText="0/kwh"
+            app:tvRightText="0kw"
             app:LeftTextColor="@color/color66"
             app:rightTextColor="@color/color33"
             app:showtvRight="true"
