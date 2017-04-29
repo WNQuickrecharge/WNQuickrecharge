@@ -157,8 +157,10 @@ public class RechargerListFrag extends BaseFragment{
                 this.mDatas.clear();
             if (null != mLeft)
                 mLeft.clear();
-            mAdapterDist.notifyDataSetChanged();
-            mAdapterRegion.notifyDataSetChanged();
+            if (null != mAdapterDist)
+                mAdapterDist.notifyDataSetChanged();
+            if (null != mAdapterRegion)
+                mAdapterRegion.notifyDataSetChanged();
             return;
         }
 

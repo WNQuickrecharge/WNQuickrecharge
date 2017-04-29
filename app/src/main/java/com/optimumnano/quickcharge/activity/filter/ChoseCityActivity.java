@@ -161,7 +161,7 @@ public class ChoseCityActivity extends BaseActivity {
 
     void searchCity(String s) {
         for (CityModel cityModel : cityModels) {
-            if (cityModel.cityName.contains(s) || cityModel.pinyin.contains(s)) {
+            if (cityModel.cityName.contains(s) || cityModel.pinyin.startsWith(s)) {
                 resultModels.add(cityModel);
             }
         }
