@@ -192,6 +192,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             //LogUtil.i("test==http NickName "+userinfoBean.userinfo.NickName+" Gender "+userinfoBean.userinfo.Gender+" PhoneNum "+userinfoBean.userinfo.PhoneNum+" headurl "+userinfoBean.userinfo.AvatarUrl+" RestCash balance "+userinfoBean.account.RestCash);
 
             String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
+            boolean isRemember = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false);
             if (!phoneNum.equals(userinfoBean.userinfo.PhoneNum)){
                 GlideCacheUtil.getInstance().clearImageAllCache(LoginActivity.this);
                 SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
@@ -203,6 +204,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_USER_ID,userinfoBean.userinfo.Id);
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isRemember);
 
             DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
