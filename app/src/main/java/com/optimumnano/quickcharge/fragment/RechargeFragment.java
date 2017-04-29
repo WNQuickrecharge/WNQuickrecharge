@@ -34,8 +34,10 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
@@ -48,7 +50,6 @@ import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.utils.GPSUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -149,39 +150,6 @@ public class RechargeFragment extends BaseFragment {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                /*//从marker中获取info信息
-                Bundle bundle = marker.getExtraInfo();
-                final Point infoUtil = (Point) bundle.getSerializable("info");
-                View view = View.inflate(getContext(), R.layout.adapter_dist_point, null);
-                ViewHolder holder = new ViewHolder(view);
-                holder.mItem = infoUtil;
-                holder.tvAddress.setText(holder.mItem.StationName);
-                holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
-                holder.tvDetailAddress.setText(holder.mItem.Address);
-                String sb = "电费:1.5元/度,服务费:0.5元/度";
-                SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
-                        .first("1.5").first("0.5").textColor(R.color.red);
-                st.linkify(holder.tvPricePer);
-                holder.tvPricePer.setText(st);
-                String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
-                SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
-                        .first(holder.mItem.FreePiles).textColor(R.color.main_color);
-                simpleText.linkify(holder.tvNum);
-                holder.tvNum.setText(simpleText);
-                view.setBackgroundResource(R.drawable.sp_map_infowindow);
-                holder.tvNav.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        OnNaviEvent event = new OnNaviEvent();
-                        event.end = infoUtil;
-                        EventBus.getDefault().post(event);
-                    }
-                });
-                //将信息显示在界面上
-                LatLng ll = marker.getPosition();
-                mInfoWindow = new InfoWindow(view, ll, -47);
-                mBaiduMap.showInfoWindow(mInfoWindow);
-                return true;*/
                 Bundle bundle = marker.getExtraInfo();
                 Object obj = bundle.getSerializable("info");
                 if (obj instanceof Point) {
@@ -300,6 +268,10 @@ public class RechargeFragment extends BaseFragment {
     public void startLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
+            if (Tool.isConnectingToInternet())
+                ((MainActivity)getActivity()).showLoading("加载中...");
+            else
+                ((MainActivity)getActivity()).showToast("网络连接异常");
             if (locationClient != null)
                 locationClient.start();
             else {
@@ -359,7 +331,7 @@ public class RechargeFragment extends BaseFragment {
             case R.id.iv_location:
                 isFirstLoc = true;
                 if (locationClient != null)
-                    locationClient.start();
+                    startLocation();
                 break;
             case R.id.et_address:
                 SelectAddressActivity.start(getActivity());
@@ -415,6 +387,7 @@ public class RechargeFragment extends BaseFragment {
         public void onReceiveLocation(BDLocation location) {
             // map view 销毁后不在处理新接收的位置
             if (location == null || mapView == null) {
+                ((MainActivity)getActivity()).closeLoading();
                 return;
             }
             locationClient.stop();
@@ -468,6 +441,9 @@ public class RechargeFragment extends BaseFragment {
             }
             sb.append(location.getLocationDescribe());    //位置语义化信息
             LogUtil.d(sb.toString());
+
+            if (location.getLocType() != BDLocation.TypeNetWorkLocation)//非网络定位结果
+                ((MainActivity)getActivity()).closeLoading();
         }
 
         @Override
@@ -524,8 +500,9 @@ public class RechargeFragment extends BaseFragment {
             for (Point info : mPiont) {
                 bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.cdzhuang01);
                 //获取经纬度
-                double[] latlon = GPSUtils.gps84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标
-                latLng = new LatLng(latlon[0],latlon[1]);
+                //double[] latlon = GPSUtils.wgs84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                //latLng = new LatLng(latlon[0],latlon[1]);
+                latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -544,7 +521,7 @@ public class RechargeFragment extends BaseFragment {
             for (CarPoint info : mCarPiont) {
                 bitmap = BitmapDescriptorFactory.fromResource(R.drawable.che);
                 //获取经纬度
-                latLng = new LatLng(info.carLat, info.carLon);
+                latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -560,7 +537,14 @@ public class RechargeFragment extends BaseFragment {
                 marker.setExtraInfo(bundle);
             }
 
+        ((MainActivity)getActivity()).closeLoading();
+    }
 
+    private LatLng gpsToBd09ll(LatLng sourceLatLng) {
+        CoordinateConverter converter = new CoordinateConverter();
+        converter.from(CoordinateConverter.CoordType.GPS);
+        converter.coord(sourceLatLng);
+        return converter.convert();
     }
 
     @Override

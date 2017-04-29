@@ -1,8 +1,9 @@
 package com.optimumnano.quickcharge.utils;
 
 /**
- * 作者:lee on 12/13 0013 21:44
- * 邮箱:lilingzhang@longshine.com
+ * 作者：邓传亮 on 2017/4/59 19:04
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
  */
 
 public class GPSUtils {
@@ -59,7 +60,7 @@ public class GPSUtils {
      * @param lon
      * @return
      */
-    public static double[] gps84_To_Gcj02(double lat, double lon) {
+    public static double[] wgs84_To_Gcj02(double lat, double lon) {
         if (outOfChina(lat, lon)) {
             return new double[]{lat,lon};
         }
@@ -79,7 +80,7 @@ public class GPSUtils {
     /**
      * * 火星坐标系 (GCJ-02) to 84 * * @param lon * @param lat * @return
      * */
-    public static double[] gcj02_To_Gps84(double lat, double lon) {
+    public static double[] gcj02_To_wgs84(double lat, double lon) {
         double[] gps = transform(lat, lon);
         double lontitude = lon * 2 - gps[1];
         double latitude = lat * 2 - gps[0];
@@ -120,14 +121,14 @@ public class GPSUtils {
      * @param lon
      * @return
      */
-    public static double[] gps84_To_bd09(double lat,double lon){
-        double[] gcj02 = gps84_To_Gcj02(lat,lon);
+    public static double[] wgs84_To_bd09(double lat, double lon){
+        double[] gcj02 = wgs84_To_Gcj02(lat,lon);
         double[] bd09 = gcj02_To_Bd09(gcj02[0],gcj02[1]);
         return bd09;
     }
-    public static double[] bd09_To_gps84(double lat,double lon){
+    public static double[] bd09_To_wgs84(double lat,double lon){
         double[] gcj02 = bd09_To_Gcj02(lat, lon);
-        double[] gps84 = gcj02_To_Gps84(gcj02[0], gcj02[1]);
+        double[] gps84 = gcj02_To_wgs84(gcj02[0], gcj02[1]);
         //保留小数点后六位
         gps84[0] = retain6(gps84[0]);
         gps84[1] = retain6(gps84[1]);

@@ -4,8 +4,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * 作者：凌章 on 2016/12/16 15:34
- * 邮箱：lilingzhang@longshine.com
+ * 作者：邓传亮 on 2017/4/59 19:04
+ * <p>
+ * 邮箱：dengchuanliang@optimumchina.com
  */
 
 public class TypeConversionUtils {
