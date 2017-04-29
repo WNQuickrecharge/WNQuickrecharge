@@ -568,7 +568,7 @@ public class RechargeFragment extends BaseFragment {
         super.onResume();
         if (mapView != null)
             mapView.onResume();
-        startLocation();
+        //startLocation();
         EventBus.getDefault().register(this);
     }
 
