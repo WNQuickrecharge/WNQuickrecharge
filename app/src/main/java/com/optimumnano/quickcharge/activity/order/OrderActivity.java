@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
@@ -281,6 +283,25 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 String sign = ha.get("sign").toString();
                 switch (payWay) {
                     case PayDialog.pay_yue:
+                        GetMineInfoManager.getPayPwd(new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                if (returnContent.equals("{}")) {
+                                    showToast("支付密码为空，请设置");
+                                    Intent intent=new Intent(OrderActivity.this, ModifyPayPasswordActivity.class);
+                                    Bundle bundle=new Bundle();
+                                    bundle.putBoolean("PayPasswordIsNUll",true);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                            }
+                        });
                         payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo,sign);
                         payDialog.setStatus(0);
                         payDialog.setPayway(payWay);
