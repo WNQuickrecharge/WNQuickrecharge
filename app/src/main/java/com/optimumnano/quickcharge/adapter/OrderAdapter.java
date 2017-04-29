@@ -97,7 +97,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
             case 6:
                 helper.setText(R.id.order_status,"已完成");
                 helper.setVisible(R.id.order_tvPay,false);
-                helper.setVisible(R.id.order_tvComment,true);
+                helper.setVisible(R.id.order_tvComment,false);//现在不显示评价字眼，还没实现评价功能
 
                 break;
         }
