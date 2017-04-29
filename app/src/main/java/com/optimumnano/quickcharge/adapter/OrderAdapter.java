@@ -18,6 +18,7 @@ import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 
 import org.xutils.common.util.LogUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -101,9 +102,10 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
 
                 break;
         }
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
         helper.setText(R.id.order_tvDate,item.start_time);
         helper.setText(R.id.order_tvNo,item.order_no);
-        helper.setText(R.id.order_tvMoney,"￥"+item.frozen_cash);
+        helper.setText(R.id.order_tvMoney,"￥"+decimalFormat.format(item.frozen_cash));
         helper.setOnClickListener(R.id.order_tvPay, new View.OnClickListener() {
             @Override
             public void onClick(View view) {

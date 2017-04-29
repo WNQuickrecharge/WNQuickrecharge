@@ -14,6 +14,8 @@ import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import java.text.DecimalFormat;
+
 import static com.optimumnano.quickcharge.R.id.iv_order_icon;
 
 public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
@@ -99,7 +101,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         miPileType.setRightText(orderBean.pile_type);
         miElec.setRightText(orderBean.elec_current+"A");
         miPower.setRightText(orderBean.power+"kw");
-        miForzenCatsh.setRightText("￥"+orderBean.frozen_cash);
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+        String formatFrozenCash = decimalFormat.format(orderBean.frozen_cash);
+        miForzenCatsh.setRightText("￥"+formatFrozenCash);
         tvDate.setText(orderBean.start_time);
         switch (orderBean.charge_from) {
             case 1:

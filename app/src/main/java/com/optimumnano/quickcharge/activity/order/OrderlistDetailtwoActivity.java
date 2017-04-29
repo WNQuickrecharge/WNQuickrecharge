@@ -59,13 +59,16 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         tvDeleteOrder.setOnClickListener(this);
     }
     private void initData(){
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
         tvOrdernum.setText(orderBean.order_no);
         tvDate.setText(orderBean.start_time);
-        miYFMoney.setRightText("￥"+orderBean.frozen_cash);
-        miSMoney.setRightText("￥"+orderBean.charge_cash);
+        String formatFrozenCash = decimalFormat.format(orderBean.frozen_cash);
+        miYFMoney.setRightText("￥"+formatFrozenCash);
+        String formatChargeCash = decimalFormat.format(orderBean.charge_cash);
+        miSMoney.setRightText("￥"+formatChargeCash);
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
         double backMoney = orderBean.frozen_cash - orderBean.charge_cash;
-        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+
         String format = decimalFormat.format(backMoney);
         miBackMoney.setRightText("￥"+format);
         miAllMoney.setRightText("￥"+orderBean.charge_cash);
