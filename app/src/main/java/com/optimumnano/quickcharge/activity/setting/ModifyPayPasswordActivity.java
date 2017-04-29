@@ -45,18 +45,26 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     EditText mPayPassword;
     private String payPassword;
     private ModifyUserInformationManager manager = new ModifyUserInformationManager();
+    private boolean payPasswordIsNUll;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pay_password);
+        payPasswordIsNUll = getIntent().getExtras().getBoolean("PayPasswordIsNUll");
+
         initViews();
     }
 
     @Override
     public void initViews() {
         super.initViews();
-        setTitle("修改支付密码");
+        if (payPasswordIsNUll==true) {
+            inputPayPasswordStatus=FIRST_INPUT_NEW_PAY_PASSWORD;
+            setTitle("设置支付密码");
+        }else {
+            setTitle("修改支付密码");
+        }
         tvLeft.setVisibility(View.VISIBLE);
         mPayPassword = (EditText) findViewById(R.id.et_pay_password);
         mTitleView = (TextView) findViewById(R.id.tv_title_change_pay_password);
@@ -226,6 +234,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
             public void onNoClick() {
                 startActivity(new Intent(ModifyPayPasswordActivity.this,ForgetPayPasswordActivity.class));
                 myDialog.dismiss();
+                finish();
 
             }
         });

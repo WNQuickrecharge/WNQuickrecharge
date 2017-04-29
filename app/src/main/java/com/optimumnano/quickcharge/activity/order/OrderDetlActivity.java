@@ -91,15 +91,16 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initData(){
+        DecimalFormat df = new DecimalFormat("0.00");
         tvOrderNum.setText(orderBean.order_no);
         miUseTime.setRightText(orderBean.power_time+"分钟");
         miAllelec.setRightText(orderBean.charge_vol+"kwh");
-        miUseMoney.setRightText("￥"+orderBean.charge_cash);
+        miUseMoney.setRightText("￥"+df.format(orderBean.charge_cash));
 //        tvServiceMoney.setText();
-        miAllMoney.setRightText("￥"+orderBean.charge_cash);//暂时没加服务费
-        miYFMoney.setRightText("￥"+orderBean.frozen_cash);
+        miAllMoney.setRightText("￥"+df.format(orderBean.charge_cash));//暂时没加服务费
+        String formatFrozenMoney = df.format(orderBean.frozen_cash);
+        miYFMoney.setRightText("￥"+formatFrozenMoney);
         double backMoney = orderBean.frozen_cash - orderBean.charge_cash;
-        DecimalFormat df = new DecimalFormat("0.00");
         String formatMoney = df.format(backMoney);
         miBackMoney.setRightText("￥"+formatMoney);
     }

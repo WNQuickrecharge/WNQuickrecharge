@@ -134,7 +134,7 @@ public class RechargeFragment extends BaseFragment {
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
         initLocation();
-//        startLocation();
+        startLocation();
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {

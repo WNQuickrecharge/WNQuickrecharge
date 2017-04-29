@@ -97,6 +97,11 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
     private void initData(){
 //        startCountTime(1000*1000,2000);
+        if (orderStatus==GETCHARGEPROGRESS) {
+            tvStart.setVisibility(View.GONE);
+            tvDescone.setText("充电中");
+            tvDescTwo.setText("正在获取充电信息");
+        }
     }
 
     @Override
