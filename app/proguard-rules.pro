@@ -62,3 +62,7 @@
 -keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
 -keep class com.alipay.sdk.app.PayTask{ public *;}
 -keep class com.alipay.sdk.app.AuthTask{ public *;}
+
+#长连接第三方库
+-keep class com.zsoft.** {*;}
+-dontwarn com.zsoft.**

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -206,7 +207,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         miPower.setRightText(gunBean.power+"kw");
         miSimprice.setRightText(gunBean.price+"元/kwh");
         miSimServicePrice.setRightText(gunBean.service_cost+"元/kwh");
-        double price = Double.parseDouble(edtMoney.getText().toString()) / (gunBean.price+gunBean.service_cost);
+        double price=0.0;
+        if (TextUtils.isEmpty(edtMoney.getText().toString())) {
+            price=0.0;
+        }else {
+            price = Double.parseDouble(edtMoney.getText().toString()) / (gunBean.price+gunBean.service_cost);
+
+        }
 
         DecimalFormat df = new DecimalFormat("0.00");
         String formatPrice = df.format(price);
