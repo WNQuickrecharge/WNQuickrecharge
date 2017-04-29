@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.netease.hearttouch.htrefreshrecyclerview.HTLoadMoreListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshListener;
 import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
+import com.netease.hearttouch.htrefreshrecyclerview.base.HTBaseViewHolder;
+import com.netease.hearttouch.htrefreshrecyclerview.viewimpl.HTDefaultVerticalRefreshViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
@@ -22,7 +25,6 @@ import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
-import com.optimumnano.quickcharge.views.MyDivier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +32,9 @@ import java.util.List;
 /**
  * 订单
  */
-public class OrderFragment extends BaseFragment implements View.OnClickListener, HTLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+public class OrderFragment extends BaseFragment implements View.OnClickListener, HTLoadMoreListener, HTRefreshListener {
     private View mainView;
-//    private RecyclerView recyclerView;
     HTRefreshRecyclerView recyclerView;
-    private SwipeRefreshLayout refreshLayout;
     private Context ctx;
 
     private OrderAdapter adapter;
@@ -56,20 +56,44 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
-        dataChanged();
+//        dataChanged();
     }
 
     private void initViews() {
-        refreshLayout = (SwipeRefreshLayout) mainView.findViewById(R.id.order_swipRefreshLayout);
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary),
-                getResources().getColor(R.color.colorPrimaryDark),getResources().getColor(R.color.colorAccent));
-        refreshLayout.setOnRefreshListener(this);
-        recyclerView = (HTRefreshRecyclerView) mainView.findViewById(R.id.order_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
-        MyDivier de = new MyDivier(ctx,MyDivier.VERTICAL_LIST);
-        recyclerView.addItemDecoration(de);
-        recyclerView.setOnLoadMoreListener(this);
-        recyclerView.setLoadMoreViewShow(true);
+        recyclerView = (HTRefreshRecyclerView) getActivity().findViewById(R.id.order_recyclerView);
+
+        adapter = new OrderAdapter(R.layout.adapter_order,orderList);
+        HTBaseViewHolder viewHolder = new HTDefaultVerticalRefreshViewHolder(getActivity());
+        viewHolder.setRefreshViewBackgroundResId(R.color.foreground_material_dark);
+        recyclerView.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));//设置列表布局方式
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(adapter);//设置数据源
+        recyclerView.setOnLoadMoreListener(this);//实现OnLoadMoreListener接口
+        recyclerView.setOnRefreshListener(this);//实现OnRefreshListener接口
+        recyclerView.setLoadMoreViewShow(false);
+        recyclerView.setEnableScrollOnRefresh(true);
+
+        adapter.setContext(getActivity());
+        adapter.setOnitemClickListener(new MyOnitemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                OrderBean orderBean = orderList.get(position);
+                Intent intent;
+                if (orderBean.order_status==2 || orderBean.order_status==4 ||
+                        orderBean.order_status == 1 || orderBean.order_status == 3){
+                    intent = new Intent(getActivity(), OrderlistDetailActivity.class);
+                }
+                else {
+                    intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("orderbean",orderList.get(position));
+                intent.putExtras(bundle);
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -87,7 +111,6 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                 if (pageSize == 1){
                     pageSize = 1;
                     orderList.clear();
-                    refreshLayout.setRefreshing(false);
                 }
                 if (returnContent.size() < pageCount){
                     recyclerView.setRefreshCompleted(false);
@@ -95,7 +118,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                     recyclerView.setRefreshCompleted(true);
                 }
                 orderList.addAll(returnContent);
-                dataChanged();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -103,35 +126,6 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                 super.onFailure(msg);
             }
         });
-    }
-    private void dataChanged(){
-        if (adapter == null){
-            adapter = new OrderAdapter(R.layout.adapter_order,orderList);
-            recyclerView.setAdapter(adapter);
-            adapter.setContext(getActivity());
-            adapter.setOnitemClickListener(new MyOnitemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    OrderBean orderBean = orderList.get(position);
-                    Intent intent;
-                    if (orderBean.order_status==2 || orderBean.order_status==4 ||
-                            orderBean.order_status == 1 || orderBean.order_status == 3){
-                        intent = new Intent(getActivity(), OrderlistDetailActivity.class);
-                    }
-                    else {
-                        intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
-                    }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("orderbean",orderList.get(position));
-                    intent.putExtras(bundle);
-                    getActivity().startActivity(intent);
-                }
-            });
-        }
-        else {
-            adapter.notifyDataSetChanged();
-        }
     }
 
     @Override
