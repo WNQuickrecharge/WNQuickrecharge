@@ -79,4 +79,14 @@ public class EventManager {
             this.cityname=cityname;
         }
     }
+
+    public static class onFilterParamsChange {
+        public String filterkv;
+        public String filterDistance;
+        public boolean isShowOnlyFree;
+
+        public onFilterParamsChange() {
+
+        }
+    }
 }

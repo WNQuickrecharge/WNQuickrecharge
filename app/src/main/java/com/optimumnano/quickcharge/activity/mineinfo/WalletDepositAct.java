@@ -172,7 +172,7 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-        showToast("还未实现微信支付");
+        showToast("暂不支持微信支付");
     }
 
     private void callALiPay() {

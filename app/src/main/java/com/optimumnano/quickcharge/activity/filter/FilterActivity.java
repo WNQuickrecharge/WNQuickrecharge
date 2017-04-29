@@ -148,6 +148,7 @@ public class FilterActivity extends BaseActivity {
             mHelper.updateCity(mCurCity);
             EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
         }
+        EventBus.getDefault().post(new EventManager.onFilterParamsChange());
 
         finish();
     }

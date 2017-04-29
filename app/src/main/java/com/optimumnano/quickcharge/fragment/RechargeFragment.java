@@ -48,6 +48,7 @@ import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.GPSUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -55,6 +56,8 @@ import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
@@ -111,8 +114,16 @@ public class RechargeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_recharge, container, false);
         ButterKnife.bind(this, mainView);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         mHelper = new PreferencesHelper(getActivity());
         return mainView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startLocation();
     }
 
     @Override
@@ -338,6 +349,8 @@ public class RechargeFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late, R.id.tv_scan_charge})
@@ -511,7 +524,8 @@ public class RechargeFragment extends BaseFragment {
             for (Point info : mPiont) {
                 bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.cdzhuang01);
                 //获取经纬度
-                latLng = new LatLng(info.Lat, info.Lng);
+                double[] latlon = GPSUtils.gps84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标
+                latLng = new LatLng(latlon[0],latlon[1]);
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -571,7 +585,7 @@ public class RechargeFragment extends BaseFragment {
         if (mapView != null)
             mapView.onResume();
         //startLocation();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -579,7 +593,7 @@ public class RechargeFragment extends BaseFragment {
         super.onPause();
         if (mapView != null)
             mapView.onPause();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -591,5 +605,9 @@ public class RechargeFragment extends BaseFragment {
             mBsdialog.dismiss();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFilterParamsChange(EventManager.onFilterParamsChange event) {
+        startLocation();
+    }
 
 }
