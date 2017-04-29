@@ -191,9 +191,11 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvDistance.setText(format+"km");
 
                     holder.tvPhonenum.setText(holder.mItem.Phone);
-                    String sb = "电费:1.5元/度,服务费:0.5元/度";
+                    String e=holder.mItem.min_price==holder.mItem.max_price?holder.mItem.max_price+"":holder.mItem.min_price+"~"+holder.mItem.max_price;
+                    String s=holder.mItem.min_service==holder.mItem.max_service?holder.mItem.max_service+"":holder.mItem.min_service+"~"+holder.mItem.max_service;
+                    String sb = "电费:"+e+"元/度,服务费:"+s+"元/度";
                     SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
-                            .first("1.5").textColor(R.color.red).first("0.5").textColor(R.color.red);
+                            .first(e).textColor(R.color.red).first(s).textColor(R.color.red);
                     st.linkify(holder.tvPricePer);
                     holder.tvPricePer.setText(st);
                     String ss = "空闲" + holder.mItem.FreePiles + "/共" + holder.mItem.TotalPiles + "个";
