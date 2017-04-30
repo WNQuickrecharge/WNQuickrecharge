@@ -44,7 +44,7 @@ public abstract class LazyFrag extends Fragment{
 
     /**
      * 延迟加载
-     * 子类必须重写此方法
+     * 子类需要时重写此方法
      */
-    protected abstract void lazyLoad();
+    protected  void lazyLoad(){}
 }

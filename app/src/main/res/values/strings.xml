@@ -56,4 +56,9 @@
     <string name="finish">完成</string>
     <string name="more_message">更多信息</string>
     <string name="current_version">当前版本</string>
+    <string name="get_gun_info_fail">获取失败，请检查终端号是否正确</string>
+    <string name="maintaining">正在维护</string>
+    <string name="charging">正在充电</string>
+    <string name="charge_soon">立即充电</string>
+    <string name="gun_number">编号:</string>
 </resources>
