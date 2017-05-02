@@ -38,7 +38,7 @@ public class BaseActivity extends AppCompatActivity {
     public ImageView ivRight;
     public Toolbar toolbar;
 
-    protected PreferencesHelper mHelper;
+    public PreferencesHelper mHelper;
     private LoadingDialog mLoadingDialog;
 
     @Override
