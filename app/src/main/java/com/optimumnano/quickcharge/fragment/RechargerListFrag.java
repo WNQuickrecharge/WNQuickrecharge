@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.adapter.DistDetailAcapter;
 import com.optimumnano.quickcharge.adapter.OnListClickListener;
 import com.optimumnano.quickcharge.adapter.RegionListAdatper;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -114,6 +117,22 @@ public class RechargerListFrag extends BaseFragment{
     @Override
     protected void lazyLoad() {
 
+        StationManager.getCityStations(((BaseActivity)getActivity()).mHelper.getCity(), new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String result = returnContent.toString();
+                List<Point> stationBeanList = JSON.parseArray(result, Point.class);
+                setData(stationBeanList);
+
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
 
@@ -220,25 +239,7 @@ public class RechargerListFrag extends BaseFragment{
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCurrentCity(EventManager.getCurrentCity event) {
-        StationManager.getCityStations(event.city, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String result = returnContent.toString();
-                List<Point> stationBeanList = JSON.parseArray(result, Point.class);
-                setData(stationBeanList);
 
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
-    }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void openStationActivity(EventManager.openStationActivity event) {
         Intent intent=new Intent(getActivity(), StationActivity.class);
@@ -247,5 +248,6 @@ public class RechargerListFrag extends BaseFragment{
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
+
 
 }
