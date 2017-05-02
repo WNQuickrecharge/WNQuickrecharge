@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.optimumnano.quickcharge.BuildConfig;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -29,6 +30,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
     private MenuItem1 modifyPassword;
     private MenuItem1 modifyPayPassword;
+    private MenuItem1 currentVersion;
     private Button logout;
     private ModifyUserInformationManager manager=new ModifyUserInformationManager();
     @Override
@@ -45,6 +47,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         setRightTitle("");
         modifyPassword= (MenuItem1) findViewById(R.id.setting_modify_password);
         modifyPayPassword= (MenuItem1) findViewById(R.id.setting_modify_pay_password);
+        currentVersion= (MenuItem1) findViewById(R.id.tv_current_version);
+        currentVersion.setRightText(BuildConfig.VERSION_NAME);
         logout= (Button) findViewById(R.id.logout);
         modifyPassword.setOnClickListener(this);
         modifyPayPassword.setOnClickListener(this);

@@ -60,7 +60,7 @@ public class OrderManager {
      * @param gun_code 充电枪好
      * @param callback
      */
-    public void getGunInfo(String gun_code,final ManagerCallback callback){
+    public static void getGunInfo(String gun_code, final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.get_guninfo);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();

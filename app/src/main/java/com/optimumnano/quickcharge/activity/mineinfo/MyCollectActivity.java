@@ -2,7 +2,6 @@ package com.optimumnano.quickcharge.activity.mineinfo;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -10,8 +9,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshListener;
+import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.CollectionStationAdapter;
 import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
@@ -37,8 +36,8 @@ import java.util.List;
  * Created by mfwn on 2017/4/8.
  */
 
-public class MyCollectActivity extends BaseActivity {
-    private RecyclerView recyclerView;
+public class MyCollectActivity extends BaseActivity implements HTRefreshListener {
+    private HTRefreshRecyclerView recyclerView;
     private CollectionStationAdapter adapter;
     private List<StationBean> stationBeanList = new ArrayList<>();
     private CollectManager manager=new CollectManager();
@@ -51,15 +50,14 @@ public class MyCollectActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_collect);
+        navigation=new BaiduNavigation(this);
         initViews();
         initData();
         EventBus.getDefault().register(this);
-        dataChanged();
+        //dataChanged();
     }
 
     private void initData() {//114.3717,22.704188
-        navigation=new BaiduNavigation(this);
-        showLoading();
         manager.getCollect(new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
@@ -74,7 +72,9 @@ public class MyCollectActivity extends BaseActivity {
                     String format = decimalFormat.format(distance);
                     bean.setDistance(format+" km");
                 }
+                stationBeanList.clear();
                 stationBeanList.addAll(list);
+                recyclerView.setRefreshCompleted(true);
                 dataChanged();
                 closeLoading();
             }
@@ -82,6 +82,7 @@ public class MyCollectActivity extends BaseActivity {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                recyclerView.setRefreshCompleted(true);
                 closeLoading();
                 showToast(msg);
             }
@@ -106,61 +107,67 @@ public class MyCollectActivity extends BaseActivity {
         tvLeft.setVisibility(View.VISIBLE);
         myDialog=new MyDialog(this,R.style.MyDialog);
         myDialog.setCancelable(true);
-        recyclerView = (RecyclerView) findViewById(R.id.collects_recyclerView);
+        recyclerView = (HTRefreshRecyclerView) findViewById(R.id.collects_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter=new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList);
+        recyclerView.setAdapter(adapter);
         MyDivier de = new MyDivier(this, MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
-        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
-            @Override
-            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+        recyclerView.setOnRefreshListener(this);//实现OnRefreshListener接口
+        recyclerView.setLoadMoreViewShow(false);
+        recyclerView.setEnableScrollOnRefresh(true);
 
-            }
-
-            @Override
-            public void onItemLongClick(BaseQuickAdapter adapter, View view, final int position) {
-                super.onItemLongClick(adapter, view, position);
-                myDialog.setTitle("删除收藏");
-                myDialog.setMessage("您要删除该收藏站点吗?");
-                myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
-                    @Override
-                    public void onNoClick() {
-                        myDialog.dismiss();
-                    }
-                });
-                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
-                    @Override
-                    public void onYesClick() {
-                        manager.deleteCollectStation(stationBeanList.get(position).getId(), new ManagerCallback() {
-                            @Override
-                            public void onSuccess(Object returnContent) {
-                                super.onSuccess(returnContent);
-                                showToast("删除成功!");
-                                stationBeanList.remove(position);
-                                dataChanged();
-                                myDialog.dismiss();
-                            }
-
-                            @Override
-                            public void onFailure(String msg) {
-                                super.onFailure(msg);
-                                showToast(msg);
-                            }
-                        });
-                    }
-                });
-                myDialog.show();
-            }
-        });
+//        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
+//            @Override
+//            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
+//
+//            }
+//
+//            @Override
+//            public void onItemLongClick(BaseQuickAdapter adapter, View view, final int position) {
+//                super.onItemLongClick(adapter, view, position);
+//                myDialog.setTitle("删除收藏");
+//                myDialog.setMessage("您要删除该收藏站点吗?");
+//                myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+//                    @Override
+//                    public void onNoClick() {
+//                        myDialog.dismiss();
+//                    }
+//                });
+//                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+//                    @Override
+//                    public void onYesClick() {
+//                        manager.deleteCollectStation(stationBeanList.get(position).getId(), new ManagerCallback() {
+//                            @Override
+//                            public void onSuccess(Object returnContent) {
+//                                super.onSuccess(returnContent);
+//                                showToast("删除成功!");
+//                                stationBeanList.remove(position);
+//                                dataChanged();
+//                                myDialog.dismiss();
+//                            }
+//
+//                            @Override
+//                            public void onFailure(String msg) {
+//                                super.onFailure(msg);
+//                                showToast(msg);
+//                            }
+//                        });
+//                    }
+//                });
+//                myDialog.show();
+//            }
+//        });
 
     }
 
     private void dataChanged() {
-        if (adapter == null) {
-            adapter = new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList);
-            recyclerView.setAdapter(adapter);
-        } else {
+//        if (adapter == null) {
+//            adapter = new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList);
+//            recyclerView.setAdapter(adapter);
+//        } else {
             adapter.notifyDataSetChanged();
-        }
+//        }
     }
 
 
@@ -185,5 +192,8 @@ public class MyCollectActivity extends BaseActivity {
         location.stopLocation();
     }
 
-
+    @Override
+    public void onRefresh() {
+        initData();
+    }
 }

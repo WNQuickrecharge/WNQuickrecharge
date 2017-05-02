@@ -51,7 +51,10 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pay_password);
-        payPasswordIsNUll = getIntent().getExtras().getBoolean("PayPasswordIsNUll");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle!=null) {
+            payPasswordIsNUll = bundle.getBoolean("PayPasswordIsNUll");
+        }
 
         initViews();
     }

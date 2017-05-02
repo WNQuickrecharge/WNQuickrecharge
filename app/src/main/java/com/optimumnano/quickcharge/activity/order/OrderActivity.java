@@ -179,7 +179,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             public void onFailure(String msg) {
                 super.onFailure(msg);
                 closeLoading();
-                showToast("获取失败，请检查终端号是否正确");
+                showToast(getString(R.string.get_gun_info_fail));
                 finish();
             }
         });
