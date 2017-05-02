@@ -268,9 +268,9 @@ public class RechargeFragment extends BaseFragment {
     public void startLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            if (Tool.isConnectingToInternet()&&(getActivity()).hasWindowFocus()) {
+            if (Tool.isConnectingToInternet()) {
                 ((MainActivity) getActivity()).showLoading("加载中...");
-            } else if (!Tool.isConnectingToInternet()){
+            } else {
                 ((MainActivity)getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)

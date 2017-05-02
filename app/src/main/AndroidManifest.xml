@@ -54,6 +54,7 @@
         android:theme="@style/Theme.AppTheme">
         <activity
             android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan">
