@@ -124,7 +124,7 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        startLocation();
+//        startLocation();
     }
 
     @Override
