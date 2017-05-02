@@ -100,7 +100,6 @@ public class RechargeFragment extends BaseFragment {
     private List<Point> mPiont;
     private List<CarPoint> mCarPiont;
     boolean isFirstLoc = true; // 是否首次定位
-    boolean flag = true; // 城市地址只保存一次
     private BottomSheetDialog mBsdialog;
     private View mPopView;
 
@@ -395,15 +394,10 @@ public class RechargeFragment extends BaseFragment {
             String city = location.getCity();
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, location.getLatitude() + "");
             SharedPreferencesUtil.putValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, location.getLongitude() + "");
-            if (flag){
-                flag=false;
-                if (TextUtils.isEmpty(mHelper.getCity())){
-                    mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
-//                    EventBus.getDefault().post(new EventManager.getCurrentCity(city));
-//                }else {
-//                    EventBus.getDefault().post(new EventManager.getCurrentCity(mHelper.getCity()));
-                }
-            }
+
+            if (TextUtils.isEmpty(mHelper.getCity()))
+                mHelper.updateCity(city);//只保存一次,防止修改城市时,被当前定位城市覆盖
+
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
 

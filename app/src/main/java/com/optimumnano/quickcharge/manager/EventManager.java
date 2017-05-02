@@ -51,13 +51,7 @@ public class EventManager {
     public static class cookieTimeOut{
 
     }
-    public static class getCurrentCity{
-        public String city;
 
-        public getCurrentCity(String city) {
-            this.city = city;
-        }
-    }
     public static class openStationActivity{
         public StationBean bean;
 
@@ -81,12 +75,6 @@ public class EventManager {
     }
 
     public static class onFilterParamsChange {
-        public String filterkv;
-        public String filterDistance;
-        public boolean isShowOnlyFree;
-
-        public onFilterParamsChange() {
-
-        }
+        public onFilterParamsChange() { }
     }
 }
