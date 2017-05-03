@@ -180,26 +180,42 @@ public class WalletDepositAct extends BaseActivity {
     private void callWXPay() {
         showToast("暂不支持微信支付");
 
+        GetMineInfoManager.getWXPayOrderInfoDeposit("D20170426112327003", new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                logtesti("returnContent "+returnContent.toString());
+                AlipayBean alipayBean = JSON.parseObject(returnContent.toString(), AlipayBean.class);
+
+                final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+                //将该app注册到微信
+                wxApi.registerApp(WX_APP_ID);
+                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+                if (isPaySupported) {
+                    PayReq request = new PayReq();
+                    request.appId = WX_APP_ID;
+                    request.partnerId = WX_PARTNER_ID;
+                    request.prepayId = "1101000000140415649af9fc314aa427";
+                    request.packageValue = "Sign=WXPay";
+                    request.nonceStr = "1101000000140429eb40476f8896f4c9";
+                    request.timeStamp = "1412000000";
+                    request.sign = "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
+                    wxApi.sendReq(request);
+                }else {
+                    showToast("您的微信版本过低不支持支付功能，请升级微信后使用");
+                }
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+                super.onFailure(msg);
+            }
+
+        });
 
 
-//        showToast("还未实现微信支付");
-        final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
-        //将该app注册到微信
-        wxApi.registerApp(WX_APP_ID);
-        boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
-        if (isPaySupported) {
-            PayReq request = new PayReq();
-            request.appId = WX_APP_ID;
-            request.partnerId = WX_PARTNER_ID;
-            request.prepayId = "1101000000140415649af9fc314aa427";
-            request.packageValue = "Sign=WXPay";
-            request.nonceStr = "1101000000140429eb40476f8896f4c9";
-            request.timeStamp = "1412000000";
-            request.sign = "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
-            wxApi.sendReq(request);
-        }else {
-            showToast("您的微信版本过低不支持支付功能，请升级微信后使用");
-        }
     }
 
     private void callALiPay() {

@@ -72,6 +72,29 @@ public class GetMineInfoManager {
         });
     }
 
+    public static void getWXPayOrderInfoDeposit(String orderNum, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_wxpay_orderinfo_deposit);
+        RequestParams params= new RequestParams(url);
+        HashMap<String ,Object> requestJson=new HashMap<>();
+        requestJson.put("order_no",orderNum);
+        String json = JSON.toJSONString(requestJson);
+        params.setBodyContent(json);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
     public static void getAccountInfo(final ManagerCallback callback) {
         String url = HttpApi.getInstance().getUrl(HttpApi.get_accountinfo);
         RequestParams params = new RequestParams(url);
