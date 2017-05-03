@@ -3,11 +3,13 @@ package com.optimumnano.quickcharge.activity.filter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.weijing.materialanimatedswitch.MaterialAnimatedSwitch;
@@ -146,11 +148,16 @@ public class FilterActivity extends BaseActivity {
 
         if (mCurCity!=null){
             mHelper.updateCity(mCurCity);
-            EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
+            //EventBus.getDefault().post(new EventManager.getCurrentCity(mCurCity));
         }
-        EventBus.getDefault().post(new EventManager.onFilterParamsChange());
-
-        finish();
+        skipActivity(MainActivity.class,null);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new EventManager.onFilterParamsChange());
+                finish();
+            }
+        },500);
     }
 
     @OnClick(R.id.ll_location)
