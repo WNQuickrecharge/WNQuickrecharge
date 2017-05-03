@@ -13,7 +13,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.bean.StationBean;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,11 +27,13 @@ import java.util.List;
 
 public class CollectionStationAdapter extends BaseQuickAdapter<StationBean,BaseViewHolder> {
     private Context context;
+    private OnItemLongClickListener listener;
 
 
-    public CollectionStationAdapter(Context context,int layoutResId, List<StationBean> data) {
+    public CollectionStationAdapter(Context context,int layoutResId, List<StationBean> data,OnItemLongClickListener listener) {
         super(layoutResId, data);
         this.context=context;
+        this.listener=listener;
     }
 
     @Override
@@ -72,6 +76,16 @@ public class CollectionStationAdapter extends BaseQuickAdapter<StationBean,BaseV
                 context.startActivity(intent);
             }
         });
+        root.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onLongClick(item);
+                return true;
+            }
+        });
 
+    }
+    public interface OnItemLongClickListener{
+        void onLongClick(StationBean item);
     }
 }

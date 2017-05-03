@@ -109,7 +109,41 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
         myDialog.setCancelable(true);
         recyclerView = (HTRefreshRecyclerView) findViewById(R.id.collects_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter=new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList);
+        adapter=new CollectionStationAdapter(this, R.layout.adapter_collect_station, stationBeanList, new CollectionStationAdapter.OnItemLongClickListener() {
+            @Override
+            public void onLongClick(final StationBean item) {
+                myDialog.setTitle("删除收藏");
+                myDialog.setMessage("您要删除该收藏站点吗?");
+                myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+                    @Override
+                    public void onNoClick() {
+                        myDialog.dismiss();
+                    }
+                });
+                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+                    @Override
+                    public void onYesClick() {
+                        manager.deleteCollectStation(item.getId(), new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                showToast("删除成功!");
+                                stationBeanList.remove(item);
+                                dataChanged();
+                                myDialog.dismiss();
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                                showToast(msg);
+                            }
+                        });
+                    }
+                });
+                myDialog.show();
+            }
+        });
         recyclerView.setAdapter(adapter);
         MyDivier de = new MyDivier(this, MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
@@ -117,47 +151,6 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
         recyclerView.setLoadMoreViewShow(false);
         recyclerView.setEnableScrollOnRefresh(true);
 
-//        recyclerView.addOnItemTouchListener(new OnItemClickListener() {
-//            @Override
-//            public void onSimpleItemClick(BaseQuickAdapter adapter, View view, int position) {
-//
-//            }
-//
-//            @Override
-//            public void onItemLongClick(BaseQuickAdapter adapter, View view, final int position) {
-//                super.onItemLongClick(adapter, view, position);
-//                myDialog.setTitle("删除收藏");
-//                myDialog.setMessage("您要删除该收藏站点吗?");
-//                myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
-//                    @Override
-//                    public void onNoClick() {
-//                        myDialog.dismiss();
-//                    }
-//                });
-//                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
-//                    @Override
-//                    public void onYesClick() {
-//                        manager.deleteCollectStation(stationBeanList.get(position).getId(), new ManagerCallback() {
-//                            @Override
-//                            public void onSuccess(Object returnContent) {
-//                                super.onSuccess(returnContent);
-//                                showToast("删除成功!");
-//                                stationBeanList.remove(position);
-//                                dataChanged();
-//                                myDialog.dismiss();
-//                            }
-//
-//                            @Override
-//                            public void onFailure(String msg) {
-//                                super.onFailure(msg);
-//                                showToast(msg);
-//                            }
-//                        });
-//                    }
-//                });
-//                myDialog.show();
-//            }
-//        });
 
     }
 
