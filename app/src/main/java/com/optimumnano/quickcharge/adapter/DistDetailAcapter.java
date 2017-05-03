@@ -71,10 +71,26 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
 //        SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
 //                .first("1.5").first("0.5").textColor(R.color.red);
 //        st.linkify(holder.tvPricePer);
-        holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
-        holder.tvElectricPricMax.setText(holder.mItem.max_price+"");
-        holder.tvServicePricMin.setText(holder.mItem.min_service+"");
-        holder.tvServicePricMax.setText(holder.mItem.max_service+"");
+        if (holder.mItem.max_price==holder.mItem.min_price) {
+            holder.waveLine1.setVisibility(View.GONE);
+            holder.tvElectricPricMax.setVisibility(View.GONE);
+            holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
+        }else {
+            holder.waveLine1.setVisibility(View.VISIBLE);
+            holder.tvElectricPricMax.setVisibility(View.VISIBLE);
+            holder.tvElectricPricMin.setText(holder.mItem.min_price+"");
+            holder.tvElectricPricMax.setText(holder.mItem.max_price+"");
+        }
+        if (holder.mItem.max_service==holder.mItem.min_service) {
+            holder.waveLine2.setVisibility(View.GONE);
+            holder.tvServicePricMax.setVisibility(View.GONE);
+            holder.tvServicePricMin.setText(holder.mItem.min_service+"");
+        }else {
+            holder.waveLine2.setVisibility(View.VISIBLE);
+            holder.tvServicePricMax.setVisibility(View.VISIBLE);
+            holder.tvServicePricMin.setText(holder.mItem.min_service+"");
+            holder.tvServicePricMax.setText(holder.mItem.max_service+"");
+        }
         String ss="空闲"+holder.mItem.FreePiles+"/共"+holder.mItem.TotalPiles+"个";
         SimpleText simpleText = SimpleText.create(holder.mView.getContext(), ss)
                 .first(holder.mItem.FreePiles).textColor(R.color.main_color);
@@ -191,6 +207,11 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         TextView tvServicePricMin;
         @Bind(R.id.tv_service_price_max)
         TextView tvServicePricMax;
+        @Bind(R.id.tv_wave_line_1)
+        TextView waveLine1;
+        @Bind(R.id.tv_wave_line_2)
+        TextView waveLine2;
+
         public Point mItem;
 
         public ViewHolder(View view) {

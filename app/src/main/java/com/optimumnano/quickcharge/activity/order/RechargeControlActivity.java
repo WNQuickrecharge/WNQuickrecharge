@@ -1,7 +1,9 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
+import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.HttpApi;
@@ -24,6 +27,8 @@ import com.zsoft.signala.ConnectionState;
 import com.zsoft.signala.SendCallback;
 import com.zsoft.signala.transport.StateBase;
 import com.zsoft.signala.transport.longpolling.LongPollingTransport;
+
+import org.xutils.common.util.LogUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -92,13 +97,19 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
     private void initData(){
 //        startCountTime(1000*1000,2000);
+        if (orderStatus==GETCHARGEPROGRESS) {
+            tvStart.setVisibility(View.GONE);
+            tvDescone.setText("充电中");
+            tvDescTwo.setText("正在获取充电信息");
+        }
     }
 
     @Override
     public void initViews() {
         super.initViews();
         setTitle("充电控制");
-        setRightTitle("使用帮助");
+        setRightTitle("");
+        //setRightTitle("使用帮助");
         waveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         tvPersent = (TextView) findViewById(R.id.rechargecon_tvPersent);
         tvDescone = (TextView) findViewById(R.id.rechargecon_tvDescone);
@@ -112,6 +123,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         }
 
         dialog = new WaitRechargeDialog(this);
+        if (orderStatus==4) {//充电中
+            showLoading("请求充电状态中");
+        }
     }
 
     @Override
@@ -187,16 +201,22 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //            //开始充电
 //            else
             if (requestCode == STARTCHARGE){
-                startCountTime(1000*1000,10*1000);
-                dialog.cancelDialog();
+                //startCountTime(1000*1000,10*1000);
+                //dialog.cancelDialog();
                 tvStart.setVisibility(View.GONE);
-                tvStop.setVisibility(View.VISIBLE);
+                //tvStop.setVisibility(View.VISIBLE);
             }
             //结束充电
             else if (requestCode == STOPCHARGE){
+                LogUtil.i("充电结束");
+                showLoading("结束充电计算中，请稍等！");
+//                Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
+//                Bundle bundle=new Bundle();
+//                bundle.putString("order_no",orderNo);
+//                intent.putExtras(bundle);
+//                RechargeControlActivity.this.startActivity(intent);
+                //getOrderInfo(orderNo);
 
-                skipActivity(OrderDetlActivity.class,null);
-                finish();
             }
             //充电进度查询
             else {
@@ -236,6 +256,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             conn.Start();
 
         } catch (Exception e) {
+            showToast(String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
 //        hub.On("addNewMessageToPage", new HubOnDataCallback() {
@@ -270,6 +291,37 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
 
     }
+    private void getOrderInfo(final String order_no) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                SystemClock.sleep(3000);
+                OrderManager.getOrderByOrderNo(order_no, new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                        String s = returnContent.toString();
+                        Intent intent=new Intent(RechargeControlActivity.this,OrderlistDetailtwoActivity.class);
+                        OrderBean orderBean = JSON.parseObject(s, OrderBean.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putSerializable("orderbean",orderBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                        showToast(msg);
+                        finish();
+                    }
+                });
+            }
+        }.start();
+
+    }
 
     private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
         @Override
@@ -297,14 +349,23 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
 
                     break;
+                case 3://
+
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.VISIBLE);
+                    break;
                 case 4://充电中
-                    int charge_soc = longConnectMessageBean.getCharge_soc();
-                    int time_remain = longConnectMessageBean.getTime_remain();
-                    tvTime.setText("充电预计时间"+time_remain+"分钟");
-                    tvPersent.setText(persent+"%");
-                    waveLoadingView.setWaveHeight(persent);
+                    dialog.cancelDialog();
+                    int soc = longConnectMessageBean.getSoc();
+                    String time_remain = longConnectMessageBean.getTime_remain();
+                    tvTime.setVisibility(View.VISIBLE);
+                    tvTime.setText("预计充满还需"+time_remain+"分钟");
+                    tvPersent.setText(soc+"%");
+                    waveLoadingView.setWaveHeight(soc);
                     tvDescone.setText("正在充电中");
                     tvDescTwo.setText("请您稍作休息");
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.VISIBLE);
 
 
                     break;
@@ -313,12 +374,18 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
                     break;
                 case 6://充电完成,跳转界面获取生成的订单信息.
+                    tvDescone.setText("充电已完成！");
+                    tvDescTwo.setVisibility(View.INVISIBLE);
+                    tvStart.setVisibility(View.GONE);
+                    tvStop.setVisibility(View.GONE);
+                    tvTime.setVisibility(View.INVISIBLE);
                     String order_no = longConnectMessageBean.getOrder_no();
-                    int power_time = longConnectMessageBean.getPower_time();
-                    Double consume_money = longConnectMessageBean.getConsume_money();
-                    Double forzen_cash = longConnectMessageBean.getForzen_cash();
-                    Double back_cash = longConnectMessageBean.getBack_cash();
-
+                    Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("order_no",order_no);
+                    intent.putExtras(bundle);
+                    RechargeControlActivity.this.startActivity(intent);
+                    finish();
                     break;
 
                 default:
@@ -331,8 +398,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         public void OnStateChanged(StateBase oldState, StateBase newState) {
             Log.d(TAG, "OnStateChanged=" + oldState.getState() + " -> " + newState.getState());
             if (newState.getState()== ConnectionState.Connected){
-                String userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID, "");
-                conn.Send("{'data_type':1,'user_id':+"+ userID +"}", new SendCallback() {
+                int userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID,-1);
+                conn.Send("{'data_type':1,'user_id':"+userID+"}", new SendCallback() {
                     @Override
                     public void OnSent(CharSequence messageSent) {
                         Log.d("onSent","正在传送");

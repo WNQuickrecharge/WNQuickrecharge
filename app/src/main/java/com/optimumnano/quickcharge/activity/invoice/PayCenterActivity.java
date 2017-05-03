@@ -9,12 +9,13 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PayCenterActivity extends BaseActivity implements View.OnClickListener {
+public class PayCenterActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
     @Bind(R.id.paycenter_miMoney)
     MenuItem1 miMoney;
     @Bind(R.id.paycenter_iv)
@@ -27,6 +28,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     RelativeLayout rlPayway;
 
     private double allMoney;
+
+    private PayDialog payDialog ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +58,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.paycenter_tvNext:
-                Bundle bundle = new Bundle();
-                bundle.putDouble("money",allMoney);
-                skipActivity(InvoiceApplyActivity.class,bundle);
+                pay();
                 break;
             case R.id.paycenter_rlPayway:
 
@@ -65,9 +66,30 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    private void pay() {
+        if (payDialog == null){
+            payDialog = new PayDialog(this);
+            payDialog.setMoney(allMoney,"order_no","sign");
+            payDialog.setPayCallback(this);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putDouble("money",allMoney);
+        skipActivity(InvoiceApplyActivity.class,bundle);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void paySuccess(String oder_no) {
+
+    }
+
+    @Override
+    public void payFail(String msg) {
+
     }
 }

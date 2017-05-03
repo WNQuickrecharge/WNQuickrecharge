@@ -94,7 +94,7 @@ public class LoadingDialog {
         }
     }
 
-    public void setCanceledOutside(boolean BeCanceled) {
+    public void setCanceableOutside(boolean BeCanceled) {
         mDialog.setCanceledOnTouchOutside(BeCanceled);
     }
 

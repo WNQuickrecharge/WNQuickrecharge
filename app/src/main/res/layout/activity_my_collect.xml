@@ -6,11 +6,11 @@
     android:background="@color/bg_gray_F2"
     tools:context="com.optimumnano.quickcharge.activity.mineinfo.MyCollectActivity">
     <include layout="@layout/title_main"/>
-    <android.support.v7.widget.RecyclerView
+    <com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView
         android:id="@+id/collects_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView>
 
 </LinearLayout>

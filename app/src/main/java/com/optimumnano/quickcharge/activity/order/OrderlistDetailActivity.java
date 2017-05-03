@@ -1,8 +1,8 @@
 package com.optimumnano.quickcharge.activity.order;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.Constants;
@@ -14,6 +14,10 @@ import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import java.text.DecimalFormat;
+
+import static com.optimumnano.quickcharge.R.id.iv_order_icon;
+
 public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
     private TextView tvPay,tvCancel,tvWatchStatus;
     private TextView tvStatus,tvOrdernum,tvCompany,tvAddress,tvDate;
@@ -22,6 +26,8 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
 
     private PayDialog payDialog;
     private OrderManager orderManager = new OrderManager();
+    private ImageView orderIcon;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +59,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         tvCompany = (TextView) findViewById(R.id.orderlistDetl_tvCompany);
         tvAddress = (TextView) findViewById(R.id.orderlistDetl_tvAddress);
         tvDate = (TextView) findViewById(R.id.orderlistDetl_tvTime);
+        orderIcon = (ImageView) findViewById(iv_order_icon);
     }
     private void initListener(){
         tvPay.setOnClickListener(this);
@@ -93,9 +100,23 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         miGunNum.setRightText(orderBean.gun_code);
         miPileType.setRightText(orderBean.pile_type);
         miElec.setRightText(orderBean.elec_current+"A");
-        miPower.setRightText(orderBean.power+"/kwh");
-        miForzenCatsh.setRightText("￥"+orderBean.frozen_cash);
+        miPower.setRightText(orderBean.power+"kw");
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+        String formatFrozenCash = decimalFormat.format(orderBean.frozen_cash);
+        miForzenCatsh.setRightText("￥"+formatFrozenCash);
         tvDate.setText(orderBean.start_time);
+        switch (orderBean.charge_from) {
+            case 1:
+                orderIcon.setImageResource(R.mipmap.chongdianzhuang);
+            break;
+            case 2:
+                orderIcon.setImageResource(R.mipmap.budianche);
+            break;
+
+            default :
+
+            break;
+        }
     }
 
     @Override

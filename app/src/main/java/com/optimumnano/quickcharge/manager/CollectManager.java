@@ -41,7 +41,7 @@ public class CollectManager {
             }
         });
     }
-    public void addCollectStation(int station_id,final ManagerCallback callback){
+    public static void addCollectStation(int station_id,final ManagerCallback callback){
         String url = HttpApi.getInstance().getUrl(HttpApi.add_collection);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();

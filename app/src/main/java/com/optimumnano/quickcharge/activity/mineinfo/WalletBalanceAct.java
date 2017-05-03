@@ -5,18 +5,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.CircleImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -58,7 +63,22 @@ public class WalletBalanceAct extends BaseActivity {
     }
 
     private void initData() {
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                mBalanceValue.setText(df.format(restCash));
+            }
 
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override
@@ -73,8 +93,6 @@ public class WalletBalanceAct extends BaseActivity {
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.wd).into(mHeadview);
 
-        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
-        mBalanceValue.setText(balance);
     }
 
     @Override

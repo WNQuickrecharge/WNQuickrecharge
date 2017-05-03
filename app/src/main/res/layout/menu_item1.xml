@@ -44,7 +44,7 @@
         android:layout_toRightOf="@id/tvLeft"
         android:layout_toLeftOf="@id/ivRight"
         android:maxLines="1"
-        android:maxLength="35"
+        android:maxLength="21"
         android:ellipsize="end"
         android:textSize="@dimen/default_textsize14" />
 

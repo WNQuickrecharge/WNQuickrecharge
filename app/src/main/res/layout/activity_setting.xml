@@ -28,6 +28,15 @@
             android:layout_height="wrap_content"
             app:tvLeftText="修改支付密码"
             app:showivRight="true"/>
+        <include layout="@layout/view_line"/>
+        <com.optimumnano.quickcharge.views.MenuItem1
+            android:layout_marginTop="@dimen/dimen_10"
+            android:id="@+id/tv_current_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rightTextColor="@color/color33"
+            app:tvLeftText="@string/current_version"
+            app:showtvRight="true" />
 
     </LinearLayout>
 

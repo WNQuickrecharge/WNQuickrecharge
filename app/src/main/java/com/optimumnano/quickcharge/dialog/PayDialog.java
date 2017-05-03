@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
-import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
@@ -284,6 +283,10 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
         this.sign = sign;
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
     }
+    public void setPayResultMoney(double money){
+        this.money = money;
+        dialog.getViewHolder().setText(R.id.payresult_tvMoney,"¥"+money);
+    }
 
     public void setPayway(int payway){
         this.payWay = payway;
@@ -346,6 +349,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             dialog.getViewHolder().setVisible(R.id.pay_llEdt,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,true);
+            dialog.getViewHolder().setText(R.id.payresult_tvMoney,"");
             dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
         }
         else if (status == PAYFAIL){

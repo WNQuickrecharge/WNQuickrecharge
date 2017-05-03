@@ -7,17 +7,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
-
-import org.xutils.common.util.LogUtil;
-
-import static com.optimumnano.quickcharge.R.id.register_edtConfirmPwd;
 
 public class ForgetPwdActivity extends BaseActivity implements View.OnClickListener {
     private EditText edtPhone,edtChecknum,edtPwd,edtConfirmPwd;
@@ -84,6 +79,10 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
             showToast("两次密码不一致,请重输入");
             return;
         }
+        if (edtConfirmPwd.getText().toString().length()<6||edtPwd.getText().toString().length()<6) {
+            showToast("密码长度不能小于6位");
+            return;
+        }
         String newPassword = edtConfirmPwd.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
         String finalPassword = MD5Utils.encodeMD5(Md5Password);
@@ -103,7 +102,7 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         tvChecknum.setClickable(false);
-        startCountTime(60*1000,1000);
+        startCountTime(5*60*1000,1000);
         loginManager.getCheckNum(mobile,"ForgetPwdCApp",requestCallback,0);
     }
 

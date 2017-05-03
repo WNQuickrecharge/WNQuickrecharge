@@ -27,11 +27,11 @@
                 app:inner_corner_color="@color/main_color"
                 app:inner_corner_length="30dp"
                 app:inner_corner_width="2dp"
-                app:inner_height="223dp"
+                app:inner_height="200dp"
                 app:inner_margintop="100dp"
                 app:inner_scan_iscircle="false"
                 app:inner_scan_speed="8"
-                app:inner_width="223dp" />
+                app:inner_width="200dp" />
         </RelativeLayout>
 
         <RelativeLayout

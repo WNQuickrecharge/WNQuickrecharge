@@ -65,7 +65,7 @@
                 android:id="@+id/login_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="记住密码"
+                android:text="记住账号"
                 android:padding="@dimen/default_padding"
                 android:layout_marginLeft="@dimen/default_lrmargin"
                 android:button="@drawable/login_checkbox"

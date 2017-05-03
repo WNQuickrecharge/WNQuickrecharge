@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.activity.setting;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,23 +41,33 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     private ImageView oneImag, twoImag, threeImag, fourImag, fiveImag, sixImag;
     private MyDialog myDialog;
     private StringBuffer mStringBuffer;
-    private ProgressDialog progressDialog;
     private TextView mTitleView;
     EditText mPayPassword;
     private String payPassword;
     private ModifyUserInformationManager manager = new ModifyUserInformationManager();
+    private boolean payPasswordIsNUll;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pay_password);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle!=null) {
+            payPasswordIsNUll = bundle.getBoolean("PayPasswordIsNUll");
+        }
+
         initViews();
     }
 
     @Override
     public void initViews() {
         super.initViews();
-        setTitle("修改支付密码");
+        if (payPasswordIsNUll==true) {
+            inputPayPasswordStatus=FIRST_INPUT_NEW_PAY_PASSWORD;
+            setTitle("设置支付密码");
+        }else {
+            setTitle("修改支付密码");
+        }
         tvLeft.setVisibility(View.VISIBLE);
         mPayPassword = (EditText) findViewById(R.id.et_pay_password);
         mTitleView = (TextView) findViewById(R.id.tv_title_change_pay_password);
@@ -69,7 +78,6 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         fiveImag = (ImageView) findViewById(R.id.iv_five_img);
         sixImag = (ImageView) findViewById(R.id.iv_six_img);
         myDialog = new MyDialog(this, R.style.MyDialog);
-        progressDialog = new ProgressDialog(this);
         myDialog.setCancelable(false);
         EventBus.getDefault().register(this);
         mStringBuffer = new StringBuffer();
@@ -108,7 +116,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
                 @Override
                 public void onSuccess(Object returnContent) {
                     super.onSuccess(returnContent);
-                    hideLoading();
+                    closeLoading();
                     JSONObject dataJson = null;
                     try {
                         dataJson = new JSONObject(returnContent.toString());
@@ -129,7 +137,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
 
                 @Override
                 public void onFailure(String msg) {
-                    hideLoading();
+                    closeLoading();
                     showToast(msg);
                 }
             });
@@ -209,24 +217,11 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         s.delete(0, s.length());
     }
 
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-
-    }
-
-
-    public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPayPasswordWrong(EventManager.onInPutWrongOldPayPassword event) {
 
-        hideLoading();
+        closeLoading();
         myDialog.setTitle("支付提醒");
         myDialog.setMessage("密码输入错误,请重试!");
         myDialog.setYesOnclickListener("重新输入", new MyDialog.onYesOnclickListener() {
@@ -242,6 +237,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
             public void onNoClick() {
                 startActivity(new Intent(ModifyPayPasswordActivity.this,ForgetPayPasswordActivity.class));
                 myDialog.dismiss();
+                finish();
 
             }
         });
@@ -285,7 +281,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-            hideLoading();
+            closeLoading();
             showToast("支付密码修改成功!");
             finish();
         }
@@ -293,7 +289,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         @Override
         public void onFailure(String msg) {
             super.onFailure(msg);
-            hideLoading();
+            closeLoading();
             showToast(msg);
         }
     }

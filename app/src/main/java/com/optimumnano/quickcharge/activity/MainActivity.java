@@ -47,6 +47,8 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -323,14 +325,14 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbOrder:
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
-
-                        setRightTitle("开发票");
+                        setRightTitle("");
+                        //setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
-//                        setRightTitle("消息");//第一版不做消息
+                        setRightTitle("");//第一版不做消息
                         viewPager.setCurrentItem(2);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {
@@ -360,11 +362,15 @@ public class MainActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
                 switch (s.toString()) {
                     case "列表":
-                        rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                            rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
+                        }
                         break;
 
                     case "地图":
-                        rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                            rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
+                        }
                         break;
 
                     default:
@@ -439,7 +445,8 @@ public class MainActivity extends BaseActivity {
 
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
+            //routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,BNRoutePlanNode.CoordinateType.WGS84, mPoint);
         }
     }
 
@@ -454,6 +461,22 @@ public class MainActivity extends BaseActivity {
         BNRoutePlanNode eNode = null;
         sNode = new BNRoutePlanNode(mHelper.getLocation().lng, mHelper.getLocation().lat, "我的位置", null, coType);
         eNode = new BNRoutePlanNode(mPoint.Lng, mPoint.Lat, mPoint.StationName, null, coType);
+        if (sNode != null && eNode != null) {
+            List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
+            list.add(sNode);
+            list.add(eNode);
+            BaiduNaviManager.getInstance().launchNavigator(this, list, 1, true, new DemoRoutePlanListener(sNode));
+        }
+    }
+    private void routeplanToNavi(BNRoutePlanNode.CoordinateType startPonitCoType,BNRoutePlanNode.CoordinateType endPointCoType ,Point mPoint) {
+        //mCoordinateType = coType;
+        if (!hasInitSuccess) {
+            Log.d("TAG", "还未初始化!");
+        }
+        BNRoutePlanNode sNode = null;
+        BNRoutePlanNode eNode = null;
+        sNode = new BNRoutePlanNode(mHelper.getLocation().lng, mHelper.getLocation().lat, "我的位置", null, startPonitCoType);
+        eNode = new BNRoutePlanNode(mPoint.Lng, mPoint.Lat, mPoint.StationName, null, endPointCoType);
         if (sNode != null && eNode != null) {
             List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
             list.add(sNode);
@@ -592,6 +615,12 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
         AppManager.getAppManager().finishAllActivity();
+        SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
         startActivity(new Intent(this, LoginActivity.class));
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void mainActivitySelectOrderTag(EventManager.mainActivitySelectOrderTag event) {
+       viewPager.setCurrentItem(1);
+        rg.check(R.id.main_rbOrder);
     }
 }

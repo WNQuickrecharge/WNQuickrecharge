@@ -174,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_padding"
                 android:focusable="true"
-                android:max="40"
+                android:max="30"
                 android:maxHeight="8.0dip"
                 android:minHeight="8.0dip"
                 android:progress="10"
@@ -206,6 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="180"
+                    android:visibility="gone"
                     android:textSize="@dimen/sp_12" />
 
                 <TextView

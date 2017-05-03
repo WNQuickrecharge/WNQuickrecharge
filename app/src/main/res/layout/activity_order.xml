@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="额定功率"
-            app:tvRightText="0/kwh"
+            app:tvRightText="0kw"
             app:LeftTextColor="@color/color66"
             app:rightTextColor="@color/color33"
             app:showtvRight="true"
@@ -76,6 +76,16 @@
             app:rightTextColor="@color/color33"
             app:showtvRight="true"
             android:layout_marginTop="@dimen/default_padding"/>
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/order_miSimServicePrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tvLeftText="服务费单价"
+                app:tvRightText="0元/kwh"
+                app:LeftTextColor="@color/color66"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                android:layout_marginTop="@dimen/default_padding"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -122,7 +132,6 @@
                 android:padding="@dimen/default_padding"
                 android:textSize="@dimen/default_textsize"
                 android:maxLength="6"
-                android:text="0.01"
                 android:layout_toRightOf="@id/order_tvmoney"
                 android:layout_toLeftOf="@id/order_danwei"
                 android:layout_marginLeft="@dimen/default_padding"
@@ -153,9 +162,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="实际费用 = 实际充电度数 * 单价"
-            android:layout_marginLeft="@dimen/default_padding40"
-            android:layout_marginRight="@dimen/default_padding40"
+            android:text="实际费用 = 实际充电度数 * （单价+服务费单价）"
+            android:layout_marginLeft="@dimen/default_padding20"
+            android:layout_marginRight="@dimen/default_padding20"
             android:layout_marginTop="@dimen/default_lrmargin"
             android:gravity="center_horizontal"
             style="@style/text_mainstyle"

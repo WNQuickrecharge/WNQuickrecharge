@@ -61,4 +61,9 @@ public class RechargerViewPagerFrag extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         fragment.onActivityResult(requestCode,resultCode,data);
     }
+
+    @Override
+    protected void lazyLoad() {
+
+    }
 }

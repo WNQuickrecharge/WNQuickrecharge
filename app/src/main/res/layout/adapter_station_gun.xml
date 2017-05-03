@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="编号:" />
+            android:text="@string/gun_number" />
         <TextView
             android:id="@+id/tv_station_item_pileNo"
             android:layout_width="wrap_content"
@@ -66,13 +66,13 @@
         </LinearLayout>
 
 
-        <Button
+        <TextView
             android:id="@+id/pile_status_operation"
             android:layout_width="110dp"
             android:layout_height="35dp"
             android:background="@drawable/pile_status_operation_bg"
             android:gravity="center"
-            android:text="正在充电"
+            android:text="@string/charging"
             android:textColor="@color/white" />
     </LinearLayout>
 

@@ -160,4 +160,17 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+
+    <style name="LetterIndexTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/dimen_16</item>
+        <item name="android:paddingRight">@dimen/side_letter_bar_width</item>
+        <item name="android:paddingTop">@dimen/dimen_8</item>
+        <item name="android:paddingBottom">@dimen/dimen_8</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textColor">@color/color88</item>
+    </style>
+
 </resources>

@@ -21,6 +21,11 @@ public class GunBean implements Serializable {
     private String PileNo;
     private String gun_code;
     private double ServiceCharge;
+    public double max_price;
+    public double min_price;
+    public double max_service;
+    public double min_service;
+
 
     public int getGunStatus() {
         return GunStatus;

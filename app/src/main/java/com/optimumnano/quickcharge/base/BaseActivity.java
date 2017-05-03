@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.base;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,9 +37,8 @@ public class BaseActivity extends AppCompatActivity {
     public TextView tvTitle,tvRight,tvLeft;
     public ImageView ivRight;
     public Toolbar toolbar;
-    private static ProgressDialog progressDialog;
 
-    protected PreferencesHelper mHelper;
+    public PreferencesHelper mHelper;
     private LoadingDialog mLoadingDialog;
 
     @Override
@@ -48,7 +46,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         mHelper=new PreferencesHelper(this);
-        progressDialog=new ProgressDialog(this);
         mLoadingDialog = new LoadingDialog(BaseActivity.this);
     }
     public void initViews(){
@@ -82,6 +79,9 @@ public class BaseActivity extends AppCompatActivity {
                 onLeftDoSomething();
             }
         });
+    }
+    public void setCanceableOutside(boolean flag){
+        mLoadingDialog.setCanceableOutside(flag);
     }
 
     public void showLoading(String title){
@@ -288,16 +288,4 @@ public class BaseActivity extends AppCompatActivity {
             LogUtil.i("test== "+msg);
     }
 
-    public static void showBaseLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-
-    }
-
-    public static void hideBaseLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 }

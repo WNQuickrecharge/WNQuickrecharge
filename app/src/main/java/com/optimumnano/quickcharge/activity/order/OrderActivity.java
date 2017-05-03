@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -16,11 +17,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositSuccessAct;
+import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
+import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
@@ -59,6 +60,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     MenuItem1 miPower;
     @Bind(R.id.order_miSimPrice)
     MenuItem1 miSimprice;
+    @Bind(R.id.order_miSimServicePrice)
+    MenuItem1 miSimServicePrice;
     @Bind(R.id.order_edtMoney)
     EditText edtMoney;
     @Bind(R.id.order_tvAllkwh)
@@ -69,7 +72,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private OrderManager orderManager = new OrderManager();
     private RechargeGunBean gunBean;
     private String orderNo = "";//订单号
-    private String gunNo = "67867678901234517";
+    private String gunNo = "";
     private String mAmount;
 
     private int payWay = PayDialog.pay_yue;//支付方式
@@ -113,6 +116,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             }
         }
     };
+    private String formatRestCash;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,27 +149,56 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void afterTextChanged(Editable s) {
                 if (!StringUtils.isEmpty(s.toString())){
-                    tvAllkwh.setText(Double.parseDouble(s.toString())/gunBean.price+"kwh");
+                    if (tvAllkwh!=null) {
+                        double price = Double.parseDouble(s.toString()) / (gunBean.price+gunBean.service_cost);
+
+                        DecimalFormat df = new DecimalFormat("0.00");
+                        String formatPrice = df.format(price);
+                        tvAllkwh.setText(formatPrice+"kwh");
+                    }
                 }
                 else {
-                    tvAllkwh.setText("0.0kwh");
+                    if (tvAllkwh!=null) {
+                        tvAllkwh.setText("0.0kwh");
+                    }
                 }
             }
         });
     }
     private void initData(){
+        showLoading("获取枪状态中请稍等！");
         orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
             @Override
             public void onSuccess(RechargeGunBean returnContent) {
                 super.onSuccess(returnContent);
                 gunBean = returnContent;
                 loadData();
+                closeLoading();
             }
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
-                showToast("获取失败，请检查终端号是否正确");
+                closeLoading();
+                showToast(getString(R.string.get_gun_info_fail));
                 finish();
+            }
+        });
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                formatRestCash = df.format(restCash);
+                miPayway.setTvLeftText("余额"+"("+ formatRestCash +")");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
             }
         });
     }
@@ -173,8 +206,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         miRechargenum.setRightText(gunNo);
         miType.setRightText(gunBean.pile_type);
         miElectric.setRightText(gunBean.elec_current+"A");
-        miPower.setRightText(gunBean.power+"kwh");
+        miPower.setRightText(gunBean.power+"kw");
         miSimprice.setRightText(gunBean.price+"元/kwh");
+        miSimServicePrice.setRightText(gunBean.service_cost+"元/kwh");
+        double price=0.0;
+        if (TextUtils.isEmpty(edtMoney.getText().toString())) {
+            price=0.0;
+        }else {
+            price = Double.parseDouble(edtMoney.getText().toString()) / (gunBean.price+gunBean.service_cost);
+
+        }
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formatPrice = df.format(price);
+        tvAllkwh.setText(formatPrice+"kwh");
     }
     private void initDialog(){
         payDialog = new PayDialog(this);
@@ -200,7 +245,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                     //余額
                     case PayDialog.pay_yue:
                         miPayway.setIvLeftDrawable(R.drawable.yue);
-                        miPayway.setTvLeftText("余额");
+                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
                         payWay = PayDialog.pay_yue;
                         break;
                 }
@@ -238,9 +283,29 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 String sign = ha.get("sign").toString();
                 switch (payWay) {
                     case PayDialog.pay_yue:
+                        GetMineInfoManager.getPayPwd(new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                if (returnContent.equals("{}")) {
+                                    showToast("支付密码为空，请设置");
+                                    Intent intent=new Intent(OrderActivity.this, ModifyPayPasswordActivity.class);
+                                    Bundle bundle=new Bundle();
+                                    bundle.putBoolean("PayPasswordIsNUll",true);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                            }
+                        });
                         payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo,sign);
                         payDialog.setStatus(0);
                         payDialog.setPayway(payWay);
+                        payDialog.setPayResultMoney(Double.parseDouble(edtMoney.getText().toString()));
                         payDialog.show();
                         break;
 

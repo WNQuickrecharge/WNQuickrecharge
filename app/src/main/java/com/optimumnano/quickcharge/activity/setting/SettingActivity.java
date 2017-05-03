@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.optimumnano.quickcharge.BuildConfig;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -14,6 +15,11 @@ import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import org.xutils.common.util.LogUtil;
+
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
+import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -24,6 +30,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
     private MenuItem1 modifyPassword;
     private MenuItem1 modifyPayPassword;
+    private MenuItem1 currentVersion;
     private Button logout;
     private ModifyUserInformationManager manager=new ModifyUserInformationManager();
     @Override
@@ -40,6 +47,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         setRightTitle("");
         modifyPassword= (MenuItem1) findViewById(R.id.setting_modify_password);
         modifyPayPassword= (MenuItem1) findViewById(R.id.setting_modify_pay_password);
+        currentVersion= (MenuItem1) findViewById(R.id.tv_current_version);
+        currentVersion.setRightText(BuildConfig.VERSION_NAME);
         logout= (Button) findViewById(R.id.logout);
         modifyPassword.setOnClickListener(this);
         modifyPayPassword.setOnClickListener(this);
@@ -57,6 +66,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this,ModifyPayPasswordActivity.class));
                 break;
             case R.id.logout:
+                LogUtil.i("Test=="+SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false));
                 manager.logout(new Manager());
                 break;
             default:
@@ -68,9 +78,19 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
+            String pwd = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PASSWORD, "");
+            String phone = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
+            boolean isRemember = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false);
             SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
             SharedPreferencesUtil.getEditor(SP_COOKIE).clear().commit();
             showToast("您已退出登录");
+            if (isRemember) {
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_MOBILE,phone);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER,true);
+            }else {
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_MOBILE,"");
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER,false);
+            }
             AppManager.getAppManager().finishAllActivity();
             startActivity(new Intent(SettingActivity.this, LoginActivity.class));
             finish();

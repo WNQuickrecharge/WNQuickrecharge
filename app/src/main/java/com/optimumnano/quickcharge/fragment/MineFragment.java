@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
@@ -20,7 +21,10 @@ import com.optimumnano.quickcharge.activity.mineinfo.MyCollectActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.activity.setting.SettingActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.manager.GetMineInfoManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
@@ -28,6 +32,8 @@ import com.optimumnano.quickcharge.views.MenuItem1;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
@@ -83,8 +89,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         Glide.with(getActivity())
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.wd).into(ivHead);
-        String balance = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_BALANCE, "");
-        mTvBalance.setText(balance);
         String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
         mTvNickName.setText(nickName);
     }
@@ -116,6 +120,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
     }
@@ -135,5 +145,26 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserInfoChangeEvent(EventManager.onUserInfoChangeEvent event) {
         initUserInfo();
+    }
+
+    @Override
+    protected void lazyLoad() {
+        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                String s = returnContent.toString();
+                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                double restCash = userAccount.getRestCash();
+                DecimalFormat df = new DecimalFormat("0.00");
+                String format = df.format(restCash);
+                mTvBalance.setText(format);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 }

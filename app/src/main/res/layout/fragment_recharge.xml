@@ -22,7 +22,7 @@
 
         <ImageView
             android:id="@+id/iv_location"
-            android:layout_margin="@dimen/dimen_16"
+            android:layout_margin="@dimen/dimen_20"
             android:visibility="visible"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
@@ -38,6 +38,7 @@
             android:paddingTop="@dimen/dimen_10"
             android:paddingRight="@dimen/dimen_10"
             android:paddingLeft="@dimen/dimen_10"
+            android:visibility="gone"
             android:orientation="vertical"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"

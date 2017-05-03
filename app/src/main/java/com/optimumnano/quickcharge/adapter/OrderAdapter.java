@@ -3,8 +3,8 @@ package com.optimumnano.quickcharge.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -18,6 +18,7 @@ import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 
 import org.xutils.common.util.LogUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -51,6 +52,19 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
     @Override
     protected void convert(BaseViewHolder helper, final OrderBean item,final int position) {
         TextView tvStatus = helper.getView(R.id.order_status);
+        ImageView imageView=helper.getView(R.id.order_iv);
+        switch (item.charge_from) {// 1固定桩 2 移动补电车
+            case 1://
+                imageView.setImageResource(R.mipmap.chongdianzhuang);
+            break;
+            case 2:
+                imageView.setImageResource(R.mipmap.budianche);
+            break;
+
+            default :
+
+            break;
+        }
         switch (item.order_status){
             case 1:
                 helper.setText(R.id.order_status,"已取消");
@@ -84,13 +98,14 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
             case 6:
                 helper.setText(R.id.order_status,"已完成");
                 helper.setVisible(R.id.order_tvPay,false);
-                helper.setVisible(R.id.order_tvComment,true);
+                helper.setVisible(R.id.order_tvComment,false);//现在不显示评价字眼，还没实现评价功能
 
                 break;
         }
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
         helper.setText(R.id.order_tvDate,item.start_time);
         helper.setText(R.id.order_tvNo,item.order_no);
-        helper.setText(R.id.order_tvMoney,"￥"+item.frozen_cash);
+        helper.setText(R.id.order_tvMoney,"￥"+decimalFormat.format(item.frozen_cash));
         helper.setOnClickListener(R.id.order_tvPay, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
