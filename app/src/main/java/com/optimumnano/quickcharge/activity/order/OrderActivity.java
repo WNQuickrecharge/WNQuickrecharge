@@ -27,6 +27,7 @@ import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
@@ -130,7 +131,9 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         initDialog();
     }
     private void getExtras(){
-        gunBean = (RechargeGunBean) getIntent().getExtras().getSerializable("gunBean");
+        Bundle bundle = getIntent().getExtras();
+        gunBean = (RechargeGunBean) bundle.getSerializable("gunBean");
+        gunNo = bundle.getString("gunNo");
     }
 
     @Override
@@ -204,7 +207,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void loadData(){
-        miRechargenum.setRightText(gunBean.gun_code);
+        miRechargenum.setRightText(gunNo);
         miType.setRightText(gunBean.pile_type);
         miElectric.setRightText(gunBean.elec_current+"A");
         miPower.setRightText(gunBean.power+"kw");
@@ -230,26 +233,27 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
             public void onMenuClick(int payway) {
-                switch (payway){
+//                switch (payway){
                     //微信
-                    case PayDialog.pay_wx:
-                        miPayway.setIvLeftDrawable(R.drawable.wx);
-                        miPayway.setTvLeftText("微信");
-                        payWay = PayDialog.pay_wx;
-                        break;
-                    //支付寶
-                    case PayDialog.pay_zfb:
-                        miPayway.setIvLeftDrawable(R.drawable.zfb);
-                        miPayway.setTvLeftText("支付宝");
-                        payWay = PayDialog.pay_zfb;
-                        break;
-                    //余額
-                    case PayDialog.pay_yue:
-                        miPayway.setIvLeftDrawable(R.drawable.yue);
-                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
-                        payWay = PayDialog.pay_yue;
-                        break;
-                }
+//                    case PayDialog.pay_wx:
+//                        miPayway.setIvLeftDrawable(R.drawable.wx);
+//                        miPayway.setTvLeftText("微信");
+//                        payWay = PayDialog.pay_wx;
+//                        break;
+//                    //支付寶
+//                    case PayDialog.pay_zfb:
+//                        miPayway.setIvLeftDrawable(R.drawable.zfb);
+//                        miPayway.setTvLeftText("支付宝");
+//                        payWay = PayDialog.pay_zfb;
+//                        break;
+//                    //余額
+//                    case PayDialog.pay_yue:
+//                        miPayway.setIvLeftDrawable(R.drawable.yue);
+//                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
+//                        payWay = PayDialog.pay_yue;
+//                        break;
+//                }
+                PayWayViewHelp.showPayWayStatus(miPayway,payway,formatRestCash);
             }
         });
     }

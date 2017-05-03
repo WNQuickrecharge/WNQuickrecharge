@@ -208,7 +208,7 @@ public class QrCodeActivity extends BaseActivity {
 
 
     private void getGunInfo(String gunNumber){
-        String gunNo=gunNumber+"00000000000";
+        final String gunNo=gunNumber+"00000000000";
         OrderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
             @Override
             public void onSuccess(RechargeGunBean returnContent) {
@@ -217,6 +217,7 @@ public class QrCodeActivity extends BaseActivity {
                 Intent resultIntent = new Intent(QrCodeActivity.this,OrderActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("gunBean", returnContent);
+                bundle.putString("gunNo",gunNo);
                 resultIntent.putExtras(bundle);
                 //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
                 //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);
