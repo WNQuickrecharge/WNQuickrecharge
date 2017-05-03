@@ -498,7 +498,7 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
             for (Point info : mPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.cdzhuang01);
+                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
                 //获取经纬度
                 //double[] latlon = GPSUtils.wgs84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
                 //latLng = new LatLng(latlon[0],latlon[1]);
