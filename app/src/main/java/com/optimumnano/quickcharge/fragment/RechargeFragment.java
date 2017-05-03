@@ -33,6 +33,7 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
@@ -130,15 +131,23 @@ public class RechargeFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mBaiduMap = mapView.getMap();
+        //不显示"baidu" logo
+        mapView.removeViewAt(1);
+        // 不显示地图上比例尺
+        mapView.showScaleControl(false);
+        // 不显示地图缩放控件（按钮控制栏）
+        mapView.showZoomControls(false);
+        // 不显示指南针
+        UiSettings mUiSettings = mBaiduMap.getUiSettings();
+        mUiSettings.setCompassEnabled(false);
+
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
         initLocation();
         startLocation();
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                mBaiduMap.hideInfoWindow();
-            }
+            public void onMapClick(LatLng latLng) {}
 
             @Override
             public boolean onMapPoiClick(MapPoi mapPoi) {
