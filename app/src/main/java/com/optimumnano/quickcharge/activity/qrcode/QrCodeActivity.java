@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
@@ -21,6 +20,9 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.RechargeGunBean;
+import com.optimumnano.quickcharge.manager.OrderManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -56,6 +58,7 @@ public class QrCodeActivity extends BaseActivity {
     ImageView zhongduanhaoIcon;
 
     private boolean isLightOpen = false;
+    private String resultGunNumber;
 
 
 
@@ -139,15 +142,9 @@ public class QrCodeActivity extends BaseActivity {
     CodeUtils.AnalyzeCallback analyzeCallback = new CodeUtils.AnalyzeCallback() {
         @Override
         public void onAnalyzeSuccess(Bitmap mBitmap, final String result) {
-            Intent resultIntent = new Intent(QrCodeActivity.this,OrderActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
-            bundle.putString("gun_no", result+"00000000000");//现在桩上的二维码是21
-            resultIntent.putExtras(bundle);
-            //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
-            //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);
-            startActivity(resultIntent);
-            QrCodeActivity.this.finish();
+            showToast("获取枪状态中!请稍等");
+            resultGunNumber=result;
+            getGunInfo(resultGunNumber);
         }
 
         @Override
@@ -194,13 +191,11 @@ public class QrCodeActivity extends BaseActivity {
                 //跳转支付
                 String gunno = etRecordNumber.getText().toString();
                 if (TextUtils.isEmpty(gunno)) {
-//                    showToast("终端号不能为空");
-//                    return;
-                    gunno="440307010040000081006";
+                    showToast("终端号不能为空");
+                    return;
+//                    gunno="440307010040000081006";
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString("gun_no",gunno+"00000000000");
-                skipActivity(OrderActivity.class,bundle);
+                getGunInfo(gunno);
                 break;
             case R.id.iv_deng:
                 if (!isLightOpen)
@@ -211,19 +206,32 @@ public class QrCodeActivity extends BaseActivity {
         }
     }
 
-    protected void hideBottomUIMenu() {
-        //隐藏虚拟按键，并且全屏
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-    }
 
+    private void getGunInfo(String gunNumber){
+        String gunNo=gunNumber+"00000000000";
+        OrderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
+            @Override
+            public void onSuccess(RechargeGunBean returnContent) {
+                super.onSuccess(returnContent);
+                closeLoading();
+                Intent resultIntent = new Intent(QrCodeActivity.this,OrderActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("gunBean", returnContent);
+                resultIntent.putExtras(bundle);
+                //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
+                //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);
+                startActivity(resultIntent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                closeLoading();
+                showToast(getString(R.string.get_gun_info_fail));
+                finish();
+            }
+        });
+    }
 
 }

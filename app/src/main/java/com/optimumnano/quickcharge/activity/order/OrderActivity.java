@@ -126,10 +126,11 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         getExtras();
         initViews();
         initData();
+        loadData();
         initDialog();
     }
     private void getExtras(){
-        gunNo = getIntent().getExtras().getString("gun_no");
+        gunBean = (RechargeGunBean) getIntent().getExtras().getSerializable("gunBean");
     }
 
     @Override
@@ -166,23 +167,23 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void initData(){
-        showLoading("获取枪状态中请稍等！");
-        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
-            @Override
-            public void onSuccess(RechargeGunBean returnContent) {
-                super.onSuccess(returnContent);
-                gunBean = returnContent;
-                loadData();
-                closeLoading();
-            }
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                closeLoading();
-                showToast(getString(R.string.get_gun_info_fail));
-                finish();
-            }
-        });
+//        showLoading("获取枪状态中请稍等！");
+//        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
+//            @Override
+//            public void onSuccess(RechargeGunBean returnContent) {
+//                super.onSuccess(returnContent);
+//                gunBean = returnContent;
+//                loadData();
+//                closeLoading();
+//            }
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                closeLoading();
+//                showToast(getString(R.string.get_gun_info_fail));
+//                finish();
+//            }
+//        });
         GetMineInfoManager.getAccountInfo(new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
@@ -203,7 +204,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void loadData(){
-        miRechargenum.setRightText(gunNo);
+        miRechargenum.setRightText(gunBean.gun_code);
         miType.setRightText(gunBean.pile_type);
         miElectric.setRightText(gunBean.elec_current+"A");
         miPower.setRightText(gunBean.power+"kw");
