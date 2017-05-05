@@ -77,4 +77,5 @@ dependencies {
     compile 'com.belerweb:pinyin4j:2.5.0'
     compile project(path: ':SignalA')
     compile project(path: ':SignalA.LongPolling')
+    compile 'org.lzh.nonview.updateplugin:UpdatePlugin:2.4'
 }

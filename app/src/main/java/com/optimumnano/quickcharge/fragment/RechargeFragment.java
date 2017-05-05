@@ -45,6 +45,7 @@ import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
@@ -59,6 +60,7 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
@@ -102,6 +104,8 @@ public class RechargeFragment extends BaseFragment {
     boolean isFirstLoc = true; // 是否首次定位
     private BottomSheetDialog mBsdialog;
     private View mPopView;
+    private String serviceVersionJsonInfo;
+    private MyDialog myDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -571,10 +575,10 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
-//        EventBus.getDefault().register(this);
     }
 
     @Override

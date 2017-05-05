@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
+import com.optimumnano.quickcharge.bean.GunBean;
 import com.optimumnano.quickcharge.bean.PileBean;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -49,6 +50,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
         LinearLayout linearLayout = helper.getView(R.id.ll_gunList);
         ImageView imageView = helper.getView(R.id.gun_status_img);
         String fristFreeGunNo = "";
+        GunBean firstFreeGun=null;
         for (int i = 0; i < item.getGunList().size(); i++) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.itemview_station_pile_gun, null);
             TextView gunNumber = (TextView) inflate.findViewById(R.id.tv_station_gun_number);
@@ -77,6 +79,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
             for (int i = 0; i < item.getGunList().size(); i++) {
                 if (item.getGunList().get(i).getGunStatus() == PROMPTLY_CHARGE) {
                     fristFreeGunNo = item.getGunList().get(i).getGun_code();
+                    firstFreeGun=item.getGunList().get(i);
                     item.setStatus(PROMPTLY_CHARGE);
                     break;
                 }
@@ -90,6 +93,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                 imageView.setImageResource(R.mipmap.cdzhuang01);
                 pileStatus.setClickable(true);
                 final String finalFristFreeGunNo = fristFreeGunNo;
+                final GunBean finalFirstFreeGun = firstFreeGun;
                 pileStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,6 +104,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                                 Intent intent = new Intent(context, OrderActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("gun_no", finalFristFreeGunNo);
+                                bundle.putSerializable("gunBean", finalFirstFreeGun);
                                 intent.putExtras(bundle);
                                 context.startActivity(intent);
                             }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
@@ -101,6 +100,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             tvStart.setVisibility(View.GONE);
             tvDescone.setText("充电中");
             tvDescTwo.setText("正在获取充电信息");
+            dialog.show();
         }
     }
 
@@ -118,13 +118,13 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         tvStop = (TextView) findViewById(R.id.rechargecon_tvStop);
         tvTime = (TextView) findViewById(R.id.rechargecon_tvTime);
 
-        if (orderStatus == Constants.GETCHARGEPROGRESS){
-            startCountTime(1000*1000,10*1000);
-        }
+//        if (orderStatus == Constants.GETCHARGEPROGRESS){
+//            startCountTime(1000*1000,10*1000);
+//        }
 
         dialog = new WaitRechargeDialog(this);
-        if (orderStatus==4) {//充电中
-            showLoading("请求充电状态中");
+        if (orderStatus==GETCHARGEPROGRESS) {//充电中
+            dialog.show();
         }
     }
 
@@ -323,6 +323,15 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conn.Start();
+        if (orderStatus==1) {
+            dialog.show();
+        }
+    }
+
     private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
         @Override
         public void OnError(Exception exception) {
@@ -385,6 +394,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     bundle.putString("order_no",order_no);
                     intent.putExtras(bundle);
                     RechargeControlActivity.this.startActivity(intent);
+                    conn.Stop();
                     finish();
                     break;
 
@@ -413,4 +423,10 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             }
         }
     };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        conn.Stop();
+    }
 }
