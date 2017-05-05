@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
@@ -118,9 +117,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         tvStop = (TextView) findViewById(R.id.rechargecon_tvStop);
         tvTime = (TextView) findViewById(R.id.rechargecon_tvTime);
 
-        if (orderStatus == Constants.GETCHARGEPROGRESS){
-            startCountTime(1000*1000,10*1000);
-        }
+//        if (orderStatus == Constants.GETCHARGEPROGRESS){
+//            startCountTime(1000*1000,10*1000);
+//        }
 
         dialog = new WaitRechargeDialog(this);
         if (orderStatus==4) {//充电中

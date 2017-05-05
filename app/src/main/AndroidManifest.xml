@@ -93,6 +93,15 @@
             android:label="PushService"
             android:process=":pushservice"></service>
         <service android:name=".service.MyIntentService" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.optimumnano.quickcharge.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
 
         <activity android:name=".activity.login.RegisterActivity"
             android:screenOrientation="portrait" />

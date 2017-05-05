@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Android N 文件读写白名单-->
+<paths>
+    <!--<external-path path="Android/data/app的包名/" name="files_root" />-->
+    <external-path path="." name="download" />
+</paths>

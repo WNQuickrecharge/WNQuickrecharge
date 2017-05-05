@@ -76,6 +76,7 @@ public class HttpApi {
     public static final String add_invoice = "capp/invoice/add_invoice";//提交发票订单
     public static final String get_invoice_orderlist = "capp/invoice/get_invoice_orderlist";//获取已提交的发票历史订单()
     public static final String getby_orderno = "capp/order/getby_orderno";//根据订单号获取订单信息
+    public static final String update_apk_url = "http://172.200.29.72:8080/update/apk.json";//本地测试升级apk地址
 
 
 }
