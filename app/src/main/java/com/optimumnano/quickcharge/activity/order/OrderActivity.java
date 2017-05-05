@@ -132,8 +132,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
     private void getExtras(){
         Bundle bundle = getIntent().getExtras();
-        gunBean = (RechargeGunBean) bundle.getSerializable("gunBean");
-        gunNo = bundle.getString("gunNo");
+        if (bundle!=null) {
+            gunBean = (RechargeGunBean) bundle.getSerializable("gunBean");
+            gunNo = bundle.getString("gunNo");
+        }
     }
 
     @Override
