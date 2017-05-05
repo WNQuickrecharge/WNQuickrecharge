@@ -494,13 +494,15 @@ public class RechargeFragment extends BaseFragment {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
-        BitmapDescriptor bitmap;
+        BitmapDescriptor bitmap = null;
+        BitmapDescriptor bitmap1 = null;
         LatLng latLng = null;
         Marker marker;
         OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
             for (Point info : mPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
+                if (bitmap==null)
+                    bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
                 //获取经纬度
                 //double[] latlon = GPSUtils.wgs84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
                 //latLng = new LatLng(latlon[0],latlon[1]);
@@ -509,8 +511,8 @@ public class RechargeFragment extends BaseFragment {
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
                         .icon(bitmap)//设置图标样式
-                        .zIndex(9) // 设置marker所在层级
-                        .draggable(true); // 设置手势拖拽;
+                        .zIndex(9); // 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
                 //添加marker
                 marker = (Marker) mBaiduMap.addOverlay(options);
                 //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
@@ -521,15 +523,16 @@ public class RechargeFragment extends BaseFragment {
             }
         if (mCarPiont != null && mCarPiont.size() != 0)
             for (CarPoint info : mCarPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.drawable.che);
+                if (bitmap1==null)
+                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
                 //获取经纬度
                 latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
-                        .icon(bitmap)//设置图标样式
-                        .zIndex(9) // 设置marker所在层级
-                        .draggable(true); // 设置手势拖拽;
+                        .icon(bitmap1)//设置图标样式
+                        .zIndex(9) ;// 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
                 //添加marker
                 marker = (Marker) mBaiduMap.addOverlay(options);
                 //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
