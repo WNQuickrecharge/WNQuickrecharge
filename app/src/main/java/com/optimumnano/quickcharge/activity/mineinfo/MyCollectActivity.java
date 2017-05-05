@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
-import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
@@ -14,7 +13,6 @@ import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.CollectionStationAdapter;
 import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
-import com.optimumnano.quickcharge.baiduUtil.WTMBaiduLocation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.dialog.MyDialog;
@@ -43,7 +41,6 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
     private CollectManager manager=new CollectManager();
     private MyDialog myDialog;
     private BaiduNavigation navigation;
-    private WTMBaiduLocation location;
     private LatLng myPoint;
 
     @Override
@@ -66,7 +63,9 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
                 List<StationBean> list = JSON.parseArray(returnContent.toString(), StationBean.class);
                 LocationClient client=new LocationClient(MyCollectActivity.this);
                 for (StationBean bean: list) {
-                    double distance = DistanceUtil.getDistance(myPoint, new LatLng(Double.parseDouble(bean.getLat()), Double.parseDouble(bean.getLng())));
+                    double lat = mHelper.getLocation().lat;
+                    double lng = mHelper.getLocation().lng;
+                    double distance = DistanceUtil.getDistance(new LatLng(lat,lng), new LatLng(Double.parseDouble(bean.getLat()), Double.parseDouble(bean.getLng())));
                     distance/=1000;
                     DecimalFormat decimalFormat=new DecimalFormat("0.00");
                     String format = decimalFormat.format(distance);
@@ -95,15 +94,6 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
     public void initViews() {
         super.initViews();
         setTitle("收藏");
-        location=new WTMBaiduLocation(this);
-        location.start();
-        location.setLocationListner(new WTMBaiduLocation.OnLocationReceivedListner() {
-            @Override
-            public void onLocationReceived(BDLocation bdLocation) {
-                myPoint=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
-                location.stopLocation();
-            }
-        });
         tvLeft.setVisibility(View.VISIBLE);
         myDialog=new MyDialog(this,R.style.MyDialog);
         myDialog.setCancelable(true);
@@ -182,7 +172,6 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        location.stopLocation();
     }
 
     @Override
