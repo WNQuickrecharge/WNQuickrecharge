@@ -6,7 +6,7 @@ package com.optimumnano.quickcharge;
 
 public class Constants {
 
-    public static final String WX_APP_ID = "wx58d63eb52edb366b";//微信appid
+    public static final String WX_APP_ID = "wxcf3083b3dd2841fc";//微信appid
     public static final String WX_PARTNER_ID = "1267083201";//微信商户号
 
     /**

@@ -192,12 +192,12 @@ public class WalletDepositAct extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                String sign = dataJson.optString("sign");
-                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
                 final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
                 //将该app注册到微信
                 wxApi.registerApp(WX_APP_ID);
+
+                String sign = dataJson.optString("sign");
+                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
                 boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
                 if (isPaySupported) {
                     PayReq request = new PayReq();
@@ -218,7 +218,7 @@ public class WalletDepositAct extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
-                showToast(msg);
+                showToast("请求失败 "+msg);
                 super.onFailure(msg);
             }
 
