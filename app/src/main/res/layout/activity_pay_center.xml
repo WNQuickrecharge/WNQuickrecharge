@@ -9,7 +9,9 @@
     tools:context="com.optimumnano.quickcharge.activity.invoice.PayCenterActivity">
 
     <include layout="@layout/title_main"/>
+
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/paycenter_miOrderno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="订单编号"
@@ -18,6 +20,7 @@
         android:layout_marginTop="@dimen/default_padding"
         app:LeftTextColor="@color/color66"
         app:rightTextColor="@color/color33"/>
+
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

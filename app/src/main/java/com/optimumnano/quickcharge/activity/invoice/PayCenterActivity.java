@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.InvoiceSignRsp;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.manager.InvoiceManager;
+import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -26,11 +29,16 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     TextView tvNext;
     @Bind(R.id.paycenter_rlPayway)
     RelativeLayout rlPayway;
+    @Bind(R.id.paycenter_miOrderno)
+    MenuItem1 miOrderno;
 
-    private double allMoney;
+    private double money = 0;
+    private double allMoney = 0;
 
     private PayDialog payDialog ;
-
+    private String order_no;
+    private int payType = 3;
+    private InvoiceManager manager = new InvoiceManager();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,9 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         initViews();
     }
     private void getExtras() {
-        allMoney = getIntent().getExtras().getDouble("money");
+        money = getIntent().getExtras().getDouble("money");
+        allMoney = getIntent().getExtras().getDouble("allmoney");
+        order_no = getIntent().getExtras().getString("order_no");
     }
 
     @Override
@@ -48,7 +58,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         super.initViews();
         setTitle("支付中心");
 
-        miMoney.setRightText("￥"+allMoney);
+        miMoney.setRightText("￥"+money);
+        miOrderno.setRightText(order_no);
 
         rlPayway.setOnClickListener(this);
         tvNext.setOnClickListener(this);
@@ -58,23 +69,58 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.paycenter_tvNext:
-                pay();
+                if (payType == 3){
+                    payYue();
+                }
+                else {
+                    payZfb();
+                }
                 break;
             case R.id.paycenter_rlPayway:
 
                 break;
         }
     }
+    //余额支付
+    private void payYue(){
+        manager.payBalance(order_no, money, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                toInvoiceApply();
+            }
 
-    private void pay() {
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
+    }
+
+    private void payZfb(){
+        manager.getInvoiceSign(order_no, PayDialog.pay_zfb, new ManagerCallback<InvoiceSignRsp>() {
+            @Override
+            public void onSuccess(InvoiceSignRsp returnContent) {
+                super.onSuccess(returnContent);
+                pay(returnContent.sign);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
+    }
+
+    private void pay(String sign) {
         if (payDialog == null){
             payDialog = new PayDialog(this);
-            payDialog.setMoney(allMoney,"order_no","sign");
+            payDialog.setMoney(money,order_no,sign,payType);
             payDialog.setPayCallback(this);
         }
-        Bundle bundle = new Bundle();
-        bundle.putDouble("money",allMoney);
-        skipActivity(InvoiceApplyActivity.class,bundle);
+        payDialog.show();
     }
 
     @Override
@@ -85,7 +131,14 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void paySuccess(String oder_no) {
+        toInvoiceApply();
+    }
 
+    private void toInvoiceApply() {
+        Bundle bundle = new Bundle();
+        bundle.putDouble("money",allMoney);
+        bundle.putString("order_no",order_no);
+        skipActivity(InvoiceApplyActivity.class,bundle);
     }
 
     @Override

@@ -268,20 +268,21 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
      * @param money 金额
      */
     public void setMoney(double money){
-        this.money = money;
-        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setMoney(money,"");
     }
     public void setMoney(double money,String order_no){
-        this.money = money;
-        this.order_no  = order_no;
-        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setMoney(money,order_no,"");
     }
 
     public void setMoney(double money,String order_no,String sign){
+        setMoney(money,order_no,sign,3);
+    }
+    public void setMoney(double money,String order_no,String sign,int paytype){
         this.money = money;
         this.order_no  = order_no;
         this.sign = sign;
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setPayway(paytype);
     }
     public void setPayResultMoney(double money){
         this.money = money;
