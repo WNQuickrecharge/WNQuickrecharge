@@ -1,4 +1,4 @@
-package com.optimumnano.quickcharge;
+package com.optimumnano.quickcharge.wxapi;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import static android.provider.UserDictionary.Words.APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
 
 
 /**
@@ -27,7 +27,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = WXAPIFactory.createWXAPI(this, APP_ID);
+        api = WXAPIFactory.createWXAPI(this, WX_APP_ID);
         api.handleIntent(getIntent(), this);
     }
 
@@ -40,6 +40,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 
     @Override
     public void onReq(BaseReq req) {
+        logtesti("开始请求");
     }
 
     @Override

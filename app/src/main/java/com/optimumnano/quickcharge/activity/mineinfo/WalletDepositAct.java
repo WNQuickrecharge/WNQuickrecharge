@@ -18,6 +18,7 @@ import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
+import com.optimumnano.quickcharge.bean.WXPaySignBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
@@ -31,6 +32,7 @@ import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
@@ -178,15 +180,21 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-        showToast("暂不支持微信支付");
-
-        GetMineInfoManager.getWXPayOrderInfoDeposit("D20170426112327003", new ManagerCallback() {
+//        showToast("暂不支持微信支付");
+        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 logtesti("returnContent "+returnContent.toString());
-                AlipayBean alipayBean = JSON.parseObject(returnContent.toString(), AlipayBean.class);
+                JSONObject dataJson=null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
+                String sign = dataJson.optString("sign");
+                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
                 final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
                 //将该app注册到微信
                 wxApi.registerApp(WX_APP_ID);
@@ -195,12 +203,13 @@ public class WalletDepositAct extends BaseActivity {
                     PayReq request = new PayReq();
                     request.appId = WX_APP_ID;
                     request.partnerId = WX_PARTNER_ID;
-                    request.prepayId = "1101000000140415649af9fc314aa427";
+                    request.prepayId = wxpayBean.prepayid;
                     request.packageValue = "Sign=WXPay";
-                    request.nonceStr = "1101000000140429eb40476f8896f4c9";
-                    request.timeStamp = "1412000000";
-                    request.sign = "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
+                    request.nonceStr = wxpayBean.noncestr;
+                    request.timeStamp = wxpayBean.timestamp;
+                    request.sign = wxpayBean.sign;
                     wxApi.sendReq(request);
+                    logtesti("sendReq");
                 }else {
                     showToast("您的微信版本过低不支持支付功能，请升级微信后使用");
                 }
@@ -214,8 +223,6 @@ public class WalletDepositAct extends BaseActivity {
             }
 
         });
-
-
     }
 
     private void callALiPay() {
