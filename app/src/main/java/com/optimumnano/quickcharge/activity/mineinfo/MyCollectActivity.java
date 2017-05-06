@@ -65,6 +65,7 @@ public class MyCollectActivity extends BaseActivity implements HTRefreshListener
                 for (StationBean bean: list) {
                     double lat = mHelper.getLocation().lat;
                     double lng = mHelper.getLocation().lng;
+                    myPoint=new LatLng(lat,lng);
                     double distance = DistanceUtil.getDistance(new LatLng(lat,lng), new LatLng(Double.parseDouble(bean.getLat()), Double.parseDouble(bean.getLng())));
                     distance/=1000;
                     DecimalFormat decimalFormat=new DecimalFormat("0.00");
