@@ -24,13 +24,13 @@ import com.optimumnano.quickcharge.utils.DESEncryptTools;
 import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
@@ -206,9 +206,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_USER_ID,userinfoBean.userinfo.Id);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isRemember);
 
-            DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00": StringUtils.formatDouble(userinfoBean.account.RestCash));
 
             LogUtil.i("Cookie=="+SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
             new Thread(){

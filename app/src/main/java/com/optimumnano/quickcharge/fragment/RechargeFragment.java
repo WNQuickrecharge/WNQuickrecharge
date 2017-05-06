@@ -65,7 +65,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.LogUtil;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.Bind;
@@ -177,9 +176,7 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvAddress.setText(holder.mItem.StationName);
 //                    holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
                     holder.tvDetailAddress.setText(holder.mItem.Address);
-                    DecimalFormat decimalFormat=new DecimalFormat("0.00");
-                    String format = decimalFormat.format(holder.mItem.distance);
-                    holder.tvDistance.setText(format+"km");
+                    holder.tvDistance.setText(StringUtils.formatDouble(holder.mItem.distance)+"km");
 
                     holder.tvPhonenum.setText(holder.mItem.Phone);
                     String e=holder.mItem.min_price==holder.mItem.max_price?holder.mItem.max_price+"":holder.mItem.min_price+"~"+holder.mItem.max_price;

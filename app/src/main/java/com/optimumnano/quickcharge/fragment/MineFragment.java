@@ -27,13 +27,12 @@ import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
@@ -156,9 +155,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
-                DecimalFormat df = new DecimalFormat("0.00");
-                String format = df.format(restCash);
-                mTvBalance.setText(format);
+                mTvBalance.setText(StringUtils.formatDouble(restCash));
             }
 
             @Override

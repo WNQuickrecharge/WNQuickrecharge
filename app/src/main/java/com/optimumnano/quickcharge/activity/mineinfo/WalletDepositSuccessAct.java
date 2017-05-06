@@ -14,11 +14,10 @@ import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,8 +68,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
-                DecimalFormat df = new DecimalFormat("0.00");
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,df.format(restCash));
+                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE, StringUtils.formatDouble(restCash));
                 EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
             }
 
