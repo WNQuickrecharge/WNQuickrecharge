@@ -499,6 +499,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                ((MainActivity)getActivity()).closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
@@ -508,6 +509,8 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                ((MainActivity)getActivity()).closeLoading();
             }
         });
 
@@ -515,6 +518,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                ((MainActivity)getActivity()).closeLoading();
                 if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
                 mCarPiont = (List<CarPoint>) returnContent;
@@ -524,6 +528,8 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                ((MainActivity)getActivity()).closeLoading();
             }
         });
     }
@@ -580,7 +586,6 @@ public class RechargeFragment extends BaseFragment {
                 marker.setExtraInfo(bundle);
             }
 
-        ((MainActivity)getActivity()).closeLoading();
     }
 
     private LatLng gpsToBd09ll(LatLng sourceLatLng) {
