@@ -72,7 +72,7 @@
         android:textSize="@dimen/sp_14" />
 
     <TextView
-        android:drawableLeft="@drawable/ic_location"
+        android:drawableLeft="@drawable/feiyong"
         android:drawablePadding="@dimen/default_padding5"
         android:id="@+id/tv_price_per"
         android:layout_width="wrap_content"

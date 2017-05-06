@@ -15,13 +15,12 @@ import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.CircleImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -70,8 +69,7 @@ public class WalletBalanceAct extends BaseActivity {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
-                DecimalFormat df = new DecimalFormat("0.00");
-                mBalanceValue.setText(df.format(restCash));
+                mBalanceValue.setText(StringUtils.formatDouble(restCash));
             }
 
             @Override

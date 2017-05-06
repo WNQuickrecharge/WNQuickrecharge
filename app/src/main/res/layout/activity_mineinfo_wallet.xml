@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         app:tvLeftText="余额"
         android:id="@+id/act_mineinfo_wallet_mi_balance"
-        app:tvRightText="0.00"
         app:showtvRight="true"
         app:showivRight="true"/>
 
