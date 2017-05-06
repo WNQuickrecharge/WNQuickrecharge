@@ -331,5 +331,16 @@ public class StringUtils {
         return str;
     }
 
+    public static String formatDouble(double res) {
+        String str = "0.00";
+        try {
+            double f = Double.valueOf(res);
+            DecimalFormat format = new DecimalFormat("###0.00");
+            str = format.format(f);
+        } catch (Exception e) {
+            LogUtil.e(TAG, e);
+        }
+        return str;
+    }
 
 }

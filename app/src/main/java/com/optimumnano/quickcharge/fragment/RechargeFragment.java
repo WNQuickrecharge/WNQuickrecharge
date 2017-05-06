@@ -38,11 +38,13 @@ import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
+import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.dialog.MyDialog;
@@ -53,6 +55,7 @@ import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
@@ -60,7 +63,6 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
@@ -230,6 +232,17 @@ public class RechargeFragment extends BaseFragment {
                             });
                         }
                     });
+                    mPopView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), StationActivity.class);
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("Station",transPointToStationBean(infoUtil));
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            mBsdialog.dismiss();
+                        }
+                    });
                     mBsdialog.show();
                 }
 
@@ -238,6 +251,30 @@ public class RechargeFragment extends BaseFragment {
         });
 
 
+    }
+
+    private StationBean transPointToStationBean(Point mItem) {
+        StationBean bean=new StationBean();
+        bean.setCity(mItem.City);
+        bean.setDistance(StringUtils.formatDouble(mItem.distance)+"km");
+        bean.setId(mItem.Id);
+        bean.setAddress(mItem.Address);
+        bean.setDel(mItem.IsDel);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setLat(mItem.Lat+"");
+        bean.setLng(mItem.Lng+"");
+        bean.setFreePiles(Integer.parseInt(mItem.FreePiles));
+        bean.setTotalPiles(Integer.parseInt(mItem.TotalPiles));
+        bean.setStationName(mItem.StationName);
+        bean.setState(mItem.State);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setMax_price(mItem.max_price);
+        bean.setMin_price(mItem.min_price);
+        bean.setMax_service(mItem.max_service);
+        bean.setMin_service(mItem.min_service);
+        bean.setManagementCompany(mItem.ManagementCompany);
+        bean.setRunTimeSpan(mItem.RunTimeSpan);
+        return bean;
     }
 
     @Override
@@ -508,9 +545,8 @@ public class RechargeFragment extends BaseFragment {
                 if (bitmap==null)
                     bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
                 //获取经纬度
-                //double[] latlon = GPSUtils.wgs84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-                //latLng = new LatLng(latlon[0],latlon[1]);
-                latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+                //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+                latLng = new LatLng(info.Lat, info.Lng);//原始数据就是bd09坐标,不用转
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -530,7 +566,8 @@ public class RechargeFragment extends BaseFragment {
                 if (bitmap1==null)
                     bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
                 //获取经纬度
-                latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -575,7 +612,7 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        UpdateBuilder.create().check();
+        //UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
