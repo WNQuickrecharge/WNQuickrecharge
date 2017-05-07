@@ -31,8 +31,10 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
     public static final int CHARGEING = 2;       //充电中
     public static final int MAINTAIN = 3;         //维护
     public static final int APPOINTMENT = 4;      //预约
+    public static final int NETWORK_OUTTIME=5;         //网络断开
     private boolean isChargeing = true;
     private boolean isMaintain = true;
+    private boolean isNetWorkOutTime = true;
 
     private Context context;
 
@@ -67,12 +69,14 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                     isChargeing = false;
                 } else if (!(item.getGunList().get(i).getGunStatus() == MAINTAIN)) {
                     isMaintain = false;
+                } else if (!(item.getGunList().get(i).getGunStatus()==NETWORK_OUTTIME)) {
+                    isNetWorkOutTime=false;
                 }
             }
             if (isChargeing) {
                 item.setStatus(CHARGEING);
             }
-            if (isMaintain) {
+            if (isMaintain||isNetWorkOutTime) {
                 item.setStatus(MAINTAIN);
             }
 

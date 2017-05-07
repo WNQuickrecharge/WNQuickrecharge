@@ -7,6 +7,7 @@
 
     <dimen name="title_height">50dp</dimen>
     <dimen name="default_padding5">5dp</dimen>
+    <dimen name="default_padding6">6dp</dimen>
     <dimen name="default_padding2">2dp</dimen>
     <dimen name="margin_left">16dp</dimen>
     <dimen name="text_size_default">18sp</dimen>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,6 +108,7 @@ public class RechargeFragment extends BaseFragment {
     private View mPopView;
     private String serviceVersionJsonInfo;
     private MyDialog myDialog;
+    private LinearLayout bottomDialogRoot;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -165,6 +167,7 @@ public class RechargeFragment extends BaseFragment {
                 Object obj = bundle.getSerializable("info");
                 if (obj instanceof Point) {
                     mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
+                    //bottomDialogRoot = (LinearLayout) mPopView.findViewById(R.id.ll_bottom_dialog_root);
                     mBsdialog = new BottomSheetDialog(getActivity());
                     mBsdialog.setContentView(mPopView);
                     mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
@@ -193,7 +196,7 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvNum.setText(simpleText);
 
                     mPopView.setBackgroundResource(R.drawable.sp_map_infowindow);
-                    holder.tvNav.setOnClickListener(new View.OnClickListener() {
+                    holder.gpsRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             OnNaviEvent event = new OnNaviEvent();
@@ -209,7 +212,7 @@ public class RechargeFragment extends BaseFragment {
                         }
                     });
 
-                    holder.tvFav.setOnClickListener(new View.OnClickListener() {
+                    holder.collectRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
@@ -229,7 +232,18 @@ public class RechargeFragment extends BaseFragment {
                             });
                         }
                     });
-                    mPopView.setOnClickListener(new View.OnClickListener() {
+//                    mPopView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(getActivity(), StationActivity.class);
+//                            Bundle bundle=new Bundle();
+//                            bundle.putSerializable("Station",transPointToStationBean(infoUtil));
+//                            intent.putExtras(bundle);
+//                            startActivity(intent);
+//                            mBsdialog.dismiss();
+//                        }
+//                    });
+                    holder.bottomDialogRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), StationActivity.class);
@@ -293,14 +307,20 @@ public class RechargeFragment extends BaseFragment {
         TextView tvPricePer;
         @Bind(R.id.tv_num)
         TextView tvNum;
-        @Bind(R.id.tv_nav)
-        TextView tvNav;
-        @Bind(R.id.tv_fav)
-        TextView tvFav;
+//        @Bind(R.id.tv_nav)
+//        TextView tvNav;
+//        @Bind(R.id.tv_fav)
+//        TextView tvFav;
         @Bind(R.id.tv_phonenum)
         TextView tvPhonenum;
         @Bind(R.id.tv_cancel)
         TextView tvCancel;
+        @Bind(R.id.ll_bottom_dialog_root)
+        LinearLayout bottomDialogRoot;
+        @Bind(R.id.ll_collect_root)
+        LinearLayout collectRoot;
+        @Bind(R.id.ll_gps_root)
+        LinearLayout gpsRoot;
         public Point mItem;
 
         public ViewHolder(View view) {

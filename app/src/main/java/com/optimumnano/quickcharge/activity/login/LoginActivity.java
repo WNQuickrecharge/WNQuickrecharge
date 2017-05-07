@@ -108,12 +108,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 String password = edtPwd.getText().toString();
                 String Md5Password = MD5Utils.encodeMD5(password);
                 String finalPassword = MD5Utils.encodeMD5(Md5Password);
-                showLoading("登陆中！");
+
                 if ("企业登录".equals(tvLogin.getText().toString())){
                     userType=3;
                 }else if ("个人登录".equals(tvLogin.getText().toString())){
                     userType=1;
                 }
+                if (TextUtils.isEmpty(password)) {
+                    showToast("密码不能为空！");
+                    return;
+                }
+                showLoading("登陆中！");
                 manager.login(edtUsername.getText().toString(),finalPassword,userType,new Manager());
                 break;
             case R.id.login_tvReg:
@@ -166,7 +171,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-
+            closeLoading();
             JSONObject dataJson = null;
             try {
                 dataJson = new JSONObject(returnContent.toString());
