@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -52,6 +53,8 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     private String ids;//所有的订单id
     private double orderMoney = 0;//订单金额
     private InvoiceManager manager = new InvoiceManager();
+
+    private String regPhone,regAddress,bankCard,indentifyNum,remark;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,7 +125,9 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     private void addInviceOrder(){
         manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
                 etName.getText().toString(), etAddress.getText().toString(),
-                etPhone.getText().toString(), new ManagerCallback<InvoiceOrderRsp>() {
+                etPhone.getText().toString(),
+                regPhone,regAddress,bankCard,indentifyNum,remark,
+                new ManagerCallback<InvoiceOrderRsp>() {
                     @Override
                     public void onSuccess(InvoiceOrderRsp returnContent) {
                         super.onSuccess(returnContent);
@@ -131,6 +136,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                         bundle.putDouble("allmoney",allMoney);
                         bundle.putString("order_no",returnContent.i_order_no);
                         skipActivity(PayCenterActivity.class, bundle);
+                        finish();
                     }
 
                     @Override
@@ -139,5 +145,15 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                         showToast(msg);
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        regPhone = data.getStringExtra("regPhone");
+        regAddress = data.getStringExtra("regAddress");
+        bankCard = data.getStringExtra("bankCard");
+        indentifyNum = data.getStringExtra("indentifyNum");
+        remark = data.getStringExtra("remark");
     }
 }

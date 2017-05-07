@@ -152,7 +152,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 skipActivity(InvoiceTypeActivity.class,bundle);
                 break;
             case R.id.title_tvRight:
-
+                skipActivity(InvoiceRecordActivity.class,null);
                 break;
         }
     }

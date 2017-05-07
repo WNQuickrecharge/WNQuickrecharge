@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
@@ -41,6 +42,13 @@ public class InvoiceApplyActivity extends BaseActivity {
 
         miOrderno.setRightText(order_no+"");
         miMoney.setRightText(allMoney+"");
+
+        tvFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     @Override
     protected void onDestroy() {
