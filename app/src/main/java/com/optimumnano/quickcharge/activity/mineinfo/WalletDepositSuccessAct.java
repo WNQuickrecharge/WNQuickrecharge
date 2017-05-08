@@ -8,10 +8,10 @@ import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
-import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
@@ -56,7 +56,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        int payway = intent.getIntExtra("payway",PayDialog.pay_wx);
+        int payway = intent.getIntExtra("payway",-1);
         String amount = intent.getStringExtra("amount");
         mMiAmount.setRightText("¥ "+amount);
         PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
@@ -82,7 +82,6 @@ public class WalletDepositSuccessAct extends BaseActivity {
     @Override
     public void initViews() {
         super.initViews();
-        setRightTitle("");
         setTitle("充值详情");
     }
 
@@ -101,6 +100,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
     public void onClick() {
         Intent intent = new Intent(WalletDepositSuccessAct.this, MineWalletAct.class);
         startActivity(intent);
+        AppManager.getAppManager().finishActivity(WalletDepositAct.class);
         finish();
     }
 }

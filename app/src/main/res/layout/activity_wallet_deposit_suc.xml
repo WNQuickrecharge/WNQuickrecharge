@@ -3,21 +3,22 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context="com.optimumnano.quickcharge.activity.mineinfo.WalletDepositSuccessAct">
+              android:orientation="vertical">
 
     <include
         android:id="@+id/title"
-        layout="@layout/title_default"/>
+        layout="@layout/title_main"/>
 
    <ImageView
+       android:id="@+id/iv_pay_result"
        android:layout_marginTop="@dimen/dimen_20"
        android:layout_gravity="center_horizontal"
-       android:src="@drawable/pay_ok"
+       android:src="@drawable/ok"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/tv_pay_result"
         android:layout_margin="@dimen/dimen_10"
         android:layout_gravity="center_horizontal"
         android:text="支付成功"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"/>
 
     <RelativeLayout
+        android:id="@+id/rl_pay_info_payway"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +35,6 @@
         android:padding="@dimen/default_lrmargin">
 
         <TextView
-            android:id="@+id/tvLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="支付方式"
