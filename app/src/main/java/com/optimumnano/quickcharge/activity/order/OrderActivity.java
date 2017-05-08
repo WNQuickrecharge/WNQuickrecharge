@@ -365,7 +365,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
     private void callALiPay(Double mAmount) {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);

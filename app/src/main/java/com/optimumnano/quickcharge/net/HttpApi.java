@@ -37,7 +37,7 @@ public class HttpApi {
     public static final String modify_userinfo_url = "capp/user/set_userinfo";//修改个人资料
     public static final String upload_headView_url = "capp/user/upload_avatar";//上传头像
     public static final String get_transaction_bill = "capp/order/user_consume";//获取交易明细
-    public static final String get_alipay_orderinfo_deposit = "capp/order/add_deposit";//上传支付金额获取调起支付宝的orderInfo
+    public static final String get_pay_orderinfo_deposit = "capp/order/add_deposit";//上传支付金额和支付方式获取调起支付的orderInfo
     public static final String get_accountinfo = "capp/user/get_accountinfo";//获取账户信息
     public static final String  region_pile_url = "capp/bs/region_stations";//获取附近站点信息
     public static final String logout_url = "capp/user/logout";//登出

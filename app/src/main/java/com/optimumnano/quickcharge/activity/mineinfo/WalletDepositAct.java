@@ -18,6 +18,7 @@ import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
+import com.optimumnano.quickcharge.bean.WXPaySignBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
@@ -27,7 +28,12 @@ import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.Tool;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
@@ -37,6 +43,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_PARTNER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -154,7 +162,6 @@ public class WalletDepositAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-//                        showPayPsdDialog();
                         Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
                         if (!payCheck()) return;
                         if (mChosePayway==PayDialog.pay_zfb)
@@ -170,12 +177,52 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-        showToast("暂不支持微信支付");
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                logtesti("returnContent "+returnContent.toString());
+                JSONObject dataJson=null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+                //将该app注册到微信
+                wxApi.registerApp(WX_APP_ID);
+
+                String sign = dataJson.optString("sign");
+                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
+                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+                if (isPaySupported) {
+                    PayReq request = new PayReq();
+                    request.appId = WX_APP_ID;
+                    request.partnerId = WX_PARTNER_ID;
+                    request.prepayId = wxpayBean.prepayid;
+                    request.packageValue = "Sign=WXPay";
+                    request.nonceStr = wxpayBean.noncestr;
+                    request.timeStamp = wxpayBean.timestamp;
+                    request.sign = wxpayBean.sign;
+                    wxApi.sendReq(request);
+                }else {
+                    showToast("微信未安装或者版本过低");
+                }
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast("请求失败 "+msg);
+                super.onFailure(msg);
+            }
+
+        });
     }
 
     private void callALiPay() {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -206,7 +253,7 @@ public class WalletDepositAct extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
-                showToast(msg);
+                showToast("请求失败 "+msg);
                 super.onFailure(msg);
             }
 

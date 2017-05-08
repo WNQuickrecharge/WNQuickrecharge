@@ -186,3 +186,6 @@
 #长连接第三方库
 -keep class com.zsoft.** {*;}
 -dontwarn com.zsoft.**
+
+#weixin
+-keep class com.tencent.wxop.** { *; }
