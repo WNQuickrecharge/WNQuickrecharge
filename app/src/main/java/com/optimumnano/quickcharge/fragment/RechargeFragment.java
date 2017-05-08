@@ -38,10 +38,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
@@ -333,9 +333,9 @@ public class RechargeFragment extends BaseFragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             if (Tool.isConnectingToInternet()) {
-                ((MainActivity) getActivity()).showLoading("加载中...");
+                ((BaseActivity) getActivity()).showLoading("加载中...");
             } else {
-                ((MainActivity)getActivity()).showToast("网络连接异常");
+                ((BaseActivity)getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)
                 locationClient.start();
@@ -452,7 +452,7 @@ public class RechargeFragment extends BaseFragment {
         public void onReceiveLocation(BDLocation location) {
             // map view 销毁后不在处理新接收的位置
             if (location == null || mapView == null) {
-                ((MainActivity)getActivity()).closeLoading();
+                closeLoading();
                 return;
             }
             locationClient.stop();
@@ -503,7 +503,7 @@ public class RechargeFragment extends BaseFragment {
             LogUtil.d(sb.toString());
 
             if (location.getLocType() != BDLocation.TypeNetWorkLocation)//非网络定位结果
-                ((MainActivity)getActivity()).closeLoading();
+                closeLoading();
         }
 
         @Override
@@ -519,6 +519,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
@@ -528,6 +529,8 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                closeLoading();
             }
         });
 
@@ -535,6 +538,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                closeLoading();
                 if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
                 mCarPiont = (List<CarPoint>) returnContent;
@@ -544,8 +548,14 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                closeLoading();
             }
         });
+    }
+
+    private void closeLoading() {
+        ((BaseActivity)getActivity()).closeLoading();
     }
 
     private void marker() {
@@ -600,7 +610,6 @@ public class RechargeFragment extends BaseFragment {
                 marker.setExtraInfo(bundle);
             }
 
-        ((MainActivity)getActivity()).closeLoading();
     }
 
     private LatLng gpsToBd09ll(LatLng sourceLatLng) {

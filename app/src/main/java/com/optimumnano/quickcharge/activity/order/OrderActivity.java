@@ -256,6 +256,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 //                        break;
 //                }
                 PayWayViewHelp.showPayWayStatus(miPayway,payway,formatRestCash);
+                payWay=payway;
             }
         });
     }

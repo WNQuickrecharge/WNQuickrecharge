@@ -124,6 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/default_lrmargin"
                     android:layout_marginTop="@dimen/default_padding5"
+                    android:inputType="phone"
                     android:background="@drawable/sp_more_edit"
                     android:hint="填写注册帐号" />
 
@@ -135,6 +136,7 @@
                     android:layout_marginLeft="@dimen/default_lrmargin"
                     android:layout_marginTop="@dimen/default_padding5"
                     android:background="@drawable/sp_more_edit"
+                    android:inputType="phone"
                     android:hint="填写开户行及银行号" />
             </LinearLayout>
         </LinearLayout>
