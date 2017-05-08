@@ -49,17 +49,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentRight="true">
-            <ImageView
-                android:id="@+id/paycenter_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/yue"/>
             <TextView
                 android:id="@+id/paycenter_tvPayway"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color66"
                 android:textSize="@dimen/default_textsize"
+                android:drawableLeft="@drawable/yue"
+                android:drawablePadding="@dimen/default_padding"
                 android:text="余额(剩余0.00)"
                 android:layout_marginLeft="@dimen/default_padding"
                 />
