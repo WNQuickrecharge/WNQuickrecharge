@@ -616,27 +616,27 @@ public class RechargeFragment extends BaseFragment {
                 bundle.putSerializable("info", info);
                 marker.setExtraInfo(bundle);
             }
-        if (mCarPiont != null && mCarPiont.size() != 0)
-            for (CarPoint info : mCarPiont) {
-                if (bitmap1==null)
-                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
-                //获取经纬度
-                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
-                //设置marker
-                options = new MarkerOptions()
-                        .position(latLng)//设置位置
-                        .icon(bitmap1)//设置图标样式
-                        .zIndex(9) ;// 设置marker所在层级
-//                        .draggable(true); // 设置手势拖拽;
-                //添加marker
-                marker = (Marker) mBaiduMap.addOverlay(options);
-                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-                Bundle bundle = new Bundle();
-                //info必须实现序列化接口
-                bundle.putSerializable("info", info);
-                marker.setExtraInfo(bundle);
-            }
+//        if (mCarPiont != null && mCarPiont.size() != 0)
+//            for (CarPoint info : mCarPiont) {
+//                if (bitmap1==null)
+//                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
+//                //获取经纬度
+//                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+//                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
+//                //设置marker
+//                options = new MarkerOptions()
+//                        .position(latLng)//设置位置
+//                        .icon(bitmap1)//设置图标样式
+//                        .zIndex(9) ;// 设置marker所在层级
+////                        .draggable(true); // 设置手势拖拽;
+//                //添加marker
+//                marker = (Marker) mBaiduMap.addOverlay(options);
+//                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+//                Bundle bundle = new Bundle();
+//                //info必须实现序列化接口
+//                bundle.putSerializable("info", info);
+//                marker.setExtraInfo(bundle);
+//            }
 
     }
 

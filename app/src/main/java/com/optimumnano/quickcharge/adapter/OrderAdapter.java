@@ -15,6 +15,8 @@ import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 
 import org.xutils.common.util.LogUtil;
 
@@ -112,6 +114,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
                 switch (item.order_status){
                     case 2:
                         payDialog.show();
+                        payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
                         payDialog.setMoney(item.frozen_cash,item.order_no);
                         LogUtil.d("待支付");
                         break;
