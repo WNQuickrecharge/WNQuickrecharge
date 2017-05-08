@@ -117,7 +117,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     showToast("密码不能为空！");
                     return;
                 }
-                showLoading("登陆中！");
+                showLoading("登录中！");
                 manager.login(edtUsername.getText().toString(),finalPassword,userType,new Manager());
                 break;
             case R.id.login_tvReg:
@@ -223,7 +223,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            showToast("登陆成功!");
+                            showToast("登录成功!");
                         }
                     });
                     finish();
