@@ -3,7 +3,6 @@ package com.optimumnano.quickcharge.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -219,7 +218,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 @Override
                 public void run() {
                     super.run();
-                    SystemClock.sleep(1500);
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                     closeLoading();
                     runOnUiThread(new Runnable() {

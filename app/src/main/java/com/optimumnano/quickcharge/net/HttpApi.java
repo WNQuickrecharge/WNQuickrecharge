@@ -23,6 +23,7 @@ public class HttpApi {
         return instance;
     }
     private static final String baseUrl = "http://112.74.44.166:4830/";
+//    private static final String baseUrl = "http://119.23.71.104:4711/";//生产库地址
 //    private static final String baseUrl = "http://172.200.28.132:4840/";//临时测试
 //    private static final String baseUrl="http://120.77.149.109:4720/"; //测试库地址修改了
     public String getUrl(String api){

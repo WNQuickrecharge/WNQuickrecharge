@@ -4,8 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -254,6 +257,12 @@ public class RechargeFragment extends BaseFragment {
                             mBsdialog.dismiss();
                         }
                     });
+                    holder.tvPhonenum.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermission(holder.mItem.Phone);
+                        }
+                    });
                     mBsdialog.show();
                 }
 
@@ -262,6 +271,25 @@ public class RechargeFragment extends BaseFragment {
         });
 
 
+    }
+
+    private void requestPermission(String servicePhone) {
+        //判断Android版本是否大于23
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int checkCallPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE);
+
+            if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE},
+                        RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE);
+                return;
+            }
+            else {
+                callPhone(servicePhone);
+            }
+        }
+        else {
+            callPhone(servicePhone);
+        }
     }
 
     private StationBean transPointToStationBean(Point mItem) {
@@ -666,4 +694,18 @@ public class RechargeFragment extends BaseFragment {
         startLocation();
     }
 
+    public interface RequestPermissionType {
+
+        /**
+         * 请求打电话的权限码
+         */
+        int REQUEST_CODE_ASK_CALL_PHONE = 100;
+    }
+
+    private void callPhone(String servicePhone) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:"+servicePhone+""));
+        startActivity(intent);
+    }
 }
