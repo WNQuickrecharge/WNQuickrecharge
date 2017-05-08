@@ -15,9 +15,9 @@
         android:layout_height="wrap_content" >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:layout_height="26dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/dimen_10"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/station_detail_name"
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:hint="燕子岭充电站"
                 android:textColorHint="@color/color33"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/color33"
                 android:text=""/>
             <TextView
@@ -41,7 +41,7 @@
 
        <LinearLayout
            android:layout_width="match_parent"
-           android:layout_height="40dp"
+           android:layout_height="26dp"
            android:gravity="center_vertical"
            android:layout_marginBottom="@dimen/dimen_15"
            android:orientation="horizontal">
@@ -49,18 +49,20 @@
                android:id="@+id/station_detail_address"
                android:layout_width="0dp"
                android:layout_weight="1"
+               android:layout_marginTop="6dp"
                android:layout_height="wrap_content"
                android:maxLength="40"
                android:lines="1"
                android:ellipsize="marquee"
+
                android:text="充电站地址充电站地址充电站地址充电站地址充电站地址"
                />
 
            <LinearLayout
                android:id="@+id/station_detail_GPS"
                android:layout_alignParentRight="true"
-               android:layout_width="80dp"
-               android:layout_height="30dp"
+               android:layout_width="70dp"
+               android:layout_height="26dp"
                android:background="@drawable/bg_daohang"
                android:gravity="center_vertical"
                android:orientation="horizontal">
@@ -86,17 +88,17 @@
        </LinearLayout>
         <include layout="@layout/view_line"/>
         <LinearLayout
-            android:layout_marginTop="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/dimen_10"
+            android:layout_marginBottom="@dimen/dimen_8"
             android:orientation="horizontal">
            <TextView
                android:layout_width="0dp"
                android:layout_weight="1"
                android:layout_height="wrap_content"
-               android:textSize="18sp"
+               android:textSize="16sp"
                android:text="运营商"/>
             <TextView
                 android:id="@+id/station_detail_serviceName"
@@ -109,14 +111,16 @@
         <include layout="@layout/view_line"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8"
+            android:layout_marginBottom="@dimen/dimen_8"
             android:gravity="center_vertical"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:text="运营时间"/>
             <TextView
                 android:id="@+id/station_detail_onServiceTime"
@@ -129,18 +133,17 @@
 
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_8"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_25"
         android:gravity="center_vertical"
         android:paddingRight="@dimen/dimen_25"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="36dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/zhuang"
             android:drawablePadding="@dimen/dimen_15"
             android:text="空闲" />
 
@@ -175,10 +178,10 @@
         />
 
     <android.support.v7.widget.RecyclerView
-        android:background="@color/white"
         android:id="@+id/station_guns_recycleView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
     </android.support.v7.widget.RecyclerView>
 

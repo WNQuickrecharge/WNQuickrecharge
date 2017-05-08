@@ -69,11 +69,17 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.paycenter_tvNext:
-                if (payType == 3){
-                    payYue();
+                //邮费为0则直接成功，不用支付
+                if (money > 0){
+                    if (payType == 3){
+                        payYue();
+                    }
+                    else {
+                        payZfb();
+                    }
                 }
                 else {
-                    payZfb();
+                    toInvoiceApply();
                 }
                 break;
             case R.id.paycenter_rlPayway:
@@ -139,6 +145,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         bundle.putDouble("money",allMoney);
         bundle.putString("order_no",order_no);
         skipActivity(InvoiceApplyActivity.class,bundle);
+        finish();
     }
 
     @Override

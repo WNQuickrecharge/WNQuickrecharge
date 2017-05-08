@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.optimumnano.quickcharge.bean.InvoiceOrder;
 import com.optimumnano.quickcharge.bean.InvoiceOrderRsp;
+import com.optimumnano.quickcharge.bean.InvoiceRecordBean;
 import com.optimumnano.quickcharge.bean.InvoiceSignRsp;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.HttpCallback;
@@ -57,7 +58,8 @@ public class InvoiceManager {
      * @param mobile 手机号
      */
     public void addInvoiceOrder(double postage,String consume_ids,String title,double invoice_amount,
-                                String name,String address,String mobile,
+                                String name,String address,String mobile,String regPhone,String regAddress,
+                                String bankCard,String indentifyNum,String remark,
                                 final ManagerCallback callback){
         if (StringUtils.isEmpty(mobile)){
             callback.onFailure("电话号码不能为空");
@@ -66,7 +68,14 @@ public class InvoiceManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.add_invoice);
         RequestParams params = new RequestParams(url);
         HashMap<String,Object> ha = new HashMap<>();
-        ha.put("postage",postage);
+        if (!StringUtils.isEmpty(regPhone)){
+            ha.put("tax_no",indentifyNum);
+            ha.put("register_addr",regAddress);
+            ha.put("register_phone",regPhone);
+            ha.put("bank_num",bankCard);
+            ha.put("remark",remark);
+        }
+//        ha.put("postage",postage);
         ha.put("consume_ids",consume_ids);
         ha.put("title",title);
         ha.put("invoice_amount",invoice_amount);
@@ -88,6 +97,13 @@ public class InvoiceManager {
             }
         });
     }
+    public void addInvoiceOrder(double postage,String consume_ids,String title,double invoice_amount,
+                                String name,String address,String mobile,
+                                final ManagerCallback callback){
+        addInvoiceOrder(postage,consume_ids,title,invoice_amount, name,address,mobile,
+                "","","","","",
+        callback);
+    }
 
     /**
      * 获取已提交的发票历史订单()
@@ -97,9 +113,9 @@ public class InvoiceManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.get_invoice_orderlist);
         RequestParams params = new RequestParams(url);
         params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
-        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+        MyHttpUtils.getInstance().post(params, new HttpCallback<List<InvoiceRecordBean>>() {
             @Override
-            public void onSuccess(String result, int httpCode) {
+            public void onSuccess(List<InvoiceRecordBean> result, int httpCode) {
                 super.onSuccess(result, httpCode);
                 callback.onSuccess(result);
             }

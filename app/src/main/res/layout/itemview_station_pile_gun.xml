@@ -6,9 +6,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/color66"
         android:text="枪："/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/color66"
+        android:textSize="@dimen/sp_16"
         android:id="@+id/tv_station_gun_number"/>
 </LinearLayout>

@@ -9,7 +9,7 @@
     >
 
     <LinearLayout
-        android:layout_marginTop="@dimen/dimen_5"
+        android:layout_marginTop="@dimen/dimen_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -17,9 +17,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_16"
             android:text="@string/gun_number" />
         <TextView
             android:id="@+id/tv_station_item_pileNo"
+            android:textColor="@color/color33"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -27,16 +29,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_6"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/tv_electric_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_16"
             android:text="@string/station_electric_price"/>
         <TextView
             android:id="@+id/tv_service_price"
             android:layout_marginLeft="@dimen/dimen_10"
+            android:textSize="@dimen/sp_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/station_service_price"
@@ -52,8 +56,8 @@
 
         <ImageView
             android:id="@+id/gun_status_img"
-            android:layout_width="51dp"
-            android:layout_height="51dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@mipmap/cdzhuang02" />
         <LinearLayout
             android:id="@+id/ll_gunList"
@@ -68,8 +72,8 @@
 
         <TextView
             android:id="@+id/pile_status_operation"
-            android:layout_width="110dp"
-            android:layout_height="35dp"
+            android:layout_width="68dp"
+            android:layout_height="24dp"
             android:background="@drawable/pile_status_operation_bg"
             android:gravity="center"
             android:text="@string/charging"
@@ -79,6 +83,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dimen_5"
+        android:layout_marginTop="@dimen/dimen_8"
         android:background="@color/bg_gray_F2" />
 </LinearLayout>
