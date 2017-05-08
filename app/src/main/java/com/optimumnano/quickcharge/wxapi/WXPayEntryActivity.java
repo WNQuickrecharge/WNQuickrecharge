@@ -2,9 +2,6 @@ package com.optimumnano.quickcharge.wxapi;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
@@ -36,18 +33,11 @@ import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
 
 public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandler {
 
-    @Bind(R.id.iv_pay_result)
-    ImageView mIvPayResult;
-    @Bind(R.id.tv_pay_result)
-    TextView mTvPayResult;
+
     @Bind(R.id.act_wallet_deposit_suc_tv_payway)
     TextView mTvPayway;
-    @Bind(R.id.rl_pay_info_payway)
-    RelativeLayout mRlPayInfoPayway;
     @Bind(R.id.act_wallet_deposit_suc_mi_amount)
     MenuItem1 mMiAmount;
-    @Bind(R.id.act_wallet_deposit_suc_tv_back)
-    TextView mTvBack;
     private IWXAPI api;
 
     @Override
@@ -86,31 +76,23 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
                     mMiAmount.setRightText("¥ "+amount);
                     PayWayViewHelp.showPayWayStatus(WXPayEntryActivity.this,mTvPayway,payway);
                     showToast("支付成功");
-                    mTvPayResult.setText("支付成功");
                     break;
                 case -1:
-                    logtesti("支付异常");
-                    mTvPayResult.setText("支付异常");
-                    showPayFail();
+                    showToast("支付异常");
+                    logtesti("支付异常 code=-1");
+                    finish();
                     break;
                 case -2:
-                    mTvPayResult.setText("取消支付");
                     showToast("取消支付");
-                    showPayFail();
+                    finish();
                     break;
                 default:
-                    logtesti("其他异常");
-                    mTvPayResult.setText("支付出错");
-                    showPayFail();
+                    showToast("支付异常");
+                    logtesti("其他支付异常");
+                    finish();
                     break;
             }
         }
-    }
-
-    private void showPayFail() {
-        mIvPayResult.setImageResource(R.drawable.pay_fail);
-        mRlPayInfoPayway.setVisibility(View.INVISIBLE);
-        mMiAmount.setVisibility(View.INVISIBLE);
     }
 
     @Override
