@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -132,8 +130,6 @@ public class WalletDepositAct extends BaseActivity {
         }else {
             mChosePayway = payway;
         }
-//        mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
-//        logtesti("mPayPsd "+mPayPsd);
         PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,mChosePayway);
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
@@ -273,53 +269,6 @@ public class WalletDepositAct extends BaseActivity {
             return false;
         }
         return true;
-    }
-
-    private void showPayPsdDialog() {
-        mAmount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)){
-            showToast("充值金额不能为空");
-            return;
-        }
-        mPayDialog.setPayway(mChosePayway);
-        mPayDialog.setMoney(Double.valueOf(mAmount));
-        mPayDialog.setStatus(PayDialog.EDTPWD);
-        mPayDialog.setPayName("充值");
-        mPayDialog.setPaywayListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showChosePayWayDialog();
-            }
-        });
-        mPayDialog.setTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length()==6){
-                    if (!mPayPsd.equals(s.toString())){
-                        showToast("支付密码错误");
-                        mPayDialog.cleanPasswordView();
-                    }else {
-                        callALiPay();
-                        dismissDialog();
-//                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
-                    }
-
-                    logtesti("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
-                }
-            }
-        });
-
-        mPayDialog.show();
     }
 
     private void changePayWayStatus(int payway) {

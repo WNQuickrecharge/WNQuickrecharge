@@ -5,17 +5,22 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.mineinfo.MineWalletAct;
+import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.utils.AppManager;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
+import com.optimumnano.quickcharge.views.MenuItem1;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
-import com.tencent.mm.opensdk.modelpay.PayResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
 
@@ -27,14 +32,18 @@ import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
  */
 
 public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandler {
-    @Bind(R.id.tv_pay_result)
-    TextView mTvPayResult;
+
+
+    @Bind(R.id.act_wallet_deposit_suc_tv_payway)
+    TextView mTvPayway;
+    @Bind(R.id.act_wallet_deposit_suc_mi_amount)
+    MenuItem1 mMiAmount;
     private IWXAPI api;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paysucess);
+        setContentView(R.layout.activity_wallet_deposit_suc);
         ButterKnife.bind(this);
         initViews();
         setTitle("支付结果");
@@ -58,23 +67,30 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     public void onResp(BaseResp resp) {
 
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            String code = "" + String.valueOf(resp.errCode);
-            if (code.equals("0")) {
-                String result = ((PayResp) resp).extData;
-                logtesti(result);
-                mTvPayResult.setText("支付成功");
-            }
-            else if (code.equals("-1")) {//错误
-                logtesti("支付异常");
-                mTvPayResult.setText("支付异常");
-            }
-            else if (code.equals("-2")) {
-                logtesti("取消支付");
-                mTvPayResult.setText("取消支付");
-            }
-            else {
-                logtesti("其他异常");
-                mTvPayResult.setText("支付出错");
+            int code = resp.errCode;
+            switch (code){
+                case 0:
+                    Intent intent = getIntent();
+                    int payway = intent.getIntExtra("payway", -1);
+                    String amount = intent.getStringExtra("amount");
+                    mMiAmount.setRightText("¥ "+amount);
+                    PayWayViewHelp.showPayWayStatus(WXPayEntryActivity.this,mTvPayway,payway);
+                    showToast("支付成功");
+                    break;
+                case -1:
+                    showToast("支付异常");
+                    logtesti("支付异常 code=-1");
+                    finish();
+                    break;
+                case -2:
+                    showToast("取消支付");
+                    finish();
+                    break;
+                default:
+                    showToast("支付异常");
+                    logtesti("其他支付异常");
+                    finish();
+                    break;
             }
         }
     }
@@ -84,5 +100,13 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         super.onDestroy();
         api.detach();
         ButterKnife.unbind(this);
+    }
+
+    @OnClick(R.id.act_wallet_deposit_suc_tv_back)
+    public void onClick() {
+        Intent intent = new Intent(WXPayEntryActivity.this, MineWalletAct.class);
+        startActivity(intent);
+        AppManager.getAppManager().finishActivity(WalletDepositAct.class);
+        finish();
     }
 }

@@ -41,10 +41,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
-import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
@@ -361,9 +361,9 @@ public class RechargeFragment extends BaseFragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             if (Tool.isConnectingToInternet()) {
-                ((BaseActivity) getActivity()).showLoading("加载中...");
+                ((MainActivity) getActivity()).showLoading("加载中...");
             } else {
-                ((BaseActivity)getActivity()).showToast("网络连接异常");
+                ((MainActivity)getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)
                 locationClient.start();
@@ -583,7 +583,7 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void closeLoading() {
-        ((BaseActivity)getActivity()).closeLoading();
+        ((MainActivity)getActivity()).closeLoading();
     }
 
     private void marker() {
