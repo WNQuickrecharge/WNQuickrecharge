@@ -562,24 +562,24 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                closeLoading();
-                if (mCarPiont != null && mCarPiont.equals(returnContent))
-                    return;
-                mCarPiont = (List<CarPoint>) returnContent;
-                marker();
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                ToastUtil.showToast(getActivity(),msg);
-                closeLoading();
-            }
-        });
+//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                closeLoading();
+//                if (mCarPiont != null && mCarPiont.equals(returnContent))
+//                    return;
+//                mCarPiont = (List<CarPoint>) returnContent;
+//                marker();
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                ToastUtil.showToast(getActivity(),msg);
+//                closeLoading();
+//            }
+//        });
     }
 
     private void closeLoading() {

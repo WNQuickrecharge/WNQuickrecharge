@@ -256,6 +256,7 @@
         <include layout="@layout/layout_line"/>
 
         <com.optimumnano.quickcharge.views.MenuItem1
+            android:visibility="gone"
             android:id="@+id/dialog_chose_payment_wx"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
