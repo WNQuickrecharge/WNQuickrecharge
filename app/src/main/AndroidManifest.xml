@@ -54,8 +54,8 @@
         android:theme="@style/Theme.AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan">
 
@@ -67,12 +67,13 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".activity.login.LoginActivity"
+        <activity
+            android:name=".activity.login.LoginActivity"
             android:launchMode="singleTask">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
@@ -94,15 +95,20 @@
             android:process=":pushservice"></service>
         <service android:name=".service.MyIntentService" />
 
-        <activity android:name=".activity.login.RegisterActivity"
+        <activity
+            android:name=".activity.login.RegisterActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.login.ForgetPwdActivity"
+        <activity
+            android:name=".activity.login.ForgetPwdActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.selectAddress.SelectAddressActivity"
+        <activity
+            android:name=".activity.selectAddress.SelectAddressActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.order.OrderlistDetailtwoActivity"
+        <activity
+            android:name=".activity.order.OrderlistDetailtwoActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.qrcode.QrCodeActivity"
+        <activity
+            android:name=".activity.qrcode.QrCodeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.setting.SettingActivity"
@@ -110,14 +116,17 @@
         <activity
             android:name=".activity.setting.ModifyPassword"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.order.OrderlistDetailActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.order.OrderlistDetailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.mineinfo.MineInfoAct"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.filter.FilterActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.order.RechargeControlActivity"
+        <activity
+            android:name=".activity.filter.FilterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.order.RechargeControlActivity"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.mineinfo.MineWalletAct"
@@ -142,8 +151,9 @@
             android:name=".activity.mineinfo.WalletDepositSuccessAct"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.order.OrderDetlActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.order.OrderDetlActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.setting.ModifyPayPasswordActivity"
             android:screenOrientation="portrait" />
@@ -183,16 +193,21 @@
             <!-- <category android:name="android.intent.category.DEFAULT" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.order.OrderActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.invoice.InvoiceActivity"
+        <activity
+            android:name=".activity.order.OrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.invoice.InvoiceActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.invoice.InvoiceTypeActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.invoice.PayCenterActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.invoice.InvoiceApplyActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.invoice.InvoiceTypeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.invoice.PayCenterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.invoice.InvoiceApplyActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
@@ -203,13 +218,17 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"></activity>
-        <activity android:name=".activity.invoice.InvoiceMoreActivity"
+        <activity
+            android:name=".activity.invoice.InvoiceMoreActivity"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".activity.filter.ChoseCityActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.qrcode.ZxingActivty"
             android:screenOrientation="portrait" />
     </application>
 

@@ -44,4 +44,8 @@
         <attr name="pivPasswordRadius" format="dimension"/>
         <attr name="pivPasswordLength" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="QRCode">
+        <attr name="buttomText" format="reference" />
+    </declare-styleable>
 </resources>
