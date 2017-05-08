@@ -226,7 +226,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
-        <receiver android:name=".AppRegister">
+        <receiver android:name=".wxapi.AppRegister">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP"/>
             </intent-filter>
