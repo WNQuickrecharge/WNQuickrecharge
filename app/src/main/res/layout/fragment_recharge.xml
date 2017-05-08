@@ -22,13 +22,13 @@
 
         <ImageView
             android:id="@+id/iv_location"
-            android:layout_margin="@dimen/dimen_30"
+            android:layout_margin="@dimen/dimen_10"
             android:visibility="visible"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:src="@drawable/frag_change_dinwei"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
 
 
         <LinearLayout
@@ -120,16 +120,16 @@
             android:id="@+id/tv_scan_charge"
             android:layout_centerInParent="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dimen_25"
+            android:layout_marginBottom="@dimen/dimen_10"
             android:drawableRight="@drawable/icon_saomabudian"
             android:text="扫码补电"
             android:paddingTop="@dimen/dimen_4"
             android:paddingBottom="@dimen/dimen_4"
-            android:paddingLeft="@dimen/dimen_30"
-            android:paddingRight="@dimen/dimen_30"
-            android:drawablePadding="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_26"
+            android:paddingRight="@dimen/dimen_26"
+            android:drawablePadding="@dimen/dimen_6"
             android:background="@drawable/sl_rb_state_btn"
-            android:textSize="@dimen/font_18"
+            android:textSize="@dimen/font_16"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

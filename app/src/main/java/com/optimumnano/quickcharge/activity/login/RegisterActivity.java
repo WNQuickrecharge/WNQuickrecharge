@@ -57,7 +57,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 getChecknum();
                 break;
             case R.id.register_tvRegister:
-                showLoading();
                 register();
                 break;
             default:
@@ -89,6 +88,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             showToast("密码长度不能小于6位!");
             return;
         }
+        showLoading();
 
         String Md5Pasword = MD5Utils.encodeMD5(password);
         String finalPassword = MD5Utils.encodeMD5(Md5Pasword);

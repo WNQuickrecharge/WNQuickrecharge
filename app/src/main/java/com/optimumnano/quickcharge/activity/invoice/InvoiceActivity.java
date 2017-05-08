@@ -35,7 +35,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private int month;
     private double allMoney = 0;//发票金额
 
-    private List<Integer> ids = new ArrayList<>();
+    private List<String> ids = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,7 +142,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()){
             case R.id.invoice_tvNext:
                 String allid = "";
-                for (int x:ids){
+                for (int i=0;i<ids.size();i++){
+                    int x = Integer.parseInt(ids.get(i));
                     allid= allid+x+",";
                 }
                 Bundle bundle = new Bundle();
@@ -151,7 +152,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 skipActivity(InvoiceTypeActivity.class,bundle);
                 break;
             case R.id.title_tvRight:
-
+                skipActivity(InvoiceRecordActivity.class,null);
                 break;
         }
     }
@@ -161,7 +162,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             group.get(position).isChecked = false;
             for (int i = 0;i<child.get(position).size();i++){
                 child.get(position).get(i).isChecked = false;
-                ids.add(child.get(position).get(i).C_ChargeOrderId);
+                ids.remove(child.get(position).get(i).C_ChargeOrderId+"");
             }
             allMoney = subMoney(allMoney,group.get(position).money);
         }
@@ -169,7 +170,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             group.get(position).isChecked = true;
             for (int i = 0;i<child.get(position).size();i++){
                 child.get(position).get(i).isChecked = true;
-                ids.remove(child.get(position).get(i).C_ChargeOrderId);
+                ids.add(child.get(position).get(i).C_ChargeOrderId+"");
             }
             allMoney = addMoney(allMoney,group.get(position).money);
         }

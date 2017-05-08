@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/default_padding"
     android:paddingRight="@dimen/default_padding"
-    android:paddingBottom="@dimen/default_padding15"
+    android:id="@+id/ll_bottom_dialog_root"
+    android:paddingBottom="@dimen/default_padding"
     android:paddingTop="@dimen/default_padding">
 
     <LinearLayout
-        android:paddingTop="@dimen/dimen_5"
         android:paddingBottom="@dimen/dimen_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:gravity="center"
             android:text="地址"
             android:textColor="@color/color33"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_18" />
 
         <TextView
             android:id="@+id/tv_cancel"
@@ -33,8 +33,9 @@
             android:textColor="@color/color66"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
-
+    <include layout="@layout/view_line"/>
     <LinearLayout
+        android:layout_marginTop="@dimen/dimen_14"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,8 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="详细地址"
-            android:textColor="@color/color66"
-            android:textSize="@dimen/sp_14" />
+            android:textColor="@color/color33"
+            android:textSize="@dimen/sp_16" />
 
         <TextView
             android:id="@+id/tv_distance"
@@ -66,21 +67,21 @@
         android:id="@+id/tv_phonenum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding5"
+        android:layout_marginTop="@dimen/default_padding6"
         android:text="137242537"
         android:textColor="@color/main_color"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_16" />
 
     <TextView
-        android:drawableLeft="@drawable/ic_location"
-        android:drawablePadding="@dimen/default_padding5"
+        android:drawableLeft="@drawable/feiyong"
+        android:drawablePadding="@dimen/default_padding6"
         android:id="@+id/tv_price_per"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding5"
         android:text="电费:1.5元/度,服务费:0.5元/度"
         android:textColor="@color/color33"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_16" />
 
     <TextView
         android:id="@+id/tv_num"
@@ -88,60 +89,72 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding5"
         android:text="空闲"
-        android:drawablePadding="@dimen/default_padding5"
+        android:drawablePadding="@dimen/default_padding6"
         android:drawableLeft="@drawable/ic_number"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_16" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_padding"
-        android:paddingRight="@dimen/dp_22"
-        android:paddingLeft="@dimen/dp_22"
-        android:paddingTop="@dimen/dimen_5"
-        android:paddingBottom="@dimen/dimen_5"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dimen_4"
+        android:paddingTop="@dimen/dimen_2">
 
-        <TextView
-            android:id="@+id/tv_fav"
+        <LinearLayout
+            android:id="@+id/ll_collect_root"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/font_20"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:background="@drawable/shape_maincolor_kuang"
-            android:button="@null"
-            android:drawableLeft="@drawable/ic_fav"
-            android:drawablePadding="@dimen/default_padding5"
-            android:clickable="true"
-            android:gravity="center"
-            android:paddingBottom="@dimen/dimen_8"
-            android:paddingLeft="@dimen/default_padding15"
-            android:paddingRight="@dimen/default_padding15"
-            android:paddingTop="@dimen/dimen_8"
-            android:text="收藏"
-            android:textColor="@drawable/sl_other_rb_text_state_two"
-            android:textSize="@dimen/sp_14" />
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/tv_nav"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_fav" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_6"
+                android:paddingTop="@dimen/dimen_6"
+                android:text="  收藏"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_gps_root"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/font_20"
+            android:layout_weight="1"
             android:background="@drawable/sl_rb_state_btn"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center"
-            android:paddingBottom="@dimen/dimen_8"
-            android:drawableLeft="@drawable/ic_daohang"
-            android:drawablePadding="@dimen/default_padding5"
-            android:paddingLeft="@dimen/default_padding15"
-            android:paddingRight="@dimen/default_padding15"
-            android:paddingTop="@dimen/dimen_8"
-            android:clickable="true"
-            android:text="导航"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14" />
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_daohang" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:clickable="true"
+                android:paddingBottom="@dimen/dimen_6"
+                android:paddingTop="@dimen/dimen_6"
+                android:text="  导航"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
 
 
     </LinearLayout>

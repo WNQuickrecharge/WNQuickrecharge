@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.InvoiceOrderRsp;
 import com.optimumnano.quickcharge.manager.InvoiceManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 
@@ -51,6 +53,8 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     private String ids;//所有的订单id
     private double orderMoney = 0;//订单金额
     private InvoiceManager manager = new InvoiceManager();
+
+    private String regPhone,regAddress,bankCard,indentifyNum,remark;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,9 +113,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.invoice_type_tvNext:
-                Bundle bundle = new Bundle();
-                bundle.putDouble("money", orderMoney);
-                skipActivity(PayCenterActivity.class, bundle);
+                addInviceOrder();
                 break;
             case R.id.ll_go_to_more:
                 InvoiceMoreActivity.start(this);
@@ -122,17 +124,36 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     //提交订单
     private void addInviceOrder(){
         manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
-                etName.getText().toString(), etAddress.getText().toString(), etPhone.getText().toString(), 1
-                , new ManagerCallback() {
+                etName.getText().toString(), etAddress.getText().toString(),
+                etPhone.getText().toString(),
+                regPhone,regAddress,bankCard,indentifyNum,remark,
+                new ManagerCallback<InvoiceOrderRsp>() {
                     @Override
-                    public void onSuccess(Object returnContent) {
+                    public void onSuccess(InvoiceOrderRsp returnContent) {
                         super.onSuccess(returnContent);
+                        Bundle bundle = new Bundle();
+                        bundle.putDouble("money", returnContent.postage);
+                        bundle.putDouble("allmoney",allMoney);
+                        bundle.putString("order_no",returnContent.i_order_no);
+                        skipActivity(PayCenterActivity.class, bundle);
+                        finish();
                     }
 
                     @Override
                     public void onFailure(String msg) {
                         super.onFailure(msg);
+                        showToast(msg);
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        regPhone = data.getStringExtra("regPhone");
+        regAddress = data.getStringExtra("regAddress");
+        bankCard = data.getStringExtra("bankCard");
+        indentifyNum = data.getStringExtra("indentifyNum");
+        remark = data.getStringExtra("remark");
     }
 }

@@ -326,7 +326,7 @@ public class MainActivity extends BaseActivity {
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
                         setRightTitle("");
-                        //setRightTitle("开发票");
+                        setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:
@@ -446,7 +446,7 @@ public class MainActivity extends BaseActivity {
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
             //routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,BNRoutePlanNode.CoordinateType.WGS84, mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,BNRoutePlanNode.CoordinateType.BD09LL, mPoint);
         }
     }
 
@@ -592,6 +592,11 @@ public class MainActivity extends BaseActivity {
                 showToast(msg);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //super.onSaveInstanceState(outState);
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,14 +38,17 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.MainActivity;
+import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
@@ -52,6 +56,7 @@ import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
@@ -61,7 +66,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.LogUtil;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.Bind;
@@ -102,6 +106,9 @@ public class RechargeFragment extends BaseFragment {
     boolean isFirstLoc = true; // 是否首次定位
     private BottomSheetDialog mBsdialog;
     private View mPopView;
+    private String serviceVersionJsonInfo;
+    private MyDialog myDialog;
+    private LinearLayout bottomDialogRoot;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,15 +137,22 @@ public class RechargeFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mBaiduMap = mapView.getMap();
+        //不显示"baidu" logo
+        mapView.removeViewAt(1);
+        // 不显示地图上比例尺
+        mapView.showScaleControl(false);
+        // 不显示地图缩放控件（按钮控制栏）
+        mapView.showZoomControls(false);
+        // 不显示指南针
+        mBaiduMap.getUiSettings().setCompassEnabled(false);
+
         locationClient = new LocationClient(getActivity().getApplicationContext());
         locationClient.registerLocationListener(myListener);
         initLocation();
         startLocation();
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                mBaiduMap.hideInfoWindow();
-            }
+            public void onMapClick(LatLng latLng) {}
 
             @Override
             public boolean onMapPoiClick(MapPoi mapPoi) {
@@ -153,6 +167,7 @@ public class RechargeFragment extends BaseFragment {
                 Object obj = bundle.getSerializable("info");
                 if (obj instanceof Point) {
                     mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
+                    //bottomDialogRoot = (LinearLayout) mPopView.findViewById(R.id.ll_bottom_dialog_root);
                     mBsdialog = new BottomSheetDialog(getActivity());
                     mBsdialog.setContentView(mPopView);
                     mBsdialog.getWindow().findViewById(R.id.design_bottom_sheet).
@@ -164,9 +179,7 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvAddress.setText(holder.mItem.StationName);
 //                    holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
                     holder.tvDetailAddress.setText(holder.mItem.Address);
-                    DecimalFormat decimalFormat=new DecimalFormat("0.00");
-                    String format = decimalFormat.format(holder.mItem.distance);
-                    holder.tvDistance.setText(format+"km");
+                    holder.tvDistance.setText(StringUtils.formatDouble(holder.mItem.distance)+"km");
 
                     holder.tvPhonenum.setText(holder.mItem.Phone);
                     String e=holder.mItem.min_price==holder.mItem.max_price?holder.mItem.max_price+"":holder.mItem.min_price+"~"+holder.mItem.max_price;
@@ -183,7 +196,7 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvNum.setText(simpleText);
 
                     mPopView.setBackgroundResource(R.drawable.sp_map_infowindow);
-                    holder.tvNav.setOnClickListener(new View.OnClickListener() {
+                    holder.gpsRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             OnNaviEvent event = new OnNaviEvent();
@@ -199,7 +212,7 @@ public class RechargeFragment extends BaseFragment {
                         }
                     });
 
-                    holder.tvFav.setOnClickListener(new View.OnClickListener() {
+                    holder.collectRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
@@ -219,6 +232,28 @@ public class RechargeFragment extends BaseFragment {
                             });
                         }
                     });
+//                    mPopView.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(getActivity(), StationActivity.class);
+//                            Bundle bundle=new Bundle();
+//                            bundle.putSerializable("Station",transPointToStationBean(infoUtil));
+//                            intent.putExtras(bundle);
+//                            startActivity(intent);
+//                            mBsdialog.dismiss();
+//                        }
+//                    });
+                    holder.bottomDialogRoot.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), StationActivity.class);
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("Station",transPointToStationBean(infoUtil));
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            mBsdialog.dismiss();
+                        }
+                    });
                     mBsdialog.show();
                 }
 
@@ -227,6 +262,30 @@ public class RechargeFragment extends BaseFragment {
         });
 
 
+    }
+
+    private StationBean transPointToStationBean(Point mItem) {
+        StationBean bean=new StationBean();
+        bean.setCity(mItem.City);
+        bean.setDistance(StringUtils.formatDouble(mItem.distance)+"km");
+        bean.setId(mItem.Id);
+        bean.setAddress(mItem.Address);
+        bean.setDel(mItem.IsDel);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setLat(mItem.Lat+"");
+        bean.setLng(mItem.Lng+"");
+        bean.setFreePiles(Integer.parseInt(mItem.FreePiles));
+        bean.setTotalPiles(Integer.parseInt(mItem.TotalPiles));
+        bean.setStationName(mItem.StationName);
+        bean.setState(mItem.State);
+        bean.setUpdateTime(mItem.UpdateTime);
+        bean.setMax_price(mItem.max_price);
+        bean.setMin_price(mItem.min_price);
+        bean.setMax_service(mItem.max_service);
+        bean.setMin_service(mItem.min_service);
+        bean.setManagementCompany(mItem.ManagementCompany);
+        bean.setRunTimeSpan(mItem.RunTimeSpan);
+        return bean;
     }
 
     @Override
@@ -248,14 +307,20 @@ public class RechargeFragment extends BaseFragment {
         TextView tvPricePer;
         @Bind(R.id.tv_num)
         TextView tvNum;
-        @Bind(R.id.tv_nav)
-        TextView tvNav;
-        @Bind(R.id.tv_fav)
-        TextView tvFav;
+//        @Bind(R.id.tv_nav)
+//        TextView tvNav;
+//        @Bind(R.id.tv_fav)
+//        TextView tvFav;
         @Bind(R.id.tv_phonenum)
         TextView tvPhonenum;
         @Bind(R.id.tv_cancel)
         TextView tvCancel;
+        @Bind(R.id.ll_bottom_dialog_root)
+        LinearLayout bottomDialogRoot;
+        @Bind(R.id.ll_collect_root)
+        LinearLayout collectRoot;
+        @Bind(R.id.ll_gps_root)
+        LinearLayout gpsRoot;
         public Point mItem;
 
         public ViewHolder(View view) {
@@ -268,9 +333,9 @@ public class RechargeFragment extends BaseFragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             if (Tool.isConnectingToInternet()) {
-                ((MainActivity) getActivity()).showLoading("加载中...");
+                ((BaseActivity) getActivity()).showLoading("加载中...");
             } else {
-                ((MainActivity)getActivity()).showToast("网络连接异常");
+                ((BaseActivity)getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)
                 locationClient.start();
@@ -387,7 +452,7 @@ public class RechargeFragment extends BaseFragment {
         public void onReceiveLocation(BDLocation location) {
             // map view 销毁后不在处理新接收的位置
             if (location == null || mapView == null) {
-                ((MainActivity)getActivity()).closeLoading();
+                closeLoading();
                 return;
             }
             locationClient.stop();
@@ -438,7 +503,7 @@ public class RechargeFragment extends BaseFragment {
             LogUtil.d(sb.toString());
 
             if (location.getLocType() != BDLocation.TypeNetWorkLocation)//非网络定位结果
-                ((MainActivity)getActivity()).closeLoading();
+                closeLoading();
         }
 
         @Override
@@ -454,6 +519,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
@@ -463,6 +529,8 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                closeLoading();
             }
         });
 
@@ -470,6 +538,7 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                closeLoading();
                 if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
                 mCarPiont = (List<CarPoint>) returnContent;
@@ -479,31 +548,38 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                closeLoading();
             }
         });
+    }
+
+    private void closeLoading() {
+        ((BaseActivity)getActivity()).closeLoading();
     }
 
     private void marker() {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
-        BitmapDescriptor bitmap;
+        BitmapDescriptor bitmap = null;
+        BitmapDescriptor bitmap1 = null;
         LatLng latLng = null;
         Marker marker;
         OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
             for (Point info : mPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
+                if (bitmap==null)
+                    bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
                 //获取经纬度
-                //double[] latlon = GPSUtils.wgs84_To_bd09(info.Lat, info.Lng);//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-                //latLng = new LatLng(latlon[0],latlon[1]);
-                latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+                //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+                latLng = new LatLng(info.Lat, info.Lng);//原始数据就是bd09坐标,不用转
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
                         .icon(bitmap)//设置图标样式
-                        .zIndex(9) // 设置marker所在层级
-                        .draggable(true); // 设置手势拖拽;
+                        .zIndex(9); // 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
                 //添加marker
                 marker = (Marker) mBaiduMap.addOverlay(options);
                 //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
@@ -514,15 +590,17 @@ public class RechargeFragment extends BaseFragment {
             }
         if (mCarPiont != null && mCarPiont.size() != 0)
             for (CarPoint info : mCarPiont) {
-                bitmap = BitmapDescriptorFactory.fromResource(R.drawable.che);
+                if (bitmap1==null)
+                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
                 //获取经纬度
-                latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
-                        .icon(bitmap)//设置图标样式
-                        .zIndex(9) // 设置marker所在层级
-                        .draggable(true); // 设置手势拖拽;
+                        .icon(bitmap1)//设置图标样式
+                        .zIndex(9) ;// 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
                 //添加marker
                 marker = (Marker) mBaiduMap.addOverlay(options);
                 //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
@@ -532,7 +610,6 @@ public class RechargeFragment extends BaseFragment {
                 marker.setExtraInfo(bundle);
             }
 
-        ((MainActivity)getActivity()).closeLoading();
     }
 
     private LatLng gpsToBd09ll(LatLng sourceLatLng) {
@@ -561,10 +638,10 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        //UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
-//        EventBus.getDefault().register(this);
     }
 
     @Override

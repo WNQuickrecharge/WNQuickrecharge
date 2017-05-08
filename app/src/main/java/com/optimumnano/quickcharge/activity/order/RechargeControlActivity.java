@@ -3,7 +3,6 @@ package com.optimumnano.quickcharge.activity.order;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -11,11 +10,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
-import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.HttpApi;
@@ -101,6 +98,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             tvStart.setVisibility(View.GONE);
             tvDescone.setText("充电中");
             tvDescTwo.setText("正在获取充电信息");
+            dialog.show();
         }
     }
 
@@ -118,13 +116,13 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         tvStop = (TextView) findViewById(R.id.rechargecon_tvStop);
         tvTime = (TextView) findViewById(R.id.rechargecon_tvTime);
 
-        if (orderStatus == Constants.GETCHARGEPROGRESS){
-            startCountTime(1000*1000,10*1000);
-        }
+//        if (orderStatus == Constants.GETCHARGEPROGRESS){
+//            startCountTime(1000*1000,10*1000);
+//        }
 
         dialog = new WaitRechargeDialog(this);
-        if (orderStatus==4) {//充电中
-            showLoading("请求充电状态中");
+        if (orderStatus==GETCHARGEPROGRESS) {//充电中
+            dialog.show();
         }
     }
 
@@ -173,7 +171,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //                orderManager.getGunConnect(gunNo,callback,GETCONNECT);
 //            }
 //            else{
-                orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+                //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
 //            }
 
         }
@@ -183,7 +181,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //                orderManager.getGunConnect(gunNo,callback,GETCHARGEPROGRESS);
 //            }
 //            else{
-                orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+                //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
 //            }
         }
         @Override
@@ -259,68 +257,18 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             showToast(String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-//        hub.On("addNewMessageToPage", new HubOnDataCallback() {
-//            @Override
-//            public void OnReceived(JSONArray args) {
-//                EditText chatText = (EditText) findViewById(R.id.chat_text);
-//                //chatText.setText(args.toString());
-//                for (int i = 0; i < args.length(); i++) {
-//                    chatText.append(args.opt(i).toString());
-//                }
-//
-//
-//
-//
-//                if (chatText.getText().toString()!=null){
-//                    hub.Invoke("result", args, new HubInvokeCallback() {
-//                        @Override
-//                        public void OnResult(boolean succeeded, String response) {
-//                            Log.d("result","success");
-//                        }
-//
-//                        @Override
-//                        public void OnError(Exception ex) {
-//
-//                        }
-//                    });
-//                }
-//            }
-//
-//        });
 
 
 
     }
-    private void getOrderInfo(final String order_no) {
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                SystemClock.sleep(3000);
-                OrderManager.getOrderByOrderNo(order_no, new ManagerCallback() {
-                    @Override
-                    public void onSuccess(Object returnContent) {
-                        super.onSuccess(returnContent);
-                        String s = returnContent.toString();
-                        Intent intent=new Intent(RechargeControlActivity.this,OrderlistDetailtwoActivity.class);
-                        OrderBean orderBean = JSON.parseObject(s, OrderBean.class);
-                        Bundle bundle=new Bundle();
-                        bundle.putSerializable("orderbean",orderBean);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        finish();
-                    }
 
-                    @Override
-                    public void onFailure(String msg) {
-                        super.onFailure(msg);
-                        showToast(msg);
-                        finish();
-                    }
-                });
-            }
-        }.start();
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conn.Start();
+        if (orderStatus==1) {
+            dialog.show();
+        }
     }
 
     private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
@@ -385,6 +333,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     bundle.putString("order_no",order_no);
                     intent.putExtras(bundle);
                     RechargeControlActivity.this.startActivity(intent);
+                    conn.Stop();
                     finish();
                     break;
 
@@ -413,4 +362,10 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             }
         }
     };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        conn.Stop();
+    }
 }

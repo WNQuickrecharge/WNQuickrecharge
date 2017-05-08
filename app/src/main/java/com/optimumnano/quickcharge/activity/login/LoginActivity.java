@@ -24,13 +24,13 @@ import com.optimumnano.quickcharge.utils.DESEncryptTools;
 import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
@@ -108,12 +108,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 String password = edtPwd.getText().toString();
                 String Md5Password = MD5Utils.encodeMD5(password);
                 String finalPassword = MD5Utils.encodeMD5(Md5Password);
-                showLoading("登陆中！");
+
                 if ("企业登录".equals(tvLogin.getText().toString())){
                     userType=3;
                 }else if ("个人登录".equals(tvLogin.getText().toString())){
                     userType=1;
                 }
+                if (TextUtils.isEmpty(password)) {
+                    showToast("密码不能为空！");
+                    return;
+                }
+                showLoading("登陆中！");
                 manager.login(edtUsername.getText().toString(),finalPassword,userType,new Manager());
                 break;
             case R.id.login_tvReg:
@@ -166,7 +171,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-
+            closeLoading();
             JSONObject dataJson = null;
             try {
                 dataJson = new JSONObject(returnContent.toString());
@@ -206,9 +211,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_USER_ID,userinfoBean.userinfo.Id);
             SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isRemember);
 
-            DecimalFormat df = new DecimalFormat("0.00");
             boolean b= userinfoBean.account==null;
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00":df.format(userinfoBean.account.RestCash));
+            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00": StringUtils.formatDouble(userinfoBean.account.RestCash));
 
             LogUtil.i("Cookie=="+SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
             new Thread(){
