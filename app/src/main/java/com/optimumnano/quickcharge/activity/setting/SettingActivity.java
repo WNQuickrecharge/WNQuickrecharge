@@ -19,7 +19,6 @@ import org.xutils.common.util.LogUtil;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
@@ -78,7 +77,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-            String pwd = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PASSWORD, "");
+            //String pwd = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PASSWORD, "");
             String phone = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
             boolean isRemember = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false);
             SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();

@@ -4,7 +4,6 @@ package com.optimumnano.quickcharge.activity.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,7 +18,6 @@ import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.AppManager;
-import com.optimumnano.quickcharge.utils.DESEncryptTools;
 import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -29,15 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
-import java.io.UnsupportedEncodingException;
-
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_IS_REMEMBER;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_MOBILE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_NICKNAME;
-import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_PASSWORD;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_SEX;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_USER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
@@ -71,16 +66,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         checkBox.setChecked(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,false));
         if (checkBox.isChecked()){
             edtUsername.setText(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_MOBILE,""));
-            String password = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_PASSWORD, "");
-
-            byte[] decode = Base64.decode(password.getBytes(), Base64.DEFAULT);
-            byte[] decrypt = DESEncryptTools.decrypt(decode, pwdKey.getBytes());
-            try {
-                if (decrypt!=null)
-                    edtPwd.setText(new String(decrypt,"utf-8"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
         }else {
             edtPwd.setText("");
@@ -178,14 +163,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 e.printStackTrace();
             }
 
-            String password = edtPwd.getText().toString();
-            try {
-                byte[] utf8s = DESEncryptTools.encrypt(password.getBytes("utf-8"), pwdKey.getBytes());
-                byte[] encode = Base64.encode(utf8s, Base64.DEFAULT);
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_PASSWORD,new String(encode));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
 
             String data = dataJson.optString("userinfo");
 //            String payPassword = dataJson.optString("PayPassword");
