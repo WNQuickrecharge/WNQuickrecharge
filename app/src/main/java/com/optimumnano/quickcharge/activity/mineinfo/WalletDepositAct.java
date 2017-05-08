@@ -200,6 +200,7 @@ public class WalletDepositAct extends BaseActivity {
                     request.nonceStr = wxpayBean.noncestr;
                     request.timeStamp = wxpayBean.timestamp;
                     request.sign = wxpayBean.sign;
+                    request.extData = mChosePayway+","+mAmount ;
                     wxApi.sendReq(request);
                 }else {
                     showToast("微信未安装或者版本过低");

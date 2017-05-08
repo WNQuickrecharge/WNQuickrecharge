@@ -10,10 +10,12 @@ import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
+import com.optimumnano.quickcharge.utils.TypeConversionUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.mm.opensdk.modelpay.PayResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -70,9 +72,10 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
             int code = resp.errCode;
             switch (code){
                 case 0:
-                    Intent intent = getIntent();
-                    int payway = intent.getIntExtra("payway", -1);
-                    String amount = intent.getStringExtra("amount");
+                    String result = ((PayResp) resp).extData;// request.extData = mChosePayway+","+mAmount ;
+                    String[] resultArr = result.split(",");
+                    int payway = TypeConversionUtils.toInt(resultArr[0]);
+                    String amount = resultArr[1];
                     mMiAmount.setRightText("¥ "+amount);
                     PayWayViewHelp.showPayWayStatus(WXPayEntryActivity.this,mTvPayway,payway);
                     showToast("支付成功");
