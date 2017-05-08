@@ -326,13 +326,17 @@ public class MainActivity extends BaseActivity {
                         setTitle(getString(R.string.order));
                         setLeftTitle("");
                         setRightTitle("");
-                        setRightTitle("开发票");
+                        hideRightTitle();
+                        hideLeftTitle();
+                        //setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
                         setRightTitle("");//第一版不做消息
+                        hideLeftTitle();
+                        hideRightTitle();
                         viewPager.setCurrentItem(2);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {

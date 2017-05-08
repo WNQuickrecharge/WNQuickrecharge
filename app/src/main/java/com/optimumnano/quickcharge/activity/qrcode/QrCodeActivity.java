@@ -230,7 +230,6 @@ public class QrCodeActivity extends BaseActivity {
                 super.onFailure(msg);
                 closeLoading();
                 showToast(getString(R.string.get_gun_info_fail));
-                finish();
             }
         });
     }

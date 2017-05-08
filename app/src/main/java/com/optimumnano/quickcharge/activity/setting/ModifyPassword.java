@@ -74,7 +74,7 @@ public class ModifyPassword extends BaseActivity implements View.OnClickListener
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
-            showToast("密码修改成功");
+            showToast("密码修改成功！");
             finish();
         }
 
