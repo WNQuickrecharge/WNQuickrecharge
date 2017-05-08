@@ -48,8 +48,8 @@ public class GetMineInfoManager {
         });
     }
 
-    public static void getALiPayOrderInfoDeposit(String cash,int payway, final ManagerCallback callback){
-        String url = HttpApi.getInstance().getUrl(HttpApi.get_alipay_orderinfo_deposit);
+    public static void getPayOrderInfoDeposit(String cash, int payway, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_pay_orderinfo_deposit);
         RequestParams params= new RequestParams(url);
         HashMap<String ,Object> requestJson=new HashMap<>();
         requestJson.put("cash",cash);

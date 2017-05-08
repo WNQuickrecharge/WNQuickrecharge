@@ -62,7 +62,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
             if (code.equals("0")) {
                 String result = ((PayResp) resp).extData;
                 logtesti(result);
-                mTvPayResult.setText(result);
+                mTvPayResult.setText("支付成功");
             }
             else if (code.equals("-1")) {//错误
                 logtesti("支付异常");
@@ -74,7 +74,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
             }
             else {
                 logtesti("其他异常");
-                mTvPayResult.setText("其他异常");
+                mTvPayResult.setText("支付出错");
             }
         }
     }

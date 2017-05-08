@@ -162,7 +162,6 @@ public class WalletDepositAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-//                        showPayPsdDialog();
                         Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
                         if (!payCheck()) return;
                         if (mChosePayway==PayDialog.pay_zfb)
@@ -178,8 +177,7 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-//        showToast("暂不支持微信支付");
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -224,7 +222,7 @@ public class WalletDepositAct extends BaseActivity {
 
     private void callALiPay() {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -255,7 +253,7 @@ public class WalletDepositAct extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
-                showToast(msg);
+                showToast("请求失败 "+msg);
                 super.onFailure(msg);
             }
 
