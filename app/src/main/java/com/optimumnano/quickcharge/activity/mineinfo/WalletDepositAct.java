@@ -26,6 +26,7 @@ import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
@@ -36,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -83,12 +83,10 @@ public class WalletDepositAct extends BaseActivity {
                     case "8000"://正在处理,支付结果确认中
                     case "6004"://支付结果未知
                         showToast("支付成功");
-                        DecimalFormat df = new DecimalFormat("0.00");
                         float addAmount=Float.valueOf(mAmount);
-                        String formatAddAmount = df.format(addAmount);
                         Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
                         intent.putExtra("payway",mChosePayway);
-                        intent.putExtra("amount",formatAddAmount);
+                        intent.putExtra("amount", StringUtils.formatDouble(addAmount));
                         startActivity(intent);
                         finish();
 

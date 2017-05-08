@@ -140,6 +140,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
 
     @Override
     public void paySuccess(String order_no) {
+        payDialog.close();
         skipAct(order_no, Constants.STARTCHARGE);
     }
 

@@ -6,8 +6,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.BillBean;
+import com.optimumnano.quickcharge.utils.StringUtils;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 
@@ -32,8 +32,7 @@ public class WalletBillAdapter extends BaseQuickAdapter<BillBean, BaseViewHolder
                 mListener.onItemClickListener(item,holder.getAdapterPosition());
             }
         });
-        DecimalFormat df = new DecimalFormat("0.00");
-        holder.setText(R.id.item_bill_list_tv_busamount,df.format(item.Cash));
+        holder.setText(R.id.item_bill_list_tv_busamount, StringUtils.formatDouble(item.Cash));
         holder.setText(R.id.item_bill_list_tv_busdescribe,item.Title);
         holder.setText(R.id.item_bill_list_tv_buspayway,item.PayType);
         holder.setText(R.id.item_bill_list_tv_bustime,item.CreateTime);

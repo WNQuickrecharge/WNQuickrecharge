@@ -27,6 +27,7 @@ import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
@@ -126,10 +127,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         getExtras();
         initViews();
         initData();
+        loadData();
         initDialog();
     }
     private void getExtras(){
-        gunNo = getIntent().getExtras().getString("gun_no");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle!=null) {
+            gunBean = (RechargeGunBean) bundle.getSerializable("gunBean");
+            gunNo = bundle.getString("gunNo");
+        }
     }
 
     @Override
@@ -166,23 +172,23 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         });
     }
     private void initData(){
-        showLoading("获取枪状态中请稍等！");
-        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
-            @Override
-            public void onSuccess(RechargeGunBean returnContent) {
-                super.onSuccess(returnContent);
-                gunBean = returnContent;
-                loadData();
-                closeLoading();
-            }
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                closeLoading();
-                showToast(getString(R.string.get_gun_info_fail));
-                finish();
-            }
-        });
+//        showLoading("获取枪状态中请稍等！");
+//        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
+//            @Override
+//            public void onSuccess(RechargeGunBean returnContent) {
+//                super.onSuccess(returnContent);
+//                gunBean = returnContent;
+//                loadData();
+//                closeLoading();
+//            }
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                closeLoading();
+//                showToast(getString(R.string.get_gun_info_fail));
+//                finish();
+//            }
+//        });
         GetMineInfoManager.getAccountInfo(new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
@@ -229,26 +235,28 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
             public void onMenuClick(int payway) {
-                switch (payway){
+//                switch (payway){
                     //微信
-                    case PayDialog.pay_wx:
-                        miPayway.setIvLeftDrawable(R.drawable.wx);
-                        miPayway.setTvLeftText("微信");
-                        payWay = PayDialog.pay_wx;
-                        break;
-                    //支付寶
-                    case PayDialog.pay_zfb:
-                        miPayway.setIvLeftDrawable(R.drawable.zfb);
-                        miPayway.setTvLeftText("支付宝");
-                        payWay = PayDialog.pay_zfb;
-                        break;
-                    //余額
-                    case PayDialog.pay_yue:
-                        miPayway.setIvLeftDrawable(R.drawable.yue);
-                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
-                        payWay = PayDialog.pay_yue;
-                        break;
-                }
+//                    case PayDialog.pay_wx:
+//                        miPayway.setIvLeftDrawable(R.drawable.wx);
+//                        miPayway.setTvLeftText("微信");
+//                        payWay = PayDialog.pay_wx;
+//                        break;
+//                    //支付寶
+//                    case PayDialog.pay_zfb:
+//                        miPayway.setIvLeftDrawable(R.drawable.zfb);
+//                        miPayway.setTvLeftText("支付宝");
+//                        payWay = PayDialog.pay_zfb;
+//                        break;
+//                    //余額
+//                    case PayDialog.pay_yue:
+//                        miPayway.setIvLeftDrawable(R.drawable.yue);
+//                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
+//                        payWay = PayDialog.pay_yue;
+//                        break;
+//                }
+                PayWayViewHelp.showPayWayStatus(miPayway,payway,formatRestCash);
+                payWay=payway;
             }
         });
     }

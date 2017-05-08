@@ -210,6 +210,8 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                close();
+                ToastUtil.showToast(activity,msg);
                 payCallback.payFail(msg);
             }
         });
@@ -268,20 +270,21 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
      * @param money 金额
      */
     public void setMoney(double money){
-        this.money = money;
-        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setMoney(money,"");
     }
     public void setMoney(double money,String order_no){
-        this.money = money;
-        this.order_no  = order_no;
-        dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setMoney(money,order_no,"");
     }
 
     public void setMoney(double money,String order_no,String sign){
+        setMoney(money,order_no,sign,3);
+    }
+    public void setMoney(double money,String order_no,String sign,int paytype){
         this.money = money;
         this.order_no  = order_no;
         this.sign = sign;
         dialog.getViewHolder().setText(R.id.pay_tvMoney,"¥"+money);
+        setPayway(paytype);
     }
     public void setPayResultMoney(double money){
         this.money = money;
@@ -383,13 +386,19 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                 break;
             //微信支付
             case R.id.dialog_chose_payment_wx:
-                setPayway(pay_wx);
-                setStatus(EDTPWD);
+//                setPayway(pay_wx);
+//                setStatus(EDTPWD);
+                this.payWay = PayDialog.pay_wx;
+                ToastUtil.showToast(activity,"暂不支持微信支付");
+                close();
                 break;
             //支付宝支付
             case R.id.dialog_chose_payment_zfb:
-                setPayway(pay_zfb);
-                setStatus(EDTPWD);
+//                setPayway(pay_zfb);
+//                setStatus(EDTPWD);
+                this.payWay = PayDialog.pay_zfb;
+                close();
+                payZFB();
                 break;
             //余额支付
             case R.id.dialog_chose_payment_ye:
