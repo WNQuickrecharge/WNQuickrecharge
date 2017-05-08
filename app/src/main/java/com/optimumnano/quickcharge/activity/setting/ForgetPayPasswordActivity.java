@@ -13,6 +13,8 @@ import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 
 /**
@@ -20,8 +22,8 @@ import com.optimumnano.quickcharge.utils.StringUtils;
  */
 
 public class ForgetPayPasswordActivity extends BaseActivity implements View.OnClickListener{
-    private EditText mobile,verificationCode,payPassword,confirmPaypassword;
-    private TextView button,tv_code;
+    private EditText verificationCode,payPassword,confirmPaypassword;
+    private TextView button,tv_code,mobile;
     private LoginManager manager=new LoginManager();
     private ModifyUserInformationManager modifyUserInformationManager = new ModifyUserInformationManager();
     private ShortMessageCountDownTimer smcCountDownTimer;
@@ -38,7 +40,8 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
         super.initViews();
         setTitle("忘记支付密码");
         tvLeft.setVisibility(View.VISIBLE);
-        mobile= (EditText) findViewById(R.id.forget_pay_password_edtPhone);
+        mobile= (TextView) findViewById(R.id.forget_pay_password_edtPhone);
+        mobile.setText(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_MOBILE,""));
         verificationCode= (EditText) findViewById(R.id.forget_pay_edtChecknum);
         payPassword= (EditText) findViewById(R.id.forget_pay_edtPwd);
         confirmPaypassword= (EditText) findViewById(R.id.forget_pay_edtConfirmPwd);

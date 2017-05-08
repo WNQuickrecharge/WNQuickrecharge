@@ -118,6 +118,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         }
     };
     private String formatRestCash;
+    private double restCash;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +196,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 super.onSuccess(returnContent);
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
+                restCash = userAccount.getRestCash();
                 DecimalFormat df = new DecimalFormat("0.00");
                 formatRestCash = df.format(restCash);
                 miPayway.setTvLeftText("余额"+"("+ formatRestCash +")");
@@ -291,6 +292,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 String sign = ha.get("sign").toString();
                 switch (payWay) {
                     case PayDialog.pay_yue:
+                        String inputMoney = edtMoney.getText().toString();
+                        double v = Double.parseDouble(inputMoney);
+                        if (restCash < v) {
+                            showToast("余额不足，请使用其他支付方式");
+                            return;
+                        }
                         GetMineInfoManager.getPayPwd(new ManagerCallback() {
                             @Override
                             public void onSuccess(Object returnContent) {
