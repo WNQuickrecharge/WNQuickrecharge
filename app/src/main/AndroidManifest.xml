@@ -207,7 +207,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.invoice.InvoiceActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.invoice.InvoiceTypeActivity"
             android:screenOrientation="portrait" />
