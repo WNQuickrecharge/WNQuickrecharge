@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -18,6 +16,7 @@ import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.AlipayBean;
+import com.optimumnano.quickcharge.bean.WXPaySignBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
@@ -27,7 +26,12 @@ import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.Tool;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
@@ -37,6 +41,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_PARTNER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
@@ -57,7 +63,7 @@ public class WalletDepositAct extends BaseActivity {
     TextView mTvNext;
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
-    private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
+    private int mChosePayway=PayDialog.pay_zfb;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
@@ -118,14 +124,12 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void initData() {
-        int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
+        int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_zfb);
         if (payway == PayDialog.pay_yue){
-            mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
+            mChosePayway = PayDialog.pay_zfb;//不能使用余额给余额充值
         }else {
             mChosePayway = payway;
         }
-//        mPayPsd = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_PAYPASSWORD, "");
-//        logtesti("mPayPsd "+mPayPsd);
         PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,mChosePayway);
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
@@ -154,7 +158,6 @@ public class WalletDepositAct extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()){
                     case R.id.act_wallet_deposit_tv_next:
-//                        showPayPsdDialog();
                         Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
                         if (!payCheck()) return;
                         if (mChosePayway==PayDialog.pay_zfb)
@@ -170,12 +173,53 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void callWXPay() {
-        showToast("暂不支持微信支付");
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                logtesti("returnContent "+returnContent.toString());
+                JSONObject dataJson=null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+                //将该app注册到微信
+                wxApi.registerApp(WX_APP_ID);
+
+                String sign = dataJson.optString("sign");
+                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
+                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+                if (isPaySupported) {
+                    PayReq request = new PayReq();
+                    request.appId = WX_APP_ID;
+                    request.partnerId = WX_PARTNER_ID;
+                    request.prepayId = wxpayBean.prepayid;
+                    request.packageValue = "Sign=WXPay";
+                    request.nonceStr = wxpayBean.noncestr;
+                    request.timeStamp = wxpayBean.timestamp;
+                    request.sign = wxpayBean.sign;
+                    request.extData = mChosePayway+","+mAmount ;
+                    wxApi.sendReq(request);
+                }else {
+                    showToast("微信未安装或者版本过低");
+                }
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast("请求失败 "+msg);
+                super.onFailure(msg);
+            }
+
+        });
     }
 
     private void callALiPay() {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -206,7 +250,7 @@ public class WalletDepositAct extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
-                showToast(msg);
+                showToast("请求失败 "+msg);
                 super.onFailure(msg);
             }
 
@@ -226,53 +270,6 @@ public class WalletDepositAct extends BaseActivity {
             return false;
         }
         return true;
-    }
-
-    private void showPayPsdDialog() {
-        mAmount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)){
-            showToast("充值金额不能为空");
-            return;
-        }
-        mPayDialog.setPayway(mChosePayway);
-        mPayDialog.setMoney(Double.valueOf(mAmount));
-        mPayDialog.setStatus(PayDialog.EDTPWD);
-        mPayDialog.setPayName("充值");
-        mPayDialog.setPaywayListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showChosePayWayDialog();
-            }
-        });
-        mPayDialog.setTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length()==6){
-                    if (!mPayPsd.equals(s.toString())){
-                        showToast("支付密码错误");
-                        mPayDialog.cleanPasswordView();
-                    }else {
-                        callALiPay();
-                        dismissDialog();
-//                        mPayDialog.setStatus(PayDialog.PAYSUCCESS);
-                    }
-
-                    logtesti("amount "+mEtAmount.getText().toString()+" mChosePayway "+mChosePayway);
-                }
-            }
-        });
-
-        mPayDialog.show();
     }
 
     private void changePayWayStatus(int payway) {

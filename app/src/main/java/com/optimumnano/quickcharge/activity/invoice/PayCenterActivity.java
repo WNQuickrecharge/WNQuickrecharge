@@ -11,8 +11,10 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.InvoiceSignRsp;
 import com.optimumnano.quickcharge.dialog.PayDialog;
+import com.optimumnano.quickcharge.dialog.PayWayDialog;
 import com.optimumnano.quickcharge.manager.InvoiceManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import butterknife.Bind;
@@ -21,8 +23,6 @@ import butterknife.ButterKnife;
 public class PayCenterActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
     @Bind(R.id.paycenter_miMoney)
     MenuItem1 miMoney;
-    @Bind(R.id.paycenter_iv)
-    ImageView iv;
     @Bind(R.id.paycenter_tvPayway)
     TextView tvPayway;
     @Bind(R.id.paycenter_tvNext)
@@ -36,6 +36,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     private double allMoney = 0;
 
     private PayDialog payDialog ;
+    private PayWayDialog payWayDialog;
     private String order_no;
     private int payType = 3;
     private InvoiceManager manager = new InvoiceManager();
@@ -83,9 +84,22 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.paycenter_rlPayway:
-
+                choosePayway();
                 break;
         }
+    }
+    private void choosePayway(){
+        if (payWayDialog == null){
+            payWayDialog = new PayWayDialog(this);
+            payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
+                @Override
+                public void onMenuClick(int payway) {
+                    PayWayViewHelp.showPayWayStatus(PayCenterActivity.this,tvPayway,payway);
+                    payType=payway;
+                }
+            });
+        }
+        payWayDialog.show();
     }
     //余额支付
     private void payYue(){

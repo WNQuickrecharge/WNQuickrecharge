@@ -34,7 +34,6 @@ public class MapManager {
         requestJson.put("lng", mHelper.getLocation().lng);
 //        requestJson.put("lat", 22.731936);
 //        requestJson.put("lng", 114.387322);
-//        requestJson.put("city", "深圳市");
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
@@ -85,11 +84,10 @@ public class MapManager {
         String url = HttpApi.getInstance().getUrl(HttpApi.region_carpile);
         RequestParams params = new RequestParams(url);
         HashMap<String, Object> requestJson = new HashMap<>();
-//        requestJson.put("lat", mHelper.getLocation().lat);
-//        requestJson.put("lng", mHelper.getLocation().lng);
-        requestJson.put("lat", 22.731936);
-        requestJson.put("lng", 114.387322);
-//        requestJson.put("city", "深圳市");
+        requestJson.put("lat", mHelper.getLocation().lat);
+        requestJson.put("lng", mHelper.getLocation().lng);
+//        requestJson.put("lat", 22.731936);
+//        requestJson.put("lng", 114.387322);
         requestJson.put("distance", mHelper.showDistance());
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);

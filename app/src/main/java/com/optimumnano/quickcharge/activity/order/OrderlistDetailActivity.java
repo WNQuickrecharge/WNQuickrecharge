@@ -12,6 +12,8 @@ import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import java.text.DecimalFormat;
@@ -127,6 +129,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                     finish();
                 }
                 else {
+                    payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
                     payDialog.show();
                 }
                 break;

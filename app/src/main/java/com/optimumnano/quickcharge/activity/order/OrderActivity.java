@@ -28,6 +28,8 @@ import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
@@ -76,7 +78,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private String gunNo = "";
     private String mAmount;
 
-    private int payWay = PayDialog.pay_yue;//支付方式
+    private int payWay ;//支付方式
     private Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -118,6 +120,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         }
     };
     private String formatRestCash;
+    private double restCash;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         initDialog();
     }
     private void getExtras(){
+        payWay= SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue);
         Bundle bundle = getIntent().getExtras();
         if (bundle!=null) {
             gunBean = (RechargeGunBean) bundle.getSerializable("gunBean");
@@ -189,24 +193,28 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 //                finish();
 //            }
 //        });
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                DecimalFormat df = new DecimalFormat("0.00");
-                formatRestCash = df.format(restCash);
-                miPayway.setTvLeftText("余额"+"("+ formatRestCash +")");
-            }
+        if (payWay==PayDialog.pay_yue) {
+            GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+                @Override
+                public void onSuccess(Object returnContent) {
+                    super.onSuccess(returnContent);
+                    String s = returnContent.toString();
+                    UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+                    restCash = userAccount.getRestCash();
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    formatRestCash = df.format(restCash);
+                    miPayway.setTvLeftText("余额" + "(" + formatRestCash + ")");
+                }
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                showToast(msg);
-            }
-        });
+                @Override
+                public void onFailure(String msg) {
+                    super.onFailure(msg);
+                    showToast(msg);
+                }
+            });
+        }else  {
+            PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+        }
     }
     private void loadData(){
         miRechargenum.setRightText(gunNo);
@@ -291,6 +299,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 String sign = ha.get("sign").toString();
                 switch (payWay) {
                     case PayDialog.pay_yue:
+                        String inputMoney = edtMoney.getText().toString();
+                        double v = Double.parseDouble(inputMoney);
+                        if (restCash < v) {
+                            showToast("余额不足，请使用其他支付方式");
+                            return;
+                        }
                         GetMineInfoManager.getPayPwd(new ManagerCallback() {
                             @Override
                             public void onSuccess(Object returnContent) {
@@ -358,7 +372,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
     private void callALiPay(Double mAmount) {
 
-        GetMineInfoManager.getALiPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
+        GetMineInfoManager.getPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);

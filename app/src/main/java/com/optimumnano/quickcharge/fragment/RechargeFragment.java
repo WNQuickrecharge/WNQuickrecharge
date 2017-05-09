@@ -4,8 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -38,10 +41,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
+import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
-import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
@@ -254,6 +257,12 @@ public class RechargeFragment extends BaseFragment {
                             mBsdialog.dismiss();
                         }
                     });
+                    holder.tvPhonenum.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermission(holder.mItem.Phone);
+                        }
+                    });
                     mBsdialog.show();
                 }
 
@@ -262,6 +271,25 @@ public class RechargeFragment extends BaseFragment {
         });
 
 
+    }
+
+    private void requestPermission(String servicePhone) {
+        //判断Android版本是否大于23
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int checkCallPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE);
+
+            if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE},
+                        RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE);
+                return;
+            }
+            else {
+                callPhone(servicePhone);
+            }
+        }
+        else {
+            callPhone(servicePhone);
+        }
     }
 
     private StationBean transPointToStationBean(Point mItem) {
@@ -333,9 +361,9 @@ public class RechargeFragment extends BaseFragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             if (Tool.isConnectingToInternet()) {
-                ((BaseActivity) getActivity()).showLoading("加载中...");
+                ((MainActivity) getActivity()).showLoading("加载中...");
             } else {
-                ((BaseActivity)getActivity()).showToast("网络连接异常");
+                ((MainActivity)getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)
                 locationClient.start();
@@ -534,28 +562,28 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                closeLoading();
-                if (mCarPiont != null && mCarPiont.equals(returnContent))
-                    return;
-                mCarPiont = (List<CarPoint>) returnContent;
-                marker();
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                ToastUtil.showToast(getActivity(),msg);
-                closeLoading();
-            }
-        });
+//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                closeLoading();
+//                if (mCarPiont != null && mCarPiont.equals(returnContent))
+//                    return;
+//                mCarPiont = (List<CarPoint>) returnContent;
+//                marker();
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                ToastUtil.showToast(getActivity(),msg);
+//                closeLoading();
+//            }
+//        });
     }
 
     private void closeLoading() {
-        ((BaseActivity)getActivity()).closeLoading();
+        ((MainActivity)getActivity()).closeLoading();
     }
 
     private void marker() {
@@ -588,27 +616,27 @@ public class RechargeFragment extends BaseFragment {
                 bundle.putSerializable("info", info);
                 marker.setExtraInfo(bundle);
             }
-        if (mCarPiont != null && mCarPiont.size() != 0)
-            for (CarPoint info : mCarPiont) {
-                if (bitmap1==null)
-                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
-                //获取经纬度
-                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
-                //设置marker
-                options = new MarkerOptions()
-                        .position(latLng)//设置位置
-                        .icon(bitmap1)//设置图标样式
-                        .zIndex(9) ;// 设置marker所在层级
-//                        .draggable(true); // 设置手势拖拽;
-                //添加marker
-                marker = (Marker) mBaiduMap.addOverlay(options);
-                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-                Bundle bundle = new Bundle();
-                //info必须实现序列化接口
-                bundle.putSerializable("info", info);
-                marker.setExtraInfo(bundle);
-            }
+//        if (mCarPiont != null && mCarPiont.size() != 0)
+//            for (CarPoint info : mCarPiont) {
+//                if (bitmap1==null)
+//                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
+//                //获取经纬度
+//                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+//                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
+//                //设置marker
+//                options = new MarkerOptions()
+//                        .position(latLng)//设置位置
+//                        .icon(bitmap1)//设置图标样式
+//                        .zIndex(9) ;// 设置marker所在层级
+////                        .draggable(true); // 设置手势拖拽;
+//                //添加marker
+//                marker = (Marker) mBaiduMap.addOverlay(options);
+//                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+//                Bundle bundle = new Bundle();
+//                //info必须实现序列化接口
+//                bundle.putSerializable("info", info);
+//                marker.setExtraInfo(bundle);
+//            }
 
     }
 
@@ -666,4 +694,18 @@ public class RechargeFragment extends BaseFragment {
         startLocation();
     }
 
+    public interface RequestPermissionType {
+
+        /**
+         * 请求打电话的权限码
+         */
+        int REQUEST_CODE_ASK_CALL_PHONE = 100;
+    }
+
+    private void callPhone(String servicePhone) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:"+servicePhone+""));
+        startActivity(intent);
+    }
 }
