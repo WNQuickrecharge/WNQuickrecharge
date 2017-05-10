@@ -17,6 +17,8 @@ import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
@@ -216,7 +218,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             }
         });
     }
-    private void payZFB(){
+    public void payZFB(){
         if (StringUtils.isEmpty(sign)){
             orderManager.getSign(order_no, payWay, new ManagerCallback<String>() {
                 @Override
@@ -277,7 +279,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     }
 
     public void setMoney(double money,String order_no,String sign){
-        setMoney(money,order_no,sign,3);
+        setMoney(money,order_no,sign, SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
     }
     public void setMoney(double money,String order_no,String sign,int paytype){
         this.money = money;
@@ -394,9 +396,8 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                 break;
             //支付宝支付
             case R.id.dialog_chose_payment_zfb:
-//                setPayway(pay_zfb);
-//                setStatus(EDTPWD);
                 this.payWay = PayDialog.pay_zfb;
+                setStatus(EDTPWD);
                 close();
                 payZFB();
                 break;
