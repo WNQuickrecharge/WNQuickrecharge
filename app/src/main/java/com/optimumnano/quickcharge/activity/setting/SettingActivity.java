@@ -93,7 +93,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             AppManager.getAppManager().finishAllActivity();
             startActivity(new Intent(SettingActivity.this, LoginActivity.class));
             finish();
-//            System.exit(0);
+            System.exit(0);
 
         }
 
