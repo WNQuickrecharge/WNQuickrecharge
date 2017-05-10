@@ -67,7 +67,6 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
 
             break;
         }
-        item.order_status=4;
         switch (item.order_status){
             case 1:
                 helper.setText(R.id.order_status,"已取消");

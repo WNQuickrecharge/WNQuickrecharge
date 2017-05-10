@@ -138,7 +138,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
-        mTvBalance.setText(event.balance);
+        mTvBalance.setText("￥"+event.balance);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -155,7 +155,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 String s = returnContent.toString();
                 UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
                 double restCash = userAccount.getRestCash();
-                mTvBalance.setText(StringUtils.formatDouble(restCash));
+                mTvBalance.setText("￥"+StringUtils.formatDouble(restCash));
             }
 
             @Override
