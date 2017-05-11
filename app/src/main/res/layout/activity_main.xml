@@ -25,7 +25,27 @@
             android:drawableTop="@drawable/selector_recharge"
             android:drawablePadding="-2dp"
             android:textSize="14sp"
-            android:text="@string/recharge"/>
+            android:text="@string/show_two"/>
+        <RadioButton
+            android:id="@+id/main_rbRechargeCar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/myRadioButto"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_recharge_car"
+            android:drawablePadding="-2dp"
+            android:textSize="14sp"
+            android:text="@string/recharge_car"/>
+        <RadioButton
+            android:id="@+id/main_rbScan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/myRadioButto_1"
+            android:layout_weight="1"
+            android:drawableTop="@mipmap/icon_scan"
+            android:drawablePadding="-18dp"
+
+            />
         <RadioButton
             android:id="@+id/main_rbOrder"
             android:layout_width="0dp"

@@ -112,6 +112,9 @@ public class RechargeFragment extends BaseFragment {
     private String serviceVersionJsonInfo;
     private MyDialog myDialog;
     private LinearLayout bottomDialogRoot;
+    //创建marker的显示图标
+    BitmapDescriptor bitmap = null;
+    BitmapDescriptor bitmap1 = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -562,24 +565,24 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
-//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                closeLoading();
-//                if (mCarPiont != null && mCarPiont.equals(returnContent))
-//                    return;
-//                mCarPiont = (List<CarPoint>) returnContent;
+        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+                closeLoading();
+                if (mCarPiont != null && mCarPiont.equals(returnContent))
+                    return;
+                mCarPiont = (List<CarPoint>) returnContent;
 //                marker();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                ToastUtil.showToast(getActivity(),msg);
-//                closeLoading();
-//            }
-//        });
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                ToastUtil.showToast(getActivity(),msg);
+                closeLoading();
+            }
+        });
     }
 
     private void closeLoading() {
@@ -590,54 +593,68 @@ public class RechargeFragment extends BaseFragment {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
-        BitmapDescriptor bitmap = null;
-        BitmapDescriptor bitmap1 = null;
+//        BitmapDescriptor bitmap = null;
+//        BitmapDescriptor bitmap1 = null;
         LatLng latLng = null;
         Marker marker;
         OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
-            for (Point info : mPiont) {
-                if (bitmap==null)
-                    bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
-                //获取经纬度
-                //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
-                latLng = new LatLng(info.Lat, info.Lng);//原始数据就是bd09坐标,不用转
-                //设置marker
-                options = new MarkerOptions()
-                        .position(latLng)//设置位置
-                        .icon(bitmap)//设置图标样式
-                        .zIndex(9); // 设置marker所在层级
-//                        .draggable(true); // 设置手势拖拽;
-                //添加marker
-                marker = (Marker) mBaiduMap.addOverlay(options);
-                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-                Bundle bundle = new Bundle();
-                //info必须实现序列化接口
-                bundle.putSerializable("info", info);
-                marker.setExtraInfo(bundle);
-            }
-//        if (mCarPiont != null && mCarPiont.size() != 0)
-//            for (CarPoint info : mCarPiont) {
-//                if (bitmap1==null)
-//                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
-//                //获取经纬度
-//                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-//                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
-//                //设置marker
-//                options = new MarkerOptions()
-//                        .position(latLng)//设置位置
-//                        .icon(bitmap1)//设置图标样式
-//                        .zIndex(9) ;// 设置marker所在层级
-////                        .draggable(true); // 设置手势拖拽;
-//                //添加marker
-//                marker = (Marker) mBaiduMap.addOverlay(options);
-//                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-//                Bundle bundle = new Bundle();
-//                //info必须实现序列化接口
-//                bundle.putSerializable("info", info);
-//                marker.setExtraInfo(bundle);
-//            }
+            loadNearRechargeStationOnToMap();
+        if (mCarPiont != null && mCarPiont.size() != 0)
+            loadRechargeCarOnToMap();
 
+    }
+
+    private void loadNearRechargeStationOnToMap() {
+        LatLng latLng;
+        OverlayOptions options;
+        Marker marker;
+        for (Point info : mPiont) {
+            if (bitmap==null)
+                bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
+            //获取经纬度
+            //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+            latLng = new LatLng(info.Lat, info.Lng);//原始数据就是bd09坐标,不用转
+            //设置marker
+            options = new MarkerOptions()
+                    .position(latLng)//设置位置
+                    .icon(bitmap)//设置图标样式
+                    .zIndex(9); // 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
+            //添加marker
+            marker = (Marker) mBaiduMap.addOverlay(options);
+            //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+            Bundle bundle = new Bundle();
+            //info必须实现序列化接口
+            bundle.putSerializable("info", info);
+            marker.setExtraInfo(bundle);
+        }
+    }
+
+    private void loadRechargeCarOnToMap() {
+        LatLng latLng;
+        OverlayOptions options;
+        Marker marker;
+        for (CarPoint info : mCarPiont) {
+            if (bitmap1==null)
+                bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
+            //获取经纬度
+            //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+            latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
+            //设置marker
+            options = new MarkerOptions()
+                    .position(latLng)//设置位置
+                    .icon(bitmap1)//设置图标样式
+                    .zIndex(9) ;// 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
+            //添加marker
+            marker = (Marker) mBaiduMap.addOverlay(options);
+            //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+            Bundle bundle = new Bundle();
+            //info必须实现序列化接口
+            bundle.putSerializable("info", info);
+            marker.setExtraInfo(bundle);
+        }
     }
 
     private LatLng gpsToBd09ll(LatLng sourceLatLng) {
@@ -707,5 +724,16 @@ public class RechargeFragment extends BaseFragment {
         intent.setAction(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:"+servicePhone+""));
         startActivity(intent);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
+        mBaiduMap.clear();
+        marker();
+        loadRechargeCarOnToMap();
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNearStationChoosed(EventManager.onNearStationChoosed event){
+        mBaiduMap.clear();
+        loadNearRechargeStationOnToMap();
     }
 }
