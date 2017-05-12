@@ -554,7 +554,7 @@ public class RechargeFragment extends BaseFragment {
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
-                marker();
+                markerNearStaion();
             }
 
             @Override
@@ -589,17 +589,28 @@ public class RechargeFragment extends BaseFragment {
         ((MainActivity)getActivity()).closeLoading();
     }
 
-    private void marker() {
+    private void markerNearStaion() {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
 //        BitmapDescriptor bitmap = null;
 //        BitmapDescriptor bitmap1 = null;
-        LatLng latLng = null;
-        Marker marker;
-        OverlayOptions options;
+//        LatLng latLng = null;
+//        Marker marker;
+//        OverlayOptions options;
         if (mPiont != null && mPiont.size() != 0)
             loadNearRechargeStationOnToMap();
+
+    }
+    private void markerNearRechargeCar() {
+        //清空地图
+        mBaiduMap.clear();
+        //创建marker的显示图标
+//        BitmapDescriptor bitmap = null;
+//        BitmapDescriptor bitmap1 = null;
+//        LatLng latLng = null;
+//        Marker marker;
+//        OverlayOptions options;
         if (mCarPiont != null && mCarPiont.size() != 0)
             loadRechargeCarOnToMap();
 
@@ -727,13 +738,11 @@ public class RechargeFragment extends BaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
-        mBaiduMap.clear();
-        marker();
-        loadRechargeCarOnToMap();
+        //mBaiduMap.clear();
+        markerNearRechargeCar();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
-        mBaiduMap.clear();
-        loadNearRechargeStationOnToMap();
+        markerNearStaion();
     }
 }
