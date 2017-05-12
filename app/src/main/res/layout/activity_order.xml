@@ -132,7 +132,6 @@
                 android:padding="@dimen/default_padding"
                 android:textSize="@dimen/default_textsize"
                 android:maxLength="6"
-                android:text="0.01"
                 android:layout_toRightOf="@id/order_tvmoney"
                 android:layout_toLeftOf="@id/order_danwei"
                 android:layout_marginLeft="@dimen/default_padding"
