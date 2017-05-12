@@ -216,9 +216,9 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             }
         });
     }
-    private void payZFB(){
+    public  void payZFB(){
         if (StringUtils.isEmpty(sign)){
-            orderManager.getSign(order_no, payWay, new ManagerCallback<String>() {
+            orderManager.getSign(order_no, PayDialog.pay_zfb, new ManagerCallback<String>() {
                 @Override
                 public void onSuccess(String returnContent) {
                     super.onSuccess(returnContent);
