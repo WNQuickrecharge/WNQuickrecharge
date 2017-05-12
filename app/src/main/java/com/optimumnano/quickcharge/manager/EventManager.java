@@ -77,6 +77,9 @@ public class EventManager {
     public static class onFilterParamsChange {
         public onFilterParamsChange() { }
     }
+    public static class onRechargeCarChoosed{}
+
+    public static class onNearStationChoosed{}
 
     public static class WeiXinPayCallback {
         public String data;

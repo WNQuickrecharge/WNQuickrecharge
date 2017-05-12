@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
+import com.optimumnano.quickcharge.activity.order.OrderActivity;
+import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -321,6 +324,7 @@ public class MainActivity extends BaseActivity {
                         setLeftTitle("定位");
                         setRightTitle("列表");
                         viewPager.setCurrentItem(0);
+                        EventBus.getDefault().post(new EventManager.onNearStationChoosed());
                         break;
                     case R.id.main_rbOrder:
                         setTitle(getString(R.string.order));
@@ -346,9 +350,19 @@ public class MainActivity extends BaseActivity {
                             }
                         });*/
                         break;
+                    case R.id.main_rbRechargeCar:
+                        viewPager.setCurrentItem(0);
+                        EventBus.getDefault().post(new EventManager.onRechargeCarChoosed());
+                        break;
                     default:
                         break;
                 }
+            }
+        });
+        rg.findViewById(R.id.main_rbScan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QrCodeActivity.start(MainActivity.this);
             }
         });
         tvRight.addTextChangedListener(new TextWatcher() {

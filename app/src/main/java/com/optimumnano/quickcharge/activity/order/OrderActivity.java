@@ -335,7 +335,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                         String money = edtMoney.getText().toString();
                         double finalMoney = Double.parseDouble(money);
                         mAmount=money;
-                        callALiPay(finalMoney);
+                        callALiPay(finalMoney,orderNo);
                         break;
                     case PayDialog.pay_wx:
                         payDialog.setPayway(PayDialog.pay_wx);
@@ -373,44 +373,46 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payDialog.close();
     }
 
-    private void callALiPay(Double mAmount) {
+    private void callALiPay(Double mAmount,String orderNo) {
+        payDialog.setMoney(mAmount,orderNo);
+        payDialog.payZFB();
 
-        GetMineInfoManager.getPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                logtesti("returnContent "+returnContent.toString());
-
-                final String orderInfo = returnContent.toString();// 签名后的订单信息
-                Runnable payRunnable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        PayTask alipay = new PayTask(OrderActivity.this);
-                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
-                        String sign = alipayBean.getSign();
-                        LogUtil.i("sign=="+sign);
-                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
-
-                        Message msg = new Message();
-                        msg.what = SDK_PAY_FLAG;
-                        msg.obj = result;
-                        mHandler.sendMessage(msg);
-                    }
-                };
-                // 必须异步调用
-                Thread payThread = new Thread(payRunnable);
-                payThread.start();
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-                super.onFailure(msg);
-            }
-
-        });
+//        GetMineInfoManager.getPayOrderInfoDeposit(mAmount+"",PayDialog.pay_zfb, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                logtesti("returnContent "+returnContent.toString());
+//
+//                final String orderInfo = returnContent.toString();// 签名后的订单信息
+//                Runnable payRunnable = new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        PayTask alipay = new PayTask(OrderActivity.this);
+//                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
+//                        String sign = alipayBean.getSign();
+//                        LogUtil.i("sign=="+sign);
+//                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+//
+//                        Message msg = new Message();
+//                        msg.what = SDK_PAY_FLAG;
+//                        msg.obj = result;
+//                        mHandler.sendMessage(msg);
+//                    }
+//                };
+//                // 必须异步调用
+//                Thread payThread = new Thread(payRunnable);
+//                payThread.start();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//                super.onFailure(msg);
+//            }
+//
+//        });
 
     }
 }
