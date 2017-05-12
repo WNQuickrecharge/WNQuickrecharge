@@ -5,27 +5,40 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
+import com.optimumnano.quickcharge.bean.WXPaySignBean;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.common.util.LogUtil;
 
 import java.util.Map;
+
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_PARTNER_ID;
 
 /**
  * Created by ds on 2017/4/9.
@@ -165,8 +178,9 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                                     payZFB();
                                 }
                                 else {
-                                    payCallback.payFail("微信支付开发中");
-                                    setStatus(PayDialog.EDTPWD);
+//                                    payCallback.payFail("微信支付开发中");
+//                                    setStatus(PayDialog.EDTPWD);
+                                    payWeiXin(money,order_no);
                                 }
 
                             } else {
@@ -216,7 +230,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             }
         });
     }
-    public  void payZFB(){
+    public void payZFB(){
         if (StringUtils.isEmpty(sign)){
             orderManager.getSign(order_no, PayDialog.pay_zfb, new ManagerCallback<String>() {
                 @Override
@@ -236,6 +250,54 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
             startPay();
         }
 
+    }
+
+    public void payWeiXin(final double amount,String orderNum) {
+        if (amount == 0 || TextUtils.isEmpty(orderNum)){
+            ToastUtil.showToast(activity,"支付参数错误");
+            return;
+        }
+        orderManager.getSign(orderNum, PayDialog.pay_wx, new ManagerCallback<String>() {
+            @Override
+            public void onSuccess(String returnContent) {
+                super.onSuccess(returnContent);
+                LogUtil.i("returnContent "+returnContent.toString());
+                JSONObject dataJson=null;
+                try {
+                    dataJson = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final IWXAPI wxApi = WXAPIFactory.createWXAPI(activity, WX_APP_ID);
+                //将该app注册到微信
+                wxApi.registerApp(WX_APP_ID);
+
+                String sign = dataJson.optString("sign");
+                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
+                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+                if (isPaySupported) {
+                    PayReq request = new PayReq();
+                    request.appId = WX_APP_ID;
+                    request.partnerId = WX_PARTNER_ID;
+                    request.prepayId = wxpayBean.prepayid;
+                    request.packageValue = "Sign=WXPay";
+                    request.nonceStr = wxpayBean.noncestr;
+                    request.timeStamp = wxpayBean.timestamp;
+                    request.sign = wxpayBean.sign;
+                    request.extData = PayDialog.pay_wx+","+amount ;
+                    wxApi.sendReq(request);
+                }else {
+                    ToastUtil.showToast(activity,"微信未安装或者版本过低");
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                ToastUtil.showToast(activity,"请求失败 "+msg);
+                super.onFailure(msg);
+            }
+
+        });
     }
 
     private void startPay() {
@@ -277,7 +339,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     }
 
     public void setMoney(double money,String order_no,String sign){
-        setMoney(money,order_no,sign,3);
+        setMoney(money,order_no,sign, SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
     }
     public void setMoney(double money,String order_no,String sign,int paytype){
         this.money = money;
@@ -386,17 +448,15 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                 break;
             //微信支付
             case R.id.dialog_chose_payment_wx:
-//                setPayway(pay_wx);
-//                setStatus(EDTPWD);
                 this.payWay = PayDialog.pay_wx;
-                ToastUtil.showToast(activity,"暂不支持微信支付");
+                setStatus(EDTPWD);
                 close();
+                payWeiXin(money,order_no);
                 break;
             //支付宝支付
             case R.id.dialog_chose_payment_zfb:
-//                setPayway(pay_zfb);
-//                setStatus(EDTPWD);
                 this.payWay = PayDialog.pay_zfb;
+                setStatus(EDTPWD);
                 close();
                 payZFB();
                 break;

@@ -63,7 +63,7 @@ public class WalletDepositAct extends BaseActivity {
     TextView mTvNext;
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
-    private int mChosePayway=PayDialog.pay_zfb;//默认使用微信充值
+    private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
@@ -124,9 +124,9 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void initData() {
-        int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_zfb);
+        int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_wx);
         if (payway == PayDialog.pay_yue){
-            mChosePayway = PayDialog.pay_zfb;//不能使用余额给余额充值
+            mChosePayway = PayDialog.pay_wx;//不能使用余额给余额充值
         }else {
             mChosePayway = payway;
         }
