@@ -1,6 +1,16 @@
 apply plugin: 'com.android.application'
+//获取生成的产品名
+def getProductName() {
+    return "clock"
+}
+
+//获取打包的时间
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}
 
 android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -50,6 +60,21 @@ android {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def oldFile = output.outputFile
+            def newName = '';
+            if (variant.buildType.name == 'release') {
+//                println(variant.productFlavors[0].name)//多渠道
+                def releaseApkName = getProductName() + "_v" + globalConfiguration["versionName"] + "_${releaseTime()}_" + "WNQuickrecharge" + '-release.apk'
+                output.outputFile = new File(oldFile.parent, releaseApkName)
+            } else if (variant.buildType.name.equals('debug')) {
+                newName = oldFile.name.replace(".apk", "-v" + globalConfiguration["versionName"] + "_${releaseTime()}_" + "WNQuickrecharge" + "-debug.apk")
+                output.outputFile = new File(oldFile.parent, newName)
+            }
         }
     }
 }
