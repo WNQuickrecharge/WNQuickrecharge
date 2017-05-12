@@ -13,6 +13,7 @@ import com.optimumnano.quickcharge.utils.ImageLoaderUtil;
 import org.lzh.framework.updatepluginlib.UpdateConfig;
 import org.lzh.framework.updatepluginlib.callback.UpdateCheckCB;
 import org.lzh.framework.updatepluginlib.callback.UpdateDownloadCB;
+import org.lzh.framework.updatepluginlib.model.HttpMethod;
 import org.lzh.framework.updatepluginlib.model.Update;
 import org.lzh.framework.updatepluginlib.model.UpdateParser;
 import org.lzh.framework.updatepluginlib.strategy.UpdateStrategy;
@@ -45,19 +46,19 @@ public class MyApplication extends Application {
         return instance;
     }
     private void updateVersion() {
-        String url= HttpApi.update_apk_url;
-        UpdateConfig.getConfig().url(url).jsonParser(new UpdateParser() {
+        String url= HttpApi.getInstance().getUrl(HttpApi.update_apk_url);
+        UpdateConfig.getConfig().url(url).checkEntity(UpdateConfig.getConfig().getCheckEntity().setMethod(HttpMethod.POST)).jsonParser(new UpdateParser() {
             @Override
             public UpdateBean parse(String httpResponse) {
                 //                        Log.e("AppContext", httpResponse);
                 Gson gson=new Gson();
                 UpdateBean update = gson.fromJson(httpResponse, UpdateBean.class);
-                if (update.getVersionNo() != null) {
+                if (update.getVersionNo() != 0) {
                     update.setUpdateTime(System.currentTimeMillis());
                     // 此apk包的下载地址
                     update.setUpdateUrl(update.getVersionUrl());
                     // 此apk包的版本号
-                    update.setVersionCode(Integer.parseInt(update.getVersionNo()));
+                    update.setVersionCode(update.getVersionNo());
                     // 此apk包的版本名称
                     update.setVersionName(update.getVersionName());
                     // 此apk包的更新内容
@@ -66,7 +67,7 @@ public class MyApplication extends Application {
                     //                        update.setForced(false);
                     update.setForced(update.getForcedUpdate().equals("1"));
                     // 是否显示忽略此次版本更新按钮
-                    update.setIgnore(false);
+                    update.setIgnore(true);
                 }
                 return update;
             }

@@ -15,7 +15,7 @@ public class UpdateBean extends Update {
     private String forcedUpdate;
     private String versionUrl;
     private String versionDesc;
-    private String versionNo;
+    private int versionNo;
     private String msg;
     private String isLastVersion;
 
@@ -59,11 +59,11 @@ public class UpdateBean extends Update {
         this.versionDesc = versionDesc;
     }
 
-    public String getVersionNo() {
+    public int getVersionNo() {
         return versionNo;
     }
 
-    public void setVersionNo(String versionNo) {
+    public void setVersionNo(int versionNo) {
         this.versionNo = versionNo;
     }
 

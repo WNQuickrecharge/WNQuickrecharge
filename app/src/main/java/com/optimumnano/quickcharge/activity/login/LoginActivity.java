@@ -25,6 +25,7 @@ import com.optimumnano.quickcharge.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
@@ -51,6 +52,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_login);
         initViews();
         initListener();
+        UpdateBuilder.create().check();
     }
 
     @Override

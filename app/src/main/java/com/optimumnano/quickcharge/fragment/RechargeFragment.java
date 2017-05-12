@@ -67,6 +67,7 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.util.List;
@@ -666,7 +667,7 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //UpdateBuilder.create().check();
+        UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
