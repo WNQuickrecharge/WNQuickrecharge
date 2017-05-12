@@ -67,6 +67,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
 
             break;
         }
+        item.order_status=2;
         switch (item.order_status){
             case 1:
                 helper.setText(R.id.order_status,"已取消");
@@ -114,14 +115,14 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
                 switch (item.order_status){
                     case 2:
                         int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
+                        payDialog.setPayway(paway);
                         payDialog.setMoney(item.frozen_cash,item.order_no);
-                        if (PayDialog.pay_zfb == paway){
-                            payDialog.payZFB();
-                        }else if (PayDialog.pay_wx == paway){
-
-                        }else if (PayDialog.pay_yue == paway){
-                            payDialog.show();
+                        if (PayDialog.pay_yue == paway){
+                            payDialog.setStatus(PayDialog.EDTPWD);
+                        }else {
+                            payDialog.setStatus(PayDialog.PAYBT);
                         }
+                        payDialog.show();
                         LogUtil.d("待支付");
                         break;
                     case 3:

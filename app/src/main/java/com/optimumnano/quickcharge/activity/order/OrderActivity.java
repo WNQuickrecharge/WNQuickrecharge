@@ -338,7 +338,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                         callALiPay(finalMoney);
                         break;
                     case PayDialog.pay_wx:
-
+                        payDialog.setPayway(PayDialog.pay_wx);
+                        payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo);
+                        payDialog.setStatus(PayDialog.PAYBT);
+                        payDialog.show();
                         break;
 
                     default:

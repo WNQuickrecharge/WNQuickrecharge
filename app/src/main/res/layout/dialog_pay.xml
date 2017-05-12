@@ -17,6 +17,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/pay_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -93,6 +94,18 @@
             android:maxLength="6"
             app:pivBorderWidth="2dp"
             app:pivPasswordLength="6" />
+
+        <TextView
+            android:id="@+id/bt_pay"
+            android:visibility="gone"
+            android:layout_margin="@dimen/default_margin"
+            android:paddingTop="@dimen/default_padding"
+            android:paddingBottom="@dimen/default_padding"
+            android:gravity="center"
+            android:background="@drawable/sl_rb_state_sample"
+            android:text="支付"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout

@@ -77,4 +77,13 @@ public class EventManager {
     public static class onFilterParamsChange {
         public onFilterParamsChange() { }
     }
+
+    public static class WeiXinPayCallback {
+        public String data;
+        public int code;
+        public WeiXinPayCallback(int code,String data) {
+            this.code=code;
+            this.data=data;
+        }
+    }
 }
