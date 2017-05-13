@@ -22,6 +22,7 @@ import com.optimumnano.quickcharge.bean.RechargeGunBean;
 import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
@@ -32,6 +33,9 @@ import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
@@ -85,6 +89,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 JSONObject dataJson = new JSONObject(mapresult);
                 logtesti("alipayresult "+dataJson.toString());
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
+                if (!TextUtils.equals("9000",resultStatus))
+                    tvConfirm.setEnabled(true);
                 switch (resultStatus){
                     case "9000"://支付成功
                     case "8000"://正在处理,支付结果确认中
@@ -140,7 +146,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     public void initViews() {
         super.initViews();
         setTitle("充电订单");
-
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         tvConfirm.setOnClickListener(this);
         miPayway.setOnClickListener(this);
         edtMoney.addTextChangedListener(new TextWatcher() {
@@ -267,6 +274,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -288,6 +297,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             ToastUtil.showToast(OrderActivity.this,"支付金额错误");
             return;
         }
+
+        tvConfirm.setEnabled(false);
         orderManager.addOrder(gunNo, 0.01+"",payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
@@ -407,5 +418,17 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 //
 //        });
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
+        int code = event.code;
+        if (0 == code){
+            finish();
+        }else {
+            //微信支付失败
+            tvConfirm.setEnabled(true);
+        }
+        logtesti("orderdetail weixinpay callback "+event.code);
     }
 }
