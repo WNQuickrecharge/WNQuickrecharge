@@ -32,6 +32,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ll_ask_car_input_frame"
             android:layout_marginTop="@dimen/dimen_12"
             android:layout_marginLeft="@dimen/dimen_25"
             android:layout_marginRight="@dimen/dimen_25"
@@ -114,6 +115,50 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_search_recharge_station_frame"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:layout_marginLeft="@dimen/dimen_25"
+            android:layout_marginRight="@dimen/dimen_25"
+            android:background="@drawable/bg_charge_info"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingBottom="@dimen/dimen_10"
+            android:paddingRight="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/bg_charge_info_et"
+                android:layout_height="30dp">
+            <ImageView
+                android:id="@+id/iv_icon_search"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_search"/>
+            <EditText
+                android:id="@+id/et_ask_car_input"
+                android:gravity="center"
+                android:hint="搜索充电站"
+                style="@style/tv_match_1"/>
+            </FrameLayout>
+            <TextView
+                android:layout_marginLeft="@dimen/dimen_10"
+                android:padding="@dimen/dimen_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_daohang"
+                android:textColor="@color/white"
+                android:text="搜索"/>
         </LinearLayout>
 
         <TextView

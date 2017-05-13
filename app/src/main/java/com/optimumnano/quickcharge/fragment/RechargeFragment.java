@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +99,14 @@ public class RechargeFragment extends BaseFragment {
     TextView tvChargeLate;
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
+    @Bind(R.id.ll_ask_car_input_frame)
+    LinearLayout askCarInputFrame;
+    @Bind(R.id.ll_search_recharge_station_frame)
+    LinearLayout searchRechargeStaionFrame;
+    @Bind(R.id.iv_icon_search)
+    ImageView iconSearch;
+    @Bind(R.id.et_ask_car_input)
+    EditText askCarInput;
     private InfoWindow mInfoWindow;
     private MapManager mManager = new MapManager();
 
@@ -273,7 +283,27 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
+        askCarInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int length = s.toString().length();
+                if (length>0){
+                    iconSearch.setVisibility(View.GONE);
+                }else {
+                    iconSearch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void requestPermission(String servicePhone) {
@@ -546,15 +576,36 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void initPoint() {
-        mManager.getReigonInfo(mHelper, new ManagerCallback() {
+//        mBaiduMap.clear();
+        getRegionStaion();
+        getRegionCar();
+
+
+
+    }
+
+    private void getRegionCar() {
+        mManager.getregionCarpile(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 closeLoading();
-                if (mPiont != null && mPiont.equals(returnContent))
+                if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
-                mPiont = (List<Point>) returnContent;
-                markerNearStaion();
+                mCarPiont = (List<CarPoint>) returnContent;
+                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+                switch (checkedRadioButtonId) {
+                    case R.id.main_rbRecharge:
+                        markerNearStaion();
+                        break;
+
+                    case R.id.main_rbRechargeCar:
+                        markerNearRechargeCar();
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             @Override
@@ -564,16 +615,33 @@ public class RechargeFragment extends BaseFragment {
                 closeLoading();
             }
         });
+    }
 
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+    private void getRegionStaion() {
+        LogUtil.i("当前距离是:"+mHelper.showDistance());
+        mManager.getReigonInfo(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                LogUtil.i("当前距离是1111:"+mHelper.showDistance());
                 closeLoading();
-                if (mCarPiont != null && mCarPiont.equals(returnContent))
+                if (mPiont != null && mPiont.equals(returnContent))
                     return;
-                mCarPiont = (List<CarPoint>) returnContent;
-//                marker();
+                mPiont = (List<Point>) returnContent;
+                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+                switch (checkedRadioButtonId) {
+                    case R.id.main_rbRecharge:
+                        markerNearStaion();
+                        break;
+
+                    case R.id.main_rbRechargeCar:
+                        markerNearRechargeCar();
+                        break;
+
+                    default:
+                        break;
+                }
+
             }
 
             @Override
@@ -617,6 +685,7 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void loadNearRechargeStationOnToMap() {
+        mBaiduMap.clear();
         LatLng latLng;
         OverlayOptions options;
         Marker marker;
@@ -643,10 +712,12 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void loadRechargeCarOnToMap() {
+        mBaiduMap.clear();
         LatLng latLng;
         OverlayOptions options;
         Marker marker;
         for (CarPoint info : mCarPiont) {
+            LogUtil.i("mCarPiont.size=="+mCarPiont.size());
             if (bitmap1==null)
                 bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
             //获取经纬度
@@ -719,6 +790,7 @@ public class RechargeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFilterParamsChange(EventManager.onFilterParamsChange event) {
+        mBaiduMap.clear();
         startLocation();
     }
 
@@ -739,10 +811,14 @@ public class RechargeFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
         //mBaiduMap.clear();
+        askCarInputFrame.setVisibility(View.VISIBLE);
+        searchRechargeStaionFrame.setVisibility(View.GONE);
         markerNearRechargeCar();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
+        askCarInputFrame.setVisibility(View.GONE);
+        searchRechargeStaionFrame.setVisibility(View.VISIBLE);
         markerNearStaion();
     }
 }

@@ -110,7 +110,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        //initData();
+        onRefresh();
     }
 
     private void initData(){
