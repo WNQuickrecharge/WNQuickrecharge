@@ -107,6 +107,14 @@ public class RechargeFragment extends BaseFragment {
     ImageView iconSearch;
     @Bind(R.id.et_ask_car_input)
     EditText askCarInput;
+    @Bind(R.id.ll_car_coming_soon)
+    LinearLayout carComingSoon;
+    @Bind(R.id.ll_wait_car)
+    LinearLayout waitCar;
+    @Bind(R.id.tv_delete_ask_order_wait)
+    TextView deleteAskOrderWait;
+    @Bind(R.id.tv_delete_ask_order)
+    TextView deleteAskOrder;
     private InfoWindow mInfoWindow;
     private MapManager mManager = new MapManager();
 
@@ -451,7 +459,8 @@ public class RechargeFragment extends BaseFragment {
             EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late, R.id.tv_scan_charge})
+    @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late,
+            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
@@ -469,6 +478,22 @@ public class RechargeFragment extends BaseFragment {
                 break;
             case R.id.tv_scan_charge:
                 QrCodeActivity.start(getActivity());
+                break;
+            case R.id.tv_delete_ask_order:
+
+                break;
+            case R.id.tv_delete_ask_order_wait:
+                final MyDialog myDialog=new MyDialog(getActivity(),R.style.MyDialog);
+                myDialog.setMessage("确定取消补电请求吗?");
+                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+                    @Override
+                    public void onYesClick() {
+                        myDialog.dismiss();
+                    }
+                });
+                myDialog.show();
+                break;
+            default:
                 break;
         }
     }
@@ -498,6 +523,9 @@ public class RechargeFragment extends BaseFragment {
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
+                askCarInputFrame.setVisibility(View.GONE);
+                carComingSoon.setVisibility(View.VISIBLE);
+                mBaiduMap.clear();
             }
 
             @Override

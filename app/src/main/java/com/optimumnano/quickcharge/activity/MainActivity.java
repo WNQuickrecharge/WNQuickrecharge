@@ -356,6 +356,9 @@ public class MainActivity extends BaseActivity {
                         });*/
                         break;
                     case R.id.main_rbRechargeCar:
+                        setTitle(getString(R.string.recharge));
+                        setLeftTitle("定位");
+                        setRightTitle("列表");
                         viewPager.setCurrentItem(0);
                         EventBus.getDefault().post(new EventManager.onRechargeCarChoosed());
                         break;

@@ -196,4 +196,16 @@
 
     <style name="Theme.AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="frame_input_search_station_style">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginTop">@dimen/dimen_12</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_25</item>
+        <item name="android:layout_marginRight">@dimen/dimen_25</item>
+        <item name="android:background">@drawable/bg_charge_info</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/dimen_10</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>
