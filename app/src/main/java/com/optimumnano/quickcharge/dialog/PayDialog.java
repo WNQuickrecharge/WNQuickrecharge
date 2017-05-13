@@ -220,11 +220,17 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
     }
     public void payZFB(){
         if (StringUtils.isEmpty(sign)){
-            orderManager.getSign(order_no, payWay, new ManagerCallback<String>() {
+            orderManager.getSign(order_no, PayDialog.pay_zfb, new ManagerCallback<String>() {
                 @Override
                 public void onSuccess(String returnContent) {
                     super.onSuccess(returnContent);
-                    sign = returnContent;
+                    JSONObject jsonObject=null;
+                    try {
+                        jsonObject=new JSONObject(returnContent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    sign = jsonObject.optString("sign");
                     startPay();
                 }
 
