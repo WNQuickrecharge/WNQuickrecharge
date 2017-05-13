@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity {
         return rg;
     }
 
-    private RadioButton rbRecharge;
+    private RadioButton rbRechargeCar;
 
     private List<Fragment> listFrg = new ArrayList<>();
     //private RechargeFragment rechargeFragment;
@@ -270,8 +270,8 @@ public class MainActivity extends BaseActivity {
 
         viewPager = (MyViewPager) findViewById(R.id.main_viewPager);
         rg = (RadioGroup) findViewById(R.id.main_rg);
-        rbRecharge = (RadioButton) findViewById(R.id.main_rbRecharge);
-        rbRecharge.setChecked(true);
+        rbRechargeCar = (RadioButton) findViewById(R.id.main_rbRechargeCar);
+        rbRechargeCar.setChecked(true);
 
     }
 

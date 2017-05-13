@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +99,14 @@ public class RechargeFragment extends BaseFragment {
     TextView tvChargeLate;
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
+    @Bind(R.id.ll_ask_car_input_frame)
+    LinearLayout askCarInputFrame;
+    @Bind(R.id.ll_search_recharge_station_frame)
+    LinearLayout searchRechargeStaionFrame;
+    @Bind(R.id.iv_icon_search)
+    ImageView iconSearch;
+    @Bind(R.id.et_ask_car_input)
+    EditText askCarInput;
     private InfoWindow mInfoWindow;
     private MapManager mManager = new MapManager();
 
@@ -273,7 +283,27 @@ public class RechargeFragment extends BaseFragment {
             }
         });
 
+        askCarInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int length = s.toString().length();
+                if (length>0){
+                    iconSearch.setVisibility(View.GONE);
+                }else {
+                    iconSearch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void requestPermission(String servicePhone) {
@@ -549,19 +579,7 @@ public class RechargeFragment extends BaseFragment {
 //        mBaiduMap.clear();
         getRegionStaion();
         getRegionCar();
-        int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
-        switch (checkedRadioButtonId) {
-            case R.id.main_rbRecharge:
-                markerNearStaion();
-                break;
 
-            case R.id.main_rbRechargeCar:
-                markerNearRechargeCar();
-                break;
-
-            default:
-                break;
-        }
 
 
     }
@@ -575,6 +593,19 @@ public class RechargeFragment extends BaseFragment {
                 if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
                 mCarPiont = (List<CarPoint>) returnContent;
+                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+                switch (checkedRadioButtonId) {
+                    case R.id.main_rbRecharge:
+                        markerNearStaion();
+                        break;
+
+                    case R.id.main_rbRechargeCar:
+                        markerNearRechargeCar();
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             @Override
@@ -597,6 +628,19 @@ public class RechargeFragment extends BaseFragment {
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
                 mPiont = (List<Point>) returnContent;
+                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+                switch (checkedRadioButtonId) {
+                    case R.id.main_rbRecharge:
+                        markerNearStaion();
+                        break;
+
+                    case R.id.main_rbRechargeCar:
+                        markerNearRechargeCar();
+                        break;
+
+                    default:
+                        break;
+                }
 
             }
 
@@ -767,10 +811,14 @@ public class RechargeFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
         //mBaiduMap.clear();
+        askCarInputFrame.setVisibility(View.VISIBLE);
+        searchRechargeStaionFrame.setVisibility(View.GONE);
         markerNearRechargeCar();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
+        askCarInputFrame.setVisibility(View.GONE);
+        searchRechargeStaionFrame.setVisibility(View.VISIBLE);
         markerNearStaion();
     }
 }
