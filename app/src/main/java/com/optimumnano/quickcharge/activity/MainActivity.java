@@ -74,7 +74,12 @@ public class MainActivity extends BaseActivity {
 
 
     private MyViewPager viewPager;
-    private RadioGroup rg;
+    private static RadioGroup rg;
+
+    public static RadioGroup getRg() {
+        return rg;
+    }
+
     private RadioButton rbRecharge;
 
     private List<Fragment> listFrg = new ArrayList<>();

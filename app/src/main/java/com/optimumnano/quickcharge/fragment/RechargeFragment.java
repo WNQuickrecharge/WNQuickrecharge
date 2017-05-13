@@ -546,15 +546,35 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void initPoint() {
-        mManager.getReigonInfo(mHelper, new ManagerCallback() {
+//        mBaiduMap.clear();
+        getRegionStaion();
+        getRegionCar();
+        int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+        switch (checkedRadioButtonId) {
+            case R.id.main_rbRecharge:
+                markerNearStaion();
+                break;
+
+            case R.id.main_rbRechargeCar:
+                markerNearRechargeCar();
+                break;
+
+            default:
+                break;
+        }
+
+
+    }
+
+    private void getRegionCar() {
+        mManager.getregionCarpile(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
                 closeLoading();
-                if (mPiont != null && mPiont.equals(returnContent))
+                if (mCarPiont != null && mCarPiont.equals(returnContent))
                     return;
-                mPiont = (List<Point>) returnContent;
-                markerNearStaion();
+                mCarPiont = (List<CarPoint>) returnContent;
             }
 
             @Override
@@ -564,16 +584,20 @@ public class RechargeFragment extends BaseFragment {
                 closeLoading();
             }
         });
+    }
 
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+    private void getRegionStaion() {
+        LogUtil.i("当前距离是:"+mHelper.showDistance());
+        mManager.getReigonInfo(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                LogUtil.i("当前距离是1111:"+mHelper.showDistance());
                 closeLoading();
-                if (mCarPiont != null && mCarPiont.equals(returnContent))
+                if (mPiont != null && mPiont.equals(returnContent))
                     return;
-                mCarPiont = (List<CarPoint>) returnContent;
-//                marker();
+                mPiont = (List<Point>) returnContent;
+
             }
 
             @Override
@@ -617,6 +641,7 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void loadNearRechargeStationOnToMap() {
+        mBaiduMap.clear();
         LatLng latLng;
         OverlayOptions options;
         Marker marker;
@@ -643,10 +668,12 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void loadRechargeCarOnToMap() {
+        mBaiduMap.clear();
         LatLng latLng;
         OverlayOptions options;
         Marker marker;
         for (CarPoint info : mCarPiont) {
+            LogUtil.i("mCarPiont.size=="+mCarPiont.size());
             if (bitmap1==null)
                 bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
             //获取经纬度
@@ -719,6 +746,7 @@ public class RechargeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFilterParamsChange(EventManager.onFilterParamsChange event) {
+        mBaiduMap.clear();
         startLocation();
     }
 
