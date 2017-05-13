@@ -77,7 +77,9 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
             if (0 != code){ EventBus.getDefault().post(new EventManager.WeiXinPayCallback(code,"支付失败")); }
             switch (code){
                 case 0:
+                    showToast("支付成功");
                     String result = ((PayResp) resp).extData;// request.extData = mChosePayway+","+mAmount ;
+                    logtesti("result="+result);
                     String[] resultArr = result.split(",");
                     if (resultArr.length<3){//余额支付
                         int payway = TypeConversionUtils.toInt(resultArr[0]);
@@ -85,12 +87,11 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
                         mMiAmount.setRightText("¥ "+amount);
                         PayWayViewHelp.showPayWayStatus(WXPayEntryActivity.this,mTvPayway,payway);
                     }else {//订单支付
-                        if (TextUtils.isEmpty(resultArr[2])){
+                        if (!TextUtils.isEmpty(resultArr[2])){
                             EventBus.getDefault().post(new EventManager.WeiXinPayCallback(0,resultArr[2]));
+                            finish();
                         }
                     }
-
-                    showToast("支付成功");
                     break;
                 case -1:
                     showToast("支付异常");

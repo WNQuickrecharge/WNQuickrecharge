@@ -12,14 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.alipay.sdk.app.PayTask;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
-import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
 import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.dialog.PayDialog;
@@ -31,10 +29,10 @@ import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.json.JSONObject;
-import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -76,7 +74,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private RechargeGunBean gunBean;
     private String orderNo = "";//订单号
     private String gunNo = "";
-    private String mAmount;
 
     private int payWay ;//支付方式
     private Handler mHandler=new Handler(){
@@ -93,9 +90,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                     case "8000"://正在处理,支付结果确认中
                     case "6004"://支付结果未知
                         showToast("支付成功");
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        float addAmount=Float.valueOf(mAmount);
-                        String formatAddAmount = df.format(addAmount);
                         paySuccess(orderNo);
                         finish();
 
@@ -289,7 +283,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
     //下单
     private void addOrder(){
-        orderManager.addOrder(gunNo, edtMoney.getText().toString(),payWay, new ManagerCallback<String>() {
+        final String money = edtMoney.getText().toString().trim();
+        if (TextUtils.isEmpty(money)|| Double.parseDouble(money)==0){
+            ToastUtil.showToast(OrderActivity.this,"支付金额错误");
+            return;
+        }
+        orderManager.addOrder(gunNo, 0.01+"",payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
                 super.onSuccess(returnContent);
@@ -299,8 +298,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 String sign = ha.get("sign").toString();
                 switch (payWay) {
                     case PayDialog.pay_yue:
-                        String inputMoney = edtMoney.getText().toString();
-                        double v = Double.parseDouble(inputMoney);
+                        double v = Double.parseDouble(money);
                         if (restCash < v) {
                             showToast("余额不足，请使用其他支付方式");
                             return;
@@ -324,24 +322,19 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                                 super.onFailure(msg);
                             }
                         });
-                        payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo,sign);
+                        payDialog.setMoney(Double.parseDouble(money),orderNo,sign);
                         payDialog.setStatus(0);
                         payDialog.setPayway(payWay);
-                        payDialog.setPayResultMoney(Double.parseDouble(edtMoney.getText().toString()));
+                        payDialog.setPayResultMoney(Double.parseDouble(money));
                         payDialog.show();
                         break;
 
                     case PayDialog.pay_zfb:
-                        String money = edtMoney.getText().toString();
                         double finalMoney = Double.parseDouble(money);
-                        mAmount=money;
                         callALiPay(finalMoney,orderNo);
                         break;
                     case PayDialog.pay_wx:
-                        payDialog.setPayway(PayDialog.pay_wx);
-                        payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()),orderNo);
-                        payDialog.setStatus(PayDialog.PAYBT);
-                        payDialog.show();
+                        payDialog.payWeiXin(Double.parseDouble(money),orderNo);
                         break;
 
                     default:
