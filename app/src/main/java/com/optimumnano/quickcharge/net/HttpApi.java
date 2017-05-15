@@ -80,6 +80,8 @@ public class HttpApi {
     public static final String getby_orderno = "capp/order/getby_orderno";//根据订单号获取订单信息
     public static final String update_apk_url = "http://172.200.29.72:8080/update/apk.json";//本地测试升级apk地址
     public static final String get_ask_charge = "capp/bs/get_ask_charge";//获取补电订单状态
+    public static final String cancel_ask = "capp/bs/cancel_ask";//取消补电请求
+
 
 
 }
