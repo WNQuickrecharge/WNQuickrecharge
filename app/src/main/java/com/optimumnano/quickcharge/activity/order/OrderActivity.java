@@ -299,7 +299,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         }
 
         tvConfirm.setEnabled(false);
-        orderManager.addOrder(gunNo, 0.01+"",payWay, new ManagerCallback<String>() {
+        orderManager.addOrder(gunNo, money,payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
                 super.onSuccess(returnContent);
