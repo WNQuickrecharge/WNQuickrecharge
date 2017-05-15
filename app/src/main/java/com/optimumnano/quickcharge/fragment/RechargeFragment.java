@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -69,6 +70,8 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.util.List;
@@ -133,6 +136,8 @@ public class RechargeFragment extends BaseFragment {
     //创建marker的显示图标
     BitmapDescriptor bitmap = null;
     BitmapDescriptor bitmap1 = null;
+    private String askNo;
+    private AskOrderStatus askOrderStatus;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,7 +181,8 @@ public class RechargeFragment extends BaseFragment {
         startLocation();
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {}
+            public void onMapClick(LatLng latLng) {
+            }
 
             @Override
             public boolean onMapPoiClick(MapPoi mapPoi) {
@@ -203,12 +209,12 @@ public class RechargeFragment extends BaseFragment {
                     holder.tvAddress.setText(holder.mItem.StationName);
 //                    holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
                     holder.tvDetailAddress.setText(holder.mItem.Address);
-                    holder.tvDistance.setText(StringUtils.formatDouble(holder.mItem.distance)+"km");
+                    holder.tvDistance.setText(StringUtils.formatDouble(holder.mItem.distance) + "km");
 
                     holder.tvPhonenum.setText(holder.mItem.Phone);
-                    String e=holder.mItem.min_price==holder.mItem.max_price?holder.mItem.max_price+"":holder.mItem.min_price+"~"+holder.mItem.max_price;
-                    String s=holder.mItem.min_service==holder.mItem.max_service?holder.mItem.max_service+"":holder.mItem.min_service+"~"+holder.mItem.max_service;
-                    String sb = "电费:"+e+"元/度,服务费:"+s+"元/度";
+                    String e = holder.mItem.min_price == holder.mItem.max_price ? holder.mItem.max_price + "" : holder.mItem.min_price + "~" + holder.mItem.max_price;
+                    String s = holder.mItem.min_service == holder.mItem.max_service ? holder.mItem.max_service + "" : holder.mItem.min_service + "~" + holder.mItem.max_service;
+                    String sb = "电费:" + e + "元/度,服务费:" + s + "元/度";
                     SimpleText st = SimpleText.create(holder.mView.getContext(), sb)
                             .first(e).textColor(R.color.red).first(s).textColor(R.color.red);
                     st.linkify(holder.tvPricePer);
@@ -243,14 +249,14 @@ public class RechargeFragment extends BaseFragment {
                                 @Override
                                 public void onSuccess(Object returnContent) {
                                     super.onSuccess(returnContent);
-                                    ToastUtil.showToast(getActivity(),"收藏成功！");
+                                    ToastUtil.showToast(getActivity(), "收藏成功！");
                                     mBsdialog.dismiss();
                                 }
 
                                 @Override
                                 public void onFailure(String msg) {
                                     super.onFailure(msg);
-                                    ToastUtil.showToast(getActivity(),msg);
+                                    ToastUtil.showToast(getActivity(), msg);
 
                                 }
                             });
@@ -271,8 +277,8 @@ public class RechargeFragment extends BaseFragment {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), StationActivity.class);
-                            Bundle bundle=new Bundle();
-                            bundle.putSerializable("Station",transPointToStationBean(infoUtil));
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("Station", transPointToStationBean(infoUtil));
                             intent.putExtras(bundle);
                             startActivity(intent);
                             mBsdialog.dismiss();
@@ -305,13 +311,15 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 int length = s.toString().length();
-                if (length>0){
+                if (length > 0) {
                     iconSearch.setVisibility(View.GONE);
-                }else {
+                } else {
                     iconSearch.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+        askOrderStatus=AskOrderStatus.DEFAULT;
     }
 
     private void requestPermission(String servicePhone) {
@@ -334,15 +342,15 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private StationBean transPointToStationBean(Point mItem) {
-        StationBean bean=new StationBean();
+        StationBean bean = new StationBean();
         bean.setCity(mItem.City);
-        bean.setDistance(StringUtils.formatDouble(mItem.distance)+"km");
+        bean.setDistance(StringUtils.formatDouble(mItem.distance) + "km");
         bean.setId(mItem.Id);
         bean.setAddress(mItem.Address);
         bean.setDel(mItem.IsDel);
         bean.setUpdateTime(mItem.UpdateTime);
-        bean.setLat(mItem.Lat+"");
-        bean.setLng(mItem.Lng+"");
+        bean.setLat(mItem.Lat + "");
+        bean.setLng(mItem.Lng + "");
         bean.setFreePiles(Integer.parseInt(mItem.FreePiles));
         bean.setTotalPiles(Integer.parseInt(mItem.TotalPiles));
         bean.setStationName(mItem.StationName);
@@ -376,7 +384,7 @@ public class RechargeFragment extends BaseFragment {
         TextView tvPricePer;
         @Bind(R.id.tv_num)
         TextView tvNum;
-//        @Bind(R.id.tv_nav)
+        //        @Bind(R.id.tv_nav)
 //        TextView tvNav;
 //        @Bind(R.id.tv_fav)
 //        TextView tvFav;
@@ -404,7 +412,7 @@ public class RechargeFragment extends BaseFragment {
             if (Tool.isConnectingToInternet()) {
                 ((MainActivity) getActivity()).showLoading("加载中...");
             } else {
-                ((MainActivity)getActivity()).showToast("网络连接异常");
+                ((MainActivity) getActivity()).showToast("网络连接异常");
             }
             if (locationClient != null)
                 locationClient.start();
@@ -460,7 +468,7 @@ public class RechargeFragment extends BaseFragment {
     }
 
     @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late,
-            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait})
+            R.id.tv_scan_charge, R.id.tv_delete_ask_order, R.id.tv_delete_ask_order_wait})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
@@ -483,7 +491,7 @@ public class RechargeFragment extends BaseFragment {
 
                 break;
             case R.id.tv_delete_ask_order_wait:
-                final MyDialog myDialog=new MyDialog(getActivity(),R.style.MyDialog);
+                final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);
                 myDialog.setMessage("确定取消补电请求吗?");
                 myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
                     @Override
@@ -522,6 +530,14 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(returnContent.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                askNo = jsonObject.optString("ask_no");
+                askOrderStatus=AskOrderStatus.START;
                 Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
                 askCarInputFrame.setVisibility(View.GONE);
                 carComingSoon.setVisibility(View.VISIBLE);
@@ -609,7 +625,6 @@ public class RechargeFragment extends BaseFragment {
         getRegionCar();
 
 
-
     }
 
     private void getRegionCar() {
@@ -639,19 +654,19 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
-                ToastUtil.showToast(getActivity(),msg);
+                ToastUtil.showToast(getActivity(), msg);
                 closeLoading();
             }
         });
     }
 
     private void getRegionStaion() {
-        LogUtil.i("当前距离是:"+mHelper.showDistance());
+        LogUtil.i("当前距离是:" + mHelper.showDistance());
         mManager.getReigonInfo(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
-                LogUtil.i("当前距离是1111:"+mHelper.showDistance());
+                LogUtil.i("当前距离是1111:" + mHelper.showDistance());
                 closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
@@ -675,14 +690,14 @@ public class RechargeFragment extends BaseFragment {
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
-                ToastUtil.showToast(getActivity(),msg);
+                ToastUtil.showToast(getActivity(), msg);
                 closeLoading();
             }
         });
     }
 
     private void closeLoading() {
-        ((MainActivity)getActivity()).closeLoading();
+        ((MainActivity) getActivity()).closeLoading();
     }
 
     private void markerNearStaion() {
@@ -698,6 +713,7 @@ public class RechargeFragment extends BaseFragment {
             loadNearRechargeStationOnToMap();
 
     }
+
     private void markerNearRechargeCar() {
         //清空地图
         mBaiduMap.clear();
@@ -718,7 +734,7 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         Marker marker;
         for (Point info : mPiont) {
-            if (bitmap==null)
+            if (bitmap == null)
                 bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
             //获取经纬度
             //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
@@ -745,8 +761,8 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         Marker marker;
         for (CarPoint info : mCarPiont) {
-            LogUtil.i("mCarPiont.size=="+mCarPiont.size());
-            if (bitmap1==null)
+            LogUtil.i("mCarPiont.size==" + mCarPiont.size());
+            if (bitmap1 == null)
                 bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
             //获取经纬度
             //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
@@ -755,7 +771,7 @@ public class RechargeFragment extends BaseFragment {
             options = new MarkerOptions()
                     .position(latLng)//设置位置
                     .icon(bitmap1)//设置图标样式
-                    .zIndex(9) ;// 设置marker所在层级
+                    .zIndex(9);// 设置marker所在层级
 //                        .draggable(true); // 设置手势拖拽;
             //添加marker
             marker = (Marker) mBaiduMap.addOverlay(options);
@@ -833,20 +849,27 @@ public class RechargeFragment extends BaseFragment {
     private void callPhone(String servicePhone) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_CALL);
-        intent.setData(Uri.parse("tel:"+servicePhone+""));
+        intent.setData(Uri.parse("tel:" + servicePhone + ""));
         startActivity(intent);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
+    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event) {
         //mBaiduMap.clear();
+        if (askOrderStatus==AskOrderStatus.DEFAULT)
         askCarInputFrame.setVisibility(View.VISIBLE);
         searchRechargeStaionFrame.setVisibility(View.GONE);
         markerNearRechargeCar();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNearStationChoosed(EventManager.onNearStationChoosed event){
+    public void onNearStationChoosed(EventManager.onNearStationChoosed event) {
         askCarInputFrame.setVisibility(View.GONE);
         searchRechargeStaionFrame.setVisibility(View.VISIBLE);
         markerNearStaion();
+    }
+
+    public enum AskOrderStatus{
+        DEFAULT,START,WAIT,COMMING,DELETE
     }
 }
