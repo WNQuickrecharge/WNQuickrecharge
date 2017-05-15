@@ -358,6 +358,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             public void onFailure(String msg) {
                 super.onFailure(msg);
                 showToast(msg+"");
+                tvConfirm.setEnabled(true);
             }
         });
     }
