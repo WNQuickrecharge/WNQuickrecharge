@@ -53,7 +53,7 @@ public class FilterActivity extends BaseActivity {
         }
 
         switchMsg.check(mHelper.isShowOnlyFree());
-        mKm.setProgress(mHelper.showDistance() - 10);
+        mKm.setProgress((mHelper.showDistance() - 2) * 5);
         if (mHelper.showKV()<240) {
             mKv.setProgress((mHelper.showKV() / 60 - 1) * 10);
         }else {
@@ -143,7 +143,7 @@ public class FilterActivity extends BaseActivity {
         }else {
             mHelper.setKV((mKv.getProgress()/10 +2) * 60);
         }
-        mHelper.setShowDistance(mKm.getProgress() +10);
+        mHelper.setShowDistance(mKm.getProgress()/10*2 +2);
         showToast(getString(R.string.edit_sai_xuan_success));
 
         if (mCurCity!=null){
