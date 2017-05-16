@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.text.Editable;
@@ -33,7 +32,6 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
-import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
@@ -65,6 +63,7 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity {
 
+    private static final int EXIT_FLAG = 22;
     private String mSDCardPath = null;
 
     private boolean hasInitSuccess = false;
@@ -444,6 +443,8 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        mHandler.removeMessages(0);
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
@@ -575,7 +576,7 @@ public class MainActivity extends BaseActivity {
         @SuppressWarnings("unused")
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SDK_PAY_FLAG: {
+                case SDK_PAY_FLAG:
                     @SuppressWarnings("unchecked")
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
@@ -592,13 +593,11 @@ public class MainActivity extends BaseActivity {
                         Toast.makeText(MainActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                }
-                default:
+                case EXIT_FLAG:
+                    doubleBackToExitPressedOnce=false;
                     break;
             }
         }
-
-        ;
     };
 
 
@@ -627,20 +626,20 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
+        exit();
+    }
+
+    private void exit() {
+        if (!doubleBackToExitPressedOnce) {
+            doubleBackToExitPressedOnce = true;
+            // 利用handler延迟发送更改状态信息
+            showToast(getString(R.string.exit_hint));
+            Message msg = Message.obtain();
+            msg.what = EXIT_FLAG;
+            mHandler.sendMessageDelayed(msg, 2000);
+        } else {
             AppManager.getAppManager().finishAllActivity();
-            return;
         }
-        doubleBackToExitPressedOnce = true;
-        showToast(getString(R.string.exit_hint));
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                SystemClock.sleep(2000);
-                doubleBackToExitPressedOnce=false;
-            }
-        }.start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
