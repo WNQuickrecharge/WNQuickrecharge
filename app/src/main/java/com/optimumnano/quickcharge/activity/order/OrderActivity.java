@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,11 +37,9 @@ import com.optimumnano.quickcharge.views.MenuItem1;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,7 +48,7 @@ import butterknife.ButterKnife;
  * 下单界面
  */
 public class OrderActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback {
-    private static final int SDK_PAY_FLAG = 001;
+    private static final int ADDORDER_FLAG = 002;
 
     @Bind(R.id.order_tvConfirm)
     TextView tvConfirm;
@@ -80,42 +79,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private String gunNo = "";
 
     private int payWay ;//支付方式
+    @SuppressLint("HandlerLeak")
     private Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==SDK_PAY_FLAG){
-                Map mapresult =(Map) msg.obj;
-                JSONObject dataJson = new JSONObject(mapresult);
-                logtesti("alipayresult "+dataJson.toString());
-                String resultStatus = dataJson.optString("resultStatus");// 结果码
-                if (!TextUtils.equals("9000",resultStatus))
-                    tvConfirm.setEnabled(true);
-                switch (resultStatus){
-                    case "9000"://支付成功
-                    case "8000"://正在处理,支付结果确认中
-                    case "6004"://支付结果未知
-                        showToast("支付成功");
-                        paySuccess(orderNo);
-                        finish();
-
-                        break;
-                    case "4000":
-                        showToast("订单支付失败");
-                    case "5000":
-                        showToast("订单不能重复支付");
-                        break;
-                    case "6001":
-                        showToast("取消支付");
-                        break;
-                    case "6002":
-                        showToast("网络连接出错");
-                        break;
-                    default:
-                        showToast("支付异常");
-                        break;
-                }
-
+            if (msg.what==ADDORDER_FLAG){
+                tvConfirm.setEnabled(true);
             }
         }
     };
@@ -300,6 +270,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
         ButterKnife.unbind(this);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
@@ -324,8 +295,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             ToastUtil.showToast(OrderActivity.this,"支付金额错误");
             return;
         }
-
         tvConfirm.setEnabled(false);
+        mHandler.sendEmptyMessageDelayed(ADDORDER_FLAG,1500);
         orderManager.addOrder(gunNo, money,payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
@@ -385,7 +356,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             public void onFailure(String msg) {
                 super.onFailure(msg);
                 showToast(msg+"");
-                tvConfirm.setEnabled(true);
             }
         });
     }
@@ -454,8 +424,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         if (0 == code){
             finish();
         }else {
-            //微信支付失败
-            tvConfirm.setEnabled(true);
         }
         logtesti("orderdetail weixinpay callback "+event.code);
     }
