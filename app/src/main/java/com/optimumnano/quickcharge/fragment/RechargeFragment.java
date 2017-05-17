@@ -2,6 +2,8 @@ package com.optimumnano.quickcharge.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -51,6 +53,7 @@ import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
@@ -59,6 +62,7 @@ import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
+import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -138,6 +142,7 @@ public class RechargeFragment extends BaseFragment {
     BitmapDescriptor bitmap1 = null;
     private String askNo;
     private AskOrderStatus askOrderStatus;
+    private int ask_state;//查询请求补电工单状态
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -491,36 +496,50 @@ public class RechargeFragment extends BaseFragment {
 
                 break;
             case R.id.tv_delete_ask_order_wait:
-                final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);
-                myDialog.setMessage("确定取消补电请求吗?");
-                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
-                    @Override
-                    public void onYesClick() {
-                        myDialog.dismiss();
-                        mManager.cancleAskOrder(askNo, new ManagerCallback() {
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(getActivity());
+//                normalDialog.setIcon(R.drawable.icon_dialog);
+                normalDialog.setTitle("我是一个普通Dialog");
+                normalDialog.setMessage("你要点击哪一个按钮呢?");
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
                             @Override
-                            public void onSuccess(Object returnContent) {
-                                super.onSuccess(returnContent);
-                                askOrderStatus=AskOrderStatus.DEFAULT;
-                                askCarInputFrame.setVisibility(View.VISIBLE);
-                                searchRechargeStaionFrame.setVisibility(View.GONE);
-                                carComingSoon.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onFailure(String msg) {
-                                super.onFailure(msg);
+                            public void onClick(DialogInterface dialog, int which) {
+                                //...To-do
                             }
                         });
-                    }
-                });
-                myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
-                    @Override
-                    public void onNoClick() {
-                        myDialog.dismiss();
-                    }
-                });
-                myDialog.show();
+                // 显示
+                normalDialog.show();
+//                final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);
+//                myDialog.setMessage("确定取消补电请求吗?");
+//                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+//                    @Override
+//                    public void onYesClick() {
+//                        myDialog.dismiss();
+//                        mManager.cancleAskOrder(askNo, new ManagerCallback() {
+//                            @Override
+//                            public void onSuccess(Object returnContent) {
+//                                super.onSuccess(returnContent);
+//                                askOrderStatus=AskOrderStatus.DEFAULT;
+//                                askCarInputFrame.setVisibility(View.VISIBLE);
+//                                searchRechargeStaionFrame.setVisibility(View.GONE);
+//                                carComingSoon.setVisibility(View.GONE);
+//                            }
+//
+//                            @Override
+//                            public void onFailure(String msg) {
+//                                super.onFailure(msg);
+//                            }
+//                        });
+//                    }
+//                });
+//                myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
+//                    @Override
+//                    public void onNoClick() {
+//                        myDialog.dismiss();
+//                    }
+//                });
+//                myDialog.show();
                 break;
             default:
                 break;
@@ -682,12 +701,10 @@ public class RechargeFragment extends BaseFragment {
     }
 
     private void getRegionStaion() {
-        LogUtil.i("当前距离是:" + mHelper.showDistance());
         mManager.getReigonInfo(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
-                LogUtil.i("当前距离是1111:" + mHelper.showDistance());
                 closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
@@ -833,6 +850,26 @@ public class RechargeFragment extends BaseFragment {
         if (mapView != null)
             mapView.onResume();
         //startLocation();
+        OrderManager.getAskCharge(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+
+                try {
+                    JSONObject jsonObject=new JSONObject(returnContent.toString());
+                    ask_state = jsonObject.optInt("ask_state");
+                    setAllAskChargeViewShowOrhide(ask_state);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                LogUtil.e("returnContent"+returnContent);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override
@@ -876,7 +913,7 @@ public class RechargeFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event) {
         mBaiduMap.clear();
-        if (askOrderStatus==AskOrderStatus.DEFAULT) {
+        if (askOrderStatus == AskOrderStatus.DEFAULT && ask_state == -1) {
             askCarInputFrame.setVisibility(View.VISIBLE);
             searchRechargeStaionFrame.setVisibility(View.GONE);
             markerNearRechargeCar();
@@ -892,5 +929,61 @@ public class RechargeFragment extends BaseFragment {
 
     public enum AskOrderStatus{
         DEFAULT,START,WAIT,COMMING,DELETE
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderDispatched(EventManager.onOrderDispatched event) {
+        PushCustom msg = event.msg;
+        switch (msg.ask_state) {//1是已派单，4是已取消，5是已完成
+            case 1:
+                setAllAskChargeViewShowOrhide(msg.ask_state);
+                OrderManager.getChargeCarLocation(msg.car_vin, new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                    }
+                });
+                break;
+
+            case 4:
+
+                break;
+            case 5:
+
+
+            default:
+                break;
+        }
+    }
+    private void setAllAskChargeViewShowOrhide(int serviceOrderStatus){
+        switch (serviceOrderStatus) {//-1 不存在订单,0存在订单等待派单 1,存在订单,等待车辆补电
+            case -1:
+                waitCar.setVisibility(View.GONE);
+                askCarInputFrame.setVisibility(View.VISIBLE);
+                carComingSoon.setVisibility(View.GONE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+
+            case 0:
+                waitCar.setVisibility(View.GONE);
+                askCarInputFrame.setVisibility(View.GONE);
+                carComingSoon.setVisibility(View.VISIBLE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+            case 1:
+                waitCar.setVisibility(View.VISIBLE);
+                askCarInputFrame.setVisibility(View.GONE);
+                carComingSoon.setVisibility(View.GONE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+
+            default:
+                break;
+        }
     }
 }

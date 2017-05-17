@@ -33,6 +33,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
+import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
@@ -343,17 +344,17 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
-                        setRightTitle("");//第一版不做消息
+                        setRightTitle("消息");//第一版不做消息
                         hideLeftTitle();
-                        hideRightTitle();
+//                        hideRightTitle();
                         viewPager.setCurrentItem(2);
 
-                        /*tvRight.setOnClickListener(new View.OnClickListener() {
+                        tvRight.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 startActivity(new Intent(MainActivity.this, MyMessageAct.class));
                             }
-                        });*/
+                        });
                         break;
                     case R.id.main_rbRechargeCar:
                         setTitle(getString(R.string.recharge));
