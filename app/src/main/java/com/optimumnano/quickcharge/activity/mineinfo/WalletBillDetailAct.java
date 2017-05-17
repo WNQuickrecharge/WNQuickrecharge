@@ -63,8 +63,13 @@ public class WalletBillDetailAct extends BaseActivity {
         }else if (billBean.DealType==1){
             mType.setText("支出");
             mAmountTitle.setText("充电金额");
-            mAdvanceAmount.setText(billBean.AdvanceCash + "");
+            mAdvanceAmount.setText(billBean.FrozenCash + "");
             mBackamount.setText(billBean.BackCash + "");
+        }else if (billBean.DealType==3){
+            mRlAdvamount.setVisibility(View.GONE);
+            mRlBackamount.setVisibility(View.GONE);
+            mType.setText("支出");
+            mAmountTitle.setText("发票支付");
         }
 
         mTime.setText(billBean.CreateTime + "");
