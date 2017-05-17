@@ -240,7 +240,13 @@ public class PayDialog extends BaseDialog implements View.OnClickListener {
                 @Override
                 public void onSuccess(String returnContent) {
                     super.onSuccess(returnContent);
-                    sign = returnContent;
+                    JSONObject jsonObject=null;
+                    try {
+                        jsonObject=new JSONObject(returnContent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    sign = jsonObject.optString("sign");
                     startPay();
                 }
 

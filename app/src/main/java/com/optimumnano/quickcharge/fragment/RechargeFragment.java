@@ -497,6 +497,27 @@ public class RechargeFragment extends BaseFragment {
                     @Override
                     public void onYesClick() {
                         myDialog.dismiss();
+                        mManager.cancleAskOrder(askNo, new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                askOrderStatus=AskOrderStatus.DEFAULT;
+                                askCarInputFrame.setVisibility(View.VISIBLE);
+                                searchRechargeStaionFrame.setVisibility(View.GONE);
+                                carComingSoon.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                            }
+                        });
+                    }
+                });
+                myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
+                    @Override
+                    public void onNoClick() {
+                        myDialog.dismiss();
                     }
                 });
                 myDialog.show();
@@ -761,7 +782,6 @@ public class RechargeFragment extends BaseFragment {
         OverlayOptions options;
         Marker marker;
         for (CarPoint info : mCarPiont) {
-            LogUtil.i("mCarPiont.size==" + mCarPiont.size());
             if (bitmap1 == null)
                 bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
             //获取经纬度
@@ -855,11 +875,12 @@ public class RechargeFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event) {
-        //mBaiduMap.clear();
-        if (askOrderStatus==AskOrderStatus.DEFAULT)
-        askCarInputFrame.setVisibility(View.VISIBLE);
-        searchRechargeStaionFrame.setVisibility(View.GONE);
-        markerNearRechargeCar();
+        mBaiduMap.clear();
+        if (askOrderStatus==AskOrderStatus.DEFAULT) {
+            askCarInputFrame.setVisibility(View.VISIBLE);
+            searchRechargeStaionFrame.setVisibility(View.GONE);
+            markerNearRechargeCar();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
