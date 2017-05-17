@@ -496,50 +496,50 @@ public class RechargeFragment extends BaseFragment {
 
                 break;
             case R.id.tv_delete_ask_order_wait:
-                final AlertDialog.Builder normalDialog =
-                        new AlertDialog.Builder(getActivity());
-//                normalDialog.setIcon(R.drawable.icon_dialog);
-                normalDialog.setTitle("我是一个普通Dialog");
-                normalDialog.setMessage("你要点击哪一个按钮呢?");
-                normalDialog.setPositiveButton("确定",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //...To-do
-                            }
-                        });
-                // 显示
-                normalDialog.show();
-//                final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);
-//                myDialog.setMessage("确定取消补电请求吗?");
-//                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
-//                    @Override
-//                    public void onYesClick() {
-//                        myDialog.dismiss();
-//                        mManager.cancleAskOrder(askNo, new ManagerCallback() {
+//                final AlertDialog.Builder normalDialog =
+//                        new AlertDialog.Builder(getActivity());
+////                normalDialog.setIcon(R.drawable.icon_dialog);
+//                normalDialog.setTitle("我是一个普通Dialog");
+//                normalDialog.setMessage("你要点击哪一个按钮呢?");
+//                normalDialog.setPositiveButton("确定",
+//                        new DialogInterface.OnClickListener() {
 //                            @Override
-//                            public void onSuccess(Object returnContent) {
-//                                super.onSuccess(returnContent);
-//                                askOrderStatus=AskOrderStatus.DEFAULT;
-//                                askCarInputFrame.setVisibility(View.VISIBLE);
-//                                searchRechargeStaionFrame.setVisibility(View.GONE);
-//                                carComingSoon.setVisibility(View.GONE);
-//                            }
-//
-//                            @Override
-//                            public void onFailure(String msg) {
-//                                super.onFailure(msg);
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                //...To-do
 //                            }
 //                        });
-//                    }
-//                });
-//                myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
-//                    @Override
-//                    public void onNoClick() {
-//                        myDialog.dismiss();
-//                    }
-//                });
-//                myDialog.show();
+//                // 显示
+//                normalDialog.show();
+                final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);
+                myDialog.setMessage("确定取消补电请求吗?");
+                myDialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+                    @Override
+                    public void onYesClick() {
+                        myDialog.dismiss();
+                        mManager.cancleAskOrder(askNo, new ManagerCallback() {
+                            @Override
+                            public void onSuccess(Object returnContent) {
+                                super.onSuccess(returnContent);
+                                askOrderStatus=AskOrderStatus.DEFAULT;
+                                askCarInputFrame.setVisibility(View.VISIBLE);
+                                searchRechargeStaionFrame.setVisibility(View.GONE);
+                                carComingSoon.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                super.onFailure(msg);
+                            }
+                        });
+                    }
+                });
+                myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
+                    @Override
+                    public void onNoClick() {
+                        myDialog.dismiss();
+                    }
+                });
+                myDialog.show();
                 break;
             default:
                 break;
