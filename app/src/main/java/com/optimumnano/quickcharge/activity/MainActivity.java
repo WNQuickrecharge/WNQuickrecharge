@@ -634,9 +634,7 @@ public class MainActivity extends BaseActivity {
             doubleBackToExitPressedOnce = true;
             // 利用handler延迟发送更改状态信息
             showToast(getString(R.string.exit_hint));
-            Message msg = Message.obtain();
-            msg.what = EXIT_FLAG;
-            mHandler.sendMessageDelayed(msg, 2000);
+            mHandler.sendEmptyMessageDelayed(EXIT_FLAG, 2000);
         } else {
             AppManager.getAppManager().finishAllActivity();
         }
