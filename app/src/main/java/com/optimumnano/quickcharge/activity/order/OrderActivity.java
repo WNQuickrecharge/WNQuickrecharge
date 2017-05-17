@@ -294,10 +294,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
     //下单
     private void addOrder(){
+        showLoading();
         orderManager.addOrder(gunNo, edtMoney.getText().toString(),payWay, new ManagerCallback<String>() {
             @Override
             public void onSuccess(String returnContent) {
                 super.onSuccess(returnContent);
+                closeLoading();
                 Gson gson = new Gson();
                 HashMap<String,Object> ha = gson.fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
                 orderNo = ha.get("order_no").toString();
@@ -355,6 +357,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onFailure(String msg) {
                 super.onFailure(msg);
+                closeLoading();
                 showToast(msg+"");
             }
         });
