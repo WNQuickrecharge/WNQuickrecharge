@@ -208,7 +208,7 @@ public class QrCodeActivity extends BaseActivity {
 
 
     private void getGunInfo(String gunNumber){
-        final String gunNo=gunNumber+"00000000000";
+        final String gunNo=gunNumber;
         OrderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
             @Override
             public void onSuccess(RechargeGunBean returnContent) {
