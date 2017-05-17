@@ -76,6 +76,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.util.List;
@@ -529,6 +530,7 @@ public class RechargeFragment extends BaseFragment {
                             @Override
                             public void onFailure(String msg) {
                                 super.onFailure(msg);
+                                ToastUtil.showToast(getActivity(),msg);
                             }
                         });
                     }
@@ -846,7 +848,7 @@ public class RechargeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //UpdateBuilder.create().check();
+        UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
@@ -858,6 +860,7 @@ public class RechargeFragment extends BaseFragment {
                 try {
                     JSONObject jsonObject=new JSONObject(returnContent.toString());
                     ask_state = jsonObject.optInt("ask_state");
+                    askNo = jsonObject.optString("ask_no");
                     setAllAskChargeViewShowOrhide(ask_state);
                 } catch (JSONException e) {
                     e.printStackTrace();
