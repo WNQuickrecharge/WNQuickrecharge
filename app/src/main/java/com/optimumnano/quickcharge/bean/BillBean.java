@@ -13,20 +13,20 @@ public class BillBean implements Serializable {
     /**
      * OrderNo : C20170415153613001
      * Cash : 10
-     * AdvanceCash : 0.01
+     * FrozenCash : 0.01
      * BackCash : -9.99
      * TradeNum : 586cbb86-31b9-4ad3-8baf-ae9988671224
      * PayType : 微信支付
      * CreateTime : 2017-04-24 08:54:16
      * ChargeVolume : 10
      * Remark : null
-     * DealType : 收入
+     * DealType : 1
      * Title : 充电
      */
 
     public String OrderNo;
     public double Cash;
-    public double AdvanceCash;
+    public double FrozenCash;
     public double BackCash;
     public String TradeNum;
     public String PayType;
@@ -41,7 +41,7 @@ public class BillBean implements Serializable {
         return "BillBean{" +
                 "OrderNo='" + OrderNo + '\'' +
                 ", Cash=" + Cash +
-                ", FrozenCash=" + AdvanceCash +
+                ", FrozenCash=" + FrozenCash +
                 ", BackCash=" + BackCash +
                 ", TradeNum='" + TradeNum + '\'' +
                 ", PayType=" + PayType +

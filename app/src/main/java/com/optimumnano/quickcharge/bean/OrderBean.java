@@ -32,7 +32,7 @@ public class OrderBean implements Serializable{
     /** 充电桩功率 **/
     public int power;
     /** 充电桩电流 **/
-    public int elec_current;
+    public double elec_current;
     /** 充电量 **/
     public double charge_vol;
     /** 支付类型 **/

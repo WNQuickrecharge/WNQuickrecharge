@@ -119,35 +119,47 @@
         <LinearLayout
             android:id="@+id/ll_search_recharge_station_frame"
             android:visibility="gone"
-            style="@style/frame_input_search_station_style">
-            <FrameLayout
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:background="@drawable/bg_charge_info_et"
-                android:layout_height="30dp">
-            <ImageView
-                android:id="@+id/iv_icon_search"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="70dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/icon_search"/>
-            <EditText
-                android:id="@+id/et_ask_car_input"
-                android:gravity="center"
-                android:hint="搜索充电站"
-                style="@style/tv_match_1"/>
-            </FrameLayout>
-            <TextView
-                android:layout_marginLeft="@dimen/dimen_10"
-                android:padding="@dimen/dimen_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_daohang"
-                android:textColor="@color/white"
-                android:text="搜索"/>
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                style="@style/frame_input_search_station_style">
+                <FrameLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/bg_charge_info_et"
+                    android:layout_height="30dp">
+                    <ImageView
+                        android:id="@+id/iv_icon_search"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="70dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/icon_search"/>
+                    <EditText
+                        android:id="@+id/et_ask_car_input"
+                        android:gravity="center"
+                        android:hint="搜索充电站"
+                        style="@style/tv_match_1"/>
+                </FrameLayout>
+                <TextView
+                    android:layout_marginLeft="@dimen/dimen_10"
+                    android:padding="@dimen/dimen_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_daohang"
+                    android:textColor="@color/white"
+                    android:text="搜索"/>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginLeft="@dimen/dimen_25"
+                android:layout_marginRight="@dimen/dimen_25"
+                android:id="@+id/search_station_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_car_coming_soon"

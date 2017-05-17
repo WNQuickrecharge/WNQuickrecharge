@@ -12,6 +12,6 @@ public class RechargeGunBean implements Serializable{
     public Double service_cost;
     public String pile_type;
     public int power;
-    public int elec_current;
+    public double elec_current;
     public Double price;
 }

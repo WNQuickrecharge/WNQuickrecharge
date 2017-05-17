@@ -136,10 +136,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                     finish();
                 }
                 else {
-//                    payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
-//                    payDialog.show();
-
-                    tvPay.setEnabled(false);
                     int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
                     payDialog.setPayway(paway);
                     payDialog.setMoney(orderBean.frozen_cash,orderBean.order_no);
@@ -198,7 +194,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void payFail(String msg) {
-        tvPay.setEnabled(true);
         showToast(msg);
     }
 
@@ -213,14 +208,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
         int code = event.code;
         if (0 == code){
-            /*Bundle bundle = new Bundle();
-            bundle.putString("order_no",event.data);
-            bundle.putInt("order_status", Constants.STARTCHARGE);
-            skipActivity(RechargeControlActivity.class,bundle);*/
             finish();
         }else {
             //微信支付失败
-            tvPay.setEnabled(true);
         }
         logtesti("orderdetail weixinpay callback "+event.code);
     }

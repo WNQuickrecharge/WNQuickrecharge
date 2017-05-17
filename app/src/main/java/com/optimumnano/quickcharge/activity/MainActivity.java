@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.text.Editable;
@@ -66,6 +65,7 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity {
 
+    private static final int EXIT_FLAG = 22;
     private String mSDCardPath = null;
 
     private boolean hasInitSuccess = false;
@@ -344,17 +344,17 @@ public class MainActivity extends BaseActivity {
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
                         setLeftTitle("");
-                        setRightTitle("消息");//第一版不做消息
+                        setRightTitle("");//第一版不做消息
                         hideLeftTitle();
-//                        hideRightTitle();
+                        hideRightTitle();
                         viewPager.setCurrentItem(2);
 
-                        tvRight.setOnClickListener(new View.OnClickListener() {
+                        /*tvRight.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 startActivity(new Intent(MainActivity.this, MyMessageAct.class));
                             }
-                        });
+                        });*/
                         break;
                     case R.id.main_rbRechargeCar:
                         setTitle(getString(R.string.recharge));
@@ -445,6 +445,8 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        mHandler.removeMessages(0);
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
     }
@@ -576,7 +578,7 @@ public class MainActivity extends BaseActivity {
         @SuppressWarnings("unused")
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SDK_PAY_FLAG: {
+                case SDK_PAY_FLAG:
                     @SuppressWarnings("unchecked")
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
@@ -593,13 +595,11 @@ public class MainActivity extends BaseActivity {
                         Toast.makeText(MainActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                }
-                default:
+                case EXIT_FLAG:
+                    doubleBackToExitPressedOnce=false;
                     break;
             }
         }
-
-        ;
     };
 
 
@@ -628,20 +628,18 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
+        exit();
+    }
+
+    private void exit() {
+        if (!doubleBackToExitPressedOnce) {
+            doubleBackToExitPressedOnce = true;
+            // 利用handler延迟发送更改状态信息
+            showToast(getString(R.string.exit_hint));
+            mHandler.sendEmptyMessageDelayed(EXIT_FLAG, 2000);
+        } else {
             AppManager.getAppManager().finishAllActivity();
-            return;
         }
-        doubleBackToExitPressedOnce = true;
-        showToast(getString(R.string.exit_hint));
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                SystemClock.sleep(2000);
-                doubleBackToExitPressedOnce=false;
-            }
-        }.start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
