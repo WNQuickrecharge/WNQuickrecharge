@@ -125,7 +125,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
-
+        lazyLoad();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
-        mTvBalance.setText(event.balance);
+        mTvBalance.setText("￥"+event.balance);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -13,6 +13,7 @@ import com.optimumnano.quickcharge.utils.ImageLoaderUtil;
 import org.lzh.framework.updatepluginlib.UpdateConfig;
 import org.lzh.framework.updatepluginlib.callback.UpdateCheckCB;
 import org.lzh.framework.updatepluginlib.callback.UpdateDownloadCB;
+import org.lzh.framework.updatepluginlib.model.HttpMethod;
 import org.lzh.framework.updatepluginlib.model.Update;
 import org.lzh.framework.updatepluginlib.model.UpdateParser;
 import org.lzh.framework.updatepluginlib.strategy.UpdateStrategy;
@@ -47,8 +48,8 @@ public class MyApplication extends Application {
     }
 
     private void updateVersion() {
-        String url = HttpApi.update_apk_url;
-        UpdateConfig.getConfig().url(url).jsonParser(new UpdateParser() {
+        String url= HttpApi.getInstance().getUrl(HttpApi.update_apk_url);
+        UpdateConfig.getConfig().url(url).checkEntity(UpdateConfig.getConfig().getCheckEntity().setMethod(HttpMethod.POST)).jsonParser(new UpdateParser() {
             @Override
             public UpdateBean parse(String httpResponse) {
                 //                        Log.e("AppContext", httpResponse);

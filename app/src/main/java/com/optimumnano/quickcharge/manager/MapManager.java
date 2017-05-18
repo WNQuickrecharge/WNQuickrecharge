@@ -106,6 +106,29 @@ public class MapManager {
         });
     }
 
+    public void cancleAskOrder(String orderNo,final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.cancel_ask);
+        RequestParams params = new RequestParams(url);
+        HashMap<String, Object> requestJson = new HashMap<>();
+        requestJson.put("ask_no", orderNo);
+        String json = JSON.toJSONString(requestJson);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setBodyContent(json);
+
+        MyHttpUtils.getInstance().post(params, new HttpCallback<List<CarPoint>>() {
+            @Override
+            public void onSuccess(List<CarPoint> result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
 
 //    GetChargeCarLocation
 //    LGAX4C448F3008319

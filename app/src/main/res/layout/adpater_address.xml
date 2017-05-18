@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/default_padding"
     android:paddingRight="@dimen/default_padding"
+    android:id="@+id/ll_address_root"
     android:background="@color/white"
     android:orientation="horizontal">
 

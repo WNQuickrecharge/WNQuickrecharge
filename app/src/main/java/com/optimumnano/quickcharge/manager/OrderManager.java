@@ -367,4 +367,47 @@ public class OrderManager {
             }
         });
     }
+
+    public static void getChargeCarLocation(String carVin, final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_chargeCar_location);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        ha.put("car_vin",carVin);
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setBodyContent(JSON.toJSONString(ha));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
+
+    public static void getAskCharge(final ManagerCallback callback){
+        String url = HttpApi.getInstance().getUrl(HttpApi.get_ask_charge);
+        RequestParams params = new RequestParams(url);
+        HashMap<String,Object> ha = new HashMap<>();
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setBodyContent(JSON.toJSONString(ha));
+        MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String result, int httpCode) {
+                super.onSuccess(result, httpCode);
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onFailure(String msg, String errorCode, int httpCode) {
+                super.onFailure(msg, errorCode, httpCode);
+                callback.onFailure(msg);
+            }
+        });
+    }
 }

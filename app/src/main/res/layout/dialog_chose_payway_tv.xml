@@ -45,7 +45,6 @@
 
         <com.optimumnano.quickcharge.views.MenuItem1
             android:id="@+id/dialog_chose_payway_wx"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tvLeftText="微信"

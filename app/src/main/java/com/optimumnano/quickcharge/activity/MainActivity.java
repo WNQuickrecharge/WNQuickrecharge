@@ -8,13 +8,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -32,6 +32,9 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
+import com.optimumnano.quickcharge.activity.mineinfo.MyMessageAct;
+import com.optimumnano.quickcharge.activity.order.OrderActivity;
+import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -67,6 +70,7 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity implements HttpCallback {
 
+    private static final int EXIT_FLAG = 22;
     private String mSDCardPath = null;
 
     private boolean hasInitSuccess = false;
@@ -76,8 +80,13 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
 
     private MyViewPager viewPager;
-    private RadioGroup rg;
-    private RadioButton rbRecharge;
+    private static RadioGroup rg;
+
+    public static RadioGroup getRg() {
+        return rg;
+    }
+
+    private RadioButton rbRechargeCar;
 
     private List<Fragment> listFrg = new ArrayList<>();
     //private RechargeFragment rechargeFragment;
@@ -269,8 +278,8 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
         viewPager = (MyViewPager) findViewById(R.id.main_viewPager);
         rg = (RadioGroup) findViewById(R.id.main_rg);
-        rbRecharge = (RadioButton) findViewById(R.id.main_rbRecharge);
-        rbRecharge.setChecked(true);
+        rbRechargeCar = (RadioButton) findViewById(R.id.main_rbRechargeCar);
+        rbRechargeCar.setChecked(true);
 
     }
 
@@ -328,6 +337,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setLeftTitle("定位");
                         setRightTitle("列表");
                         viewPager.setCurrentItem(0);
+                        EventBus.getDefault().post(new EventManager.onNearStationChoosed());
                         break;
                     case R.id.main_rbOrder:
                         setTitle(getString(R.string.order));
@@ -353,9 +363,22 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                             }
                         });*/
                         break;
+                    case R.id.main_rbRechargeCar:
+                        setTitle(getString(R.string.recharge));
+                        setLeftTitle("定位");
+                        setRightTitle("列表");
+                        viewPager.setCurrentItem(0);
+                        EventBus.getDefault().post(new EventManager.onRechargeCarChoosed());
+                        break;
                     default:
                         break;
                 }
+            }
+        });
+        rg.findViewById(R.id.main_rbScan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QrCodeActivity.start(MainActivity.this);
             }
         });
         tvRight.addTextChangedListener(new TextWatcher() {
@@ -429,6 +452,8 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     protected void onDestroy() {
         super.onDestroy();
         keyboardWatcher.destroy();
+        mHandler.removeMessages(0);
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
         mTaskDispatcher.cancel(mAddStationCollectionTaskId);
@@ -562,7 +587,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         @SuppressWarnings("unused")
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SDK_PAY_FLAG: {
+                case SDK_PAY_FLAG:
                     @SuppressWarnings("unchecked")
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
@@ -579,13 +604,11 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         Toast.makeText(MainActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                }
-                default:
+                case EXIT_FLAG:
+                    doubleBackToExitPressedOnce=false;
                     break;
             }
         }
-
-        ;
     };
 
 
@@ -617,20 +640,18 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
+        exit();
+    }
+
+    private void exit() {
+        if (!doubleBackToExitPressedOnce) {
+            doubleBackToExitPressedOnce = true;
+            // 利用handler延迟发送更改状态信息
+            showToast(getString(R.string.exit_hint));
+            mHandler.sendEmptyMessageDelayed(EXIT_FLAG, 2000);
+        } else {
             AppManager.getAppManager().finishAllActivity();
-            return;
         }
-        doubleBackToExitPressedOnce = true;
-        showToast(getString(R.string.exit_hint));
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                SystemClock.sleep(2000);
-                doubleBackToExitPressedOnce = false;
-            }
-        }.start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
