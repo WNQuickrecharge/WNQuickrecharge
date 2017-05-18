@@ -32,13 +32,14 @@
 
 
         <LinearLayout
+            android:id="@+id/ll_ask_car_input_frame"
             android:layout_marginTop="@dimen/dimen_12"
             android:layout_marginLeft="@dimen/dimen_25"
             android:layout_marginRight="@dimen/dimen_25"
             android:paddingTop="@dimen/dimen_10"
             android:paddingRight="@dimen/dimen_10"
             android:paddingLeft="@dimen/dimen_10"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"
@@ -115,12 +116,148 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_search_recharge_station_frame"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                style="@style/frame_input_search_station_style">
+                <FrameLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/bg_charge_info_et"
+                    android:layout_height="30dp">
+                    <ImageView
+                        android:id="@+id/iv_icon_search"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="70dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/icon_search"/>
+                    <EditText
+                        android:id="@+id/et_ask_car_input"
+                        android:gravity="center"
+                        android:hint="搜索充电站"
+                        style="@style/tv_match_1"/>
+                </FrameLayout>
+                <TextView
+                    android:layout_marginLeft="@dimen/dimen_10"
+                    android:padding="@dimen/dimen_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_daohang"
+                    android:textColor="@color/white"
+                    android:text="搜索"/>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginLeft="@dimen/dimen_25"
+                android:layout_marginRight="@dimen/dimen_25"
+                android:id="@+id/search_station_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_car_coming_soon"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:layout_marginLeft="@dimen/dimen_25"
+            android:layout_marginRight="@dimen/dimen_25"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingRight="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_10"
+            android:paddingBottom="@dimen/dimen_10"
+            android:visibility="gone"
+            android:background="@drawable/bg_charge_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_delete_ask_order_wait"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@mipmap/delete"
+                    android:drawablePadding="@dimen/dimen_10"
+                    android:text="取消订单"/>
+                <TextView
+                    android:layout_below="@id/tv_delete_ask_order_wait"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color33"
+                    android:textSize="14sp"
+                    android:text="正在联系补电车, 请在预约地点耐心等待"/>
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_wait_car"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:layout_marginLeft="@dimen/dimen_25"
+            android:layout_marginRight="@dimen/dimen_25"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingRight="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_10"
+            android:paddingBottom="@dimen/dimen_10"
+            android:visibility="gone"
+            android:background="@drawable/bg_charge_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_delete_ask_order"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@mipmap/delete"
+                    android:drawablePadding="@dimen/dimen_10"
+                    android:text="取消订单"/>
+                <TextView
+                    android:id="@+id/tv_car_come_time"
+                    android:layout_below="@id/tv_delete_ask_order"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color33"
+                    android:textSize="14sp"
+                    android:text="与补电车相距X公里,预计Y分钟到达"/>
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/tv_car_come_time"
+                    android:id="@+id/tv_car_number"
+                    android:layout_width="wrap_content"
+                    android:hint="车牌号:"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/tv_car_number"
+                    android:id="@+id/tv_driver_number"
+                    android:layout_width="wrap_content"
+                    android:hint="电话:"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_scan_charge"
             android:layout_centerInParent="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dimen_10"
+            android:visibility="gone"
             android:drawableRight="@drawable/icon_saomabudian"
             android:text="扫码补电"
             android:paddingTop="@dimen/dimen_4"

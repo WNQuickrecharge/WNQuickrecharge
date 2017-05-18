@@ -104,4 +104,5 @@
     <dimen name="rippleRadius">14dp</dimen>
 
     <dimen name="ratingbar">17dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

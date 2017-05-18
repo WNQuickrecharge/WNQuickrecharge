@@ -16,9 +16,11 @@ import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshListener;
 import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
 import com.netease.hearttouch.htrefreshrecyclerview.base.HTBaseViewHolder;
 import com.netease.hearttouch.htrefreshrecyclerview.viewimpl.HTDefaultVerticalRefreshViewHolder;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity;
 import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
+import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
@@ -27,9 +29,15 @@ import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.request.GetOrderListRequest;
 import com.optimumnano.quickcharge.response.GetOrderListResult;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +81,9 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void initViews() {
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
         recyclerView = (HTRefreshRecyclerView) getActivity().findViewById(R.id.order_recyclerView);
 
         adapter = new OrderAdapter(R.layout.adapter_order, orderList);
@@ -96,7 +107,8 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                 if (orderBean.order_status == 2 || orderBean.order_status == 4 ||
                         orderBean.order_status == 1 || orderBean.order_status == 3) {
                     intent = new Intent(getActivity(), OrderlistDetailActivity.class);
-                } else {
+                }
+                else {
                     intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
                 }
 
@@ -111,7 +123,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        //initData();
+        onRefresh();
     }
 
     private void initData() {
@@ -205,5 +217,32 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onRequestCancel(int id) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
+        int code = event.code;
+        if (0 == code){
+            skipAct(event.data,Constants.STARTCHARGE);
+        }else {
+            //微信支付失败
+        }
+        LogUtil.i("test==orderadapter weixinpay callback "+event.code);
+    }
+
+    private void skipAct(String order_no,int status) {
+        Intent intent = new Intent(ctx,RechargeControlActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("order_no",order_no);
+        bundle.putInt("order_status",status);
+        intent.putExtras(bundle);
+        ctx.startActivity(intent);
     }
 }

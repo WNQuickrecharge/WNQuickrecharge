@@ -22,9 +22,7 @@ public class HttpApi {
         }
         return instance;
     }
-
-//    private static final String baseUrl = "http://112.74.44.166:4830/";//测试库地址
-
+//    private static final String baseUrl = "http://112.74.44.166:4830/";
     private static final String baseUrl = "http://119.23.71.104:4711/";//生产库地址
 //    private static final String baseUrl = "http://172.200.28.132:4840/";//临时测试
 //    private static final String baseUrl="http://120.77.149.109:4720/"; //
@@ -81,6 +79,9 @@ public class HttpApi {
     public static final String get_invoice_sign = "capp/invoice/get_invoice_sign";//获取微信或者支付宝的签名，余额支付不需要调用此接口
     public static final String getby_orderno = "capp/order/getby_orderno";//根据订单号获取订单信息
     public static final String update_apk_url = "http://172.200.29.72:8080/update/apk.json";//本地测试升级apk地址
+    public static final String get_ask_charge = "capp/bs/get_ask_charge";//获取补电订单状态
+    public static final String cancel_ask = "capp/bs/cancel_ask";//取消补电请求
+
 
 
 }

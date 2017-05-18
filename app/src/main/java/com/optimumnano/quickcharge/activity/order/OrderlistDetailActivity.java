@@ -14,6 +14,7 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.request.CancelOrderRequest;
 import com.optimumnano.quickcharge.response.CancelOrderResult;
@@ -22,6 +23,10 @@ import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 
@@ -81,6 +86,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     }
 
     private void initListener() {
+    private void initListener(){
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         tvPay.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         tvWatchStatus.setOnClickListener(this);
@@ -144,6 +152,16 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                     finish();
                 } else {
                     payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue));
+                }
+                else {
+                    int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
+                    payDialog.setPayway(paway);
+                    payDialog.setMoney(orderBean.frozen_cash,orderBean.order_no);
+                    if (PayDialog.pay_yue == paway){
+                        payDialog.setStatus(PayDialog.EDTPWD);
+                    }else {
+                        payDialog.setStatus(PayDialog.PAYBT);
+                    }
                     payDialog.show();
                 }
                 break;
@@ -230,5 +248,23 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     @Override
     public void onRequestCancel(int id) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
+        int code = event.code;
+        if (0 == code){
+            finish();
+        }else {
+            //微信支付失败
+        }
+        logtesti("orderdetail weixinpay callback "+event.code);
     }
 }

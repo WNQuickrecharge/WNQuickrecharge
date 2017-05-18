@@ -113,9 +113,15 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
             public void onClick(View view) {
                 switch (item.order_status){
                     case 2:
-                        payDialog.show();
-                        payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
+                        int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
+                        payDialog.setPayway(paway);
                         payDialog.setMoney(item.frozen_cash,item.order_no);
+                        if (PayDialog.pay_yue == paway){
+                            payDialog.setStatus(PayDialog.EDTPWD);
+                        }else {
+                            payDialog.setStatus(PayDialog.PAYBT);
+                        }
+                        payDialog.show();
                         LogUtil.d("待支付");
                         break;
                     case 3:

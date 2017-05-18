@@ -54,34 +54,26 @@ public class ConnectingState extends StopableStateWithCallback {
                 {
                     if(httpResponse != null && httpResponse.getStatus() == 200)
                     {
-                        JSONObject json = JSONHelper.ToJSONObject(httpResponse.getBodyAsString());
-                        if (json!=null)
-                        {
-                            ProcessResult result = TransportHelper.ProcessResponse(mConnection, json);
+                        if (httpResponse.getBodyAsString()!=null) {
+                            JSONObject json = JSONHelper.ToJSONObject(httpResponse.getBodyAsString());
+                            if (json != null) {
+                                ProcessResult result = TransportHelper.ProcessResponse(mConnection, json);
 
-                            if(result.processingFailed)
-                            {
-                                mConnection.setError(new Exception("Error while processing response."));
-                                mConnection.SetNewState(new ReconnectingState(mConnection));
-                            }
-                            else if(result.disconnected)
-                            {
-                                mConnection.setError(new Exception("Disconnected by server."));
+                                if (result.processingFailed) {
+                                    mConnection.setError(new Exception("Error while processing response."));
+                                    mConnection.SetNewState(new ReconnectingState(mConnection));
+                                } else if (result.disconnected) {
+                                    mConnection.setError(new Exception("Disconnected by server."));
+                                    mConnection.SetNewState(new DisconnectedState(mConnection));
+                                } else if (result.initialized) {
+                                    mConnection.SetNewState(new ConnectedState(mConnection));
+                                } else {
+                                    mConnection.SetNewState(new DisconnectedState(mConnection));
+                                }
+                            } else {
+                                mConnection.setError(new Exception("Error when calling endpoint. Return code: " + httpResponse.getStatus()));
                                 mConnection.SetNewState(new DisconnectedState(mConnection));
                             }
-                            else if(result.initialized)
-                            {
-                                mConnection.SetNewState(new ConnectedState(mConnection));
-                            }
-                            else
-                            {
-                                mConnection.SetNewState(new DisconnectedState(mConnection));
-                            }
-                        }
-                        else
-                        {
-                            mConnection.setError(new Exception("Error when calling endpoint. Return code: " + httpResponse.getStatus()));
-                            mConnection.SetNewState(new DisconnectedState(mConnection));
                         }
                     }
                     else
