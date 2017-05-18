@@ -15,8 +15,14 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserInfo;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.LoginRequest;
+import com.optimumnano.quickcharge.response.LoginResult;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
@@ -38,19 +44,28 @@ import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_USER_ID;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tvLogin,tvReg,tvForgetpwd,tvUserType;
-    private EditText edtUsername,edtPwd;
-    private int userType=1;
+public class LoginActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
+    private TextView tvLogin, tvReg, tvForgetpwd, tvUserType;
+    private EditText edtUsername, edtPwd;
+    private int userType = 1;
     private CheckBox checkBox;
     private String pwdKey = "mfwnydgiyutjyg";
     LoginManager manager = new LoginManager();
+
+    private int mLoginTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
         initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskDispatcher.cancel(mLoginTaskId);
     }
 
     @Override
@@ -61,18 +76,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         tvForgetpwd = (TextView) findViewById(R.id.login_tvForgetpwd);
         edtPwd = (EditText) findViewById(R.id.login_edtPwd);
         edtUsername = (EditText) findViewById(R.id.login_edtUsername);
-        tvUserType= (TextView) findViewById(R.id.tv_login_type_textView);
-        checkBox= (CheckBox) findViewById(R.id.login_checkbox);
-        checkBox.setChecked(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,false));
-        if (checkBox.isChecked()){
-            edtUsername.setText(SharedPreferencesUtil.getValue(SP_USERINFO,KEY_USERINFO_MOBILE,""));
+        tvUserType = (TextView) findViewById(R.id.tv_login_type_textView);
+        checkBox = (CheckBox) findViewById(R.id.login_checkbox);
+        checkBox.setChecked(SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false));
+        if (checkBox.isChecked()) {
+            edtUsername.setText(SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, ""));
 
-        }else {
+        } else {
             edtPwd.setText("");
             edtUsername.setText("");
         }
     }
-    private void initListener(){
+
+    private void initListener() {
         tvLogin.setOnClickListener(this);
         tvReg.setOnClickListener(this);
         tvForgetpwd.setOnClickListener(this);
@@ -80,44 +96,49 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isChecked);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, isChecked);
             }
         });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.login_tvLogin:
                 String password = edtPwd.getText().toString();
                 String Md5Password = MD5Utils.encodeMD5(password);
                 String finalPassword = MD5Utils.encodeMD5(Md5Password);
 
-                if ("企业登录".equals(tvLogin.getText().toString())){
-                    userType=3;
-                }else if ("个人登录".equals(tvLogin.getText().toString())){
-                    userType=1;
+                if ("企业登录".equals(tvLogin.getText().toString())) {
+                    userType = 3;
+                } else if ("个人登录".equals(tvLogin.getText().toString())) {
+                    userType = 1;
                 }
                 if (TextUtils.isEmpty(password)) {
                     showToast("密码不能为空！");
                     return;
                 }
                 showLoading("登录中！");
-                manager.login(edtUsername.getText().toString(),finalPassword,userType,new Manager());
+//                manager.login(edtUsername.getText().toString(), finalPassword, userType, new Manager());
+
+                mLoginTaskId = TaskIdGenFactory.gen();
+                mTaskDispatcher.dispatch(
+                        new HttpTask(mLoginTaskId,
+                                new LoginRequest(new LoginResult(mContext), edtUsername.getText().toString(), finalPassword, userType), this));
                 break;
             case R.id.login_tvReg:
-                skipActivity(RegisterActivity.class,null);
+                skipActivity(RegisterActivity.class, null);
                 break;
             case R.id.login_tvForgetpwd:
-                skipActivity(ForgetPwdActivity.class,null);
+                skipActivity(ForgetPwdActivity.class, null);
                 break;
             case R.id.tv_login_type_textView:
-                if ("企业".equals(tvUserType.getText().toString())){
+                if ("企业".equals(tvUserType.getText().toString())) {
                     tvUserType.setText("个人");
                     tvReg.setVisibility(View.INVISIBLE);
                     tvLogin.setText("企业登录");
 
-                }else if ("个人".equals(tvUserType.getText().toString())){
+                } else if ("个人".equals(tvUserType.getText().toString())) {
                     tvUserType.setText("企业");
                     tvReg.setVisibility(View.VISIBLE);
                     tvLogin.setText("个人登录");
@@ -151,7 +172,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 //        }
 //    }
 
-    class Manager extends ManagerCallback{
+    class Manager extends ManagerCallback {
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
@@ -174,28 +195,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
             String phoneNum = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
             boolean isRemember = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, false);
-            if (!phoneNum.equals(userinfoBean.userinfo.PhoneNum)){
+            if (!phoneNum.equals(userinfoBean.userinfo.PhoneNum)) {
                 GlideCacheUtil.getInstance().clearImageAllCache(LoginActivity.this);
                 SharedPreferencesUtil.getEditor(SP_USERINFO).clear().commit();
                 LogUtil.i("test==Glide  clearDiskCache");
             }
 
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME,TextUtils.isEmpty(userinfoBean.userinfo.NickName)?"":userinfoBean.userinfo.NickName);
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL,TextUtils.isEmpty(userinfoBean.userinfo.AvatarUrl)?"":userinfoBean.userinfo.AvatarUrl);
-            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX,userinfoBean.userinfo.Gender);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_MOBILE,userinfoBean.userinfo.PhoneNum);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_USER_ID,userinfoBean.userinfo.Id);
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_IS_REMEMBER,isRemember);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, TextUtils.isEmpty(userinfoBean.userinfo.NickName) ? "" : userinfoBean.userinfo.NickName);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, TextUtils.isEmpty(userinfoBean.userinfo.AvatarUrl) ? "" : userinfoBean.userinfo.AvatarUrl);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, userinfoBean.userinfo.Gender);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_MOBILE, userinfoBean.userinfo.PhoneNum);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_USER_ID, userinfoBean.userinfo.Id);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_IS_REMEMBER, isRemember);
 
-            boolean b= userinfoBean.account==null;
-            SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE,b?"0.00": StringUtils.formatDouble(userinfoBean.account.RestCash));
+            boolean b = userinfoBean.account == null;
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, b ? "0.00" : StringUtils.formatDouble(userinfoBean.account.RestCash));
 
-            LogUtil.i("Cookie=="+SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
-            new Thread(){
+            LogUtil.i("Cookie==" + SharedPreferencesUtil.getValue(SP_COOKIE, KEY_USERINFO_COOKIE, ""));
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     closeLoading();
                     runOnUiThread(new Runnable() {
                         @Override
@@ -226,10 +247,43 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
 
-
     @Override
     public void onBackPressed() {
         AppManager.getAppManager().finishAllActivity();
         finish();
+    }
+
+
+    //
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        closeLoading();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast("登录成功!");
+            }
+        });
+        finish();
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        closeLoading();
+        //TODO
+        showToast(((LoginResult) result).getLoginHttpResp().getResultMsg());
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

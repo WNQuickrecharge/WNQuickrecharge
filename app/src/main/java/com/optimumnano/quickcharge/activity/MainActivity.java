@@ -41,14 +41,19 @@ import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
 import com.optimumnano.quickcharge.fragment.RechargerViewPagerFrag;
-import com.optimumnano.quickcharge.manager.CollectManager;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.AddStationCollectionRequest;
+import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,7 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements HttpCallback {
 
     private String mSDCardPath = null;
 
@@ -84,6 +89,8 @@ public class MainActivity extends BaseActivity {
 
     //private DistShowHepler mShowHelper;
     private boolean doubleBackToExitPressedOnce;
+
+    private int mAddStationCollectionTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -243,7 +250,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (!EventBus.getDefault().isRegistered(this))
-        EventBus.getDefault().register(this);
+            EventBus.getDefault().register(this);
     }
 
     @Override
@@ -290,19 +297,19 @@ public class MainActivity extends BaseActivity {
 //        }else{
 //           // setLeftTitle("筛选");
 //        }
-        switch (viewPager.getCurrentItem()){
+        switch (viewPager.getCurrentItem()) {
             case 0:
                 String s = tvRight.getText().toString();
-                if ("列表".equals(s)){
+                if ("列表".equals(s)) {
                     tvRight.setText("地图");
                     rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
-                }else if ("地图".equals(s)){
+                } else if ("地图".equals(s)) {
                     tvRight.setText("列表");
                     rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
                 }
                 break;
             case 1:
-                skipActivity(InvoiceActivity.class,null);
+                skipActivity(InvoiceActivity.class, null);
                 break;
             case 2:
 
@@ -366,13 +373,13 @@ public class MainActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
                 switch (s.toString()) {
                     case "列表":
-                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                        if (rechargerViewPagerFrag.getViewPager() != null) {
                             rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
                         }
                         break;
 
                     case "地图":
-                        if (rechargerViewPagerFrag.getViewPager()!=null) {
+                        if (rechargerViewPagerFrag.getViewPager() != null) {
                             rechargerViewPagerFrag.getViewPager().setCurrentItem(1);
                         }
                         break;
@@ -385,7 +392,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void initData() {
-        rechargerViewPagerFrag=new RechargerViewPagerFrag();
+        rechargerViewPagerFrag = new RechargerViewPagerFrag();
         //rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
@@ -424,6 +431,7 @@ public class MainActivity extends BaseActivity {
         keyboardWatcher.destroy();
         EventBus.getDefault().unregister(this);
         PushManager.getInstance().stopService(this.getApplicationContext());//停止SDK服务
+        mTaskDispatcher.cancel(mAddStationCollectionTaskId);
     }
 
     @Override
@@ -450,7 +458,7 @@ public class MainActivity extends BaseActivity {
     private void navi(Point mPoint) {
         if (BaiduNaviManager.isNaviInited()) {
             //routeplanToNavi(BNRoutePlanNode.CoordinateType.WGS84, mPoint);
-            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL,BNRoutePlanNode.CoordinateType.BD09LL, mPoint);
+            routeplanToNavi(BNRoutePlanNode.CoordinateType.BD09LL, BNRoutePlanNode.CoordinateType.BD09LL, mPoint);
         }
     }
 
@@ -472,7 +480,8 @@ public class MainActivity extends BaseActivity {
             BaiduNaviManager.getInstance().launchNavigator(this, list, 1, true, new DemoRoutePlanListener(sNode));
         }
     }
-    private void routeplanToNavi(BNRoutePlanNode.CoordinateType startPonitCoType,BNRoutePlanNode.CoordinateType endPointCoType ,Point mPoint) {
+
+    private void routeplanToNavi(BNRoutePlanNode.CoordinateType startPonitCoType, BNRoutePlanNode.CoordinateType endPointCoType, Point mPoint) {
         //mCoordinateType = coType;
         if (!hasInitSuccess) {
             Log.d("TAG", "还未初始化!");
@@ -583,19 +592,22 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void openStationDetail(EventManager.openStationDetail event) {
         int id = event.id;
-        new CollectManager().addCollectStation(id, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                showToast("收藏成功!");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                showToast(msg);
-            }
-        });
+//        new CollectManager().addCollectStation(id, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                showToast("收藏成功!");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                showToast(msg);
+//            }
+//        });
+        mAddStationCollectionTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mAddStationCollectionTaskId,
+                new AddStationCollectionRequest(new AddStationCollectionResult(mContext), id), this));
     }
 
     @Override
@@ -611,25 +623,55 @@ public class MainActivity extends BaseActivity {
         }
         doubleBackToExitPressedOnce = true;
         showToast(getString(R.string.exit_hint));
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
                 SystemClock.sleep(2000);
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }.start();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
+        Log.d("ttt", "cookieTimeOut");
         AppManager.getAppManager().finishAllActivity();
         SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
         startActivity(new Intent(this, LoginActivity.class));
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void mainActivitySelectOrderTag(EventManager.mainActivitySelectOrderTag event) {
-       viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(1);
         rg.check(R.id.main_rbOrder);
+    }
+
+
+    //http
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mAddStationCollectionTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((AddStationCollectionResult) result).getResp()));
+        }
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mAddStationCollectionTaskId == id) {
+            showToast("收藏成功!");
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

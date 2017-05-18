@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.net;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.httpresponse.MyResponseInfo;
@@ -37,8 +38,9 @@ public class MyHttpUtils<T> {
         return instance;
 
     }
-    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback) {
-        return get( maps, callback, -1);
+
+    public Callback.Cancelable get(RequestParams maps, final HttpCallback<T> callback) {
+        return get(maps, callback, -1);
     }
 
     /**
@@ -48,12 +50,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable get( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.GET,  maps, callback, httpCode);
+    public Callback.Cancelable get(RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.GET, maps, callback, httpCode);
     }
 
     public Callback.Cancelable delete(final String url, RequestParams maps, final HttpCallback<T> callback) {
-        return delete( maps, callback, -1);
+        return delete(maps, callback, -1);
     }
 
     /**
@@ -63,12 +65,12 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable delete( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
-        return httpRequestIml(HttpMethod.DELETE,  maps, callback, httpCode);
+    public Callback.Cancelable delete(RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+        return httpRequestIml(HttpMethod.DELETE, maps, callback, httpCode);
     }
 
-    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback) {
-        return put( maps, callback, -1);
+    public Callback.Cancelable put(RequestParams maps, final HttpCallback<T> callback) {
+        return put(maps, callback, -1);
     }
 
     /**
@@ -78,7 +80,7 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable put( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+    public Callback.Cancelable put(RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
         return httpRequestIml(HttpMethod.PUT, maps, callback, httpCode);
     }
 
@@ -88,8 +90,8 @@ public class MyHttpUtils<T> {
      * @param maps
      * @param callback
      */
-    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback) {
-        return post( maps, callback, -1);
+    public Callback.Cancelable post(RequestParams maps, final HttpCallback<T> callback) {
+        return post(maps, callback, -1);
     }
 
     /**
@@ -99,7 +101,7 @@ public class MyHttpUtils<T> {
      * @param callback 回调
      * @param httpCode 网络请求响应吗
      */
-    public Callback.Cancelable post( RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
+    public Callback.Cancelable post(RequestParams maps, final HttpCallback<T> callback, final int httpCode) {
         return httpRequestIml(HttpMethod.POST, maps, callback, httpCode);
     }
 
@@ -128,17 +130,19 @@ public class MyHttpUtils<T> {
                         setGetHeader(params);
                         break;
                 }
-
+                Log.d("ttt", "url : " + params.getUri());
+                Log.i("ttt", "headers : " + params.getHeaders());
                 LogUtil.d(TAG + "======>>>>>Headers:  " + params.getHeaders());
                 LogUtil.d(TAG + "======>>>>>Body:  " + params.getBodyContent());
+                params.setUseCookie(false);
                 cancelable = http().request(method, params, new MyCommonCallback(callback, httpCode));
 //                CancelableManager.getInstance().putCancelable();
             } else {
-                LogUtil.i("Httpcode1="+httpCode);
+                LogUtil.i("Httpcode1=" + httpCode);
                 callback.onFailure("无网络", HttpCallback.NOT_NET, httpCode);
             }
         } catch (Exception e) {
-            LogUtil.i("Httpcode2="+httpCode);
+            LogUtil.i("Httpcode2=" + httpCode);
             callback.onFailure("请求异常", HttpCallback.EXCEPTION, httpCode);
             LogUtil.e(TAG, e);
         }
@@ -152,6 +156,7 @@ public class MyHttpUtils<T> {
             LogUtil.e(TAG, e);
         }
     }
+
     //需要header则添加，否则就讲map中的参数添加至body
     public static void setPostHeader(RequestParams params) {
         try {
@@ -179,7 +184,7 @@ public class MyHttpUtils<T> {
         public MyCommonCallback(HttpCallback callback, int httpCode) {
             this.callback = callback;
             this.httpCode = httpCode;
-            LogUtil.i("code="+httpCode);
+            LogUtil.i("code=" + httpCode);
         }
 
         @Override
@@ -190,8 +195,8 @@ public class MyHttpUtils<T> {
                 if (0 == dataJson.optInt("status")) {//操作成功
                     String data = dataJson.optString("result");
                     List<String> cookies = result.getHeader().get("Set-Cookie");
-                    String cookie="";
-                    if (cookies!=null) {
+                    String cookie = "";
+                    if (cookies != null) {
                         for (String s : cookies) {
                             if (s.contains("SessionKey")) {
                                 cookie = s;
@@ -206,11 +211,10 @@ public class MyHttpUtils<T> {
                             try {
                                 Class clazz = callback.getTClass();
                                 int type = callback.getType();
-                                if (type == 0){
-                                    callback.onSuccess(JSON.parseObject(data, clazz),httpCode);
-                                }
-                                else {
-                                    callback.onSuccess(JSON.parseArray(data,clazz),httpCode);
+                                if (type == 0) {
+                                    callback.onSuccess(JSON.parseObject(data, clazz), httpCode);
+                                } else {
+                                    callback.onSuccess(JSON.parseArray(data, clazz), httpCode);
                                 }
                             } catch (Exception e) {
                                 LogUtil.e(TAG, e);
@@ -221,11 +225,11 @@ public class MyHttpUtils<T> {
                         }
                     }
                 } else {
-                    LogUtil.i("httpCode1=="+httpCode);
-                    callback.onFailure( dataJson.optString("resultMsg"),dataJson.optInt("status")+"", httpCode);
+                    LogUtil.i("httpCode1==" + httpCode);
+                    callback.onFailure(dataJson.optString("resultMsg"), dataJson.optInt("status") + "", httpCode);
                 }
             } catch (Exception e) {
-                LogUtil.i("httpCode2=="+httpCode);
+                LogUtil.i("httpCode2==" + httpCode);
                 callback.onFailure("数据异常", null, httpCode);
                 LogUtil.e(TAG, e);
             }
@@ -236,7 +240,7 @@ public class MyHttpUtils<T> {
         public void onError(Throwable ex, boolean isOnCallback) {
             try {
                 if (callback != null) {
-                    LogUtil.i("httpCode3=="+httpCode);
+                    LogUtil.i("httpCode3==" + httpCode);
                     callback.onError(ex, isOnCallback, httpCode);
                 }
             } catch (Exception e) {
@@ -261,6 +265,7 @@ public class MyHttpUtils<T> {
 
 
     }
+
     public void download(RequestParams params, final ManagerCallback<String> callback) {
         final Callback.Cancelable cancelable = http().get(params, new Callback.ProgressCallback<File>() {
 

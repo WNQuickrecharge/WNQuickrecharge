@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.base;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,10 +23,9 @@ import com.optimumnano.quickcharge.BuildConfig;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.dialog.LoadingDialog;
+import com.optimumnano.quickcharge.http.TaskDispatcher;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.ToastUtil;
-
-import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +35,27 @@ import java.util.List;
  */
 public class BaseActivity extends AppCompatActivity {
     private int REQUEST_CODE_PERMISSION = 0x00099;
-    public TextView tvTitle,tvRight,tvLeft;
+    public TextView tvTitle, tvRight, tvLeft;
     public ImageView ivRight;
     public Toolbar toolbar;
 
     public PreferencesHelper mHelper;
     private LoadingDialog mLoadingDialog;
 
+    protected TaskDispatcher mTaskDispatcher;
+    protected Context mContext;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
+        mTaskDispatcher = TaskDispatcher.getInstance(mContext);
         AppManager.getAppManager().addActivity(this);
-        mHelper=new PreferencesHelper(this);
+        mHelper = new PreferencesHelper(this);
         mLoadingDialog = new LoadingDialog(BaseActivity.this);
     }
-    public void initViews(){
+
+    public void initViews() {
         tvTitle = (TextView) findViewById(R.id.title_tvTitle);
         ivRight = (ImageView) findViewById(R.id.title_ivRight);
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -56,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
         tvLeft = (TextView) findViewById(R.id.title_tvLeft);
         toolbar.setTitle("");
         toolbar.setTitleTextColor(getResources().getColor(R.color.main_color));
-        toolbar.setTitleTextAppearance(this,R.style.Toolbar_TitleText);
+        toolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
         toolbar.setNavigationIcon(R.drawable.backtwo);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -66,10 +73,12 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    public void setTitle(String title){
+
+    public void setTitle(String title) {
         tvTitle.setText(title);
     }
-    public void setLeftTitle(String title){
+
+    public void setLeftTitle(String title) {
 //        toolbar.setTitle(title);
         tvLeft.setText(title);
         tvLeft.setVisibility(View.VISIBLE);
@@ -80,30 +89,32 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    public void setCanceableOutside(boolean flag){
+
+    public void setCanceableOutside(boolean flag) {
         mLoadingDialog.setCanceableOutside(flag);
     }
 
-    public void showLoading(String title){
+    public void showLoading(String title) {
         mLoadingDialog.show(title);
     }
 
-    public void showLoading(){
+    public void showLoading() {
         mLoadingDialog.show();
     }
 
-    public void closeLoading(){
+    public void closeLoading() {
         mLoadingDialog.dismiss();
     }
 
-     protected void onLeftDoSomething() {
+    protected void onLeftDoSomething() {
 
     }
+
     protected void onRightDoSomething() {
 
     }
 
-    public void setRightTitle(String rightTitle){
+    public void setRightTitle(String rightTitle) {
         tvRight.setText(rightTitle);
         tvRight.setVisibility(View.VISIBLE);
         tvRight.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +124,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    public void hideRightTitle(){
+
+    public void hideRightTitle() {
         tvRight.setVisibility(View.GONE);
         tvRight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +134,8 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    public void hideLeftTitle(){
+
+    public void hideLeftTitle() {
         tvLeft.setVisibility(View.GONE);
         tvLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,10 +144,12 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    public void hideBack(){
+
+    public void hideBack() {
         toolbar.setNavigationIcon(null);
     }
-    public void showBack(){
+
+    public void showBack() {
         toolbar.setNavigationIcon(R.drawable.backtwo);
     }
 
@@ -151,18 +166,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         closeLoading();
         AppManager.getAppManager().removeActivity(this);
     }
-
-
-
-
-
 
 
     /**
@@ -290,20 +299,21 @@ public class BaseActivity extends AppCompatActivity {
      * @param requestCode
      */
     public void permissionSuccess(int requestCode) {
-        LogUtil.d("sssssssssss获取权限成功=" + requestCode);
+        Log.d("ttt", "sssssssssss获取权限成功=" + requestCode);
     }
 
     /**
      * 权限获取失败
+     *
      * @param requestCode
      */
     public void permissionFail(int requestCode) {
 //        Log.d(TAG, "获取权限失败=" + requestCode);
     }
 
-    public void logtesti(String msg){
+    public void logtesti(String msg) {
         if (BuildConfig.DEBUG)
-            LogUtil.i("test== "+msg);
+            Log.i("ttt", "test== " + msg);
     }
 
 }

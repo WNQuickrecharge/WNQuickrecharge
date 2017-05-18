@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
@@ -21,10 +20,13 @@ import com.optimumnano.quickcharge.activity.mineinfo.MyCollectActivity;
 import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.activity.setting.SettingActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
-import com.optimumnano.quickcharge.bean.UserAccount;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetUserInfoRequest;
+import com.optimumnano.quickcharge.response.GetUserInfoResult;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
@@ -40,19 +42,21 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 /**
  * 我的
  */
-public class MineFragment extends BaseFragment implements View.OnClickListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener, HttpCallback {
     private View mainView;
     private ImageView ivHead;
-    private MenuItem1 mineSetting,mineAbout,mineCollect;
+    private MenuItem1 mineSetting, mineAbout, mineCollect;
     private MenuItem1 mywallet;
     private TextView mTvBalance;
     private TextView mTvNickName;
     private TextView mTvDeposit;
 
+    private int mGetUserInfoTaskId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-                mainView = inflater.inflate(R.layout.fragment_mine, container, false);
+        mainView = inflater.inflate(R.layout.fragment_mine, container, false);
         return mainView;
     }
 
@@ -88,13 +92,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         Glide.with(getActivity())
                 .load(headimgurl).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.wd).into(ivHead);
-        String nickName = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
+        String nickName = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_NICKNAME, "");
         mTvNickName.setText(nickName);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.mine_ivHead:
                 startActivity(new Intent(getActivity(), MineInfoAct.class));
                 break;
@@ -127,12 +131,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
+        mTaskDispatcher.cancel(mGetUserInfoTaskId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if ( EventBus.getDefault().isRegistered(this))
+        if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
     }
 
@@ -146,22 +151,47 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         initUserInfo();
     }
 
+
     @Override
     protected void lazyLoad() {
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                mTvBalance.setText(StringUtils.formatDouble(restCash));
-            }
+//        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String s = returnContent.toString();
+//                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+//                Log.e("herry", "userAccount : " + userAccount);
+//                double restCash = userAccount.getRestCash();
+//                mTvBalance.setText(StringUtils.formatDouble(restCash));
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
+
+        mGetUserInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetUserInfoTaskId, new GetUserInfoRequest(new GetUserInfoResult(mContext)), this));
+
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (deAlive()) {
+            return;
+        }
+        GetUserInfoResult r = (GetUserInfoResult) result;
+        double restCash = r.getUserAccountResp().getResult().getRestCash();
+        mTvBalance.setText(StringUtils.formatDouble(restCash));
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
     }
 }

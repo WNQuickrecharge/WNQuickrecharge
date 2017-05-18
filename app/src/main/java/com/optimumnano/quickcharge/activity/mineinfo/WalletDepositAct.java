@@ -19,12 +19,17 @@ import com.optimumnano.quickcharge.bean.AlipayBean;
 import com.optimumnano.quickcharge.bean.WXPaySignBean;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.dialog.PayWayDialog;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.request.PayOrderInfoDepositRequest;
+import com.optimumnano.quickcharge.response.PayOrderInfoDepositResult;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelpay.PayReq;
@@ -50,7 +55,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class WalletDepositAct extends BaseActivity {
+public class WalletDepositAct extends BaseActivity implements HttpCallback {
 
     private static final int SDK_PAY_FLAG = 001;
     @Bind(R.id.act_wallet_deposit_tv_payway)
@@ -63,27 +68,27 @@ public class WalletDepositAct extends BaseActivity {
     TextView mTvNext;
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
-    private int mChosePayway=PayDialog.pay_zfb;//默认使用微信充值
+    private int mChosePayway = PayDialog.pay_zfb;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;
-    private Handler mHandler=new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==SDK_PAY_FLAG){
-                Map mapresult =(Map) msg.obj;
+            if (msg.what == SDK_PAY_FLAG) {
+                Map mapresult = (Map) msg.obj;
                 JSONObject dataJson = new JSONObject(mapresult);
-                logtesti("alipayresult "+dataJson.toString());
+                logtesti("alipayresult " + dataJson.toString());
                 String resultStatus = dataJson.optString("resultStatus");// 结果码
-                switch (resultStatus){
+                switch (resultStatus) {
                     case "9000"://支付成功
                     case "8000"://正在处理,支付结果确认中
                     case "6004"://支付结果未知
                         showToast("支付成功");
-                        float addAmount=Float.valueOf(mAmount);
+                        float addAmount = Float.valueOf(mAmount);
                         Intent intent = new Intent(WalletDepositAct.this, WalletDepositSuccessAct.class);
-                        intent.putExtra("payway",mChosePayway);
+                        intent.putExtra("payway", mChosePayway);
                         intent.putExtra("amount", StringUtils.formatDouble(addAmount));
                         startActivity(intent);
                         finish();
@@ -109,6 +114,9 @@ public class WalletDepositAct extends BaseActivity {
         }
     };
 
+    private int mGetAliPayOrderInfoDepositTaskId;
+    private int mGetWXPayOrderInfoDepositTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,12 +133,12 @@ public class WalletDepositAct extends BaseActivity {
 
     private void initData() {
         int payway = SharedPreferencesUtil.getValue(SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_zfb);
-        if (payway == PayDialog.pay_yue){
+        if (payway == PayDialog.pay_yue) {
             mChosePayway = PayDialog.pay_zfb;//不能使用余额给余额充值
-        }else {
+        } else {
             mChosePayway = payway;
         }
-        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,mChosePayway);
+        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this, mTvPayway, mChosePayway);
 
         mPayDialog = new PayDialog(WalletDepositAct.this);
         mPayWayDialog = new PayWayDialog(WalletDepositAct.this);
@@ -150,122 +158,141 @@ public class WalletDepositAct extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         dismissDialog();
-        mPayWayDialog=null;
-        mPayDialog=null;
+        mPayWayDialog = null;
+        mPayDialog = null;
+        mTaskDispatcher.cancel(mGetAliPayOrderInfoDepositTaskId);
+        mTaskDispatcher.cancel(mGetWXPayOrderInfoDepositTaskId);
     }
 
-    @OnClick({R.id.act_wallet_deposit_tv_next,R.id.act_wallet_deposit_rl_payway})
+    @OnClick({R.id.act_wallet_deposit_tv_next, R.id.act_wallet_deposit_rl_payway})
     public void onClick(View view) {
-        switch (view.getId()){
-                    case R.id.act_wallet_deposit_tv_next:
-                        Tool.hiddenSoftKeyboard(WalletDepositAct.this,getCurrentFocus());
-                        if (!payCheck()) return;
-                        if (mChosePayway==PayDialog.pay_zfb)
-                            callALiPay();
-                        else if (mChosePayway==PayDialog.pay_wx){
-                            callWXPay();
-                        }
-                        break;
-                    case R.id.act_wallet_deposit_rl_payway:
-                        showChosePayWayDialog();
-                        break;
+        switch (view.getId()) {
+            case R.id.act_wallet_deposit_tv_next:
+                Tool.hiddenSoftKeyboard(WalletDepositAct.this, getCurrentFocus());
+                if (!payCheck()) return;
+                if (mChosePayway == PayDialog.pay_zfb)
+                    callALiPay();
+                else if (mChosePayway == PayDialog.pay_wx) {
+                    callWXPay();
                 }
+                break;
+            case R.id.act_wallet_deposit_rl_payway:
+                showChosePayWayDialog();
+                break;
+        }
     }
 
     private void callWXPay() {
-        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                logtesti("returnContent "+returnContent.toString());
-                JSONObject dataJson=null;
-                try {
-                    dataJson = new JSONObject(returnContent.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
-                //将该app注册到微信
-                wxApi.registerApp(WX_APP_ID);
+//        GetMineInfoManager.getPayOrderInfoDeposit(mAmount, mChosePayway, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                logtesti("returnContent " + returnContent.toString());
+//                JSONObject dataJson = null;
+//                try {
+//                    dataJson = new JSONObject(returnContent.toString());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+//                //将该app注册到微信
+//                wxApi.registerApp(WX_APP_ID);
+//
+//                String sign = dataJson.optString("sign");
+//                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\", ""), WXPaySignBean.class);
+//                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+//                if (isPaySupported) {
+//                    PayReq request = new PayReq();
+//                    request.appId = WX_APP_ID;
+//                    request.partnerId = WX_PARTNER_ID;
+//                    request.prepayId = wxpayBean.prepayid;
+//                    request.packageValue = "Sign=WXPay";
+//                    request.nonceStr = wxpayBean.noncestr;
+//                    request.timeStamp = wxpayBean.timestamp;
+//                    request.sign = wxpayBean.sign;
+//                    request.extData = mChosePayway + "," + mAmount;
+//                    wxApi.sendReq(request);
+//                } else {
+//                    showToast("微信未安装或者版本过低");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast("请求失败 " + msg);
+//                super.onFailure(msg);
+//            }
+//
+//        });
 
-                String sign = dataJson.optString("sign");
-                WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
-                boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
-                if (isPaySupported) {
-                    PayReq request = new PayReq();
-                    request.appId = WX_APP_ID;
-                    request.partnerId = WX_PARTNER_ID;
-                    request.prepayId = wxpayBean.prepayid;
-                    request.packageValue = "Sign=WXPay";
-                    request.nonceStr = wxpayBean.noncestr;
-                    request.timeStamp = wxpayBean.timestamp;
-                    request.sign = wxpayBean.sign;
-                    request.extData = mChosePayway+","+mAmount ;
-                    wxApi.sendReq(request);
-                }else {
-                    showToast("微信未安装或者版本过低");
-                }
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast("请求失败 "+msg);
-                super.onFailure(msg);
-            }
-
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("请求失败，无网络");
+            return;
+        }
+        mGetWXPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetWXPayOrderInfoDepositTaskId,
+                new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), mAmount, mChosePayway), this));
     }
 
     private void callALiPay() {
 
-        GetMineInfoManager.getPayOrderInfoDeposit(mAmount,mChosePayway, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                logtesti("returnContent "+returnContent.toString());
+//        GetMineInfoManager.getPayOrderInfoDeposit(mAmount, mChosePayway, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                logtesti("returnContent " + returnContent.toString());
+//
+//                final String orderInfo = returnContent.toString();// 签名后的订单信息
+//                Runnable payRunnable = new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        PayTask alipay = new PayTask(WalletDepositAct.this);
+//                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
+//                        String sign = alipayBean.getSign();
+//                        LogUtil.i("sign==" + sign);
+//                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+//
+//                        Message msg = new Message();
+//                        msg.what = SDK_PAY_FLAG;
+//                        msg.obj = result;
+//                        mHandler.sendMessage(msg);
+//                    }
+//                };
+//                // 必须异步调用
+//                Thread payThread = new Thread(payRunnable);
+//                payThread.start();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast("请求失败 " + msg);
+//                super.onFailure(msg);
+//            }
+//
+//        });
 
-                final String orderInfo = returnContent.toString();// 签名后的订单信息
-                Runnable payRunnable = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        PayTask alipay = new PayTask(WalletDepositAct.this);
-                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
-                        String sign = alipayBean.getSign();
-                        LogUtil.i("sign=="+sign);
-                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
-
-                        Message msg = new Message();
-                        msg.what = SDK_PAY_FLAG;
-                        msg.obj = result;
-                        mHandler.sendMessage(msg);
-                    }
-                };
-                // 必须异步调用
-                Thread payThread = new Thread(payRunnable);
-                payThread.start();
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast("请求失败 "+msg);
-                super.onFailure(msg);
-            }
-
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("请求失败，无网络");
+            return;
+        }
+        mGetAliPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetAliPayOrderInfoDepositTaskId,
+                new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), mAmount, mChosePayway), this));
 
     }
 
     private boolean payCheck() {
         mAmount = mEtAmount.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)){
+        if (TextUtils.isEmpty(mAmount)) {
             showToast("充值金额不能为空");
             return false;
         }
 
-        if (Double.parseDouble(mAmount)==0){
+        if (Double.parseDouble(mAmount) == 0) {
             showToast("充值金额不能小于0.01");
             return false;
         }
@@ -273,7 +300,7 @@ public class WalletDepositAct extends BaseActivity {
     }
 
     private void changePayWayStatus(int payway) {
-        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this,mTvPayway,payway);
+        PayWayViewHelp.showPayWayStatus(WalletDepositAct.this, mTvPayway, payway);
         mPayDialog.setPayway(payway);
     }
 
@@ -290,12 +317,86 @@ public class WalletDepositAct extends BaseActivity {
 
     }
 
-    private void dismissDialog(){
-        if (null!= mPayWayDialog){
+    private void dismissDialog() {
+        if (null != mPayWayDialog) {
             mPayWayDialog.close();
         }
-        if (null!= mPayDialog){
+        if (null != mPayDialog) {
             mPayDialog.close();
         }
+    }
+
+    //http
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetWXPayOrderInfoDepositTaskId == id) {
+            JSONObject dataJson = null;
+            try {
+                dataJson = new JSONObject(((PayOrderInfoDepositResult) result).getResp().getResult());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final IWXAPI wxApi = WXAPIFactory.createWXAPI(WalletDepositAct.this, WX_APP_ID);
+            //将该app注册到微信
+            wxApi.registerApp(WX_APP_ID);
+
+            String sign = dataJson.optString("sign");
+            WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\", ""), WXPaySignBean.class);
+            boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
+            if (isPaySupported) {
+                PayReq request = new PayReq();
+                request.appId = WX_APP_ID;
+                request.partnerId = WX_PARTNER_ID;
+                request.prepayId = wxpayBean.prepayid;
+                request.packageValue = "Sign=WXPay";
+                request.nonceStr = wxpayBean.noncestr;
+                request.timeStamp = wxpayBean.timestamp;
+                request.sign = wxpayBean.sign;
+                request.extData = mChosePayway + "," + mAmount;
+                wxApi.sendReq(request);
+            } else {
+                showToast("微信未安装或者版本过低");
+            }
+        } else if (mGetAliPayOrderInfoDepositTaskId == id) {
+            final String orderInfo = ((PayOrderInfoDepositResult) result).getResp().getResult();// 签名后的订单信息
+            Runnable payRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    PayTask alipay = new PayTask(WalletDepositAct.this);
+                    AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
+                    String sign = alipayBean.getSign();
+                    LogUtil.i("sign==" + sign);
+                    Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+
+                    Message msg = new Message();
+                    msg.what = SDK_PAY_FLAG;
+                    msg.obj = result;
+                    mHandler.sendMessage(msg);
+                }
+            };
+            // 必须异步调用
+            Thread payThread = new Thread(payRunnable);
+            payThread.start();
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetWXPayOrderInfoDepositTaskId == id || mGetAliPayOrderInfoDepositTaskId == id) {
+            showToast("请求失败 " + ToastUtil.formatToastText(mContext, ((PayOrderInfoDepositResult) result).getResp()));
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

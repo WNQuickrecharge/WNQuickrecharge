@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -21,8 +20,14 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.GunBean;
 import com.optimumnano.quickcharge.bean.PileBean;
 import com.optimumnano.quickcharge.bean.StationBean;
-import com.optimumnano.quickcharge.manager.StationManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.request.GetStationDetailRequest;
+import com.optimumnano.quickcharge.response.GetStationDetailResult;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MyDivier;
 
 import org.xutils.common.util.LogUtil;
@@ -34,18 +39,20 @@ import java.util.List;
  * Created by mfwn on 2017/4/10.
  */
 
-public class StationActivity extends BaseActivity {
+public class StationActivity extends BaseActivity implements HttpCallback {
 
     private StationBean station;
     private RecyclerView recyclerView;
-    private TextView stationName,stationAddress,serviceName,onServiceTime,stationDistance,stationFreeGuns,stationTotalGuns;
+    private TextView stationName, stationAddress, serviceName, onServiceTime, stationDistance, stationFreeGuns, stationTotalGuns;
     private TextView stationGunOperation;
     private StationPilesAdapter adapter;
-    private List<PileBean>  pileBeanList=new ArrayList<>();
+    private List<PileBean> pileBeanList = new ArrayList<>();
     private LinearLayout stationGPS;
     private WTMBaiduLocation location;
     private LatLng myPoint;
     private BaiduNavigation navigation;
+
+    private int mGetStationDetailTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,15 +61,16 @@ public class StationActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         station = (StationBean) extras.getSerializable("Station");
-        location=new WTMBaiduLocation(this);
+        location = new WTMBaiduLocation(this);
         initViews();
         initData();
         dataChanged();
     }
 
+
     private void dataChanged() {
         if (adapter == null) {
-            adapter = new StationPilesAdapter(R.layout.adapter_station_gun, pileBeanList,this);
+            adapter = new StationPilesAdapter(R.layout.adapter_station_gun, pileBeanList, this);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
@@ -75,18 +83,18 @@ public class StationActivity extends BaseActivity {
         super.initViews();
         setTitle(station.getStationName());
         tvLeft.setVisibility(View.VISIBLE);
-        stationName= (TextView) findViewById(R.id.station_detail_name);
-        stationAddress= (TextView) findViewById(R.id.station_detail_address);
-        serviceName= (TextView) findViewById(R.id.station_detail_serviceName);
-        onServiceTime= (TextView) findViewById(R.id.station_detail_onServiceTime);
-        recyclerView= (RecyclerView) findViewById(R.id.station_guns_recycleView);
-        stationDistance= (TextView) findViewById(R.id.station_detail_distance);
-        stationTotalGuns= (TextView) findViewById(R.id.station_detail_total_guns);
-        stationFreeGuns= (TextView) findViewById(R.id.station_detail_free_guns);
+        stationName = (TextView) findViewById(R.id.station_detail_name);
+        stationAddress = (TextView) findViewById(R.id.station_detail_address);
+        serviceName = (TextView) findViewById(R.id.station_detail_serviceName);
+        onServiceTime = (TextView) findViewById(R.id.station_detail_onServiceTime);
+        recyclerView = (RecyclerView) findViewById(R.id.station_guns_recycleView);
+        stationDistance = (TextView) findViewById(R.id.station_detail_distance);
+        stationTotalGuns = (TextView) findViewById(R.id.station_detail_total_guns);
+        stationFreeGuns = (TextView) findViewById(R.id.station_detail_free_guns);
         location.setLocationListner(new WTMBaiduLocation.OnLocationReceivedListner() {
             @Override
             public void onLocationReceived(BDLocation bdLocation) {
-                myPoint=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+                myPoint = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
                 location.stopLocation();
             }
         });
@@ -95,7 +103,7 @@ public class StationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showLoading();
-                navigation.start(myPoint,new LatLng(Double.parseDouble(station.getLat()),Double.parseDouble(station.getLng())));
+                navigation.start(myPoint, new LatLng(Double.parseDouble(station.getLat()), Double.parseDouble(station.getLng())));
                 navigation.setOnRoutePlanDoneListener(new BaiduNavigation.OnRoutePlanDoneListener() {
                     @Override
                     public void onRoutePlanDone() {
@@ -105,34 +113,18 @@ public class StationActivity extends BaseActivity {
             }
         });
     }
+
     private void initData() {
-        navigation=new BaiduNavigation(this);
+        navigation = new BaiduNavigation(this);
         stationName.setText(station.getStationName());
         stationAddress.setText(station.getAddress());
         serviceName.setText(station.getManagementCompany());
         onServiceTime.setText(station.getRunTimeSpan());
-        stationFreeGuns.setText(station.getFreePiles()+"");
-        stationTotalGuns.setText(station.getTotalPiles()+"");
+        stationFreeGuns.setText(station.getFreePiles() + "");
+        stationTotalGuns.setText(station.getTotalPiles() + "");
         stationDistance.setText(station.getDistance());
-        new StationManager().getGunsDetail(station.getId(), new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String result = (String) returnContent;
-                List<GunBean> gunBeenList = JSON.parseArray(result, GunBean.class);
-                List<PileBean> list = transGunBeanListToPileBeanList(gunBeenList);
-                pileBeanList.addAll(list);
-                dataChanged();
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                showToast(msg);
-            }
-        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MyDivier de = new MyDivier(this,MyDivier.VERTICAL_LIST);
+        MyDivier de = new MyDivier(this, MyDivier.VERTICAL_LIST);
         recyclerView.addItemDecoration(de);
         recyclerView.addOnItemTouchListener(new OnItemClickListener() {
             @Override
@@ -140,18 +132,44 @@ public class StationActivity extends BaseActivity {
 
             }
         });
+//        new StationManager().getGunsDetail(station.getId(), new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String result = (String) returnContent;
+//                List<GunBean> gunBeenList = JSON.parseArray(result, GunBean.class);
+//                List<PileBean> list = transGunBeanListToPileBeanList(gunBeenList);
+//                pileBeanList.addAll(list);
+//                dataChanged();
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                showToast(msg);
+//            }
+//        });
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetStationDetailTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetStationDetailTaskId,
+                new GetStationDetailRequest(new GetStationDetailResult(mContext), station.getId()), this));
+
     }
 
     private List<PileBean> transGunBeanListToPileBeanList(List<GunBean> gunBeenList) {
-        List<String> pileNoList=new ArrayList<>();
-        for (int i=0;i<gunBeenList.size();i++) {
+        List<String> pileNoList = new ArrayList<>();
+        for (int i = 0; i < gunBeenList.size(); i++) {
             if (!pileNoList.contains(gunBeenList.get(i).getPileNo())) {
                 pileNoList.add(gunBeenList.get(i).getPileNo());
             }
         }
-        List<PileBean> pileList=new ArrayList<>(pileNoList.size());
-        for (int i = 0; i <pileNoList.size() ; ++i) {
-            PileBean pileBean=new PileBean();
+        List<PileBean> pileList = new ArrayList<>(pileNoList.size());
+        for (int i = 0; i < pileNoList.size(); ++i) {
+            PileBean pileBean = new PileBean();
             List<GunBean> gunList = new ArrayList<>();
             for (int j = 0; j < gunBeenList.size(); ++j) {
                 if (pileNoList.get(i).equals(gunBeenList.get(j).getPileNo())) {
@@ -161,7 +179,7 @@ public class StationActivity extends BaseActivity {
             }
             pileList.add(pileBean);
         }
-        LogUtil.i("pileList=="+pileList);
+        LogUtil.i("pileList==" + pileList);
         return pileList;
 
     }
@@ -182,7 +200,36 @@ public class StationActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         location.onLocationDestroy();
+        mTaskDispatcher.cancel(mGetStationDetailTaskId);
     }
 
+    //http
 
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetStationDetailTaskId == id) {
+            List<GunBean> gunBeenList = ((GetStationDetailResult) result).getResp().getResult();
+            List<PileBean> list = transGunBeanListToPileBeanList(gunBeenList);
+            pileBeanList.addAll(list);
+            dataChanged();
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetStationDetailTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetStationDetailResult) result).getResp()));
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
+    }
 }

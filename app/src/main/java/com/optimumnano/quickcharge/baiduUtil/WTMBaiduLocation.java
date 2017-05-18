@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.baiduUtil;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -9,7 +10,6 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 
-import org.xutils.common.util.LogUtil;
 
 /**
  * Created by jack on 2016/11/23 0023.
@@ -27,55 +27,56 @@ public class WTMBaiduLocation implements BDLocationListener {
      * 描述:获取坐标的坐标系,默认为bd09ll
      * gcj02,bd09,bd09ll
      */
-    private static String DEFULT_COORTYPE="bd09ll";
+    private static String DEFULT_COORTYPE = "bd09ll";
     private Context mContext;
 
     public WTMBaiduLocation(Context context) {
-        mContext =context;
-        mCoorType=DEFULT_COORTYPE;
+        mContext = context;
+        mCoorType = DEFULT_COORTYPE;
         mLocationClient = new LocationClient(context);     //声明LocationClient类
         initLocation();
     }
 
     /**
      * 获取经纬度的类
-     * @param context 上下文
+     *
+     * @param context  上下文
      * @param coorType 坐标系类型,可选参数:gcj02,bd09,bd09ll
      */
-    public WTMBaiduLocation(Context context,String coorType) {
-        mCoorType=coorType;
+    public WTMBaiduLocation(Context context, String coorType) {
+        mCoorType = coorType;
         mLocationClient = new LocationClient(context);     //声明LocationClient类
         initLocation();
     }
 
-    public void start(){
-        mLocationClient.registerLocationListener( myListener );    //注册监听函数
+    public void start() {
+        mLocationClient.registerLocationListener(myListener);    //注册监听函数
         mLocationClient.start();
     }
 
-    public int getLocType(){
+    public int getLocType() {
         return mLocType;
     }
 
-    public void stopLocation(){
+    public void stopLocation() {
         mLocationClient.unRegisterLocationListener(myListener);
         mLocationClient.stop();
     }
 
-    public void onLocationDestroy(){
-        if (mLocationClient!=null){
+    public void onLocationDestroy() {
+        if (mLocationClient != null) {
             mLocationClient.stop();
             mLocationClient.unRegisterLocationListener(this);
-            mLocationClient=null;
+            mLocationClient = null;
         }
     }
 
-    private  void initLocation(){
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType(mCoorType);//可选，默认gcj02，设置返回的定位结果坐标系(gcj02,gps,bd09,bd09ll)
-        int span=1000;
+        int span = 1000;
         option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
@@ -92,21 +93,21 @@ public class WTMBaiduLocation implements BDLocationListener {
     public void onReceiveLocation(BDLocation bdLocation) {
         mLocType = bdLocation.getLocType();
         mLatLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
-        if(locationListner!=null){
+        if (locationListner != null) {
             locationListner.onLocationReceived(bdLocation);
-        }else{
+        } else {
             mLocationClient.unRegisterLocationListener(this);
             mLocationClient.stop();
         }
-        if (62==mLocType)
-            Toast.makeText(mContext,"定位失败，请检查后重试",Toast.LENGTH_SHORT).show();
-        if (63==mLocType||mLocType==68)
-            Toast.makeText(mContext,"网络链接异常",Toast.LENGTH_SHORT).show();
-        if (162<=mLocType&&mLocType<=700)
-            Toast.makeText(mContext,"定位异常",Toast.LENGTH_SHORT).show();
+        if (62 == mLocType)
+            Toast.makeText(mContext, "定位失败，请检查后重试", Toast.LENGTH_SHORT).show();
+        if (63 == mLocType || mLocType == 68)
+            Toast.makeText(mContext, "网络链接异常", Toast.LENGTH_SHORT).show();
+        if (162 <= mLocType && mLocType <= 700)
+            Toast.makeText(mContext, "定位异常", Toast.LENGTH_SHORT).show();
 
-        LogUtil.i("WTMBaiduLocation"+"locType="+ mLocType);//161成功
-        LogUtil.i("WTMBaiduLocation"+"Latitude="+ bdLocation.getLatitude()+"Longitude="+bdLocation.getLongitude());
+        Log.i("ttt", "WTMBaiduLocation" + "locType=" + mLocType);//161成功
+        Log.i("ttt", "WTMBaiduLocation" + "Latitude=" + bdLocation.getLatitude() + "Longitude=" + bdLocation.getLongitude());
     }
 
     @Override
@@ -120,7 +121,7 @@ public class WTMBaiduLocation implements BDLocationListener {
 
     private OnLocationReceivedListner locationListner;
 
-    public interface OnLocationReceivedListner{
+    public interface OnLocationReceivedListner {
         void onLocationReceived(BDLocation bdLocation);
     }
 

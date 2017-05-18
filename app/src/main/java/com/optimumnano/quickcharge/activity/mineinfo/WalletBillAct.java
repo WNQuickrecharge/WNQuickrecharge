@@ -15,8 +15,14 @@ import com.optimumnano.quickcharge.adapter.OnListItemClickListener;
 import com.optimumnano.quickcharge.adapter.WalletBillAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.BillBean;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.request.GetUserConsumeRequest;
+import com.optimumnano.quickcharge.response.GetUserConsumeResult;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import org.xutils.common.util.LogUtil;
 
@@ -31,14 +37,16 @@ import butterknife.ButterKnife;
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class WalletBillAct extends BaseActivity implements HTRefreshListener, HTLoadMoreListener,OnListItemClickListener {
+public class WalletBillAct extends BaseActivity implements HTRefreshListener, HTLoadMoreListener, OnListItemClickListener, HttpCallback {
     @Bind(R.id.act_wattet_bill_rv)
     HTRefreshRecyclerView mRefreshLayout;
-    private ArrayList<BillBean> mData=new ArrayList<>();
+    private ArrayList<BillBean> mData = new ArrayList<>();
     private WalletBillAdapter mAdapter;
-    private int pageIndex=1;
-    private int pageSize=10;
-    private boolean frist=true;
+    private int pageIndex = 1;
+    private int pageSize = 10;
+    private boolean frist = true;
+
+    private int mGetUserConsumeTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,37 +65,45 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
     private void initData() {
 
-        GetMineInfoManager.getTransactionBill(pageIndex, pageSize, new ManagerCallback<List<BillBean>>() {// index 从1开始
-            @Override
-            public void onSuccess(List<BillBean> result) {
-                LogUtil.i("test==getTransactionBill onSuccess "+result);
+//        GetMineInfoManager.getTransactionBill(pageIndex, pageSize, new ManagerCallback<List<BillBean>>() {// index 从1开始
+//            @Override
+//            public void onSuccess(List<BillBean> result) {
+//                LogUtil.i("test==getTransactionBill onSuccess " + result);
+//
+//                if (1 == pageIndex) {
+//                    mData.clear();
+//                }
+//                if (result != null && result.size() < pageSize)
+//                    mRefreshLayout.setRefreshCompleted(false);
+//                else
+//                    mRefreshLayout.setRefreshCompleted(true);
+//                mData.addAll(result);
+//                mAdapter.notifyDataSetChanged();
+//                if (frist) {
+//                    frist = false;
+//                    closeLoading();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//                mRefreshLayout.setRefreshCompleted(true);
+//                if (frist) {
+//                    frist = false;
+//                    closeLoading();
+//                }
+//                LogUtil.i("test==getTransactionBill onFailure " + msg);
+//            }
+//        });
 
-                if (1==pageIndex){
-                    mData.clear();
-                }
-                if (result != null && result.size() < pageSize)
-                    mRefreshLayout.setRefreshCompleted(false);
-                else
-                    mRefreshLayout.setRefreshCompleted(true);
-                mData.addAll(result);
-                mAdapter.notifyDataSetChanged();
-                if (frist){
-                    frist=false;
-                    closeLoading();
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-                mRefreshLayout.setRefreshCompleted(true);
-                if (frist){
-                    frist=false;
-                    closeLoading();
-                }
-                LogUtil.i("test==getTransactionBill onFailure "+msg);
-            }
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetUserConsumeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetUserConsumeTaskId,
+                new GetUserConsumeRequest(new GetUserConsumeResult(mContext), pageIndex, pageSize), this));
     }
 
     @Override
@@ -106,12 +122,12 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
 
     public void initRefreshView() {
 
-        mAdapter = new WalletBillAdapter(R.layout.item_bill_list,mData,WalletBillAct.this);
+        mAdapter = new WalletBillAdapter(R.layout.item_bill_list, mData, WalletBillAct.this);
         HTBaseViewHolder viewHolder = new HTDefaultVerticalRefreshViewHolder(this);
         viewHolder.setRefreshViewBackgroundResId(R.color.foreground_material_dark);
         mRefreshLayout.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式
         mRefreshLayout.setLayoutManager(new LinearLayoutManager(this));//设置列表布局方式
-        mRefreshLayout.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        mRefreshLayout.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRefreshLayout.setAdapter(mAdapter);//设置数据源
         mRefreshLayout.setOnLoadMoreListener(this);//实现OnLoadMoreListener接口
         mRefreshLayout.setOnRefreshListener(this);//实现OnRefreshListener接口
@@ -122,12 +138,12 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mTaskDispatcher.cancel(mGetUserConsumeTaskId);
     }
 
     @Override
     public void onRefresh() {
-        pageIndex=1;
+        pageIndex = 1;
         initData();
     }
 
@@ -138,12 +154,56 @@ public class WalletBillAct extends BaseActivity implements HTRefreshListener, HT
     }
 
     @Override
-    public void onItemClickListener(Object item,int position) {
-        Intent intent = new Intent(WalletBillAct.this,WalletBillDetailAct.class);
-        Bundle bound=new Bundle();
-        bound.putSerializable("BillBean",(BillBean)item);
+    public void onItemClickListener(Object item, int position) {
+        Intent intent = new Intent(WalletBillAct.this, WalletBillDetailAct.class);
+        Bundle bound = new Bundle();
+        bound.putSerializable("BillBean", (BillBean) item);
         intent.putExtras(bound);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetUserConsumeTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetUserConsumeResult) result).getResp()));
+            mRefreshLayout.setRefreshCompleted(true);
+            if (frist) {
+                frist = false;
+                closeLoading();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetUserConsumeTaskId == id) {
+
+            if (1 == pageIndex) {
+                mData.clear();
+            }
+            List<BillBean> dataList = ((GetUserConsumeResult) result).getResp().getResult();
+            LogUtil.i("test==getTransactionBill onSuccess " + dataList);
+            if (result != null && dataList.size() < pageSize)
+                mRefreshLayout.setRefreshCompleted(false);
+            else
+                mRefreshLayout.setRefreshCompleted(true);
+            mData.addAll(dataList);
+            mAdapter.notifyDataSetChanged();
+            if (frist) {
+                frist = false;
+                closeLoading();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
 
     }
 }

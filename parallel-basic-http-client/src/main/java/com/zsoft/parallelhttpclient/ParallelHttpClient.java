@@ -1,12 +1,12 @@
 package com.zsoft.parallelhttpclient;
 
-import java.net.HttpURLConnection;
-
 import android.os.Build;
 
 import com.turbomanage.httpclient.AsyncHttpClient;
 import com.turbomanage.httpclient.RequestHandler;
 import com.turbomanage.httpclient.RequestLogger;
+
+import java.net.HttpURLConnection;
 
 public class ParallelHttpClient extends AsyncHttpClient {
 

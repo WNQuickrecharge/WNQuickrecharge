@@ -18,19 +18,27 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.bean.ModifyUserAvatarHttpResp;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.ModifyNickNameAndSexRequest;
+import com.optimumnano.quickcharge.request.ModifyUserAvatarRequest;
+import com.optimumnano.quickcharge.response.ModifyNickNameAndSexResult;
+import com.optimumnano.quickcharge.response.ModifyUserAvatarResult;
 import com.optimumnano.quickcharge.utils.Base64Image;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import com.optimumnano.quickcharge.views.CircleImageView;
 import com.optimumnano.quickcharge.views.GlideImageLoader;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
@@ -50,7 +58,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class MineInfoAct extends BaseActivity {
+public class MineInfoAct extends BaseActivity implements HttpCallback {
 
     private static final int REQUEST_CODE_OPEN_ALBUM = 1001;
     private static final int REQUEST_CODE_OPEN_CAMERA = 1002;
@@ -68,9 +76,17 @@ public class MineInfoAct extends BaseActivity {
     private AlertDialog mSetSexDialog;
     private AlertDialog mInPutInfoDialog;
     private String mNickname;
-    private int mUerSex =1;//默认为男
+    private int mUerSex = 1;//默认为男
     private RadioGroup mSexRb;
     private ModifyUserInformationManager mManager;
+
+    private int mModifyNickNameAndSexTaskId;
+    private int mModifyType;
+    private String mModifyNickName;
+    private int mModifySex;
+
+    private int mModifyAvatarTaskId;
+    private String mModifyUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +127,7 @@ public class MineInfoAct extends BaseActivity {
         mTvNickname.setRightText(mNickname);
         //初始化性别
         mUerSex = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_SEX, 1);
-        mTvSex.setRightText(mUerSex ==1?"男":"女");
+        mTvSex.setRightText(mUerSex == 1 ? "男" : "女");
         //初始化电话号码
         String phone = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_MOBILE, "");
         mTvPhone.setRightText(phone);
@@ -161,19 +177,20 @@ public class MineInfoAct extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if ( mInPutInfoDialog != null){
+        if (mInPutInfoDialog != null) {
             mInPutInfoDialog.dismiss();
-            mInPutInfoDialog =null;
+            mInPutInfoDialog = null;
         }
-        if ( mSetSexDialog != null){
+        if (mSetSexDialog != null) {
             mSetSexDialog.dismiss();
-            mSetSexDialog =null;
+            mSetSexDialog = null;
         }
-
+        mTaskDispatcher.cancel(mModifyNickNameAndSexTaskId);
+        mTaskDispatcher.cancel(mModifyAvatarTaskId);
     }
 
 
-    @OnClick({R.id.act_mineinfo_tv_changehead,R.id.act_mineinfo_tv_nickname,R.id.act_mineinfo_tv_sex,R.id.act_mineinfo_tv_phone,})
+    @OnClick({R.id.act_mineinfo_tv_changehead, R.id.act_mineinfo_tv_nickname, R.id.act_mineinfo_tv_sex, R.id.act_mineinfo_tv_phone,})
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -218,13 +235,13 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String inputvalue = mInputInfoEt.getText().toString().trim();
-                if (TextUtils.isEmpty(inputvalue)){
+                if (TextUtils.isEmpty(inputvalue)) {
                     showToast("请输入昵称");
                     return;
                 }
                 mInPutInfoDialog.dismiss();
                 showLoading("正在上传");
-                modifyUserInfo(inputvalue, mUerSex,1);
+                modifyUserInfo(inputvalue, mUerSex, 1);
             }
         });
 
@@ -241,61 +258,82 @@ public class MineInfoAct extends BaseActivity {
     }
 
     private void modifyUserInfo(final String nickname, final int uerSex, final int modifyType) {
-        mManager.modifyNickNameAndSex(nickname, uerSex, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                showToast("修改成功");
-                closeLoading();
-                if (1 == modifyType){//改昵称
-                    mNickname = nickname;
-                    mTvNickname.setRightText(mNickname);
-                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
-                } else if (2 == modifyType){//改性别
-                    mUerSex = uerSex;
-                    mTvSex.setRightText(mUerSex ==1?"男":"女");
-                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
-                }
-                LogUtil.i("test==modifyUserInfo onSuccess ");
-                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
-            }
+//        mManager.modifyNickNameAndSex(nickname, uerSex, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                showToast("修改成功");
+//                closeLoading();
+//                if (1 == modifyType) {//改昵称
+//                    mNickname = nickname;
+//                    mTvNickname.setRightText(mNickname);
+//                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
+//                } else if (2 == modifyType) {//改性别
+//                    mUerSex = uerSex;
+//                    mTvSex.setRightText(mUerSex == 1 ? "男" : "女");
+//                    SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
+//                }
+//                LogUtil.i("test==modifyUserInfo onSuccess ");
+//                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast("修改失败" + msg);
+//                closeLoading();
+//                LogUtil.i("test==modifyUserInfo onFailure " + msg);
+//            }
+//        });
 
-            @Override
-            public void onFailure(String msg) {
-                showToast("修改失败"+msg);
-                closeLoading();
-                LogUtil.i("test==modifyUserInfo onFailure "+msg);
-            }
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mModifyType = modifyType;
+        mModifyNickName = nickname;
+        mModifySex = uerSex;
+        mModifyNickNameAndSexTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mModifyNickNameAndSexTaskId,
+                new ModifyNickNameAndSexRequest(new ModifyNickNameAndSexResult(mContext), nickname, uerSex), this));
     }
 
     private void modifyHeadView(final String url, final String imagebase64) {
-        mManager.modifyHeadView(imagebase64, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                showToast("修改成功");
-                closeLoading();
-                JSONObject dataJson = null;
-                try {
-                    dataJson = new JSONObject(returnContent.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//        mManager.modifyHeadView(imagebase64, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                showToast("修改成功");
+//                closeLoading();
+//                JSONObject dataJson = null;
+//                try {
+//                    dataJson = new JSONObject(returnContent.toString());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                String netHeadUrl = dataJson.optString("url");
+//                Glide.with(MineInfoAct.this)
+//                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.wd).into(mHeadview);
+//                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
+//                LogUtil.i("test==modifyHeadView onSuccess " + netHeadUrl);
+//                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//                closeLoading();
+//                LogUtil.i("test==modifyHeadView onFailure " + msg);
+//            }
+//        });
 
-                String netHeadUrl = dataJson.optString("url");
-                Glide.with(MineInfoAct.this)
-                        .load(url).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.wd).into(mHeadview);
-                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
-                LogUtil.i("test==modifyHeadView onSuccess "+netHeadUrl);
-                EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
-            }
 
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-                closeLoading();
-                LogUtil.i("test==modifyHeadView onFailure "+msg);
-            }
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mModifyUrl = url;
+        mModifyAvatarTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mModifyAvatarTaskId,
+                new ModifyUserAvatarRequest(new ModifyUserAvatarResult(mContext), imagebase64), this));
     }
 
     private void alertModifySexDialog() {
@@ -310,15 +348,15 @@ public class MineInfoAct extends BaseActivity {
             @Override
             public void onClick(View v) {
                 int buttonId = mSexRb.getCheckedRadioButtonId();
-                int sex=1;
-                if (R.id.dialog_input_info_rg_male==buttonId){
-                    sex =1;
-                }else if (R.id.dialog_input_info_rg_female==buttonId){
-                    sex =2;
+                int sex = 1;
+                if (R.id.dialog_input_info_rg_male == buttonId) {
+                    sex = 1;
+                } else if (R.id.dialog_input_info_rg_female == buttonId) {
+                    sex = 2;
                 }
                 mSetSexDialog.dismiss();
                 showLoading("正在上传");
-                modifyUserInfo(mNickname, sex ,2);
+                modifyUserInfo(mNickname, sex, 2);
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -343,10 +381,64 @@ public class MineInfoAct extends BaseActivity {
                 url = images.get(0).path;
                 String headViewBase64 = Base64Image.image2Base64Str(url);
                 showLoading("正在上传");
-                modifyHeadView(url,headViewBase64);
+                modifyHeadView(url, headViewBase64);
 
             }
         }
     }
 
+
+    //http
+
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mModifyNickNameAndSexTaskId == id) {
+            showToast("修改失败" + ToastUtil.formatToastText(mContext, ((ModifyNickNameAndSexResult) result).getResp()));
+            closeLoading();
+        } else if (mModifyAvatarTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((ModifyUserAvatarResult) result).getResp()));
+            closeLoading();
+        }
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mModifyNickNameAndSexTaskId == id) {
+            showToast("修改成功");
+            closeLoading();
+            if (1 == mModifyType) {//改昵称
+                mNickname = mModifyNickName;
+                mTvNickname.setRightText(mNickname);
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_NICKNAME, mNickname);
+            } else if (2 == mModifyType) {//改性别
+                mUerSex = mModifySex;
+                mTvSex.setRightText(mUerSex == 1 ? "男" : "女");
+                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_SEX, mUerSex);
+            }
+            LogUtil.i("test==modifyUserInfo onSuccess ");
+            EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
+        } else if (mModifyAvatarTaskId == id) {
+            showToast("修改成功");
+            closeLoading();
+            ModifyUserAvatarHttpResp resp = ((ModifyUserAvatarResult) result).getResp();
+            String netHeadUrl = resp.getResult().getUrl();
+            Glide.with(mContext)
+                    .load(mModifyUrl).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.wd).into(mHeadview);
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_HEADIMG_URL, netHeadUrl);
+            LogUtil.i("test==modifyHeadView onSuccess " + netHeadUrl);
+            EventBus.getDefault().post(new EventManager.onUserInfoChangeEvent());
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
+    }
 }

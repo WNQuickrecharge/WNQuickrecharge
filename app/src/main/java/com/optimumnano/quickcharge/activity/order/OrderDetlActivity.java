@@ -6,15 +6,20 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.dialog.CommentDialog;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.OrderManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetOrderByNoRequest;
+import com.optimumnano.quickcharge.response.GetOrderByNoResult;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
@@ -24,9 +29,9 @@ import java.text.DecimalFormat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class OrderDetlActivity extends BaseActivity implements View.OnClickListener {
+public class OrderDetlActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
     @Bind(R.id.orderdetl_tvConfirm)
-    TextView tvConfirm ;
+    TextView tvConfirm;
     @Bind(R.id.orderdetl_tvComment)
     TextView tvComment;
     @Bind(R.id.orderdetl_tvOrderNum)
@@ -49,6 +54,9 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
     private OrderBean orderBean;
 
     private CommentDialog dialog;
+
+    private int mGetOrderByNoTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,23 +68,32 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void getOrderInfo(String order_no) {
-        OrderManager.getOrderByOrderNo(order_no, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                orderBean = JSON.parseObject(s, OrderBean.class);
-                initData();
-            }
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                showToast(msg);
-                finish();
-            }
-        });
+    private void getOrderInfo(String order_no) {
+//        OrderManager.getOrderByOrderNo(order_no, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String s = returnContent.toString();
+//                orderBean = JSON.parseObject(s, OrderBean.class);
+//                initData();
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                showToast(msg);
+//                finish();
+//            }
+//        });
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetOrderByNoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetOrderByNoTaskId,
+                new GetOrderByNoRequest(new GetOrderByNoResult(mContext), order_no), this));
     }
 
     @Override
@@ -90,31 +107,31 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
         dialog.setConfirmListener(this);
     }
 
-    private void initData(){
+    private void initData() {
         DecimalFormat df = new DecimalFormat("0.00");
         tvOrderNum.setText(orderBean.order_no);
-        miUseTime.setRightText(orderBean.power_time+"分钟");
-        miAllelec.setRightText(orderBean.charge_vol+"kwh");
-        miUseMoney.setRightText("￥"+df.format(orderBean.charge_cash));
+        miUseTime.setRightText(orderBean.power_time + "分钟");
+        miAllelec.setRightText(orderBean.charge_vol + "kwh");
+        miUseMoney.setRightText("￥" + df.format(orderBean.charge_cash));
 //        tvServiceMoney.setText();
-        miAllMoney.setRightText("￥"+df.format(orderBean.charge_cash));//暂时没加服务费
+        miAllMoney.setRightText("￥" + df.format(orderBean.charge_cash));//暂时没加服务费
         String formatFrozenMoney = df.format(orderBean.frozen_cash);
-        miYFMoney.setRightText("￥"+formatFrozenMoney);
+        miYFMoney.setRightText("￥" + formatFrozenMoney);
         double backMoney = orderBean.frozen_cash - orderBean.charge_cash;
         String formatMoney = df.format(backMoney);
-        miBackMoney.setRightText("￥"+formatMoney);
+        miBackMoney.setRightText("￥" + formatMoney);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.orderdetl_tvComment:
                 dialog.show();
                 break;
             case R.id.orderdetl_tvConfirm:
-                Intent intent=new Intent(OrderDetlActivity.this, MainActivity.class);
+                Intent intent = new Intent(OrderDetlActivity.this, MainActivity.class);
                 OrderDetlActivity.this.startActivity(intent);
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
                         super.run();
@@ -124,8 +141,8 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
                 }.start();
 
                 break;
-            case  R.id.dialog_comment_tvComment:
-                showToast(dialog.getComment()+dialog.getRatingCorn());
+            case R.id.dialog_comment_tvComment:
+                showToast(dialog.getComment() + dialog.getRatingCorn());
                 dialog.close();
                 break;
             default:
@@ -137,5 +154,35 @@ public class OrderDetlActivity extends BaseActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        mTaskDispatcher.cancel(mGetOrderByNoTaskId);
+    }
+
+    //http
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetOrderByNoTaskId == id) {
+            orderBean = ((GetOrderByNoResult) result).getResp().getResult();
+            initData();
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetOrderByNoTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetOrderByNoResult) result).getResp()));
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

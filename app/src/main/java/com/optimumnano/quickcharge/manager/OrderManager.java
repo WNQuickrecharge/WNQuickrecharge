@@ -1,5 +1,7 @@
 package com.optimumnano.quickcharge.manager;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.bean.OrderBean;
 import com.optimumnano.quickcharge.bean.RechargeGunBean;
@@ -37,7 +39,9 @@ public class OrderManager {
         ha.put("page_size",pageCount);
         ha.put("cur_page",pageSize);
 
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        String cachedCookie = SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,"");
+        Log.e("ttt","cachedCookie : " + cachedCookie);
+        params.setHeader("Cookie", cachedCookie);
         params.setBodyContent(JSON.toJSONString(ha));
         MyHttpUtils.getInstance().post(params, new HttpCallback<List<OrderBean>>() {
             @Override

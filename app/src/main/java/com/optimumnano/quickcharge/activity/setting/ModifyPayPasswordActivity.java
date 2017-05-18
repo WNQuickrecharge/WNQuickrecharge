@@ -15,11 +15,20 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.dialog.MyDialog;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.ChangePayPwdRequest;
+import com.optimumnano.quickcharge.request.GetPayPwdRequest;
+import com.optimumnano.quickcharge.response.ChangePayPwdResult;
+import com.optimumnano.quickcharge.response.GetPayPwdResult;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +40,7 @@ import org.json.JSONObject;
  * Created by mfwn on 2017/4/8.
  */
 
-public class ModifyPayPasswordActivity extends BaseActivity implements TextWatcher {
+public class ModifyPayPasswordActivity extends BaseActivity implements TextWatcher, HttpCallback {
     private int inputPayPasswordStatus = 1;
     private static final int FIRST_INPUT_OLD_PAY_PASSWORD = 1;
     private static final int FIRST_INPUT_NEW_PAY_PASSWORD = 2;
@@ -47,12 +56,17 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     private ModifyUserInformationManager manager = new ModifyUserInformationManager();
     private boolean payPasswordIsNUll;
 
+    private int mGetPayPwdTaskId;
+    private int mAnotherGetPayPwdTaskId;
+    private String mModifyPwd;
+    private int mChangePayPwdTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_pay_password);
         Bundle bundle = getIntent().getExtras();
-        if (bundle!=null) {
+        if (bundle != null) {
             payPasswordIsNUll = bundle.getBoolean("PayPasswordIsNUll");
         }
 
@@ -62,10 +76,10 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     @Override
     public void initViews() {
         super.initViews();
-        if (payPasswordIsNUll==true) {
-            inputPayPasswordStatus=FIRST_INPUT_NEW_PAY_PASSWORD;
+        if (payPasswordIsNUll == true) {
+            inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
             setTitle("设置支付密码");
-        }else {
+        } else {
             setTitle("修改支付密码");
         }
         tvLeft.setVisibility(View.VISIBLE);
@@ -105,6 +119,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     private void setTextValue() {
 
         final String str = mStringBuffer.toString();
+        mModifyPwd = str;
         int len = str.length();
 
         if (len <= 6) {
@@ -112,36 +127,45 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         }
         if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_OLD_PAY_PASSWORD)) {
             showLoading();
-            GetMineInfoManager.getPayPwd(new ManagerCallback() {
-                @Override
-                public void onSuccess(Object returnContent) {
-                    super.onSuccess(returnContent);
-                    closeLoading();
-                    JSONObject dataJson = null;
-                    try {
-                        dataJson = new JSONObject(returnContent.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    String paypwd = dataJson.optString("paypwd");
-                    String Md5Paypassword = MD5Utils.encodeMD5(str.toString());
-                    String finalPayPassword= MD5Utils.encodeMD5(Md5Paypassword);
-                    if (!finalPayPassword.equals(paypwd)) {
-                        EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
-                    } else {
-                        inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
-                        EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
-                    }
+//            GetMineInfoManager.getPayPwd(new ManagerCallback() {
+//                @Override
+//                public void onSuccess(Object returnContent) {
+//                    super.onSuccess(returnContent);
+//                    closeLoading();
+//                    JSONObject dataJson = null;
+//                    try {
+//                        dataJson = new JSONObject(returnContent.toString());
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    String paypwd = dataJson.optString("paypwd");
+//                    String Md5Paypassword = MD5Utils.encodeMD5(str.toString());
+//                    String finalPayPassword = MD5Utils.encodeMD5(Md5Paypassword);
+//                    if (!finalPayPassword.equals(paypwd)) {
+//                        EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
+//                    } else {
+//                        inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
+//                        EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onFailure(String msg) {
+//                    closeLoading();
+//                    showToast(msg);
+//                }
+//            });
 
-                }
 
-                @Override
-                public void onFailure(String msg) {
-                    closeLoading();
-                    showToast(msg);
-                }
-            });
-
+            if (!Tool.isConnectingToInternet()) {
+                showToast("无网络");
+                closeLoading();
+                return;
+            }
+            mGetPayPwdTaskId = TaskIdGenFactory.gen();
+            mTaskDispatcher.dispatch(new HttpTask(mGetPayPwdTaskId,
+                    new GetPayPwdRequest(new GetPayPwdResult(mContext)), this));
 
         } else if ((len == 6) && (inputPayPasswordStatus == FIRST_INPUT_NEW_PAY_PASSWORD)) {
             tempPayPassword = mStringBuffer.toString();
@@ -155,8 +179,17 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
                 showLoading();
                 String md5PayPassword = MD5Utils.encodeMD5(confirmPayPassword);
                 String finalPayPassword = MD5Utils.encodeMD5(md5PayPassword);
-                manager.modifyPayPassword(finalPayPassword, new Manager());
-                finish();
+                if (!Tool.isConnectingToInternet()) {
+                    showToast("无网络");
+                    closeLoading();
+                    return;
+                }
+//                manager.modifyPayPassword(finalPayPassword, new Manager());
+//                finish();
+                //TODO
+                mChangePayPwdTaskId = TaskIdGenFactory.gen();
+                mTaskDispatcher.dispatch(new HttpTask(mChangePayPwdTaskId,
+                        new ChangePayPwdRequest(new ChangePayPwdResult(mContext), finalPayPassword), this));
             } else {
                 myDialog.setTitle("提醒");
                 myDialog.setMessage("两次输入密码不一致，请重新输入");
@@ -235,7 +268,7 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
         myDialog.setNoOnclickListener("忘记密码", new MyDialog.onNoOnclickListener() {
             @Override
             public void onNoClick() {
-                startActivity(new Intent(ModifyPayPasswordActivity.this,ForgetPayPasswordActivity.class));
+                startActivity(new Intent(ModifyPayPasswordActivity.this, ForgetPayPasswordActivity.class));
                 myDialog.dismiss();
                 finish();
 
@@ -331,12 +364,84 @@ public class ModifyPayPasswordActivity extends BaseActivity implements TextWatch
     @Override
     protected void onResume() {
         super.onResume();
-        manager.getPayPassword(new PayPasswordManager());
+//        manager.getPayPassword(new PayPasswordManager());
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mAnotherGetPayPwdTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mAnotherGetPayPwdTaskId,
+                new GetPayPwdRequest(new GetPayPwdResult(mContext)), this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        mTaskDispatcher.cancel(mGetPayPwdTaskId);
+        mTaskDispatcher.cancel(mAnotherGetPayPwdTaskId);
+        mTaskDispatcher.cancel(mChangePayPwdTaskId);
+    }
+
+    //http
+
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mAnotherGetPayPwdTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetPayPwdResult) result).getResp()));
+        } else if (mGetPayPwdTaskId == id) {
+            closeLoading();
+            showToast(ToastUtil.formatToastText(mContext, ((GetPayPwdResult) result).getResp()));
+        } else if (mChangePayPwdTaskId == id) {
+            closeLoading();
+            showToast(ToastUtil.formatToastText(mContext, ((ChangePayPwdResult) result).getResp()));
+        }
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mAnotherGetPayPwdTaskId == id) {
+            String paypwd = ((GetPayPwdResult) result).getResp().getResult().getPaypwd();
+            if (paypwd == null || paypwd.equals("")) {//支付密码为空时,先设定支付密码
+                new AlertDialog.Builder(ModifyPayPasswordActivity.this)
+                        .setTitle("支付密码为空")
+                        .setMessage("请输入初始支付密码")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
+                            }
+                        })
+                        .show();
+
+            }
+        } else if (mGetPayPwdTaskId == id) {
+            closeLoading();
+            String paypwd = ((GetPayPwdResult) result).getResp().getResult().getPaypwd();
+            String Md5Paypassword = MD5Utils.encodeMD5(mModifyPwd.toString());
+            String finalPayPassword = MD5Utils.encodeMD5(Md5Paypassword);
+            if (!finalPayPassword.equals(paypwd)) {
+                EventBus.getDefault().post(new EventManager.onInPutWrongOldPayPassword());
+            } else {
+                inputPayPasswordStatus = FIRST_INPUT_NEW_PAY_PASSWORD;
+                EventBus.getDefault().post(new EventManager.onInputNewPayPassword(1));
+            }
+        } else if (mChangePayPwdTaskId == id) {
+            closeLoading();
+            showToast("支付密码修改成功!");
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

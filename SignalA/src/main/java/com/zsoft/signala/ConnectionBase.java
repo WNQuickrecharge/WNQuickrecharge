@@ -1,11 +1,11 @@
 package com.zsoft.signala;
 
-import org.json.JSONObject;
+import android.content.Context;
 
 import com.zsoft.signala.transport.ITransport;
 import com.zsoft.signala.transport.StateBase;
 
-import android.content.Context;
+import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -168,8 +168,4 @@ public abstract class ConnectionBase {
 	public void Send(CharSequence text, SendCallback callback) {
 		getCurrentState().Send(text, callback);
 	}
-
-
-
-
 }

@@ -14,10 +14,20 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
 import com.optimumnano.quickcharge.dialog.WaitRechargeDialog;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.HttpApi;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.StartChargeRequest;
+import com.optimumnano.quickcharge.request.StopChargeRequest;
+import com.optimumnano.quickcharge.response.StartChargeResult;
+import com.optimumnano.quickcharge.response.StopChargeResult;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.WaveLoadingView;
 import com.zsoft.signala.Connection;
 import com.zsoft.signala.ConnectionState;
@@ -37,10 +47,10 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 /**
  * 充电控制
  */
-public class RechargeControlActivity extends BaseActivity implements View.OnClickListener {
+public class RechargeControlActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
 
     private WaveLoadingView waveLoadingView;
-    private TextView tvPersent,tvStart,tvStop,tvDescone,tvDescTwo,tvTime;
+    private TextView tvPersent, tvStart, tvStop, tvDescone, tvDescTwo, tvTime;
     static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
     private WaitRechargeDialog dialog;
 
@@ -56,11 +66,15 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public static final int GETCHARGEPROGRESS = 1;
     public static final int STARTCHARGE = 2;
     public static final int STOPCHARGE = 3;
-    private static final String TAG="RechargeControlActivity";
+    private static final String TAG = "RechargeControlActivity";
     private final static String HUB_URL = HttpApi.long_connet_url;
     private int progress = 1;
 
     private int orderStatus;
+
+    private int mStopChargeTaskId;
+    private int mStartChargeTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +88,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
 
     private void startConnetService() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -83,18 +97,20 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         }.start();
     }
 
-    private void getExtras(){
+    private void getExtras() {
         orderNo = getIntent().getExtras().getString("order_no");
 //        gunNo = getIntent().getExtras().getString("gun_no");
         orderStatus = getIntent().getExtras().getInt("order_status");
     }
+
     private void initListener() {
         tvStart.setOnClickListener(this);
         tvStop.setOnClickListener(this);
     }
-    private void initData(){
+
+    private void initData() {
 //        startCountTime(1000*1000,2000);
-        if (orderStatus==GETCHARGEPROGRESS) {
+        if (orderStatus == GETCHARGEPROGRESS) {
             tvStart.setVisibility(View.GONE);
             tvDescone.setText("充电中");
             tvDescTwo.setText("正在获取充电信息");
@@ -121,16 +137,18 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //        }
 
         dialog = new WaitRechargeDialog(this);
-        if (orderStatus==GETCHARGEPROGRESS) {//充电中
+        if (orderStatus == GETCHARGEPROGRESS) {//充电中
             dialog.show();
         }
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.rechargecon_tvStop:
-                orderManager.stopCharge(orderNo,callback,STOPCHARGE);
+                //TODO
+//                orderManager.stopCharge(orderNo, callback, STOPCHARGE);
+                stopCharge();
                 break;
             case R.id.rechargecon_tvStart:
                 startRecharge();
@@ -140,18 +158,38 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         }
     }
 
+    private void stopCharge() {
+        if (!Tool.isConnectingToInternet()) {
+            return;
+        }
+        mStopChargeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mStopChargeTaskId,
+                new StopChargeRequest(new StopChargeResult(mContext), orderNo), this));
+    }
+
     private void startRecharge() {
 //        if (!canStartcharege){
 //            showToast("等待连接中。。。");
 //            return;
 //        }
         dialog.show();
-        orderManager.startCharge(orderNo,callback,STARTCHARGE);
+//        orderManager.startCharge(orderNo, callback, STARTCHARGE);
+
+        if (!Tool.isConnectingToInternet()) {
+            dialog.cancelDialog();
+            showToast("无网络");
+            return;
+        }
+        mStartChargeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mStartChargeTaskId,
+                new StartChargeRequest(new StartChargeResult(mContext), orderNo), this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mTaskDispatcher.cancel(mStopChargeTaskId);
+        mTaskDispatcher.cancel(mStartChargeTaskId);
     }
 
     private void startCountTime(long allTime, long time) {
@@ -159,35 +197,41 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         smcCountDownTimer = new ShortMessageCountDownTimer(allTime, time);
         smcCountDownTimer.start();
     }
+
     private void stopCountTime() {
         if (smcCountDownTimer != null) {
             smcCountDownTimer.cancel();
         }
     }
+
     class ShortMessageCountDownTimer extends CountDownTimer {
-        public ShortMessageCountDownTimer(long millisInFuture,long countDownInterval) {
+        public ShortMessageCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
 //            if (!canStartcharege){
 //                orderManager.getGunConnect(gunNo,callback,GETCONNECT);
 //            }
 //            else{
-                //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+            //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
 //            }
 
         }
+
         @Override
         public void onTick(long arg0) {
 //            if (!canStartcharege){
 //                orderManager.getGunConnect(gunNo,callback,GETCHARGEPROGRESS);
 //            }
 //            else{
-                //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
+            //orderManager.getChargeProgress(orderNo,progress++,callback,GETCHARGEPROGRESS);
 //            }
         }
+
         @Override
-        public void onFinish() {}
+        public void onFinish() {
+        }
     }
-    class RequestCallback extends ManagerCallback<String>{
+
+    class RequestCallback extends ManagerCallback<String> {
         @Override
         public void onSuccess(String returnContent, int requestCode) {
             super.onSuccess(returnContent, requestCode);
@@ -198,14 +242,14 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //            }
 //            //开始充电
 //            else
-            if (requestCode == STARTCHARGE){
+            if (requestCode == STARTCHARGE) {
                 //startCountTime(1000*1000,10*1000);
                 //dialog.cancelDialog();
                 tvStart.setVisibility(View.GONE);
                 //tvStop.setVisibility(View.VISIBLE);
             }
             //结束充电
-            else if (requestCode == STOPCHARGE){
+            else if (requestCode == STOPCHARGE) {
                 LogUtil.i("充电结束");
                 showLoading("结束充电计算中，请稍等！");
 //                Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
@@ -219,7 +263,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             //充电进度查询
             else {
 //                {"time_remain":60,"status":"充电中","progress":40}
-                HashMap<String,Object> ha = new Gson().fromJson(returnContent,new TypeToken<HashMap<String,Object>>(){}.getType());
+                HashMap<String, Object> ha = new Gson().fromJson(returnContent, new TypeToken<HashMap<String, Object>>() {
+                }.getType());
                 persent = (int) Double.parseDouble(ha.get("progress").toString());
                 tvTime.setVisibility(View.VISIBLE);
 //                tvTime.setText("充电预计时间"+ha.get("time_remain")+"分钟");
@@ -229,14 +274,14 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 //                tvDescTwo.setText("请您稍作休息");
             }
         }
+
         @Override
         public void onFailure(String msg, int requestCode) {
             super.onFailure(msg, requestCode);
-            if (requestCode == STARTCHARGE){
+            if (requestCode == STARTCHARGE) {
                 dialog.cancelDialog();
                 showToast(msg);
-            }
-            else {
+            } else {
                 stopCountTime();
             }
         }
@@ -259,19 +304,18 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         }
 
 
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         conn.Start();
-        if (orderStatus==1) {
+        if (orderStatus == 1) {
             dialog.show();
         }
     }
 
-    private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(),"UUid=15678979657876") {
+    private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(), "UUid=15678979657876") {
         @Override
         public void OnError(Exception exception) {
             Log.d(TAG, "OnError=" + exception.getMessage());
@@ -307,8 +351,8 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     int soc = longConnectMessageBean.getSoc();
                     String time_remain = longConnectMessageBean.getTime_remain();
                     tvTime.setVisibility(View.VISIBLE);
-                    tvTime.setText("预计充满还需"+time_remain+"分钟");
-                    tvPersent.setText(soc+"%");
+                    tvTime.setText("预计充满还需" + time_remain + "分钟");
+                    tvPersent.setText(soc + "%");
                     waveLoadingView.setWaveHeight(soc);
                     tvDescone.setText("正在充电中");
                     tvDescTwo.setText("请您稍作休息");
@@ -328,9 +372,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     tvStop.setVisibility(View.GONE);
                     tvTime.setVisibility(View.INVISIBLE);
                     String order_no = longConnectMessageBean.getOrder_no();
-                    Intent intent=new Intent(RechargeControlActivity.this,OrderDetlActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("order_no",order_no);
+                    Intent intent = new Intent(RechargeControlActivity.this, OrderDetlActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("order_no", order_no);
                     intent.putExtras(bundle);
                     RechargeControlActivity.this.startActivity(intent);
                     conn.Stop();
@@ -346,12 +390,12 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         @Override
         public void OnStateChanged(StateBase oldState, StateBase newState) {
             Log.d(TAG, "OnStateChanged=" + oldState.getState() + " -> " + newState.getState());
-            if (newState.getState()== ConnectionState.Connected){
-                int userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID,-1);
-                conn.Send("{'data_type':1,'user_id':"+userID+"}", new SendCallback() {
+            if (newState.getState() == ConnectionState.Connected) {
+                int userID = SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_USER_ID, -1);
+                conn.Send("{'data_type':1,'user_id':" + userID + "}", new SendCallback() {
                     @Override
                     public void OnSent(CharSequence messageSent) {
-                        Log.d("onSent","正在传送");
+                        Log.d("onSent", "正在传送");
                     }
 
                     @Override
@@ -367,5 +411,37 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     protected void onPause() {
         super.onPause();
         conn.Stop();
+    }
+
+    //http
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mStopChargeTaskId == id) {
+            showLoading("结束充电计算中，请稍等！");
+        } else if (mStartChargeTaskId == id) {
+            tvStart.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mStopChargeTaskId == id) {
+            stopCountTime();
+        } else if (mStartChargeTaskId == id) {
+            dialog.cancelDialog();
+            showToast(ToastUtil.formatToastText(mContext, ((StartChargeResult) result).getResp()));
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

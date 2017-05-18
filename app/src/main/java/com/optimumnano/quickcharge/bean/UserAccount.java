@@ -98,4 +98,19 @@ public class UserAccount {
     public void setFrozenCash(int FrozenCash) {
         this.FrozenCash = FrozenCash;
     }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "UserId=" + UserId +
+                ", IsDel=" + IsDel +
+                ", TotalCash=" + TotalCash +
+                ", AmmountType=" + AmmountType +
+                ", RestCash=" + RestCash +
+                ", CreateTime='" + CreateTime + '\'' +
+                ", Id=" + Id +
+                ", CreateBy='" + CreateBy + '\'' +
+                ", FrozenCash=" + FrozenCash +
+                '}';
+    }
 }

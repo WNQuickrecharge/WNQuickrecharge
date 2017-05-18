@@ -9,23 +9,44 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.ForgetLoginPwdRequest;
+import com.optimumnano.quickcharge.request.GetVerifyCodeRequest;
+import com.optimumnano.quickcharge.response.ForgetLoginPwdResult;
+import com.optimumnano.quickcharge.response.GetVerifyCodeResult;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
-public class ForgetPwdActivity extends BaseActivity implements View.OnClickListener {
-    private EditText edtPhone,edtChecknum,edtPwd,edtConfirmPwd;
-    private TextView tvReg,tvChecknum;
+public class ForgetPwdActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
+    private EditText edtPhone, edtChecknum, edtPwd, edtConfirmPwd;
+    private TextView tvReg, tvChecknum;
     private LoginManager loginManager = new LoginManager();
     private ShortMessageCountDownTimer smcCountDownTimer;
     private RequestCallback requestCallback;
+
+    private int mGetVerifyCodeTaskId;
+    private int mForgetLoginPwdTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_pwd);
         initViews();
         initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskDispatcher.cancel(mGetVerifyCodeTaskId);
+        mTaskDispatcher.cancel(mForgetLoginPwdTaskId);
     }
 
     @Override
@@ -42,14 +63,15 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
 
         requestCallback = new RequestCallback();
     }
-    public void initListener(){
+
+    public void initListener() {
         tvReg.setOnClickListener(this);
         tvChecknum.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.forget_tvChecknum:
                 getChecknum();
                 break;
@@ -63,47 +85,66 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
 
     private void forgetPassword() {
         String mobile = edtPhone.getText().toString();
-        if (StringUtils.isEmpty(mobile)){
+        if (StringUtils.isEmpty(mobile)) {
             showToast("电话号码不能为空");
             return;
         }
-        if (!StringUtils.isMobile(mobile)){
+        if (!StringUtils.isMobile(mobile)) {
             showToast("电话号码格式不对");
             return;
         }
-        if (TextUtils.isEmpty(edtConfirmPwd.getText().toString())||TextUtils.isEmpty(edtPwd.getText().toString())){
+        if (TextUtils.isEmpty(edtConfirmPwd.getText().toString()) || TextUtils.isEmpty(edtPwd.getText().toString())) {
             showToast("密码不能为空");
             return;
         }
-        if (!TextUtils.equals(edtConfirmPwd.getText().toString(),edtPwd.getText().toString())){
+        if (!TextUtils.equals(edtConfirmPwd.getText().toString(), edtPwd.getText().toString())) {
             showToast("两次密码不一致,请重输入");
             return;
         }
-        if (edtConfirmPwd.getText().toString().length()<6||edtPwd.getText().toString().length()<6) {
+        if (edtConfirmPwd.getText().toString().length() < 6 || edtPwd.getText().toString().length() < 6) {
             showToast("密码长度不能小于6位");
             return;
         }
         String newPassword = edtConfirmPwd.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
         String finalPassword = MD5Utils.encodeMD5(Md5Password);
-        loginManager.forgetPassword(mobile,"ForgetPwdCApp",
-                edtChecknum.getText().toString(),finalPassword,
-                1,new Manager());
+//        loginManager.forgetPassword(mobile, "ForgetPwdCApp",
+//                edtChecknum.getText().toString(), finalPassword,
+//                1, new Manager());
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mForgetLoginPwdTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mForgetLoginPwdTaskId,
+                new ForgetLoginPwdRequest(new ForgetLoginPwdResult(mContext),
+                        mobile, "ForgetPwdCApp", edtChecknum.getText().toString(), finalPassword, 1), this));
     }
 
     private void getChecknum() {
         String mobile = edtPhone.getText().toString();
-        if (StringUtils.isEmpty(mobile)){
+        if (StringUtils.isEmpty(mobile)) {
             showToast("电话号码不能为空");
             return;
         }
-        if (!StringUtils.isMobile(mobile)){
+        if (!StringUtils.isMobile(mobile)) {
             showToast("电话号码格式不对");
             return;
         }
         tvChecknum.setClickable(false);
-        startCountTime(5*60*1000,1000);
-        loginManager.getCheckNum(mobile,"ForgetPwdCApp",requestCallback,0);
+        startCountTime(5 * 60 * 1000, 1000);
+//        loginManager.getCheckNum(mobile, "ForgetPwdCApp", requestCallback, 0);
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            stopCountTime();
+            tvChecknum.setText("重新获取");
+            tvChecknum.setClickable(true);
+            return;
+        }
+        mGetVerifyCodeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetVerifyCodeTaskId,
+                new GetVerifyCodeRequest(new GetVerifyCodeResult(mContext), mobile, "ForgetPwdCApp"), this));
     }
 
     class RequestCallback extends ManagerCallback<String> {
@@ -111,10 +152,9 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
         public void onSuccess(String returnContent, int requestCode) {
             super.onSuccess(returnContent, requestCode);
             //获取验证码成功
-            if (requestCode==0){
+            if (requestCode == 0) {
 
-            }
-            else {
+            } else {
 
             }
         }
@@ -163,7 +203,8 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
         }
 
     }
-    class Manager extends ManagerCallback{
+
+    class Manager extends ManagerCallback {
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
@@ -176,5 +217,36 @@ public class ForgetPwdActivity extends BaseActivity implements View.OnClickListe
             super.onFailure(msg);
             showToast(msg);
         }
+    }
+
+    //http
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetVerifyCodeTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetVerifyCodeResult) result).getResp()));
+            stopCountTime();
+            tvChecknum.setText("重新获取");
+            tvChecknum.setClickable(true);
+        }
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mForgetLoginPwdTaskId == id) {
+            showToast("密码修改成功!");
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

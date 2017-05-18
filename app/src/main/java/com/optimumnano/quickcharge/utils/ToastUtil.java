@@ -2,7 +2,10 @@ package com.optimumnano.quickcharge.utils;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.widget.Toast;
+
+import com.optimumnano.quickcharge.bean.BaseHttpResp;
 
 /**
  * Created by Administrator on 2016/7/5.
@@ -15,10 +18,10 @@ public class ToastUtil {
     }
 
     public static void showToast(Context ctx, String msg) {
-        showToast(ctx,msg,Toast.LENGTH_SHORT);
+        showToast(ctx, msg, Toast.LENGTH_SHORT);
     }
 
-    public static void showToast(Context ctx, String msg,int duration) {
+    public static void showToast(Context ctx, String msg, int duration) {
         if (toast == null) {
             toast = Toast.makeText(ctx, msg, duration);
         } else {
@@ -26,5 +29,12 @@ public class ToastUtil {
             toast.setDuration(duration);
         }
         toast.show();
+    }
+
+    public static String formatToastText(Context context, BaseHttpResp resp) {
+        if (TextUtils.isEmpty(resp.getResultMsg())) {
+            return "网络连接异常";//TODO
+        }
+        return resp.getResultMsg();
     }
 }

@@ -3,12 +3,10 @@ package com.optimumnano.quickcharge.net;
 
 import com.optimumnano.quickcharge.base.EventTask;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.Callback;
 import org.xutils.ex.HttpException;
-import org.xutils.x;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

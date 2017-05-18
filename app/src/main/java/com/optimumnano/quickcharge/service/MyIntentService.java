@@ -5,9 +5,10 @@ import android.content.Context;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
+import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.bean.PushCustom;
-import com.optimumnano.quickcharge.manager.GetuiPushManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetUIPushRequest;
+import com.optimumnano.quickcharge.response.GetUIPushResult;
 
 import org.xutils.common.util.LogUtil;
 
@@ -31,26 +32,31 @@ public class MyIntentService extends GTIntentService {
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage msg) {
         String data = new String(msg.getPayload());
-        LogUtil.i("test==onReceiveMessageData "+data);
+        LogUtil.i("test==onReceiveMessageData " + data);
         PushCustom.inject(data);
     }
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        LogUtil.i("test==onReceiveClientId "+clientid);
-        GetuiPushManager.setGetuiRegisterid(clientid,new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                LogUtil.i("test==setRegistId success ");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                LogUtil.i("test==setRegistId failure "+msg);
-            }
-        });
+        LogUtil.i("test==onReceiveClientId " + clientid);
+//        GetuiPushManager.setGetuiRegisterid(clientid, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                LogUtil.i("test==setRegistId success ");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                LogUtil.i("test==setRegistId failure " + msg);
+//            }
+//        });
+        if (MyApplication.getuiflag) {
+            return;
+        }
+        GetUIPushRequest r = new GetUIPushRequest(new GetUIPushResult(getApplicationContext()), clientid);
+        r.directSent(getApplicationContext());
     }
 
     @Override

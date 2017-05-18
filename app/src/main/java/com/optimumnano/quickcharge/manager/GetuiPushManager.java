@@ -24,25 +24,25 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
 
 public class GetuiPushManager {
 
-    public static void setGetuiRegisterid(String registerId, final ManagerCallback callback){
-        if (getuiflag){
+    public static void setGetuiRegisterid(String registerId, final ManagerCallback callback) {
+        if (getuiflag) {
             return;
         }
 
         String url = HttpApi.getInstance().getUrl(HttpApi.set_registerid_url);
-        RequestParams params= new RequestParams(url);
-        HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("registerId",registerId);
-        requestJson.put("platform",PushChannel.GETUI);
+        RequestParams params = new RequestParams(url);
+        HashMap<String, Object> requestJson = new HashMap<>();
+        requestJson.put("registerId", registerId);
+        requestJson.put("platform", PushChannel.GETUI);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE, KEY_USERINFO_COOKIE, ""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {
                 super.onSuccess(result, httpCode);
                 callback.onSuccess(result);
-                getuiflag=true;//成功后不再上传GetuiRegisterid
+                getuiflag = true;//成功后不再上传GetuiRegisterid
             }
 
             @Override
@@ -54,9 +54,8 @@ public class GetuiPushManager {
     }
 
 
-
-    enum PushChannel{
-        HUAWEI("huawei"),GETUI("getui");
+    public static enum PushChannel {
+        HUAWEI("huawei"), GETUI("getui");
 
         PushChannel(String channel) {
             this.channel = channel;

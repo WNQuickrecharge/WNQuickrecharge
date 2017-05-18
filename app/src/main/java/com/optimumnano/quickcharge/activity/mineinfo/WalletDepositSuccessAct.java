@@ -4,17 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetAccountInfoRequest;
+import com.optimumnano.quickcharge.response.GetAccountInfoResult;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +35,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class WalletDepositSuccessAct extends BaseActivity {
+public class WalletDepositSuccessAct extends BaseActivity implements HttpCallback {
 
     @Bind(R.id.act_wallet_deposit_suc_tv_payway)
     TextView mTvPayway;
@@ -39,6 +43,8 @@ public class WalletDepositSuccessAct extends BaseActivity {
     MenuItem1 mMiAmount;
     @Bind(R.id.act_wallet_deposit_suc_tv_back)
     TextView mTvBack;
+
+    private int mGetAccountInfoTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,27 +62,35 @@ public class WalletDepositSuccessAct extends BaseActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        int payway = intent.getIntExtra("payway",-1);
+        int payway = intent.getIntExtra("payway", -1);
         String amount = intent.getStringExtra("amount");
-        mMiAmount.setRightText("¥ "+amount);
-        PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this,mTvPayway,payway);
+        mMiAmount.setRightText("¥ " + amount);
+        PayWayViewHelp.showPayWayStatus(WalletDepositSuccessAct.this, mTvPayway, payway);
 
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                SharedPreferencesUtil.putValue(SP_USERINFO,KEY_USERINFO_BALANCE, StringUtils.formatDouble(restCash));
-                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash+""));
-            }
+//        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String s = returnContent.toString();
+//                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+//                double restCash = userAccount.getRestCash();
+//                SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, StringUtils.formatDouble(restCash));
+//                EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash + ""));
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetAccountInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetAccountInfoTaskId,
+                new GetAccountInfoRequest(new GetAccountInfoResult(mContext)), this));
     }
 
     @Override
@@ -93,7 +107,7 @@ public class WalletDepositSuccessAct extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mTaskDispatcher.cancel(mGetAccountInfoTaskId);
     }
 
     @OnClick(R.id.act_wallet_deposit_suc_tv_back)
@@ -102,5 +116,32 @@ public class WalletDepositSuccessAct extends BaseActivity {
         startActivity(intent);
         AppManager.getAppManager().finishActivity(WalletDepositAct.class);
         finish();
+    }
+
+    //http
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetAccountInfoTaskId == id) {
+            UserAccount userAccount = ((GetAccountInfoResult) result).getResp().getResult();
+            double restCash = userAccount.getRestCash();
+            SharedPreferencesUtil.putValue(SP_USERINFO, KEY_USERINFO_BALANCE, StringUtils.formatDouble(restCash));
+            EventBus.getDefault().post(new EventManager.onBalanceChangeEvent(restCash + ""));
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

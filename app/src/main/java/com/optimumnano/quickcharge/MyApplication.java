@@ -25,7 +25,7 @@ import java.io.File;
  * Created by ds on 2017/1/16.
  */
 public class MyApplication extends Application {
-    public static boolean getuiflag=false;
+    public static boolean getuiflag = false;
     private static MyApplication instance;
 
     @Override
@@ -37,20 +37,22 @@ public class MyApplication extends Application {
         PushManager.getInstance().initialize(this.getApplicationContext(), GTPushService.class);
 
         //PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
-        instance=this;
+        instance = this;
         SDKInitializer.initialize(this);
         updateVersion();
     }
-    public static MyApplication getInstance(){
+
+    public static MyApplication getInstance() {
         return instance;
     }
+
     private void updateVersion() {
-        String url= HttpApi.update_apk_url;
+        String url = HttpApi.update_apk_url;
         UpdateConfig.getConfig().url(url).jsonParser(new UpdateParser() {
             @Override
             public UpdateBean parse(String httpResponse) {
                 //                        Log.e("AppContext", httpResponse);
-                Gson gson=new Gson();
+                Gson gson = new Gson();
                 UpdateBean update = gson.fromJson(httpResponse, UpdateBean.class);
                 if (update.getVersionNo() != null) {
                     update.setUpdateTime(System.currentTimeMillis());
@@ -72,15 +74,17 @@ public class MyApplication extends Application {
             }
         }).checkCB(new UpdateCheckCB() {
 
-             public void onCheckError(int code, String errorMsg) {
+            public void onCheckError(int code, String errorMsg) {
                 LogUtil.e("更新失败：code:" + code + ",errorMsg:" + errorMsg);
             }
 
-            @Override public void onUserCancel() {
+            @Override
+            public void onUserCancel() {
                 LogUtil.e("用户取消更新");
             }
 
-            @Override public void onCheckIgnore(Update update) {
+            @Override
+            public void onCheckIgnore(Update update) {
                 LogUtil.e("用户忽略此版本更新");
             }
 
@@ -89,11 +93,13 @@ public class MyApplication extends Application {
 
             }
 
-            @Override public void hasUpdate(Update update) {
+            @Override
+            public void hasUpdate(Update update) {
                 LogUtil.e("检查到有更新");
             }
 
-            @Override public void noUpdate() {
+            @Override
+            public void noUpdate() {
                 LogUtil.e("无更新");
             }
 
@@ -102,15 +108,18 @@ public class MyApplication extends Application {
 
             }
         }).downloadCB(new UpdateDownloadCB() {
-            @Override public void onUpdateStart() {
+            @Override
+            public void onUpdateStart() {
                 LogUtil.e("下载开始");
             }
 
-            @Override public void onUpdateComplete(File file) {
+            @Override
+            public void onUpdateComplete(File file) {
                 LogUtil.e("下载完成");
             }
 
-            @Override public void onUpdateProgress(long current, long total) {
+            @Override
+            public void onUpdateProgress(long current, long total) {
             }
 
             @Override
@@ -118,21 +127,25 @@ public class MyApplication extends Application {
 
             }
 
-             public void onUpdateError(int code, String errorMsg) {
+            public void onUpdateError(int code, String errorMsg) {
                 LogUtil.e("下载失败：code:" + code + ",errorMsg:" + errorMsg);
             }
         }).strategy(new UpdateStrategy() {
-            @Override public boolean isShowUpdateDialog(Update update) {
+            @Override
+            public boolean isShowUpdateDialog(Update update) {
                 return true;//开启wifi下更新提示
             }
 
-            @Override public boolean isAutoInstall() {
+            @Override
+            public boolean isAutoInstall() {
                 return true;
             }
 
-            @Override public boolean isShowDownloadDialog() {
+            @Override
+            public boolean isShowDownloadDialog() {
                 return true;
             }
         });
     }
+
 }

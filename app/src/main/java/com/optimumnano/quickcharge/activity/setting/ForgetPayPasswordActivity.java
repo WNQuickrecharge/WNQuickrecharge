@@ -9,25 +9,39 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.manager.ModifyUserInformationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.ForgetPayPwdRequest;
+import com.optimumnano.quickcharge.request.GetVerifyCodeRequest;
+import com.optimumnano.quickcharge.response.ForgetPayPwdResult;
+import com.optimumnano.quickcharge.response.GetVerifyCodeResult;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 /**
  * Created by mfwn on 2017/4/8.
  */
 
-public class ForgetPayPasswordActivity extends BaseActivity implements View.OnClickListener{
-    private EditText verificationCode,payPassword,confirmPaypassword;
-    private TextView button,tv_code,mobile;
-    private LoginManager manager=new LoginManager();
+public class ForgetPayPasswordActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
+    private EditText verificationCode, payPassword, confirmPaypassword;
+    private TextView button, tv_code, mobile;
+    private LoginManager manager = new LoginManager();
     private ModifyUserInformationManager modifyUserInformationManager = new ModifyUserInformationManager();
     private ShortMessageCountDownTimer smcCountDownTimer;
     private RequestCallback requestCallback;
+
+    private int mForgetPayPwdTaskId;
+    private int mGetVerifyCodeTaskId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,17 +50,24 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskDispatcher.cancel(mForgetPayPwdTaskId);
+        mTaskDispatcher.cancel(mGetVerifyCodeTaskId);
+    }
+
+    @Override
     public void initViews() {
         super.initViews();
         setTitle("忘记支付密码");
         tvLeft.setVisibility(View.VISIBLE);
-        mobile= (TextView) findViewById(R.id.forget_pay_password_edtPhone);
-        mobile.setText(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO,SPConstant.KEY_USERINFO_MOBILE,""));
-        verificationCode= (EditText) findViewById(R.id.forget_pay_edtChecknum);
-        payPassword= (EditText) findViewById(R.id.forget_pay_edtPwd);
-        confirmPaypassword= (EditText) findViewById(R.id.forget_pay_edtConfirmPwd);
-        button= (TextView) findViewById(R.id.forget_pay_password_confirm);
-        tv_code= (TextView) findViewById(R.id.forget_pay_tvChecknum);
+        mobile = (TextView) findViewById(R.id.forget_pay_password_edtPhone);
+        mobile.setText(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_MOBILE, ""));
+        verificationCode = (EditText) findViewById(R.id.forget_pay_edtChecknum);
+        payPassword = (EditText) findViewById(R.id.forget_pay_edtPwd);
+        confirmPaypassword = (EditText) findViewById(R.id.forget_pay_edtConfirmPwd);
+        button = (TextView) findViewById(R.id.forget_pay_password_confirm);
+        tv_code = (TextView) findViewById(R.id.forget_pay_tvChecknum);
         button.setOnClickListener(this);
         tv_code.setOnClickListener(this);
         requestCallback = new RequestCallback();
@@ -67,51 +88,71 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
                 break;
         }
     }
+
     private void getChecknum() {
         String phone = mobile.getText().toString();
-        if (StringUtils.isEmpty(phone)){
+        if (StringUtils.isEmpty(phone)) {
             showToast("电话号码不能为空");
             return;
         }
-        if (!StringUtils.isMobile(phone)){
+        if (!StringUtils.isMobile(phone)) {
             showToast("电话号码格式不对");
             return;
         }
         tv_code.setClickable(false);
-        startCountTime(5*60*1000,1000);
-        manager.getCheckNum(phone,"ForgetPayPwdCApp",requestCallback,0);
+        startCountTime(5 * 60 * 1000, 1000);
+//        manager.getCheckNum(phone, "ForgetPayPwdCApp", requestCallback, 0);
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            stopCountTime();
+            tv_code.setText("重新获取");
+            tv_code.setClickable(true);
+            return;
+        }
+        mGetVerifyCodeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetVerifyCodeTaskId,
+                new GetVerifyCodeRequest(new GetVerifyCodeResult(mContext), phone, "ForgetPayPwdCApp"), this));
     }
 
     private void forgetPassword() {
         String phone = mobile.getText().toString();
-        if (StringUtils.isEmpty(phone)){
+        if (StringUtils.isEmpty(phone)) {
             showToast("电话号码不能为空");
             return;
         }
-        if (!StringUtils.isMobile(phone)){
+        if (!StringUtils.isMobile(phone)) {
             showToast("电话号码格式不对");
             return;
         }
-        if (TextUtils.isEmpty(payPassword.getText().toString())||TextUtils.isEmpty(confirmPaypassword.getText().toString())){
+        if (TextUtils.isEmpty(payPassword.getText().toString()) || TextUtils.isEmpty(confirmPaypassword.getText().toString())) {
             showToast("密码不能为空");
             return;
         }
-        if (!TextUtils.equals(payPassword.getText().toString(),confirmPaypassword.getText().toString())){
+        if (!TextUtils.equals(payPassword.getText().toString(), confirmPaypassword.getText().toString())) {
             showToast("两次密码不一致,请重输入");
             return;
         }
-        if (payPassword.getText().toString().length()<6||confirmPaypassword.getText().toString().length()<6){
+        if (payPassword.getText().toString().length() < 6 || confirmPaypassword.getText().toString().length() < 6) {
             showToast("请输入6位支付密码");
             return;
         }
-        if (TextUtils.isEmpty(verificationCode.getText().toString())){
+        if (TextUtils.isEmpty(verificationCode.getText().toString())) {
             showToast("请输入验证码");
             return;
         }
         String newPassword = confirmPaypassword.getText().toString();
         String Md5Password = MD5Utils.encodeMD5(newPassword);
         String finalPaypassword = MD5Utils.encodeMD5(Md5Password);
-        modifyUserInformationManager.forgetPayPassword(phone,"ForgetPayPwdCApp",verificationCode.getText().toString(),finalPaypassword,new Manager());
+//        modifyUserInformationManager.forgetPayPassword(phone,"ForgetPayPwdCApp",verificationCode.getText().toString(),finalPaypassword,new Manager());
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mForgetPayPwdTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mForgetPayPwdTaskId,
+                new ForgetPayPwdRequest(new ForgetPayPwdResult(mContext), phone, "ForgetPayPwdCApp",
+                        verificationCode.getText().toString(), finalPaypassword), this));
     }
 
     private void startCountTime(long allTime, long time) {
@@ -119,6 +160,7 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
         smcCountDownTimer = new ForgetPayPasswordActivity.ShortMessageCountDownTimer(allTime, time);
         smcCountDownTimer.start();
     }
+
     private void stopCountTime() {
         if (smcCountDownTimer != null) {
             smcCountDownTimer.cancel();
@@ -146,15 +188,15 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
         }
 
     }
+
     class RequestCallback extends ManagerCallback<String> {
         @Override
         public void onSuccess(String returnContent, int requestCode) {
             super.onSuccess(returnContent, requestCode);
             //获取验证码成功
-            if (requestCode==0){
+            if (requestCode == 0) {
 
-            }
-            else {
+            } else {
 
             }
         }
@@ -168,7 +210,8 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
             tv_code.setClickable(true);
         }
     }
-    class Manager extends ManagerCallback{
+
+    class Manager extends ManagerCallback {
         @Override
         public void onSuccess(Object returnContent) {
             super.onSuccess(returnContent);
@@ -181,5 +224,40 @@ public class ForgetPayPasswordActivity extends BaseActivity implements View.OnCl
             super.onFailure(msg);
             showToast(msg);
         }
+    }
+
+
+    //http
+
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mForgetPayPwdTaskId == id) {
+            showToast("支付密码修改成功!");
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mForgetPayPwdTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((ForgetPayPwdResult) result).getResp()));
+        } else if (mGetVerifyCodeTaskId == id) {
+            showToast(ToastUtil.formatToastText(mContext, ((GetVerifyCodeResult) result).getResp()));
+            stopCountTime();
+            tv_code.setText("重新获取");
+            tv_code.setClickable(true);
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

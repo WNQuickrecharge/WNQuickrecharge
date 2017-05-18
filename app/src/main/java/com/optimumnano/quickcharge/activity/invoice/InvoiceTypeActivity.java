@@ -12,14 +12,22 @@ import android.widget.TextView;
 
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
-import com.optimumnano.quickcharge.bean.InvoiceOrderRsp;
+import com.optimumnano.quickcharge.bean.AddInvoiceOrderHttpResp;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.InvoiceManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.AddInvoiceOrderRequest;
+import com.optimumnano.quickcharge.response.AddInvoiceOrderResult;
+import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class InvoiceTypeActivity extends BaseActivity implements View.OnClickListener {
+public class InvoiceTypeActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
     @Bind(R.id.invoice_type_llPaper)
     LinearLayout llPaper;
     @Bind(R.id.invoice_type_llEmail)
@@ -54,7 +62,9 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     private double orderMoney = 0;//订单金额
     private InvoiceManager manager = new InvoiceManager();
 
-    private String regPhone,regAddress,bankCard,indentifyNum,remark;
+    private String regPhone, regAddress, bankCard, indentifyNum, remark;
+
+    private int mAddInvoiceOrderTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +79,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         allMoney = getIntent().getExtras().getDouble("money");
         ids = getIntent().getExtras().getString("ids");
         //暂定高于500没有邮费
-        if (allMoney<500){
+        if (allMoney < 500) {
             orderMoney = 10;
         }
 
@@ -107,6 +117,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        mTaskDispatcher.cancel(mAddInvoiceOrderTaskId);
     }
 
     @Override
@@ -121,30 +132,47 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
-    //提交订单
-    private void addInviceOrder(){
-        manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
-                etName.getText().toString(), etAddress.getText().toString(),
-                etPhone.getText().toString(),
-                regPhone,regAddress,bankCard,indentifyNum,remark,
-                new ManagerCallback<InvoiceOrderRsp>() {
-                    @Override
-                    public void onSuccess(InvoiceOrderRsp returnContent) {
-                        super.onSuccess(returnContent);
-                        Bundle bundle = new Bundle();
-                        bundle.putDouble("money", returnContent.postage);
-                        bundle.putDouble("allmoney",allMoney);
-                        bundle.putString("order_no",returnContent.i_order_no);
-                        skipActivity(PayCenterActivity.class, bundle);
-                        finish();
-                    }
 
-                    @Override
-                    public void onFailure(String msg) {
-                        super.onFailure(msg);
-                        showToast(msg);
-                    }
-                });
+    //提交订单
+    private void addInviceOrder() {
+//        manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
+//                etName.getText().toString(), etAddress.getText().toString(),
+//                etPhone.getText().toString(),
+//                regPhone, regAddress, bankCard, indentifyNum, remark,
+//                new ManagerCallback<InvoiceOrderRsp>() {
+//                    @Override
+//                    public void onSuccess(InvoiceOrderRsp returnContent) {
+//                        super.onSuccess(returnContent);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putDouble("money", returnContent.postage);
+//                        bundle.putDouble("allmoney", allMoney);
+//                        bundle.putString("order_no", returnContent.i_order_no);
+//                        skipActivity(PayCenterActivity.class, bundle);
+//                        finish();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String msg) {
+//                        super.onFailure(msg);
+//                        showToast(msg);
+//                    }
+//                });
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        if (StringUtils.isEmpty(etPhone.getText().toString())) {
+            showToast("电话号码不能为空");
+            return;
+        }
+        mAddInvoiceOrderTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mAddInvoiceOrderTaskId,
+                new AddInvoiceOrderRequest(new AddInvoiceOrderResult(mContext), ids, etCompanyRisa.getText().toString(), allMoney,
+                        etName.getText().toString(), etAddress.getText().toString(),
+                        etPhone.getText().toString(),
+                        regPhone, regAddress, bankCard, indentifyNum, remark), this));
+
     }
 
     @Override
@@ -155,5 +183,33 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         bankCard = data.getStringExtra("bankCard");
         indentifyNum = data.getStringExtra("indentifyNum");
         remark = data.getStringExtra("remark");
+    }
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+
+        AddInvoiceOrderHttpResp resp = ((AddInvoiceOrderResult) result).getResp();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("money", resp.getResult().postage);
+        bundle.putDouble("allmoney", allMoney);
+        bundle.putString("order_no", resp.getResult().i_order_no);
+        skipActivity(PayCenterActivity.class, bundle);
+        finish();
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        showToast(ToastUtil.formatToastText(mContext, ((AddInvoiceOrderResult) result).getResp()));
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

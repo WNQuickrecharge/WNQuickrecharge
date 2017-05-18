@@ -5,17 +5,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.GetMineInfoManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetAccountInfoRequest;
+import com.optimumnano.quickcharge.response.GetAccountInfoResult;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.CircleImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,7 +38,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  * <p>
  * 邮箱：dengchuanliang@optimumchina.com
  */
-public class WalletBalanceAct extends BaseActivity {
+public class WalletBalanceAct extends BaseActivity implements HttpCallback {
 
     @Bind(R.id.act_wallet_balance_headview)
     CircleImageView mHeadview;
@@ -44,6 +48,8 @@ public class WalletBalanceAct extends BaseActivity {
     TextView mDeposit;
     @Bind(R.id.act_wallet_balance_withdraw)
     TextView mWithdraw;
+
+    private int mGetAccountInfoTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,21 +68,30 @@ public class WalletBalanceAct extends BaseActivity {
     }
 
     private void initData() {
-        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String s = returnContent.toString();
-                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-                double restCash = userAccount.getRestCash();
-                mBalanceValue.setText(StringUtils.formatDouble(restCash));
-            }
+//        GetMineInfoManager.getAccountInfo(new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String s = returnContent.toString();
+//                UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
+//                double restCash = userAccount.getRestCash();
+//                mBalanceValue.setText(StringUtils.formatDouble(restCash));
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
 
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
+
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetAccountInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetAccountInfoTaskId,
+                new GetAccountInfoRequest(new GetAccountInfoResult(mContext)), this));
     }
 
     @Override
@@ -96,8 +111,10 @@ public class WalletBalanceAct extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this))
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
+        }
+        mTaskDispatcher.cancel(mGetAccountInfoTaskId);
     }
 
     @OnClick({R.id.act_wallet_balance_deposit, R.id.act_wallet_balance_withdraw})
@@ -114,5 +131,31 @@ public class WalletBalanceAct extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(EventManager.onBalanceChangeEvent event) {
         mBalanceValue.setText(event.balance);
+    }
+
+    //http
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+        if (mGetAccountInfoTaskId == id) {
+            UserAccount userAccount = ((GetAccountInfoResult) result).getResp().getResult();
+            double restCash = userAccount.getRestCash();
+            mBalanceValue.setText(StringUtils.formatDouble(restCash));
+        }
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (isFinishing()) {
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
     }
 }

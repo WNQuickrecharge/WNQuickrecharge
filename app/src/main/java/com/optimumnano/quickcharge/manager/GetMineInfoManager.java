@@ -24,15 +24,15 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_COOKIE;
  */
 
 public class GetMineInfoManager {
-    public static void getTransactionBill(int index,int pagesize, final ManagerCallback callback){
+    public static void getTransactionBill(int index, int pagesize, final ManagerCallback callback) {
         String url = HttpApi.getInstance().getUrl(HttpApi.get_transaction_bill);
-        RequestParams params= new RequestParams(url);
-        HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("cur_page",index);
-        requestJson.put("page_size",pagesize);
+        RequestParams params = new RequestParams(url);
+        HashMap<String, Object> requestJson = new HashMap<>();
+        requestJson.put("cur_page", index);
+        requestJson.put("page_size", pagesize);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE, KEY_USERINFO_COOKIE, ""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<List<BillBean>>() {
             @Override
             public void onSuccess(List<BillBean> result, int httpCode) {
@@ -48,15 +48,15 @@ public class GetMineInfoManager {
         });
     }
 
-    public static void getPayOrderInfoDeposit(String cash, int payway, final ManagerCallback callback){
+    public static void getPayOrderInfoDeposit(String cash, int payway, final ManagerCallback callback) {
         String url = HttpApi.getInstance().getUrl(HttpApi.get_pay_orderinfo_deposit);
-        RequestParams params= new RequestParams(url);
-        HashMap<String ,Object> requestJson=new HashMap<>();
-        requestJson.put("cash",cash);
-        requestJson.put("pay_type",payway);
+        RequestParams params = new RequestParams(url);
+        HashMap<String, Object> requestJson = new HashMap<>();
+        requestJson.put("cash", cash);
+        requestJson.put("pay_type", payway);
         String json = JSON.toJSONString(requestJson);
         params.setBodyContent(json);
-        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE,KEY_USERINFO_COOKIE,""));
+        params.setHeader("Cookie", SharedPreferencesUtil.getValue(SP_COOKIE, KEY_USERINFO_COOKIE, ""));
         MyHttpUtils.getInstance().post(params, new HttpCallback<String>() {
             @Override
             public void onSuccess(String result, int httpCode) {

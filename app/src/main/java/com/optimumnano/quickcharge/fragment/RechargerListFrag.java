@@ -10,9 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.adapter.DistDetailAcapter;
 import com.optimumnano.quickcharge.adapter.OnListClickListener;
@@ -20,10 +18,14 @@ import com.optimumnano.quickcharge.adapter.RegionListAdatper;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.Point;
-import com.optimumnano.quickcharge.data.PreferencesHelper;
+import com.optimumnano.quickcharge.http.BaseResult;
+import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.StationManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
+import com.optimumnano.quickcharge.request.GetCityStationRequest;
+import com.optimumnano.quickcharge.response.GetCityStationResult;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,7 +47,7 @@ import butterknife.ButterKnife;
  */
 
 @SuppressLint("ValidFragment")
-public class RechargerListFrag extends BaseFragment{
+public class RechargerListFrag extends BaseFragment implements HttpCallback {
     @Bind(R.id.rv_city_dist)
     RecyclerView rvCityDist;
     @Bind(R.id.tv_dc_in_list)
@@ -61,6 +63,8 @@ public class RechargerListFrag extends BaseFragment{
     private RegionListAdatper mAdapterRegion;
     private View inflate;
 
+    private int mGetCityStationTaskId;
+
 
     @Nullable
     @Override
@@ -74,28 +78,33 @@ public class RechargerListFrag extends BaseFragment{
     public RechargerListFrag(List<Point> mDatas) {
         this.mDatas = mDatas;
     }
-    public RechargerListFrag(){}
+
+    public RechargerListFrag() {
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
     }
 
-
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mTaskDispatcher.cancel(mGetCityStationTaskId);
+    }
 
     private void initData() {
-        ButterKnife.bind(this,inflate);
+        ButterKnife.bind(this, inflate);
         if (mLeft == null) {
             mLeft = new ArrayList<>();
         }
-        mAdapterDist=new DistDetailAcapter(mDatas, new OnListClickListener() {
+        mAdapterDist = new DistDetailAcapter(mDatas, new OnListClickListener() {
             @Override
             public void onShowMessage(Object item) {
 
             }
-        },getActivity());
-        mAdapterRegion=new RegionListAdatper(mLeft, new OnListClickListener() {
+        }, getActivity());
+        mAdapterRegion = new RegionListAdatper(mLeft, new OnListClickListener() {
             @Override
             public void onShowMessage(Object item) {
                 TypeSelect ty = (TypeSelect) item;
@@ -117,22 +126,30 @@ public class RechargerListFrag extends BaseFragment{
     @Override
     protected void lazyLoad() {
 
-        StationManager.getCityStations(((BaseActivity)getActivity()).mHelper.getCity(), new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String result = returnContent.toString();
-                List<Point> stationBeanList = JSON.parseArray(result, Point.class);
-                setData(stationBeanList);
+//        StationManager.getCityStations(((BaseActivity) getActivity()).mHelper.getCity(), new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                String result = returnContent.toString();
+//                List<Point> stationBeanList = JSON.parseArray(result, Point.class);
+//                setData(stationBeanList);
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//            }
+//        });
 
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });
+        if (!Tool.isConnectingToInternet()) {
+            return;
+        }
+        mGetCityStationTaskId = TaskIdGenFactory.gen();
+        String city = ((BaseActivity) getActivity()).mHelper.getCity();
+        mTaskDispatcher.dispatch(new HttpTask(mGetCityStationTaskId,
+                new GetCityStationRequest(new GetCityStationResult(mContext), city), this));
     }
 
 
@@ -170,8 +187,9 @@ public class RechargerListFrag extends BaseFragment{
             return dist.hashCode();
         }
     }
+
     public void setData(List<Point> mDatas) {
-        if (mDatas==null || mDatas.size()==0){
+        if (mDatas == null || mDatas.size() == 0) {
             if (null != this.mDatas)
                 this.mDatas.clear();
             if (null != mLeft)
@@ -195,9 +213,8 @@ public class RechargerListFrag extends BaseFragment{
         if (mLeft != null) {
             mLeft.clear();
             mLeft.addAll(mSet);
-        }
-        else
-            mLeft=new ArrayList<>(mSet);
+        } else
+            mLeft = new ArrayList<>(mSet);
 
         for (int i = 0; i < mLeft.size(); i++) {
             List<Point> mPoint = new ArrayList<>();
@@ -208,11 +225,11 @@ public class RechargerListFrag extends BaseFragment{
             }
             mHashMap.put(mLeft.get(i), mPoint);
         }
-        if (this.mDatas!=null) {
+        if (this.mDatas != null) {
             this.mDatas.clear();
             this.mDatas.addAll(get());
-        }else {
-            this.mDatas=new ArrayList<>();
+        } else {
+            this.mDatas = new ArrayList<>();
             this.mDatas.addAll(get());
         }
         initData();
@@ -220,6 +237,7 @@ public class RechargerListFrag extends BaseFragment{
         mAdapterDist.notifyDataSetChanged();
         mAdapterRegion.notifyDataSetChanged();
     }
+
     public List<Point> get() {
         List<Point> mPoint = null;
         Iterator iter = mHashMap.entrySet().iterator();
@@ -242,12 +260,33 @@ public class RechargerListFrag extends BaseFragment{
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void openStationActivity(EventManager.openStationActivity event) {
-        Intent intent=new Intent(getActivity(), StationActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("Station",event.bean);
+        Intent intent = new Intent(getActivity(), StationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Station", event.bean);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
+    //http
 
+
+    @Override
+    public void onRequestSuccess(int id, BaseResult result) {
+        if (deAlive()) {
+            return;
+        }
+        setData(((GetCityStationResult) result).getResp().getResult());
+    }
+
+    @Override
+    public void onRequestFail(int id, BaseResult result) {
+        if (deAlive()) {
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestCancel(int id) {
+
+    }
 }
