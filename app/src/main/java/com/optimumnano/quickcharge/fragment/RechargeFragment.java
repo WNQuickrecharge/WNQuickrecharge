@@ -43,6 +43,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
@@ -206,7 +207,7 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
             public boolean onMarkerClick(Marker marker) {
                 Bundle bundle = marker.getExtraInfo();
                 Object obj = bundle.getSerializable("info");
-                showBottomDialog(obj);
+                showBottomDialog(obj,false);
                 return true;
             }
         });
@@ -276,7 +277,7 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
         searchRv.setAdapter(mStationAdapter);
     }
 
-    private void showBottomDialog(Object obj) {
+    private void showBottomDialog(Object obj,boolean needCalcDistance) {
         if (obj instanceof Point) {
             mPopView = LayoutInflater.from(getActivity()).inflate(R.layout.adapter_dist_point, null);
             //bottomDialogRoot = (LinearLayout) mPopView.findViewById(R.id.ll_bottom_dialog_root);
@@ -289,8 +290,13 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
             final Point infoUtil = (Point) obj;
             holder.mItem = infoUtil;
             holder.tvAddress.setText(holder.mItem.StationName);
-//                    holder.tvDistance.setText(DoubleDP(holder.mItem.distance, "#.00"));
             holder.tvDetailAddress.setText(holder.mItem.Address);
+            if (needCalcDistance){
+                String lat = SharedPreferencesUtil.getValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LAT, "");
+                String lon = SharedPreferencesUtil.getValue(SPConstant.SP_CITY, SPConstant.KEY_USERINFO_CURRENT_LON, "");
+                double distance = DistanceUtil.getDistance(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)), new LatLng(holder.mItem.Lat, holder.mItem.Lng));
+                holder.mItem.distance=distance/1000;
+            }
             holder.tvDistance.setText(StringUtils.formatDouble(holder.mItem.distance) + "km");
 
             holder.tvPhonenum.setText(holder.mItem.Phone);
@@ -383,8 +389,9 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
 
     @Override
     public void onItemClickListener(Object item, int position) {
+        Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
         Point point= (Point) item;
-        showBottomDialog(point);
+        showBottomDialog(point,true);
         LatLng ll = new LatLng(point.Lat,
                 point.Lng);
         MapStatus.Builder builder = new MapStatus.Builder();
