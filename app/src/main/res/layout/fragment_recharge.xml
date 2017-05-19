@@ -39,7 +39,7 @@
             android:paddingTop="@dimen/dimen_10"
             android:paddingRight="@dimen/dimen_10"
             android:paddingLeft="@dimen/dimen_10"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"
