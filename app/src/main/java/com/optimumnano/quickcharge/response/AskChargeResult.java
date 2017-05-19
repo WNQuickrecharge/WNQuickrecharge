@@ -17,9 +17,15 @@ public class AskChargeResult extends BaseChargeResult {
         super(context);
     }
 
+    private BaseHttpResp resp;
+
+    public BaseHttpResp getResp() {
+        return resp;
+    }
+
     @Override
     protected int parseResponse(Response response) throws Exception {
-        BaseHttpResp resp = JSON.parseObject(response.body().string(), BaseHttpResp.class);
+        resp = JSON.parseObject(response.body().string(), BaseHttpResp.class);
         if (resp == null) {
             return HttpResult.FAIL;
         }
