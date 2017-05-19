@@ -638,20 +638,6 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            AppManager.getAppManager().finishAllActivity();
-            return;
-        }
-        doubleBackToExitPressedOnce = true;
-        showToast(getString(R.string.exit_hint));
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                SystemClock.sleep(2000);
-                doubleBackToExitPressedOnce = false;
-            }
-        }.start();
         exit();
     }
 

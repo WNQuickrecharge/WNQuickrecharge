@@ -54,12 +54,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         initData();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mTaskDispatcher.cancel(mCancelOrderTaskId);
-    }
-
     private void getExtras() {
         orderBean = (OrderBean) getIntent().getExtras().getSerializable("orderbean");
     }
@@ -85,7 +79,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         orderIcon = (ImageView) findViewById(iv_order_icon);
     }
 
-    private void initListener() {
     private void initListener(){
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
@@ -151,9 +144,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                 if (orderBean.order_status == 1) {
                     finish();
                 } else {
-                    payDialog.setPayway(SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue));
-                }
-                else {
                     int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
                     payDialog.setPayway(paway);
                     payDialog.setMoney(orderBean.frozen_cash,orderBean.order_no);
@@ -253,6 +243,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mTaskDispatcher.cancel(mCancelOrderTaskId);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
     }

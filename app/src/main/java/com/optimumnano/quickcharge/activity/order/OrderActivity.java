@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,11 +29,11 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.request.AddOrderRequest;
 import com.optimumnano.quickcharge.request.GetAccountInfoRequest;
 import com.optimumnano.quickcharge.request.GetPayPwdRequest;
-import com.optimumnano.quickcharge.request.PayOrderInfoDepositRequest;
 import com.optimumnano.quickcharge.response.AddOrderResult;
 import com.optimumnano.quickcharge.response.GetAccountInfoResult;
 import com.optimumnano.quickcharge.response.GetPayPwdResult;
@@ -45,7 +46,9 @@ import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
 
-import org.json.JSONObject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
@@ -62,6 +65,7 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
  */
 public class OrderActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback, HttpCallback {
     private static final int SDK_PAY_FLAG = 001;
+    private static final int ADDORDER_FLAG = 002;
 
     @Bind(R.id.order_tvConfirm)
     TextView tvConfirm;
@@ -93,43 +97,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     private String mAmount;
 
     private int payWay;//支付方式
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == SDK_PAY_FLAG) {
-                Map mapresult = (Map) msg.obj;
-                JSONObject dataJson = new JSONObject(mapresult);
-                logtesti("alipayresult " + dataJson.toString());
-                String resultStatus = dataJson.optString("resultStatus");// 结果码
-                switch (resultStatus) {
-                    case "9000"://支付成功
-                    case "8000"://正在处理,支付结果确认中
-                    case "6004"://支付结果未知
-                        showToast("支付成功");
-                        DecimalFormat df = new DecimalFormat("0.00");
-                        float addAmount = Float.valueOf(mAmount);
-                        String formatAddAmount = df.format(addAmount);
-                        paySuccess(orderNo);
-                        finish();
-
-                        break;
-                    case "4000":
-                        showToast("订单支付失败");
-                    case "5000":
-                        showToast("订单不能重复支付");
-                        break;
-                    case "6001":
-                        showToast("取消支付");
-                        break;
-                    case "6002":
-                        showToast("网络连接出错");
-                        break;
-                    default:
-                        showToast("支付异常");
-                        break;
-                }
-
+            if (msg.what==ADDORDER_FLAG){
+                tvConfirm.setEnabled(true);
             }
         }
     };
@@ -167,7 +141,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     public void initViews() {
         super.initViews();
         setTitle("充电订单");
-
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         tvConfirm.setOnClickListener(this);
         miPayway.setOnClickListener(this);
         edtMoney.addTextChangedListener(new TextWatcher() {
@@ -199,54 +174,14 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void initData() {
-//        showLoading("获取枪状态中请稍等！");
-//        orderManager.getGunInfo(gunNo, new ManagerCallback<RechargeGunBean>() {
-//            @Override
-//            public void onSuccess(RechargeGunBean returnContent) {
-//                super.onSuccess(returnContent);
-//                gunBean = returnContent;
-//                loadData();
-//                closeLoading();
-//            }
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                closeLoading();
-//                showToast(getString(R.string.get_gun_info_fail));
-//                finish();
-//            }
-//        });
-        if (payWay == PayDialog.pay_yue) {
-//            GetMineInfoManager.getAccountInfo(new ManagerCallback() {
-//                @Override
-//                public void onSuccess(Object returnContent) {
-//                    super.onSuccess(returnContent);
-//                    String s = returnContent.toString();
-//                    UserAccount userAccount = JSON.parseObject(s, UserAccount.class);
-//                    restCash = userAccount.getRestCash();
-//                    DecimalFormat df = new DecimalFormat("0.00");
-//                    formatRestCash = df.format(restCash);
-//                    miPayway.setTvLeftText("余额" + "(" + formatRestCash + ")");
-//                }
-//
-//                @Override
-//                public void onFailure(String msg) {
-//                    super.onFailure(msg);
-//                    showToast(msg);
-//                }
-//            });
-
-
-            if (!Tool.isConnectingToInternet()) {
-                showToast("无网络");
-                return;
-            }
-            mGetAccountInfoTaskId = TaskIdGenFactory.gen();
-            mTaskDispatcher.dispatch(new HttpTask(mGetAccountInfoTaskId,
-                    new GetAccountInfoRequest(new GetAccountInfoResult(mContext)), this));
-        } else {
-            PayWayViewHelp.showPayWayStatus(miPayway, payWay, formatRestCash);
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
         }
+        mGetAccountInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetAccountInfoTaskId,
+                new GetAccountInfoRequest(new GetAccountInfoResult(mContext)), this));
+
     }
 
     private void loadData() {
@@ -277,26 +212,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payWayDialog.setViewClickListener(new PayWayDialog.PayWayDialogClick() {
             @Override
             public void onMenuClick(int payway) {
-//                switch (payway){
-                //微信
-//                    case PayDialog.pay_wx:
-//                        miPayway.setIvLeftDrawable(R.drawable.wx);
-//                        miPayway.setTvLeftText("微信");
-//                        payWay = PayDialog.pay_wx;
-//                        break;
-//                    //支付寶
-//                    case PayDialog.pay_zfb:
-//                        miPayway.setIvLeftDrawable(R.drawable.zfb);
-//                        miPayway.setTvLeftText("支付宝");
-//                        payWay = PayDialog.pay_zfb;
-//                        break;
-//                    //余額
-//                    case PayDialog.pay_yue:
-//                        miPayway.setIvLeftDrawable(R.drawable.yue);
-//                        miPayway.setTvLeftText("余额"+"("+formatRestCash+")");
-//                        payWay = PayDialog.pay_yue;
-//                        break;
-//                }
                 PayWayViewHelp.showPayWayStatus(miPayway, payway, formatRestCash);
                 payWay = payway;
             }
@@ -306,7 +221,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
         ButterKnife.unbind(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         mTaskDispatcher.cancel(mGetAccountInfoTaskId);
         mTaskDispatcher.cancel(mGetPayPwdTaskId);
         mTaskDispatcher.cancel(mAddOrderTaskId);
@@ -328,7 +246,11 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
     //下单
     private void addOrder() {
-
+        mAmount = edtMoney.getText().toString().trim();
+        if (TextUtils.isEmpty(mAmount)|| Double.parseDouble(mAmount)==0){
+            ToastUtil.showToast(OrderActivity.this,"支付金额错误");
+            return;
+        }
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
             return;
@@ -338,6 +260,9 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             showToast("预付金额不能为空");
             return;
         }
+        tvConfirm.setEnabled(false);
+        mHandler.sendEmptyMessageDelayed(ADDORDER_FLAG,1500);
+        showLoading();
         mAddOrderTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAddOrderTaskId,
                 new AddOrderRequest(new AddOrderResult(mContext), payWay, gunNo, frozen_cash), this));
@@ -358,57 +283,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payDialog.close();
     }
 
-    private void callALiPay(Double mAmount) {
+    private void callALiPay(Double mAmount,String orderNo) {
+        payDialog.setMoney(mAmount,orderNo);
+        payDialog.payZFB();
 
-//        GetMineInfoManager.getPayOrderInfoDeposit(mAmount + "", PayDialog.pay_zfb, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                logtesti("returnContent " + returnContent.toString());
-//
-//                final String orderInfo = returnContent.toString();// 签名后的订单信息
-//                Runnable payRunnable = new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        PayTask alipay = new PayTask(OrderActivity.this);
-//                        AlipayBean alipayBean = JSON.parseObject(orderInfo, AlipayBean.class);
-//                        String sign = alipayBean.getSign();
-//                        LogUtil.i("sign==" + sign);
-//                        Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
-//
-//                        Message msg = new Message();
-//                        msg.what = SDK_PAY_FLAG;
-//                        msg.obj = result;
-//                        mHandler.sendMessage(msg);
-//                    }
-//                };
-//                // 必须异步调用
-//                Thread payThread = new Thread(payRunnable);
-//                payThread.start();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                showToast(msg);
-//                super.onFailure(msg);
-//            }
-//
-//        });
-
-        if (!Tool.isConnectingToInternet()) {
+       /* if (!Tool.isConnectingToInternet()) {
             showToast("请求失败，无网络");
             return;
         }
         mCallAlipayTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mCallAlipayTaskId,
                 new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext),
-                        String.valueOf(mAmount), PayDialog.pay_zfb), this));
+                        String.valueOf(mAmount), PayDialog.pay_zfb), this));*/
 
     }
-
-    //http
 
     @Override
     public void onRequestSuccess(int id, BaseResult result) {
@@ -420,7 +308,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             restCash = userAccount.getRestCash();
             DecimalFormat df = new DecimalFormat("0.00");
             formatRestCash = df.format(restCash);
-            miPayway.setTvLeftText("余额" + "(" + formatRestCash + ")");
+            if (payWay==PayDialog.pay_yue) {
+                miPayway.setTvLeftText("余额" + "(" + formatRestCash + ")");
+            }else if (payWay==PayDialog.pay_zfb){
+                PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+                miPayway.setTvLeftText("支付宝");
+            }else if (payWay==PayDialog.pay_wx){
+                PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+                miPayway.setTvLeftText("微信");
+            }
         } else if (mGetPayPwdTaskId == id) {
             String pwd = ((GetPayPwdResult) result).getResp().getResult().getPaypwd();
             if (pwd.equals("{}")) {
@@ -432,7 +328,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent);
             }
         } else if (mAddOrderTaskId == id) {
-
+            closeLoading();
             Gson gson = new Gson();
             HashMap<String, Object> ha = gson.fromJson(((AddOrderResult) result).getResp().getResult(),
                     new TypeToken<HashMap<String, Object>>() {
@@ -441,16 +337,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             String sign = ha.get("sign").toString();
             switch (payWay) {
                 case PayDialog.pay_yue:
-                    String inputMoney = edtMoney.getText().toString();
-                    double v = Double.parseDouble(inputMoney);
+                    double v = Double.parseDouble(mAmount);
                     if (restCash < v) {
                         showToast("余额不足，请使用其他支付方式");
                         return;
                     }
-                    payDialog.setMoney(Double.parseDouble(edtMoney.getText().toString()), orderNo, sign);
+                    payDialog.setMoney(Double.parseDouble(mAmount),orderNo,sign);
                     payDialog.setStatus(0);
                     payDialog.setPayway(payWay);
-                    payDialog.setPayResultMoney(Double.parseDouble(edtMoney.getText().toString()));
+                    payDialog.setPayResultMoney(Double.parseDouble(mAmount));
                     payDialog.show();
 
 
@@ -465,13 +360,11 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                     break;
 
                 case PayDialog.pay_zfb:
-                    String money = edtMoney.getText().toString();
-                    double finalMoney = Double.parseDouble(money);
-                    mAmount = money;
-                    callALiPay(finalMoney);
+                    double finalMoney = Double.parseDouble(mAmount);
+                    callALiPay(finalMoney,orderNo);
                     break;
                 case PayDialog.pay_wx:
-
+                    payDialog.payWeiXin(Double.parseDouble(mAmount),orderNo);
                     break;
 
                 default:
@@ -511,6 +404,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         if (mGetAccountInfoTaskId == id) {
             showToast(ToastUtil.formatToastText(mContext, ((GetAccountInfoResult) result).getResp()));
         } else if (mAddOrderTaskId == id) {
+            closeLoading();
             showToast(ToastUtil.formatToastText(mContext, ((AddOrderResult) result).getResp()));
         } else if (mCallAlipayTaskId == id) {
             showToast(ToastUtil.formatToastText(mContext, ((PayOrderInfoDepositResult) result).getResp()));
@@ -520,5 +414,15 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onRequestCancel(int id) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
+        int code = event.code;
+        if (0 == code){
+            finish();
+        }else {
+        }
+        logtesti("orderdetail weixinpay callback "+event.code);
     }
 }
