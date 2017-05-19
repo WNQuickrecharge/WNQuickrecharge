@@ -61,11 +61,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         super.initViews();
         setTitle("设置");
         setRightTitle("");
-        modifyPassword = (MenuItem1) findViewById(R.id.setting_modify_password);
-        modifyPayPassword = (MenuItem1) findViewById(R.id.setting_modify_pay_password);
-        currentVersion = (MenuItem1) findViewById(R.id.tv_current_version);
-        currentVersion.setRightText(BuildConfig.VERSION_NAME);
-        logout = (Button) findViewById(R.id.logout);
         modifyPassword= (MenuItem1) findViewById(R.id.setting_modify_password);
         modifyPayPassword= (MenuItem1) findViewById(R.id.setting_modify_pay_password);
         currentVersion= (MenuItem1) findViewById(R.id.tv_current_version);
@@ -121,7 +116,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             AppManager.getAppManager().finishAllActivity();
             startActivity(new Intent(SettingActivity.this, LoginActivity.class));
             finish();
-            System.exit(0);
+//            System.exit(0);
 
         }
 

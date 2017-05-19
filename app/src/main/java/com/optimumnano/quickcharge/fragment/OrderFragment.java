@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.common.util.LogUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,8 +106,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                 if (orderBean.order_status == 2 || orderBean.order_status == 4 ||
                         orderBean.order_status == 1 || orderBean.order_status == 3) {
                     intent = new Intent(getActivity(), OrderlistDetailActivity.class);
-                }
-                else {
+                } else {
                     intent = new Intent(getActivity(), OrderlistDetailtwoActivity.class);
                 }
 
@@ -123,7 +121,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        onRefresh();
+        recyclerView.startAutoRefresh();
     }
 
     private void initData() {

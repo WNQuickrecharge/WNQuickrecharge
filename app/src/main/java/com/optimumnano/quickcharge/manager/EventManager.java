@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.manager;
 
 import com.baidu.mapapi.model.LatLng;
+import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.bean.StationBean;
 
 /**
@@ -87,6 +88,12 @@ public class EventManager {
         public WeiXinPayCallback(int code,String data) {
             this.code=code;
             this.data=data;
+        }
+    }
+    public static class onOrderDispatched{
+        public PushCustom msg;
+        public onOrderDispatched(PushCustom msg) {
+            this.msg=msg;
         }
     }
 }
