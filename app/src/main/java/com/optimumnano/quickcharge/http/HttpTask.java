@@ -37,6 +37,7 @@ public class HttpTask implements Runnable {
 
     public void cancel() {
         // TODO
+        request.cancel();
     }
 
     protected void setDispatcher(TaskDispatcher dispatcher) {
