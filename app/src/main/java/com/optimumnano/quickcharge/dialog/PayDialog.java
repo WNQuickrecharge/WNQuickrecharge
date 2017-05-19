@@ -32,6 +32,7 @@ import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -516,7 +517,14 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
                 setStatus(PayDialog.PAYFAIL);
             }
         } else if (mGetOrderSignTaskId == id) {
-            sign = ((GetOrderSignResult) result).getResp().getResult();
+            String returnContent = ((GetOrderSignResult) result).getResp().getResult();
+            JSONObject jsonObject=null;
+            try {
+                jsonObject=new JSONObject(returnContent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            sign = jsonObject.optString("sign");
             startPay();
         } else if (mPayChargeBalanceTaskId == id) {
             setStatus(PAYSUCCESS);
