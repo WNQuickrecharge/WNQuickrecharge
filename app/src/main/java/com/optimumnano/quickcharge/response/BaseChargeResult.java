@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.manager.EventManager;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 

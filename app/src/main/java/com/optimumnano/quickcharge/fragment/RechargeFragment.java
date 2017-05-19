@@ -63,6 +63,7 @@ import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.request.AddStationCollectionRequest;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
+import com.optimumnano.quickcharge.request.GetAskChargeRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
@@ -79,6 +80,7 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.util.List;
@@ -137,6 +139,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
     private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
     private int mGetMapNearCarInfoTaskId;
+    private int mGetAskChargeTaskId;
     private BitmapDescriptor bitmap;
     private BitmapDescriptor bitmap1;
 
@@ -753,7 +756,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
     @Override
     public void onResume() {
         super.onResume();
-        //UpdateBuilder.create().check();
+        UpdateBuilder.create().check();
+        mGetAskChargeTaskId = TaskIdGenFactory.gen();
+//        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
+//                new GetAskChargeRequest(new AskChargeResult(mContext), mHelper, phoneNumber, "Hl", address, carNumber), this));
         if (mapView != null)
             mapView.onResume();
         //startLocation();
