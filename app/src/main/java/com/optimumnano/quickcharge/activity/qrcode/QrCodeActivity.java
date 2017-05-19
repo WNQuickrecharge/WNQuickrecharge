@@ -271,7 +271,7 @@ public class QrCodeActivity extends BaseActivity implements HttpCallback {
         Intent resultIntent = new Intent(QrCodeActivity.this, OrderActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("gunBean", ((GetGunInfoResult) result).getResp().getResult());
-//        bundle.putString("gunNo", mGunNo);
+        bundle.putString("gunNo", mGunNo);
         resultIntent.putExtras(bundle);
         //QrCodeActivity.this.setResult(RESULT_OK, resultIntent);
         //QrCodeActivity.this.startActivity(QrCodeActivity.this,OrderActivity.class);

@@ -69,7 +69,7 @@ public class WalletDepositAct extends BaseActivity implements HttpCallback {
     private PayDialog mPayDialog;
     private PayWayDialog mPayWayDialog;
     private int mChosePayway = PayDialog.pay_zfb;//默认使用微信充值
-    private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
+//    private int mChosePayway=PayDialog.pay_wx;//默认使用微信充值
     private AlertDialog mChosePaywayDialog;
     private String mPayPsd;
     private String mAmount;

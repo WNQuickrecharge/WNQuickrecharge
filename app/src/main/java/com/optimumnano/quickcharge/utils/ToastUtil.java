@@ -32,6 +32,9 @@ public class ToastUtil {
     }
 
     public static String formatToastText(Context context, BaseHttpResp resp) {
+        if (resp==null){
+            return "网络连接异常";
+        }
         if (TextUtils.isEmpty(resp.getResultMsg())) {
             return "网络连接异常";//TODO
         }

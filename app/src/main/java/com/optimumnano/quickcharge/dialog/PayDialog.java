@@ -49,6 +49,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
     public static final int PAYWAY = 1;
     public static final int PAYSUCCESS = 2;
     public static final int PAYFAIL = 3;
+    public static final int PAYBT = 4;
 
     public static final int pay_wx = 1;
     public static final int pay_zfb = 0;
