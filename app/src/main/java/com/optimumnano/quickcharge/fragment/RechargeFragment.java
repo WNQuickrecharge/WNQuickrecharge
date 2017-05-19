@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,9 +63,11 @@ import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.request.AddStationCollectionRequest;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
+import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
+import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -105,6 +109,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
     TextView tvChargeLate;
     @Bind(R.id.tv_scan_charge)
     TextView tvScanCharge;
+    @Bind(R.id.ll_ask_car_input_frame)
+    LinearLayout askCarInputFrame;
+    @Bind(R.id.ll_search_recharge_station_frame)
+    LinearLayout searchRechargeStaionFrame;
+    @Bind(R.id.iv_icon_search)
+    ImageView iconSearch;
+    @Bind(R.id.et_ask_car_input)
+    EditText askCarInput;
     private InfoWindow mInfoWindow;
     private MapManager mManager = new MapManager();
 
@@ -124,6 +136,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
     private int mGetMapRegionInfoTaskId;
     private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
+    private int mGetMapNearCarInfoTaskId;
+    private BitmapDescriptor bitmap;
+    private BitmapDescriptor bitmap1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,6 +167,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
         mTaskDispatcher.cancel(mGetMapRegionInfoTaskId);
         mTaskDispatcher.cancel(mAddStationCollectionTaskId);
         mTaskDispatcher.cancel(mAskChargeTaskId);
+        mTaskDispatcher.cancel(mGetMapNearCarInfoTaskId);
     }
 
 
@@ -294,6 +310,28 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
                 }
 
                 return true;
+            }
+        });
+
+        askCarInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int length = s.toString().length();
+                if (length>0){
+                    iconSearch.setVisibility(View.GONE);
+                }else {
+                    iconSearch.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -600,6 +638,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
         mTaskDispatcher.dispatch(new HttpTask(mGetMapRegionInfoTaskId,
                 new GetMapRegionInfoRequest(new GetMapRegionInfoResult(mContext), mHelper), this));
 
+        mGetMapNearCarInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetMapNearCarInfoTaskId,
+                new GetMapNearCarInfoRequest(new GetMapNearCarInfoResult(mContext), mHelper), this));
 //        mManager.getregionCarpile(mHelper, new ManagerCallback() {
 //            @Override
 //            public void onSuccess(Object returnContent) {
@@ -628,8 +669,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
         //清空地图
         mBaiduMap.clear();
         //创建marker的显示图标
-        BitmapDescriptor bitmap = null;
-        BitmapDescriptor bitmap1 = null;
+        bitmap = null;
+        bitmap1 = null;
         LatLng latLng = null;
         Marker marker;
         OverlayOptions options;
@@ -654,28 +695,36 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
                 bundle.putSerializable("info", info);
                 marker.setExtraInfo(bundle);
             }
-//        if (mCarPiont != null && mCarPiont.size() != 0)
-//            for (CarPoint info : mCarPiont) {
-//                if (bitmap1==null)
-//                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
-//                //获取经纬度
-//                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
-//                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
-//                //设置marker
-//                options = new MarkerOptions()
-//                        .position(latLng)//设置位置
-//                        .icon(bitmap1)//设置图标样式
-//                        .zIndex(9) ;// 设置marker所在层级
-////                        .draggable(true); // 设置手势拖拽;
-//                //添加marker
-//                marker = (Marker) mBaiduMap.addOverlay(options);
-//                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
-//                Bundle bundle = new Bundle();
-//                //info必须实现序列化接口
-//                bundle.putSerializable("info", info);
-//                marker.setExtraInfo(bundle);
-//            }
 
+
+    }
+
+    private void markCar() {
+        mBaiduMap.clear();
+        LatLng latLng;
+        OverlayOptions options;
+        Marker marker;
+        if (mCarPiont != null && mCarPiont.size() != 0)
+            for (CarPoint info : mCarPiont) {
+                if (bitmap1 ==null)
+                    bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
+                //获取经纬度
+                //latLng = gpsToBd09ll(new LatLng(info.carLat, info.carLon));//将后台的wgs84坐标转为bd09坐标,才能在百度地图正确显示
+                latLng = new LatLng(info.carLat, info.carLon);//后台把wgs84转成bd09坐标
+                //设置marker
+                options = new MarkerOptions()
+                        .position(latLng)//设置位置
+                        .icon(bitmap1)//设置图标样式
+                        .zIndex(9) ;// 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
+                //添加marker
+                marker = (Marker) mBaiduMap.addOverlay(options);
+                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+                Bundle bundle = new Bundle();
+                //info必须实现序列化接口
+                bundle.putSerializable("info", info);
+                marker.setExtraInfo(bundle);
+            }
     }
 
     private LatLng gpsToBd09ll(LatLng sourceLatLng) {
@@ -787,6 +836,24 @@ public class RechargeFragment extends BaseFragment implements HttpCallback {
             mBsdialog.dismiss();
         } else if (mAskChargeTaskId == id) {
             Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
+        } else if (mGetMapNearCarInfoTaskId == id) {
+            closeLoading();
+            List<CarPoint> carPoints = ((GetMapNearCarInfoResult) result).getResp().getResult();
+            if (mCarPiont != null && mCarPiont.equals(carPoints)) {
+                return;
+            }
+            mCarPiont = carPoints;
+            markCar();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNearStationChoosed(EventManager.onNearStationChoosed event) {
+        marker();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event) {
+        markCar();
     }
 }
