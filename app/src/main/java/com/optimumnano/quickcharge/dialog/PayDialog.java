@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
@@ -19,7 +21,6 @@ import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskDispatcher;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.request.GetOrderSignRequest;
 import com.optimumnano.quickcharge.request.GetPayPwdRequest;
 import com.optimumnano.quickcharge.request.PayChargeBalanceRequest;
@@ -27,16 +28,25 @@ import com.optimumnano.quickcharge.response.GetOrderSignResult;
 import com.optimumnano.quickcharge.response.GetPayPwdResult;
 import com.optimumnano.quickcharge.response.PayChargeBalanceResult;
 import com.optimumnano.quickcharge.utils.MD5Utils;
+import com.optimumnano.quickcharge.utils.SPConstant;
+import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MenuItem1;
 import com.optimumnano.quickcharge.views.PasswordView;
+import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+
+import static com.optimumnano.quickcharge.Constants.WX_APP_ID;
+import static com.optimumnano.quickcharge.Constants.WX_PARTNER_ID;
 
 /**
  * Created by ds on 2017/4/9.
