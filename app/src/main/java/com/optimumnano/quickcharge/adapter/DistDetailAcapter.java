@@ -107,7 +107,7 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
         holder.tvFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new EventManager.openStationDetail(holder.mItem.Id));
+                EventBus.getDefault().post(new EventManager.addCollectStation(holder.mItem.Id));
             }
         });
         holder.root.setOnClickListener(new View.OnClickListener() {

@@ -64,15 +64,12 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
 import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
 import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
-import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
 import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetCityStationResult;
@@ -161,7 +158,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private SearchStationAdapter mStationAdapter;
 
     private int mGetMapRegionInfoTaskId;
-    private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
     private int mGetNearRechargeCarInfoTaskId;
     private int mCancleAskOrderTaskId;
@@ -192,7 +188,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onDetach() {
         super.onDetach();
         mTaskDispatcher.cancel(mGetMapRegionInfoTaskId);
-        mTaskDispatcher.cancel(mAddStationCollectionTaskId);
         mTaskDispatcher.cancel(mAskChargeTaskId);
         mTaskDispatcher.cancel(mGetNearRechargeCarInfoTaskId);
     }
@@ -357,7 +352,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             holder.collectRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
+                    /*CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
                         @Override
                         public void onSuccess(Object returnContent) {
                             super.onSuccess(returnContent);
@@ -371,7 +366,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                             ToastUtil.showToast(getActivity(), msg);
 
                         }
-                    });
+                    });*/
+                    EventBus.getDefault().post(new EventManager.addCollectStation(holder.mItem.Id));
                 }
             });
             holder.bottomDialogRoot.setOnClickListener(new View.OnClickListener() {
@@ -959,9 +955,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((GetMapRegionInfoResult) result).getMapRegionInfoHttpResp()));
             closeLoading();
-        } else if (mAddStationCollectionTaskId == id) {
-            ToastUtil.showToast(getActivity(),
-                    ToastUtil.formatToastText(mContext, ((AddStationCollectionResult) result).getResp()));
         } else if (mAskChargeTaskId == id) {
             Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
@@ -986,9 +979,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             }
             mPiont = points;
             getMainActivityRadioGuoupChooesed();
-        } else if (mAddStationCollectionTaskId == id) {
-            ToastUtil.showToast(getActivity(), "收藏成功！");
-            mBsdialog.dismiss();
         } else if (mAskChargeTaskId == id) {
             askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
             LogUtils.i("test==askNo "+askNo);
