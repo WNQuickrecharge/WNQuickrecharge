@@ -77,6 +77,7 @@ import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
+import com.optimumnano.quickcharge.utils.LogUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
@@ -977,7 +978,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mBsdialog.dismiss();
         } else if (mAskChargeTaskId == id) {
             askNo = ((AskChargeResult) result).getResp().getResultMsg();//TODO 有错误
-            LogUtil.i("test==askNo"+askNo);
+            LogUtils.i("test==askNo"+askNo);
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
             askCarInputFrame.setVisibility(View.GONE);
