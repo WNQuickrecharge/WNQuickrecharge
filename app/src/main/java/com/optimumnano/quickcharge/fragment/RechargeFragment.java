@@ -601,7 +601,26 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 QrCodeActivity.start(getActivity());
                 break;
             case R.id.tv_delete_ask_order:
-                MyDialog dialog = new MyDialog(mContext,R.style.MyDialog);
+                final MyDialog dialog = new MyDialog(getActivity(),R.style.MyDialog);
+                dialog.setYesOnclickListener("确定", new MyDialog.onYesOnclickListener() {
+                    @Override
+                    public void onYesClick() {
+                        if (!Tool.isConnectingToInternet()) {
+                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        dialog.dismiss();
+                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
+                    }
+                });
+                dialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+                    @Override
+                    public void onNoClick() {
+                        dialog.dismiss();
+                    }
+                });
                 dialog.show();
                 break;
             case R.id.tv_delete_ask_order_wait:
@@ -1025,6 +1044,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
             Log.e(TAG,"askCharge "+askCharge);
             GetAskChargeBean getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
+            askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
             getMainActivityRadioGuoupChooesed();
         }
