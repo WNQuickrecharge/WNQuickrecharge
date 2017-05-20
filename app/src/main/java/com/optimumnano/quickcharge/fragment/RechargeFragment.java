@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -74,9 +75,8 @@ import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AskChargeResult;
-import com.optimumnano.quickcharge.response.GetAskChargeResult;
-import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.CancelAskOrderResult;
+import com.optimumnano.quickcharge.response.GetAskChargeResult;
 import com.optimumnano.quickcharge.response.GetCityStationResult;
 import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
