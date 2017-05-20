@@ -73,9 +73,11 @@ import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
 import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
+import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
+import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
@@ -90,6 +92,7 @@ import com.optimumnano.quickcharge.views.BottomSheetDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
@@ -167,6 +170,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mGetMapRegionInfoTaskId;
     private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
+    private int mGetNearRechargeCarInfoTaskId;
     private int mCancleAskOrderTaskId;
 
     @Override
@@ -196,6 +200,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         mTaskDispatcher.cancel(mGetMapRegionInfoTaskId);
         mTaskDispatcher.cancel(mAddStationCollectionTaskId);
         mTaskDispatcher.cancel(mAskChargeTaskId);
+        mTaskDispatcher.cancel(mGetNearRechargeCarInfoTaskId);
     }
 
 
@@ -749,46 +754,49 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
     private void initPoint() {
         //mBaiduMap.clear();
-        getRegionCar();
+        //getRegionCar();
 //TODO 有错误
         mGetMapRegionInfoTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetMapRegionInfoTaskId,
                 new GetMapRegionInfoRequest(new GetMapRegionInfoResult(mContext), mHelper), this));
 
+        mGetNearRechargeCarInfoTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetNearRechargeCarInfoTaskId,
+                new GetMapNearCarInfoRequest(new GetMapNearCarInfoResult(mContext), mHelper), this));
     }
 
-    private void getRegionCar() {
-        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                closeLoading();
-                if (mCarPiont != null && mCarPiont.equals(returnContent))
-                    return;
-                mCarPiont = (List<CarPoint>) returnContent;
-                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
-                switch (checkedRadioButtonId) {
-                    case R.id.main_rbRecharge:
-                        markerNearStaion();
-                        break;
-
-                    case R.id.main_rbRechargeCar:
-                        markerNearRechargeCar();
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                ToastUtil.showToast(getActivity(), msg);
-                closeLoading();
-            }
-        });
-    }
+//    private void getRegionCar() {
+//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
+//            @Override
+//            public void onSuccess(Object returnContent) {
+//                super.onSuccess(returnContent);
+//                closeLoading();
+//                if (mCarPiont != null && mCarPiont.equals(returnContent))
+//                    return;
+//                mCarPiont = (List<CarPoint>) returnContent;
+//                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+//                switch (checkedRadioButtonId) {
+//                    case R.id.main_rbRecharge:
+//                        markerNearStaion();
+//                        break;
+//
+//                    case R.id.main_rbRechargeCar:
+//                        markerNearRechargeCar();
+//                        break;
+//
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                super.onFailure(msg);
+//                ToastUtil.showToast(getActivity(), msg);
+//                closeLoading();
+//            }
+//        });
+//    }
 
 
     private void closeLoading() {
@@ -891,7 +899,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Override
     public void onResume() {
         super.onResume();
-//        UpdateBuilder.create().check();
+        UpdateBuilder.create().check();
+
         if (mapView != null)
             mapView.onResume();
         //startLocation();
@@ -955,6 +964,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     ToastUtil.formatToastText(mContext, ((AddStationCollectionResult) result).getResp()));
         } else if (mAskChargeTaskId == id) {
             Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
+        } else if (mGetNearRechargeCarInfoTaskId == id) {
+            ToastUtil.showToast(getActivity(),
+                    ToastUtil.formatToastText(mContext, ((GetMapNearCarInfoResult)result).getResp()));
         } else if (mCancleAskOrderTaskId  == id){
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
@@ -973,19 +985,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 return;
             }
             mPiont = points;
-            int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
-            switch (checkedRadioButtonId) {
-                case R.id.main_rbRecharge:
-                    markerNearStaion();
-                    break;
-
-                case R.id.main_rbRechargeCar:
-                    markerNearRechargeCar();
-                    break;
-
-                default:
-                    break;
-            }
+            getMainActivityRadioGuoupChooesed();
         } else if (mAddStationCollectionTaskId == id) {
             ToastUtil.showToast(getActivity(), "收藏成功！");
             mBsdialog.dismiss();
@@ -997,11 +997,35 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             askCarInputFrame.setVisibility(View.GONE);
             carComingSoon.setVisibility(View.VISIBLE);
             mBaiduMap.clear();
+        } else if (mGetNearRechargeCarInfoTaskId == id) {
+            closeLoading();
+            List<CarPoint> carPoints = ((GetMapNearCarInfoResult) result).getResp().getResult();
+            if (mCarPiont != null && mCarPiont.equals(carPoints)) {
+                return;
+            }
+            mCarPiont = carPoints;
+            getMainActivityRadioGuoupChooesed();
         } else if (mCancleAskOrderTaskId == id){
             askOrderStatus=AskOrderStatus.DEFAULT;
             askCarInputFrame.setVisibility(View.VISIBLE);
             searchRechargeStaionFrame.setVisibility(View.GONE);
             carComingSoon.setVisibility(View.GONE);
+        }
+    }
+
+    private void getMainActivityRadioGuoupChooesed() {
+        int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
+        switch (checkedRadioButtonId) {
+            case R.id.main_rbRecharge:
+                markerNearStaion();
+                break;
+
+            case R.id.main_rbRechargeCar:
+                markerNearRechargeCar();
+                break;
+
+            default:
+                break;
         }
     }
 

@@ -75,6 +75,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
         LinearLayout linearLayout = helper.getView(R.id.ll_gunList);
         ImageView imageView = helper.getView(R.id.gun_status_img);
         String fristFreeGunNo = "";
+        String firstFreePileNo = "";
         GunBean firstFreeGun = null;
         for (int i = 0; i < item.getGunList().size(); i++) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.itemview_station_pile_gun, null);
@@ -104,9 +105,12 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
             }
 
             for (int i = 0; i < item.getGunList().size(); i++) {
-                if (item.getGunList().get(i).getGunStatus() == PROMPTLY_CHARGE) {
-                    fristFreeGunNo = item.getGunList().get(i).getGun_code();
-                    firstFreeGun = item.getGunList().get(i);
+                GunBean gunBean = item.getGunList().get(i);
+                if (gunBean.getGunStatus() == PROMPTLY_CHARGE) {
+                    fristFreeGunNo = gunBean.getGun_code();
+                    firstFreeGun = gunBean;
+                    firstFreePileNo = gunBean.getPileNo();
+
                     item.setStatus(PROMPTLY_CHARGE);
                     break;
                 }
@@ -122,6 +126,8 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                 finalFristFreeGunNo = fristFreeGunNo;
                 finalFirstFreeGun = firstFreeGun;
 
+                final String finalFirstFreePileNo = firstFreePileNo;
+                final String finalFristFreeGunNo1 = fristFreeGunNo;
                 pileStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -151,7 +157,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                         mGetGunInfoTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mGetGunInfoTaskId,
                                 new GetGunInfoRequest(new GetGunInfoResult(context),
-                                        item.getPileNo()), (HttpCallback) StationPilesAdapter.this));
+                                        finalFirstFreePileNo + finalFristFreeGunNo1), (HttpCallback) StationPilesAdapter.this));
                     }
                 });
 

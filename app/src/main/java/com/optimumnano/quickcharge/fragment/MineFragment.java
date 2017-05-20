@@ -172,7 +172,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
         GetUserInfoResult r = (GetUserInfoResult) result;
         double restCash = r.getUserAccountResp().getResult().getRestCash();
-        mTvBalance.setText(StringUtils.formatDouble(restCash));
+        mTvBalance.setText("￥"+StringUtils.formatDouble(restCash));
     }
 
     @Override
