@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.optimumnano.quickcharge.utils.LogUtils;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -94,19 +96,19 @@ public abstract class BaseRequest {
             addParams();
             setRequestUrl();
             setRequestBody();
-            Log.d(TAG, String.format("final request url : %s ,with times : ( %s )", httpUrl.url(), (i + 1)));
+
             try {
                 call = taskDispatcher.httpClient.newCall(requestBuilder.build());
                 Headers headers = call.request().newBuilder().build().headers();
+                LogUtils.i(String.format("=======>request url : %s ,with times : ( %s )", httpUrl.url(), (i + 1)));
                 for (int j = 0; j < headers.size(); j++) {
                     String headerName = headers.name(j);
                     String headerValue = headers.value(j);
-                    Log.e("ttt", "headerName : " + headerName + ",headerValue : " + headerValue);
+                    LogUtils.i("=======>headerName : " + headerName + ",     headerValue : " + headerValue);
                 }
                 response = call.execute();
                 int code = response.code();
-                Log.d(TAG, "status code : " + code);
-                Log.d(TAG, "response : " + response);
+                LogUtils.i("=======>status code : " + code);
                 if (result.processStatus(code)) {
                     response = null;
                     return ret;
@@ -145,7 +147,7 @@ public abstract class BaseRequest {
                 }
             }
         }
-        Log.e(TAG, "finish request,ret : " + ret);
+        LogUtils.i("=======>finish request,ret : " + ret);
         if (!alive) {
             // check if request canceled
             ret = HttpResult.CANCELED;

@@ -46,6 +46,7 @@ public class TaskDispatcher {
 //                    .sslSocketFactory(AllTrustSSLSocketFactory.get())
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .readTimeout(20, TimeUnit.SECONDS).writeTimeout(15, TimeUnit.SECONDS)
+                    .addInterceptor(new LogInterceptor())
                     .cookieJar(new CookieJar() {
                         @Override
                         public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {

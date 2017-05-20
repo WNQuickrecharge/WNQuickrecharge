@@ -74,6 +74,7 @@ import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
+import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
 import com.optimumnano.quickcharge.request.GetAskChargeRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
@@ -81,8 +82,10 @@ import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
 import com.optimumnano.quickcharge.response.GetAskChargeResult;
 import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
+import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
+import com.optimumnano.quickcharge.utils.LogUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
@@ -102,7 +105,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 
 /**
  * 充电
@@ -174,8 +176,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
     private int mGetNearRechargeCarInfoTaskId;
+    private int mCancleAskOrderTaskId;
     private int mGetAskChargeTaskId;
-    private int mCancelAskChargeTaskId;
 
 
     @Override
@@ -206,7 +208,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         mTaskDispatcher.cancel(mAddStationCollectionTaskId);
         mTaskDispatcher.cancel(mAskChargeTaskId);
         mTaskDispatcher.cancel(mGetNearRechargeCarInfoTaskId);
-        mTaskDispatcher.cancel(mGetAskChargeTaskId);
     }
 
 
@@ -311,8 +312,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         searchRv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         searchRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchRv.setAdapter(mStationAdapter);
-
-
     }
 
     private void showBottomDialog(Object obj,boolean needCalcDistance) {
@@ -611,7 +610,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     @Override
                     public void onYesClick() {
                         myDialog.dismiss();
-                        mManager.cancleAskOrder(askNo, new ManagerCallback() {//TODO 更新框架
+                        /*mManager.cancleAskOrder(askNo, new ManagerCallback() {//TODO更新框架
                             @Override
                             public void onSuccess(Object returnContent) {
                                 super.onSuccess(returnContent);
@@ -626,7 +625,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                                 super.onFailure(msg);
                                 ToastUtil.showToast(getActivity(),msg);
                             }
-                        });
+                        });*/
+                        if (!Tool.isConnectingToInternet()) {
+                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
                     }
                 });
                 myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
@@ -973,6 +979,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         } else if (mGetAskChargeTaskId == id) {
             ToastUtil.showToast(mContext,
                     ToastUtil.formatToastText(mContext, ((GetAskChargeResult) result).getResp()));
+        } else if (mCancleAskOrderTaskId  == id){
+            ToastUtil.showToast(getActivity(),
+                    ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
         }
     }
 
@@ -993,8 +1002,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(getActivity(), "收藏成功！");
             mBsdialog.dismiss();
         } else if (mAskChargeTaskId == id) {
-            askNo = ((AskChargeResult) result).getResp().getResultMsg();//TODO 有错误
-            LogUtil.i("test==askNo"+askNo);
+            askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
+            LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
             getMainActivityRadioGuoupChooesed();
@@ -1006,6 +1015,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             }
             mCarPiont = carPoints;
             getMainActivityRadioGuoupChooesed();
+        } else if (mCancleAskOrderTaskId == id){
+            askOrderStatus=AskOrderStatus.DEFAULT;
+            askCarInputFrame.setVisibility(View.VISIBLE);
+            searchRechargeStaionFrame.setVisibility(View.GONE);
+            carComingSoon.setVisibility(View.GONE);
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
@@ -1015,7 +1029,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getMainActivityRadioGuoupChooesed();
         }
     }
-
 
     private void getMainActivityRadioGuoupChooesed() {
         int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
