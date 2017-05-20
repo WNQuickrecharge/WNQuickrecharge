@@ -1006,6 +1006,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
+            ask_state = 0;
             getMainActivityRadioGuoupChooesed();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             closeLoading();
@@ -1016,10 +1017,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mCarPiont = carPoints;
             getMainActivityRadioGuoupChooesed();
         } else if (mCancleAskOrderTaskId == id){
-            askOrderStatus=AskOrderStatus.DEFAULT;
-            askCarInputFrame.setVisibility(View.VISIBLE);
-            searchRechargeStaionFrame.setVisibility(View.GONE);
-            carComingSoon.setVisibility(View.GONE);
+            ask_state = -1;
+           getMainActivityRadioGuoupChooesed();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
