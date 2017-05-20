@@ -3,7 +3,6 @@ package com.optimumnano.quickcharge.request;
 import android.support.v4.util.ArrayMap;
 
 import com.alibaba.fastjson.JSON;
-import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.InternalConstants;
 import com.optimumnano.quickcharge.net.HttpApi;
@@ -18,11 +17,9 @@ import okhttp3.RequestBody;
  */
 
 public class GetAskChargeRequest extends BaseChargeRequest {
-    private PreferencesHelper mHelper;
 
-    public GetAskChargeRequest(BaseResult result, PreferencesHelper helper) {
+    public GetAskChargeRequest(BaseResult result) {
         super(result);
-        mHelper = helper;
     }
 
     @Override

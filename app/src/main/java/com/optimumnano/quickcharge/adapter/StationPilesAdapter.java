@@ -89,11 +89,14 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
             servicePrice.setText(Html.fromHtml(context.getString(R.string.station_service_price, "¥ " + item.getGunList().get(0).max_service + "/kw.h")));
             pileNo.setText(item.getGunList().get(0).getPileNo());
             for (int i = 0; i < item.getGunList().size(); i++) {
-                if (!(item.getGunList().get(i).getGunStatus() == CHARGEING)) {//所有的枪处于正在充电,桩才是正在充电状态
+                int gunStatus = item.getGunList().get(i).getGunStatus();
+                if (gunStatus != CHARGEING) {//所有的枪处于正在充电,桩才是正在充电状态
                     isChargeing = false;
-                } else if (!(item.getGunList().get(i).getGunStatus() == MAINTAIN)) {
+                }
+                if (gunStatus != MAINTAIN) {
                     isMaintain = false;
-                } else if (!(item.getGunList().get(i).getGunStatus() == NETWORK_OUTTIME)) {
+                }
+                if (gunStatus != NETWORK_OUTTIME) {
                     isNetWorkOutTime = false;
                 }
             }
