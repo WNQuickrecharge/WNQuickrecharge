@@ -977,8 +977,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(getActivity(), "收藏成功！");
             mBsdialog.dismiss();
         } else if (mAskChargeTaskId == id) {
-            askNo = ((AskChargeResult) result).getResp().getResultMsg();//TODO 有错误
-            LogUtils.i("test==askNo"+askNo);
+            askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
+            LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
             askCarInputFrame.setVisibility(View.GONE);
