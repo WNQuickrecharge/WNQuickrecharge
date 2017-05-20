@@ -72,9 +72,11 @@ import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
+import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
+import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 import com.optimumnano.quickcharge.utils.LogUtils;
@@ -165,6 +167,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mGetMapRegionInfoTaskId;
     private int mAddStationCollectionTaskId;
     private int mAskChargeTaskId;
+    private int mCancleAskOrderTaskId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -595,7 +598,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     @Override
                     public void onYesClick() {
                         myDialog.dismiss();
-                        mManager.cancleAskOrder(askNo, new ManagerCallback() {//TODO 更新框架
+                        /*mManager.cancleAskOrder(askNo, new ManagerCallback() {//TODO更新框架
                             @Override
                             public void onSuccess(Object returnContent) {
                                 super.onSuccess(returnContent);
@@ -610,7 +613,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                                 super.onFailure(msg);
                                 ToastUtil.showToast(getActivity(),msg);
                             }
-                        });
+                        });*/
+                        if (!Tool.isConnectingToInternet()) {
+                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
                     }
                 });
                 myDialog.setNoOnclickListener(null, new MyDialog.onNoOnclickListener() {
@@ -945,6 +955,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     ToastUtil.formatToastText(mContext, ((AddStationCollectionResult) result).getResp()));
         } else if (mAskChargeTaskId == id) {
             Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
+        } else if (mCancleAskOrderTaskId  == id){
+            ToastUtil.showToast(getActivity(),
+                    ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
         }
     }
 
@@ -984,6 +997,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             askCarInputFrame.setVisibility(View.GONE);
             carComingSoon.setVisibility(View.VISIBLE);
             mBaiduMap.clear();
+        } else if (mCancleAskOrderTaskId == id){
+            askOrderStatus=AskOrderStatus.DEFAULT;
+            askCarInputFrame.setVisibility(View.VISIBLE);
+            searchRechargeStaionFrame.setVisibility(View.GONE);
+            carComingSoon.setVisibility(View.GONE);
         }
     }
 

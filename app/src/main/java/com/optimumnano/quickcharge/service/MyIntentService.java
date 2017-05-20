@@ -9,8 +9,7 @@ import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.request.GetUIPushRequest;
 import com.optimumnano.quickcharge.response.GetUIPushResult;
-
-import org.xutils.common.util.LogUtil;
+import com.optimumnano.quickcharge.utils.LogUtils;
 
 /**
  * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调<br>
@@ -32,13 +31,13 @@ public class MyIntentService extends GTIntentService {
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage msg) {
         String data = new String(msg.getPayload());
-        LogUtil.i("test==onReceiveMessageData " + data);
+        LogUtils.i("test==onReceiveMessageData " + data);
         PushCustom.inject(data);
     }
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        LogUtil.i("test==onReceiveClientId " + clientid);
+        LogUtils.i("test==onReceiveClientId " + clientid);
 //        GetuiPushManager.setGetuiRegisterid(clientid, new ManagerCallback() {
 //            @Override
 //            public void onSuccess(Object returnContent) {
