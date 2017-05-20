@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -32,7 +31,6 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -68,17 +66,17 @@ import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.MapManager;
-import com.optimumnano.quickcharge.manager.StationManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.AskChargeRequest;
 import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
+import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.response.AskChargeResult;
-import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.CancelAskOrderResult;
+import com.optimumnano.quickcharge.response.GetCityStationResult;
+import com.optimumnano.quickcharge.response.GetMapNearCarInfoResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 import com.optimumnano.quickcharge.utils.LogUtils;
@@ -142,8 +140,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     TextView deleteAskOrder;
     @Bind(R.id.search_station_rv)
     RecyclerView searchRv;
-    private InfoWindow mInfoWindow;
-    private MapManager mManager = new MapManager();
 
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
@@ -154,9 +150,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     boolean isFirstLoc = true; // 是否首次定位
     private BottomSheetDialog mBsdialog;
     private View mPopView;
-    private String serviceVersionJsonInfo;
-    private MyDialog myDialog;
-    private LinearLayout bottomDialogRoot;
     //创建marker的显示图标
     BitmapDescriptor bitmap = null;
     BitmapDescriptor bitmap1 = null;
@@ -172,6 +165,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mAskChargeTaskId;
     private int mGetNearRechargeCarInfoTaskId;
     private int mCancleAskOrderTaskId;
+    private int mGetCityStationTaskId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -402,7 +396,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     private void getStations() {
-        StationManager.getCityStations(((BaseActivity)getActivity()).mHelper.getCity(), new ManagerCallback() {
+        /*StationManager.getCityStations(((BaseActivity)getActivity()).mHelper.getCity(), new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
@@ -414,7 +408,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             public void onFailure(String msg) {
                 super.onFailure(msg);
             }
-        });
+        });*/
+        if (!Tool.isConnectingToInternet()) {
+            return;
+        }
+        mGetCityStationTaskId = TaskIdGenFactory.gen();
+        String city = ((BaseActivity) getActivity()).mHelper.getCity();
+        mTaskDispatcher.dispatch(new HttpTask(mGetCityStationTaskId,
+                new GetCityStationRequest(new GetCityStationResult(mContext), city), this));
     }
 
     @Override
@@ -755,7 +756,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private void initPoint() {
         //mBaiduMap.clear();
         //getRegionCar();
-//TODO 有错误
         mGetMapRegionInfoTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetMapRegionInfoTaskId,
                 new GetMapRegionInfoRequest(new GetMapRegionInfoResult(mContext), mHelper), this));
@@ -1010,6 +1010,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             askCarInputFrame.setVisibility(View.VISIBLE);
             searchRechargeStaionFrame.setVisibility(View.GONE);
             carComingSoon.setVisibility(View.GONE);
+        } else if (mGetCityStationTaskId  == id){
+            mStationList = ((GetCityStationResult) result).getResp().getResult();
         }
     }
 
