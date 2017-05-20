@@ -601,7 +601,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 QrCodeActivity.start(getActivity());
                 break;
             case R.id.tv_delete_ask_order:
-
+                MyDialog dialog = new MyDialog(mContext,R.style.MyDialog);
+                dialog.show();
                 break;
             case R.id.tv_delete_ask_order_wait:
                 final MyDialog myDialog = new MyDialog(getActivity(), R.style.MyDialog);

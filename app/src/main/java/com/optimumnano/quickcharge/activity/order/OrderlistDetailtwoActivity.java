@@ -86,7 +86,8 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         miSMoney.setRightText("￥" + formatChargeCash);
         miAllelec.setRightText(orderBean.charge_vol + "kwh");
         double backMoney = orderBean.frozen_cash - orderBean.charge_cash;
-
+        tvCompany.setText(orderBean.station_name);
+        tvAddress.setText(orderBean.station_addr);
         String format = decimalFormat.format(backMoney);
         miBackMoney.setRightText("￥" + format);
         miAllMoney.setRightText("￥" + orderBean.charge_cash);
