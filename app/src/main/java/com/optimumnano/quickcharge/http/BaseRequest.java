@@ -106,6 +106,7 @@ public abstract class BaseRequest {
                 response = call.execute();
                 int code = response.code();
                 Log.d(TAG, "status code : " + code);
+                Log.d(TAG, "response : " + response);
                 if (result.processStatus(code)) {
                     response = null;
                     return ret;
