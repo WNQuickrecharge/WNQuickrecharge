@@ -47,6 +47,9 @@ public class OrderBean implements Serializable{
     public int power_time;
     /** 充电类型  1固定桩 2 移动补电车*/
     public int charge_from;
+
+    public String station_name;
+    public String station_addr;
     public OrderBean(){
     }
 

@@ -114,6 +114,8 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
             tvCancel.setVisibility(View.GONE);
             tvWatchStatus.setVisibility(View.VISIBLE);
         }
+        tvCompany.setText(orderBean.station_name);
+        tvAddress.setText(orderBean.station_addr);
         tvOrdernum.setText(orderBean.order_no);
         miGunNum.setRightText(orderBean.gun_code);
         miPileType.setRightText(orderBean.pile_type);

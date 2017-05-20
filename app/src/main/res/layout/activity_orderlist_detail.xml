@@ -72,7 +72,7 @@
                 android:textSize="@dimen/default_textsize16"
                 android:textColor="@color/black"
                 android:layout_below="@id/orderlistDetl_tvOrdernum"
-                android:text="沃特马电池有限公司"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/orderlistDetl_tvAddress"
