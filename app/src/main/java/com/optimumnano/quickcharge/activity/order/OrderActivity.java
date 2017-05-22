@@ -255,17 +255,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             showToast("无网络");
             return;
         }
-        String frozen_cash = edtMoney.getText().toString();
-        if (StringUtils.isEmpty(frozen_cash)) {
-            showToast("预付金额不能为空");
-            return;
-        }
+
         tvConfirm.setEnabled(false);
         mHandler.sendEmptyMessageDelayed(ADDORDER_FLAG,1500);
         showLoading();
         mAddOrderTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAddOrderTaskId,
-                new AddOrderRequest(new AddOrderResult(mContext), payWay, gunNo, frozen_cash), this));
+                new AddOrderRequest(new AddOrderResult(mContext), payWay, gunNo, mAmount), this));
     }
 
     @Override
