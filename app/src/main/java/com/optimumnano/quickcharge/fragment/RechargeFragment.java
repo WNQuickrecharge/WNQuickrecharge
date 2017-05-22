@@ -154,8 +154,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     TextView tvCarNumber;
     @Bind(R.id.tv_driver_mobile)
     TextView driverMobile;
-    private InfoWindow mInfoWindow;
-    private MapManager mManager = new MapManager();
 
     public LocationClient locationClient;
     public BDLocationListener myListener = new MyLocationListener();
