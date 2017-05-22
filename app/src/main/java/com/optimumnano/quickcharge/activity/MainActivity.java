@@ -32,6 +32,7 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
+import com.optimumnano.quickcharge.activity.order.RechargeControlActivity;
 import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.test.BNDemoGuideActivity;
 import com.optimumnano.quickcharge.alipay.PayResult;
@@ -61,6 +62,7 @@ import com.optimumnano.quickcharge.views.MyViewPager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.xutils.common.util.LogUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -697,5 +699,26 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     @Override
     public void onRequestCancel(int id) {
 
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
+        int code = event.code;
+        if (0 == code){
+            skipAct(event.data,Constants.STARTCHARGE);
+        }else {
+            //微信支付失败
+        }
+        LogUtil.i("test==orderadapter weixinpay callback "+event.code);
+    }
+
+    private void skipAct(String order_no,int status) {
+        Intent intent = new Intent(MainActivity.this,RechargeControlActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("order_no",order_no);
+        bundle.putInt("order_status",status);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
