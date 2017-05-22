@@ -152,6 +152,7 @@ public class QrCodeActivity extends BaseActivity implements HttpCallback {
         public void onAnalyzeSuccess(Bitmap mBitmap, final String result) {
             showToast("获取枪状态中!请稍等");
             resultGunNumber = result;
+            showLoading();
             getGunInfo(resultGunNumber);
         }
 
@@ -203,6 +204,7 @@ public class QrCodeActivity extends BaseActivity implements HttpCallback {
                     return;
 //                    gunno="440307010040000081006";
                 }
+                showLoading();
                 getGunInfo(gunno);
                 break;
             case R.id.iv_deng:

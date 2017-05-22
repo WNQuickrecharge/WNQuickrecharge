@@ -992,6 +992,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onDestroy() {
         super.onDestroy();
         needPostMessage = false;
+        handler.removeCallbacksAndMessages(null);
         if (mapView != null)
             mapView.onDestroy();
         if (mBsdialog != null)
@@ -1224,11 +1225,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
                     mBaiduMap.clear();
-//                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
-//                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
-//                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
-//                                    mHelper.getCarVin()),this));
-                    doGetRechargeCarLocation();
+                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
+                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
+                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
+                                    mHelper.getCarVin()),this));
+                    //doGetRechargeCarLocation();
                 }
                 break;
 

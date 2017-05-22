@@ -14,8 +14,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.order.OrderActivity;
+import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.GunBean;
 import com.optimumnano.quickcharge.bean.PileBean;
+import com.optimumnano.quickcharge.bean.RechargeGunBean;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
@@ -157,6 +159,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                             ToastUtil.showToast(context, "无网络");
                             return;
                         }
+                        ((BaseActivity) mContext).showLoading();
                         mGetGunInfoTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mGetGunInfoTaskId,
                                 new GetGunInfoRequest(new GetGunInfoResult(context),
@@ -193,6 +196,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
 
     @Override
     public void onRequestFail(int id, BaseResult result) {
+        ((BaseActivity) mContext).closeLoading();
         if (!mActive) {
             return;
         }
@@ -201,13 +205,15 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
 
     @Override
     public void onRequestSuccess(int id, BaseResult result) {
+        ((BaseActivity) mContext).closeLoading();
         if (!mActive) {
             return;
         }
+        RechargeGunBean resultGunBean = ((GetGunInfoResult) result).getResp().getResult();
         Intent intent = new Intent(context, OrderActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("gun_no", finalFristFreeGunNo);
-        bundle.putSerializable("gunBean", finalFirstFreeGun);
+        bundle.putString("gun_no", resultGunBean.gun_code);
+        bundle.putSerializable("gunBean", resultGunBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
