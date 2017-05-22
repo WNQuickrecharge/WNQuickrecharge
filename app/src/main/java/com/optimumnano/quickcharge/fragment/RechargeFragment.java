@@ -1224,10 +1224,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
                     mBaiduMap.clear();
-                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
-                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
-                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
-                                    mHelper.getCarVin()),this));
+//                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
+//                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
+//                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
+//                                    mHelper.getCarVin()),this));
+                    doGetRechargeCarLocation();
                 }
                 break;
 
