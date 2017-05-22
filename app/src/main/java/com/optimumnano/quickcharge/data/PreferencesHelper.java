@@ -29,6 +29,7 @@ public class PreferencesHelper {
     public static final String IS_OPEN_SHOW_ONLY_FREE = "is_open_show_free";
     public static final String KM = "km";
     public static final String KV = "kv";
+    public static final String CAR_VIN="car_vin";
 
 
     public PreferencesHelper(Context context) {
@@ -93,6 +94,12 @@ public class PreferencesHelper {
         editor.apply();
     }
 
+    public void setCarVin(String carVin) {
+        SharedPreferences.Editor editor = mPref.edit();
+        editor.putString(CAR_VIN, carVin);
+        editor.apply();
+    }
+
     public Location getLocation() {
         String location = mPref.getString(LOCATION, null);
         if (location != null)
@@ -104,6 +111,8 @@ public class PreferencesHelper {
     public String getCity() {
         return mPref.getString(LOCATION_CITY, null);
     }
+
+    public String getCarVin(){return  mPref.getString(CAR_VIN, null);}
 
     public boolean updateCity(String city) {
         if (TextUtils.isEmpty(city) || city == "")

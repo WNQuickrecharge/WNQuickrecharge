@@ -1057,6 +1057,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getMainActivityRadioGuoupChooesed();
         } else if (mCancleAskOrderTaskId == id){
             ask_state = -1;
+            mHelper.setCarVin("");
            getMainActivityRadioGuoupChooesed();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
@@ -1083,8 +1084,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             String format = decimalFormat.format(distance);
             int needTimeArrive = (int) (distance / 30.0*60);
             carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
-            tvCarNumber.setText(carNumber);
-            driverMobile.setText(driverNumber);
+            tvCarNumber.setText("车牌号："+carNumber);
+            driverMobile.setText("电话： "+driverNumber);
 
         } else if (mGetCityStationTaskId  == id){
             mStationList = ((GetCityStationResult) result).getResp().getResult();
@@ -1121,7 +1122,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     mBaiduMap.clear();
                     mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
                     mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
-                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext), carVin),this));
+                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
+                                    mHelper.getCarVin()),this));
                 }
                 break;
 
@@ -1147,6 +1149,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onOrderDispatched(EventManager.onOrderDispatched event){
         PushCustom msg = event.msg;
         if (msg.ask_state == 1) {
+            mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
             mGetAskChargeTaskId = TaskIdGenFactory.gen();
