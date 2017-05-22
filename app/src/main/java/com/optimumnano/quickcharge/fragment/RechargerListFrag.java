@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.StationActivity;
 import com.optimumnano.quickcharge.adapter.DistDetailAcapter;
 import com.optimumnano.quickcharge.adapter.OnListClickListener;
 import com.optimumnano.quickcharge.adapter.RegionListAdatper;
@@ -22,14 +20,9 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.response.GetCityStationResult;
 import com.optimumnano.quickcharge.utils.Tool;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +62,7 @@ public class RechargerListFrag extends BaseFragment implements HttpCallback {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         inflate = inflater.inflate(R.layout.popup_window_for_city, container, false);
         return inflate;
     }
@@ -252,23 +245,11 @@ public class RechargerListFrag extends BaseFragment implements HttpCallback {
         return mPoint;
     }
 
-    @Override
+/*    @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void openStationActivity(EventManager.openStationActivity event) {
-        Intent intent = new Intent(getActivity(), StationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("Station", event.bean);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
-    }
-
-    //http
-
+    }*/
 
     @Override
     public void onRequestSuccess(int id, BaseResult result) {

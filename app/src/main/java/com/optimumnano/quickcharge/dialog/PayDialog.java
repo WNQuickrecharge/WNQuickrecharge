@@ -542,6 +542,11 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             PayChargeBalanceResult r = (PayChargeBalanceResult) result;
             ToastUtil.showToast(activity, ToastUtil.formatToastText(activity, r.getResp()));
             payCallback.payFail(ToastUtil.formatToastText(activity, r.getResp()));
+        } else if (mGetWxOrderSignTaskId == id) {
+            close();
+            GetOrderSignResult r = (GetOrderSignResult) result;
+            ToastUtil.showToast(activity, ToastUtil.formatToastText(activity, r.getResp()));
+            payCallback.payFail(ToastUtil.formatToastText(activity, r.getResp()));
         }
     }
 
@@ -558,8 +563,6 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
                 } else if (payWay == pay_zfb) {
                     payZFB();
                 } else {
-//                    payCallback.payFail("微信支付开发中");
-//                    setStatus(PayDialog.EDTPWD);
                     payWeiXin(money,order_no);
                 }
             } else {
@@ -579,11 +582,17 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             setStatus(PAYSUCCESS);
             handler.sendEmptyMessageDelayed(1001, 2000);
         } else if (mGetWxOrderSignTaskId == id){
+            JSONObject dataJson = null;
+            try {
+                dataJson = new JSONObject(((GetOrderSignResult) result).getResp().getResult());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             final IWXAPI wxApi = WXAPIFactory.createWXAPI(activity, WX_APP_ID);
             //将该app注册到微信
             wxApi.registerApp(WX_APP_ID);
 
-            String sign =  ((GetOrderSignResult) result).getResp().getResult();
+            String sign = dataJson.optString("sign");
             WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
             boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
             if (isPaySupported) {

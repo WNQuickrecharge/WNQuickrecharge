@@ -55,6 +55,7 @@ import com.optimumnano.quickcharge.utils.KeyboardWatcher;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MyViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -611,8 +612,8 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void openStationDetail(EventManager.openStationDetail event) {
-        int id = event.id;
+    public void addCollectStation(EventManager.addCollectStation event) {
+        int id = event.station_id;
 //        new CollectManager().addCollectStation(id, new ManagerCallback() {
 //            @Override
 //            public void onSuccess(Object returnContent) {
@@ -626,6 +627,10 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 //                showToast(msg);
 //            }
 //        });
+        if (!Tool.isConnectingToInternet()) {
+            ToastUtil.showToast(MainActivity.this,"无网络");
+            return;
+        }
         mAddStationCollectionTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAddStationCollectionTaskId,
                 new AddStationCollectionRequest(new AddStationCollectionResult(mContext), id), this));
