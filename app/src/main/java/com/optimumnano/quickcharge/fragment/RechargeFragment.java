@@ -970,6 +970,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onResume() {
         super.onResume();
         UpdateBuilder.create().check();
+        needPostMessage = true;
         mGetAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
                 new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
@@ -981,6 +982,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Override
     public void onPause() {
         super.onPause();
+        needPostMessage = false;
         if (mapView != null)
             mapView.onPause();
 //        EventBus.getDefault().unregister(this);
@@ -989,6 +991,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+        needPostMessage = false;
         if (mapView != null)
             mapView.onDestroy();
         if (mBsdialog != null)
