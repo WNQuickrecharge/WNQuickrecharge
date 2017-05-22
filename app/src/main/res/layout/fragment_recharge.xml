@@ -245,7 +245,7 @@
                 <TextView
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/tv_car_number"
-                    android:id="@+id/tv_driver_number"
+                    android:id="@+id/tv_driver_mobile"
                     android:layout_width="wrap_content"
                     android:hint="电话:"
                     android:layout_height="wrap_content" />

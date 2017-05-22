@@ -22,6 +22,11 @@ public class GetAskChargeBean {
     private String charge_phone;
     private String charge_name;
     private String charge_plate;
+    /**
+     * car_vin : LGHT7V1D2GG100995
+     */
+
+    private String car_vin;
 
     public int getAsk_state() {
         return ask_state;
@@ -61,5 +66,13 @@ public class GetAskChargeBean {
 
     public void setCharge_plate(String charge_plate) {
         this.charge_plate = charge_plate;
+    }
+
+    public String getCar_vin() {
+        return car_vin;
+    }
+
+    public void setCar_vin(String car_vin) {
+        this.car_vin = car_vin;
     }
 }
