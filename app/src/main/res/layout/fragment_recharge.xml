@@ -234,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/color33"
                     android:textSize="14sp"
-                    android:text="与补电车相距X公里,预计Y分钟到达"/>
+                    android:text="与补电车相距公里,预计分钟到达"/>
                 <TextView
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/tv_car_come_time"

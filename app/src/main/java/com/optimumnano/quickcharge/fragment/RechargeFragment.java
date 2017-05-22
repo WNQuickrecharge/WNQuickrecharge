@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +44,17 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jaychang.st.SimpleText;
@@ -52,6 +65,7 @@ import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
 import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressActivity;
 import com.optimumnano.quickcharge.adapter.OnListItemClickListener;
 import com.optimumnano.quickcharge.adapter.SearchStationAdapter;
+import com.optimumnano.quickcharge.baiduUtil.DrivingRouteOverlay;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
@@ -189,6 +203,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mGetAskChargeCarLocationTaskId;
 
     private int mGetCityStationTaskId;
+    private boolean useDefaultIcon = true;
+    private boolean needPostMessage = true;
+    private DrivingRouteOverlay routeOverlay;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -254,9 +271,13 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Bundle bundle = marker.getExtraInfo();
-                Object obj = bundle.getSerializable("info");
-                showBottomDialog(obj,false);
-                return true;
+                if (bundle != null) {
+                    Object obj = bundle.getSerializable("info");
+                    showBottomDialog(obj,false);
+                    return true;
+                }
+                return false;
+
             }
         });
 
@@ -1058,6 +1079,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         } else if (mCancleAskOrderTaskId == id){
             ask_state = -1;
             mHelper.setCarVin("");
+            needPostMessage = false;
+            handler.removeCallbacksAndMessages(RechargeFragment.this);
            getMainActivityRadioGuoupChooesed();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
@@ -1072,24 +1095,100 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverMobile.setText(driverNumber);
             getMainActivityRadioGuoupChooesed();
         } else if (mGetAskChargeCarLocationTaskId == id) {
-            GetAskChargeCarLocationHttpResp resp = ((GetAskChargeCarLocationResult) result).getResp();
+            getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
+            if (needPostMessage) {
+                handler.sendEmptyMessageDelayed(1002, 15000);
+            }
 
-            RechargeCarLocationBean rechargeCarLocationBean = JSON.parseObject(resp.getResult().toString(), RechargeCarLocationBean.class);
-            String lat = rechargeCarLocationBean.getLat();
-            String lng = rechargeCarLocationBean.getLng();
-            double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
-                    new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng));
-            distance /= 1000;
-            DecimalFormat decimalFormat=new DecimalFormat("0.00");
-            String format = decimalFormat.format(distance);
-            int needTimeArrive = (int) (distance / 30.0*60);
-            carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
-            tvCarNumber.setText("车牌号："+carNumber);
-            driverMobile.setText("电话： "+driverNumber);
+
 
         } else if (mGetCityStationTaskId  == id){
             mStationList = ((GetCityStationResult) result).getResp().getResult();
         }
+    }
+
+    private void getAskChargeCarLocationAndShowRoutePlan(GetAskChargeCarLocationResult result) {
+        GetAskChargeCarLocationHttpResp resp = result.getResp();
+
+        RechargeCarLocationBean rechargeCarLocationBean = JSON.parseObject(resp.getResult().toString(), RechargeCarLocationBean.class);
+        String lat = rechargeCarLocationBean.getLat();
+        String lng = rechargeCarLocationBean.getLng();
+        double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
+                new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng));
+        distance /= 1000;
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
+        String format = decimalFormat.format(distance);
+        int needTimeArrive = (int) (distance / 30.0*60);
+        carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
+        tvCarNumber.setText("车牌号："+carNumber);
+        driverMobile.setText("电话： "+driverNumber);
+        LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
+        OverlayOptions options = new MarkerOptions()
+                .position(latLng)//设置位置
+                .icon(bitmap1)//设置图标样式
+                .zIndex(9);// 设置marker所在层级;
+        Marker RechargeCar;
+
+        RechargeCar=(Marker) mBaiduMap.addOverlay(options);
+
+        //显示规划路线
+
+        RoutePlanSearch routePlanSearch = RoutePlanSearch.newInstance();
+        routePlanSearch.drivingSearch(new DrivingRoutePlanOption().from(PlanNode.withLocation(latLng)).
+                to(PlanNode.withLocation(new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng))));
+        routePlanSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
+            @Override
+            public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+
+            }
+
+            @Override
+            public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+            }
+
+            @Override
+            public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+            }
+
+            @Override
+            public void onGetDrivingRouteResult(DrivingRouteResult result) {
+                if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+                    ToastUtil.showToast(getActivity(),"抱歉，未找到结果");
+                }
+                if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+                    // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+                    // result.getSuggestAddrInfo()
+                    return;
+                }
+                if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+//                        nodeIndex = -1;
+//                        route = result.getRouteLines().get(0);
+                        if (null != routeOverlay){
+                            routeOverlay.removeFromMap();}
+                    DrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaiduMap);
+                        routeOverlay = overlay;
+                    mBaiduMap.setOnMarkerClickListener(overlay);
+                    overlay.setData(result.getRouteLines().get(0));
+                    overlay.addToMap();
+                    overlay.zoomToSpan();
+//                        ToastUtil.showToast(getActivity(),"路线规划完成");
+                } else {
+                    ToastUtil.showToast(getActivity(),"路线规划失败" );
+                }
+            }
+
+            @Override
+            public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+            }
+
+            @Override
+            public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
+            }
+        });
     }
 
     private void getMainActivityRadioGuoupChooesed() {
@@ -1152,10 +1251,50 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
-            mGetAskChargeTaskId = TaskIdGenFactory.gen();
-            mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
-                    new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),carVin), this));
         }
     }
+
+    private void doGetRechargeCarLocation() {
+        if (needPostMessage) {
+            mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
+            mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
+                    new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),mHelper.getCarVin()), this));
+        }
+
+    }
+
+    // 定制RouteOverly
+    private class MyDrivingRouteOverlay extends DrivingRouteOverlay {
+
+        public MyDrivingRouteOverlay(BaiduMap baiduMap) {
+            super(baiduMap);
+        }
+
+        @Override
+        public BitmapDescriptor getStartMarker() {
+            if (useDefaultIcon) {
+                return BitmapDescriptorFactory.fromResource(R.drawable.che);
+            }
+            return null;
+        }
+
+        @Override
+        public BitmapDescriptor getTerminalMarker() {
+//            if (useDefaultIcon) {
+////                return BitmapDescriptorFactory.fromResource(R.drawable.icon_en);
+//            }
+            return null;
+        }
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1002) {
+                doGetRechargeCarLocation();
+            }
+        }
+    };
 
 }
