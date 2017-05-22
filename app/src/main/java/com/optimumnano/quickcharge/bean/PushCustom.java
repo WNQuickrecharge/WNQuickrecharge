@@ -1,6 +1,10 @@
 package com.optimumnano.quickcharge.bean;
 
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.utils.JsonSerializer;
+
+import org.greenrobot.eventbus.EventBus;
+import org.xutils.common.util.LogUtil;
 
 /**
  * Created by 秋平 on 2017/4/24 0024.
@@ -21,6 +25,7 @@ public class PushCustom {
         PushCustom msg = JsonSerializer.deSerialize(json, PushCustom.class);
         switch (msg.msg_type) {
             case 1:
+                EventBus.getDefault().post(new EventManager.onOrderDispatched(msg));
                 break;
             case 2:
                 break;

@@ -2,6 +2,8 @@ package com.optimumnano.quickcharge.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -56,6 +58,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.CarPoint;
 import com.optimumnano.quickcharge.bean.Point;
+import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
@@ -65,6 +68,7 @@ import com.optimumnano.quickcharge.manager.CollectManager;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.MapManager;
 import com.optimumnano.quickcharge.manager.StationManager;
+import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
 import com.optimumnano.quickcharge.utils.SPConstant;
@@ -79,6 +83,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
@@ -150,6 +155,7 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
     private List<Point> mStationList;
     private List<Point> mSearchResult=new ArrayList<>();
     private SearchStationAdapter mStationAdapter;
+    private int ask_state;//查询请求补电工单状态
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -588,6 +594,7 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
                             @Override
                             public void onFailure(String msg) {
                                 super.onFailure(msg);
+                                ToastUtil.showToast(getActivity(),msg);
                             }
                         });
                     }
@@ -760,12 +767,10 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
     }
 
     private void getRegionStaion() {
-        LogUtil.i("当前距离是:" + mHelper.showDistance());
         mManager.getReigonInfo(mHelper, new ManagerCallback() {
             @Override
             public void onSuccess(Object returnContent) {
                 super.onSuccess(returnContent);
-                LogUtil.i("当前距离是1111:" + mHelper.showDistance());
                 closeLoading();
                 if (mPiont != null && mPiont.equals(returnContent))
                     return;
@@ -907,10 +912,31 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
     @Override
     public void onResume() {
         super.onResume();
-        //UpdateBuilder.create().check();
+        UpdateBuilder.create().check();
         if (mapView != null)
             mapView.onResume();
         //startLocation();
+        OrderManager.getAskCharge(new ManagerCallback() {
+            @Override
+            public void onSuccess(Object returnContent) {
+                super.onSuccess(returnContent);
+
+                try {
+                    JSONObject jsonObject=new JSONObject(returnContent.toString());
+                    ask_state = jsonObject.optInt("ask_state");
+                    askNo = jsonObject.optString("ask_no");
+                    setAllAskChargeViewShowOrhide(ask_state);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                LogUtil.e("returnContent"+returnContent);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+            }
+        });
     }
 
     @Override
@@ -955,7 +981,7 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event) {
         mBaiduMap.clear();
-        if (askOrderStatus==AskOrderStatus.DEFAULT) {
+        if (askOrderStatus == AskOrderStatus.DEFAULT && ask_state == -1) {
             askCarInputFrame.setVisibility(View.VISIBLE);
             searchRechargeStaionFrame.setVisibility(View.GONE);
             markerNearRechargeCar();
@@ -971,5 +997,61 @@ public class RechargeFragment extends BaseFragment implements OnListItemClickLis
 
     public enum AskOrderStatus{
         DEFAULT,START,WAIT,COMMING,DELETE
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderDispatched(EventManager.onOrderDispatched event) {
+        PushCustom msg = event.msg;
+        switch (msg.ask_state) {//1是已派单，4是已取消，5是已完成
+            case 1:
+                setAllAskChargeViewShowOrhide(msg.ask_state);
+                OrderManager.getChargeCarLocation(msg.car_vin, new ManagerCallback() {
+                    @Override
+                    public void onSuccess(Object returnContent) {
+                        super.onSuccess(returnContent);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        super.onFailure(msg);
+                    }
+                });
+                break;
+
+            case 4:
+
+                break;
+            case 5:
+
+
+            default:
+                break;
+        }
+    }
+    private void setAllAskChargeViewShowOrhide(int serviceOrderStatus){
+        switch (serviceOrderStatus) {//-1 不存在订单,0存在订单等待派单 1,存在订单,等待车辆补电
+            case -1:
+                waitCar.setVisibility(View.GONE);
+                askCarInputFrame.setVisibility(View.VISIBLE);
+                carComingSoon.setVisibility(View.GONE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+
+            case 0:
+                waitCar.setVisibility(View.GONE);
+                askCarInputFrame.setVisibility(View.GONE);
+                carComingSoon.setVisibility(View.VISIBLE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+            case 1:
+                waitCar.setVisibility(View.VISIBLE);
+                askCarInputFrame.setVisibility(View.GONE);
+                carComingSoon.setVisibility(View.GONE);
+                searchRechargeStaionFrame.setVisibility(View.GONE);
+                break;
+
+            default:
+                break;
+        }
     }
 }
