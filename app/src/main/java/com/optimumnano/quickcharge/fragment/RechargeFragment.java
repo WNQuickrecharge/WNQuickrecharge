@@ -1094,6 +1094,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = getAskChargeBean.getAsk_state();
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
+            carVin = getAskChargeBean.getCar_vin();
+            mHelper.setCarVin(carVin);
             tvCarNumber.setText(carNumber);
             driverMobile.setText(driverNumber);
             getMainActivityRadioGuoupChooesed();
