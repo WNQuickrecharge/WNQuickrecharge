@@ -1228,9 +1228,13 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     waitCar.setVisibility(View.GONE);
                     markerNearRechargeCar();
                 } else if (ask_state == 0) {// 0,已下单 待接单
-                    askCarInputFrame.setVisibility(View.GONE);
-                    carComingSoon.setVisibility(View.VISIBLE);
-                    waitCar.setVisibility(View.GONE);
+                    if (Tool.isConnectingToInternet()) {
+                        askCarInputFrame.setVisibility(View.GONE);
+                        carComingSoon.setVisibility(View.VISIBLE);
+                        waitCar.setVisibility(View.GONE);
+                    }else {
+                        ToastUtil.showToast(getActivity(),"无网络");
+                    }
                 } else if (ask_state == 1) {// 1,已接单 待充电
                     ((BaseActivity)getActivity()).showLoading();
                     askCarInputFrame.setVisibility(View.GONE);
