@@ -348,6 +348,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         mGetAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
                 new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
+
+        doGetRechargeCarLocation();
     }
 
     private void showBottomDialog(Object obj,boolean needCalcDistance) {
@@ -1084,8 +1086,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = -1;
             mHelper.setCarVin("");
             needPostMessage = false;
-            handler.removeCallbacksAndMessages(RechargeFragment.this);
-           getMainActivityRadioGuoupChooesed();
+            handler.removeMessages(1002);
+            getMainActivityRadioGuoupChooesed();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
@@ -1128,6 +1130,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
         tvCarNumber.setText("车牌号："+carNumber);
         driverMobile.setText("电话： "+driverNumber);
+        bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
         LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
         OverlayOptions options = new MarkerOptions()
                 .position(latLng)//设置位置
@@ -1160,6 +1163,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
             @Override
             public void onGetDrivingRouteResult(DrivingRouteResult result) {
+                ((BaseActivity)getActivity()).closeLoading();
                 if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
                     ToastUtil.showToast(getActivity(),"抱歉，未找到结果");
                 }
@@ -1209,27 +1213,29 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 break;
 
             case R.id.main_rbRechargeCar:
-                markerNearRechargeCar();
+
                 searchRechargeStaionFrame.setVisibility(View.GONE);
                 if (ask_state == -1) {  //-1 无订单
                     askCarInputFrame.setVisibility(View.VISIBLE);
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.GONE);
+                    markerNearRechargeCar();
                 } else if (ask_state == 0) {// 0,已下单 待接单
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.VISIBLE);
                     waitCar.setVisibility(View.GONE);
                     mBaiduMap.clear();
                 } else if (ask_state == 1) {// 1,已接单 待充电
+                    ((BaseActivity)getActivity()).showLoading();
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
-                    mBaiduMap.clear();
-                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
-                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
-                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
-                                    mHelper.getCarVin()),this));
-                    //doGetRechargeCarLocation();
+                    //mBaiduMap.clear();
+//                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
+//                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
+//                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
+//                                    mHelper.getCarVin()),this));
+                    doGetRechargeCarLocation();
                 }
                 break;
 
