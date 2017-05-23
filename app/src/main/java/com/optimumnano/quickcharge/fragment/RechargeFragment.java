@@ -1217,6 +1217,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 askCarInputFrame.setVisibility(View.GONE);
                 carComingSoon.setVisibility(View.GONE);
                 waitCar.setVisibility(View.GONE);
+                handler.removeMessages(1002);
                 break;
 
             case R.id.main_rbRechargeCar:
@@ -1236,7 +1237,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                         ToastUtil.showToast(getActivity(),"无网络");
                     }
                 } else if (ask_state == 1) {// 1,已接单 待充电
-//                    ((BaseActivity)getActivity()).showLoading();
+                    ((BaseActivity)getActivity()).showLoading();
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
