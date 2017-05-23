@@ -13,8 +13,6 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.InvoiceOrder;
 import com.optimumnano.quickcharge.bean.InvoiceOrderGroup;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +31,12 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
         this.parent = parent;
     }
     private OnCheckListener listener;
+    private OnChildCheckListener childCheckListener;
     public void setOnChecked(OnCheckListener listener){
         this.listener = listener;
+    }
+    public void setOnChildChecked(OnChildCheckListener childCheckListener){
+        this.childCheckListener = childCheckListener;
     }
 
     @Override
@@ -106,7 +108,7 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
 
     //【重要】填充二级列表
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ViewHolderChild holder = null;
         if (convertView == null) {
             holder = new ViewHolderChild();
@@ -121,11 +123,18 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
         else {
             holder = (ViewHolderChild) convertView.getTag();
         }
-        InvoiceOrder order = (InvoiceOrder) getChild(groupPosition,childPosition);
+        final InvoiceOrder order = (InvoiceOrder) getChild(groupPosition,childPosition);
         holder.tvOrderNo.setText(order.C_ChargeOrderNum+"");
         holder.tvAddress.setText(order.Address+"");
         holder.TvMoney.setText("￥"+order.ConsumeCash);
         holder.cb.setChecked(order.isChecked);
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ToastUtil.showToast(context,"item"+childPosition);
+                childCheckListener.onChildCheck(childPosition,order.Id);
+            }
+        });
         return convertView;
     }
 
@@ -145,5 +154,9 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
 
     public interface OnCheckListener{
         void onCheck(int position);
+    }
+    public interface OnChildCheckListener{
+        void onChildCheck(int position, int ids);
+
     }
 }

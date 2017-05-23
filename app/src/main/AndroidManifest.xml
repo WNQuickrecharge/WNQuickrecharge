@@ -204,6 +204,9 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
+            android:name=".activity.invoice.AdressChoiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.order.OrderActivity"
             android:screenOrientation="portrait" />
         <activity

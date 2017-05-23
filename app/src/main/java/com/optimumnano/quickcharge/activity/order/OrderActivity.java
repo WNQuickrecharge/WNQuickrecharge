@@ -90,7 +90,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
     private PayDialog payDialog;
     private PayWayDialog payWayDialog;
-    private OrderManager orderManager = new OrderManager();
+//    private OrderManager orderManager = new OrderManager();
     private RechargeGunBean gunBean;
     private String orderNo = "";//订单号
     private String gunNo = "";
@@ -102,7 +102,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==ADDORDER_FLAG){
+            if (msg.what == ADDORDER_FLAG) {
                 tvConfirm.setEnabled(true);
             }
         }
@@ -247,8 +247,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     //下单
     private void addOrder() {
         mAmount = edtMoney.getText().toString().trim();
-        if (TextUtils.isEmpty(mAmount)|| Double.parseDouble(mAmount)==0){
-            ToastUtil.showToast(OrderActivity.this,"支付金额错误");
+        if (TextUtils.isEmpty(mAmount) || Double.parseDouble(mAmount) == 0) {
+            ToastUtil.showToast(OrderActivity.this, "支付金额错误");
             return;
         }
         if (!Tool.isConnectingToInternet()) {
@@ -257,7 +257,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         }
 
         tvConfirm.setEnabled(false);
-        mHandler.sendEmptyMessageDelayed(ADDORDER_FLAG,1500);
+        mHandler.sendEmptyMessageDelayed(ADDORDER_FLAG, 1500);
         showLoading();
         mAddOrderTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAddOrderTaskId,
@@ -279,8 +279,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
         payDialog.close();
     }
 
-    private void callALiPay(Double mAmount,String orderNo) {
-        payDialog.setMoney(mAmount,orderNo);
+    private void callALiPay(Double mAmount, String orderNo) {
+        payDialog.setMoney(mAmount, orderNo);
         payDialog.payZFB();
 
        /* if (!Tool.isConnectingToInternet()) {
@@ -304,13 +304,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
             restCash = userAccount.getRestCash();
             DecimalFormat df = new DecimalFormat("0.00");
             formatRestCash = df.format(restCash);
-            if (payWay==PayDialog.pay_yue) {
+            if (payWay == PayDialog.pay_yue) {
                 miPayway.setTvLeftText("余额" + "(" + formatRestCash + ")");
-            }else if (payWay==PayDialog.pay_zfb){
-                PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+            } else if (payWay == PayDialog.pay_zfb) {
+                PayWayViewHelp.showPayWayStatus(miPayway, payWay, formatRestCash);
                 miPayway.setTvLeftText("支付宝");
-            }else if (payWay==PayDialog.pay_wx){
-                PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+            } else if (payWay == PayDialog.pay_wx) {
+                PayWayViewHelp.showPayWayStatus(miPayway, payWay, formatRestCash);
                 miPayway.setTvLeftText("微信");
             }
         } else if (mGetPayPwdTaskId == id) {
@@ -338,7 +338,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
                         showToast("余额不足，请使用其他支付方式");
                         return;
                     }
-                    payDialog.setMoney(Double.parseDouble(mAmount),orderNo,sign);
+                    payDialog.setMoney(Double.parseDouble(mAmount), orderNo, sign);
                     payDialog.setStatus(0);
                     payDialog.setPayway(payWay);
                     payDialog.setPayResultMoney(Double.parseDouble(mAmount));
@@ -357,10 +357,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
 
                 case PayDialog.pay_zfb:
                     double finalMoney = Double.parseDouble(mAmount);
-                    callALiPay(finalMoney,orderNo);
+                    callALiPay(finalMoney, orderNo);
                     break;
                 case PayDialog.pay_wx:
-                    payDialog.payWeiXin(Double.parseDouble(mAmount),orderNo);
+                    payDialog.payWeiXin(Double.parseDouble(mAmount), orderNo);
                     break;
 
                 default:
@@ -415,10 +415,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener,
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
         int code = event.code;
-        if (0 == code){
+        if (0 == code) {
             finish();
-        }else {
+        } else {
         }
-        logtesti("orderdetail weixinpay callback "+event.code);
+        logtesti("orderdetail weixinpay callback " + event.code);
     }
 }

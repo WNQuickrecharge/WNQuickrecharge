@@ -21,12 +21,15 @@ import com.optimumnano.quickcharge.utils.Tool;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 开发票界面
  */
-public class InvoiceActivity extends BaseActivity implements View.OnClickListener, InvoiceAdapter.OnCheckListener, HttpCallback {
+public class InvoiceActivity extends BaseActivity implements View.OnClickListener, InvoiceAdapter.OnCheckListener, InvoiceAdapter.OnChildCheckListener, HttpCallback {
     private ExpandableListView listView;
     private TextView tvNext, tvAllMoney;
 
@@ -44,13 +47,26 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private List<String> ids = new ArrayList<>();
 
     private int mGetInvoiceConsumeTaskId;
+    private String allid;
+    private HashMap<String, String> ha = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
+
+
+        ha.clear();
         initViews();
         initData();
+        doRequest();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        list.clear();
+//        doRequest();
     }
 
     @Override
@@ -74,6 +90,18 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initData() {
+        list = new ArrayList<>();
+        if (adapter == null) {
+            adapter = new InvoiceAdapter(this, child, group);
+            adapter.setOnChecked(this);
+            adapter.setOnChildChecked(this);
+            listView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void doRequest() {
 //        manager.getInvoiceRecord(new ManagerCallback<List<InvoiceOrder>>() {
 //            @Override
 //            public void onSuccess(List<InvoiceOrder> returnContent) {
@@ -90,11 +118,13 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
-            return;
+        } else {
+
+            mGetInvoiceConsumeTaskId = TaskIdGenFactory.gen();
+            mTaskDispatcher.dispatch(new HttpTask(
+                    mGetInvoiceConsumeTaskId, new GetInvoiceConsumeRequest(
+                    new GetInvoiceConsumeResult(mContext)), this));
         }
-        mGetInvoiceConsumeTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceConsumeTaskId,
-                new GetInvoiceConsumeRequest(new GetInvoiceConsumeResult(mContext)), this));
     }
 
     private void dealData() {
@@ -132,7 +162,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             orderGroup.isChecked = false;
             group.add(orderGroup);
         }
-        dataChanged();
+        adapter.notifyDataSetChanged();
     }
 
     //double相加计算
@@ -151,25 +181,12 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         return money;
     }
 
-    private void dataChanged() {
-        if (adapter == null) {
-            adapter = new InvoiceAdapter(this, child, group);
-            adapter.setOnChecked(this);
-            listView.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.invoice_tvNext:
-                String allid = "";
-                for (int i = 0; i < ids.size(); i++) {
-                    int x = Integer.parseInt(ids.get(i));
-                    allid = allid + x + ",";
-                }
+
                 Bundle bundle = new Bundle();
                 bundle.putDouble("money", allMoney);
                 bundle.putString("ids", allid);
@@ -183,13 +200,17 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onCheck(int position) {
+        tvAllMoney.setText("");
+        allMoney = 0;
         if (group.get(position).isChecked) {
             group.get(position).isChecked = false;
             for (int i = 0; i < child.get(position).size(); i++) {
                 child.get(position).get(i).isChecked = false;
                 ids.remove(child.get(position).get(i).C_ChargeOrderId + "");
             }
-            allMoney = subMoney(allMoney, group.get(position).money);
+            if (allMoney > 0) {
+                allMoney = subMoney(allMoney, group.get(position).money);
+            }
         } else {
             group.get(position).isChecked = true;
             for (int i = 0; i < child.get(position).size(); i++) {
@@ -198,8 +219,44 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             }
             allMoney = addMoney(allMoney, group.get(position).money);
         }
-        dataChanged();
+        allid = "";
+        for (int i = 0; i < ids.size(); i++) {
+            int x = Integer.parseInt(ids.get(i));
+            allid = allid + x + ",";
+        }
+        adapter.notifyDataSetChanged();
         tvAllMoney.setText("￥" + allMoney);
+    }
+
+    @Override
+    public void onChildCheck(int position, int idss) {
+        String positionStr = String.valueOf(position);
+        if (list.get(position).isChecked) {
+            list.get(position).setChecked(false);
+            ha.remove(positionStr);
+//            allid = ha.get(position + "");
+
+            allMoney = subMoney(allMoney, list.get(position).ConsumeCash);
+        } else {
+            list.get(position).setChecked(true);
+            ha.put(positionStr, idss + ",");
+//            allid = ha.get(position + "");
+            allMoney = addMoney(allMoney, list.get(position).ConsumeCash);
+        }
+        handlerHa();
+        adapter.notifyDataSetChanged();
+        tvAllMoney.setText("￥" + allMoney);
+    }
+
+    private void handlerHa() {
+        StringBuilder sb = new StringBuilder();
+        Set<String> keyset = ha.keySet();
+        Iterator<String> iterator = keyset.iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            sb.append(ha.get(key));
+        }
+        allid = sb.toString();
     }
 
     @Override
@@ -207,7 +264,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         if (isFinishing()) {
             return;
         }
-        list = ((GetInvoiceConsumeResult) result).getResp().getResult();
+        list.clear();
+        list.addAll(((GetInvoiceConsumeResult) result).getResp().getResult());
         dealData();
     }
 
@@ -220,5 +278,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     public void onRequestCancel(int id) {
 
     }
+
 }
 

@@ -10,8 +10,11 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.InvoiceRecordBean;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
+import com.optimumnano.quickcharge.http.HttpTask;
+import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.InvoiceManager;
-import com.optimumnano.quickcharge.response.GetInvoiceOrderListResult;
+import com.optimumnano.quickcharge.request.GetInvoiceRecordRequest;
+import com.optimumnano.quickcharge.response.GetInvoiceRecordResult;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.optimumnano.quickcharge.views.MyDivier;
@@ -19,6 +22,9 @@ import com.optimumnano.quickcharge.views.MyDivier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 开票记录页
+ */
 public class InvoiceRecordActivity extends BaseActivity implements HttpCallback {
     HTRefreshRecyclerView recyclerView;
 
@@ -55,28 +61,31 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     }
 
     private void initData() {
-//        manager.getOrderlist(new ManagerCallback<List<InvoiceRecordBean>>() {
-//            @Override
-//            public void onSuccess(List<InvoiceRecordBean> returnContent) {
-//                super.onSuccess(returnContent);
-//                list.addAll(returnContent);
-//                dataChanged();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                showToast(msg);
-//            }
-//        });
+       /* manager.getOrderlist(new ManagerCallback<List<InvoiceRecordBean>>() {
+            @Override
+            public void onSuccess(List<InvoiceRecordBean> returnContent) {
+                super.onSuccess(returnContent);
+                list.addAll(returnContent);
+                dataChanged();
+            }
 
+            @Override
+            public void onFailure(String msg) {
+                super.onFailure(msg);
+                showToast(msg);
+            }
+        });
+*/
 
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
             return;
         }
 
-
+        mGetInvoiceOrderListTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(
+                mGetInvoiceOrderListTaskId,new GetInvoiceRecordRequest(
+                                                new GetInvoiceRecordResult(mContext)), this));
     }
 
     private void dataChanged() {
@@ -96,7 +105,7 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
             return;
         }
         if (mGetInvoiceOrderListTaskId == id) {
-            list.addAll(((GetInvoiceOrderListResult) result).getResp().getResult());
+            list.addAll(((GetInvoiceRecordResult) result).getResp().getResult());
             dataChanged();
         }
     }
@@ -107,7 +116,7 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
             return;
         }
         if (mGetInvoiceOrderListTaskId == id) {
-            showToast(ToastUtil.formatToastText(mContext, ((GetInvoiceOrderListResult) result).getResp()));
+            showToast(ToastUtil.formatToastText(mContext, ((GetInvoiceRecordResult) result).getResp()));
         }
     }
 

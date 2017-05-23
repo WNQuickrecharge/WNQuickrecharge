@@ -233,7 +233,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
     }
 
     //余额支付
-    private void payYue() {
+    public void payYue() {
 //        orderManager.startPay(order_no, money, new ManagerCallback() {
 //            @Override
 //            public void onSuccess(Object returnContent) {
