@@ -39,23 +39,38 @@ import butterknife.ButterKnife;
  */
 
 public class PayCenterActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback, HttpCallback {
+    /**
+     * 订单金额
+     */
     @Bind(R.id.paycenter_miMoney)
     MenuItem1 miMoney;
 //    @Bind(R.id.paycenter_tvPayway)
 //    TextView tvPayway;
+    /**
+     * 下一步
+     */
     @Bind(R.id.paycenter_tvNext)
-//    TextView tvNext;
+    TextView tvNext;
 //    @Bind(R.id.paycenter_rlPayway)
-    RelativeLayout rlPayway;
+//    RelativeLayout rlPayway;
+    /**
+     * 订单编号
+     */
     @Bind(R.id.paycenter_miOrderno)
     MenuItem1 miOrderno;
-    @Bind(R.id.order_payway)
+    /**
+     * 余额
+     */
+    @Bind(R.id.invoice_payway)
     MenuItem1 miPayway;
 
     private double money = 0;
     private double allMoney = 0;
 
     private String formatRestCash;
+    /**
+     * 账户余额
+     */
     private double restCash;
 
     /**
@@ -73,6 +88,9 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
 
     private int mGetInvoiceSignTaskId;
     private int mPayInvoiceBalanceTaskId;
+    /**
+     * 请求密码服务识别ID
+     */
     private int mGetPayPwdTaskId;
     /**
      * 请求账户信息识别ID
@@ -105,8 +123,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         miOrderno.setRightText(order_no);
 
         miPayway.setOnClickListener(this);
-        rlPayway.setOnClickListener(this);
-//        tvNext.setOnClickListener(this);
+//        rlPayway.setOnClickListener(this);
+        tvNext.setOnClickListener(this);
     }
 
     private void initAcountInfoData() {

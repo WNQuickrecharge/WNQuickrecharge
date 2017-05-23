@@ -88,7 +88,7 @@
         android:layout_marginTop="@dimen/default_padding"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/order_payway"
+        android:id="@+id/invoice_payway"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tvLeftText="余额（0.00）"
