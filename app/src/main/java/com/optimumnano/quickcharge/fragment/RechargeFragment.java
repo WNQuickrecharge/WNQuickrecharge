@@ -346,9 +346,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         searchRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchRv.setAdapter(mStationAdapter);
 
-        mGetAskChargeTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
-                new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
+//        mGetAskChargeTaskId = TaskIdGenFactory.gen();
+//        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
+//                new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
 
         //doGetRechargeCarLocation();
     }
@@ -1070,14 +1070,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 return;
             }
             mPiont = points;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mAskChargeTaskId == id) {
             askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
             LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_LONG).show();
             ask_state = 0;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             closeLoading();
             List<CarPoint> carPoints = ((GetMapNearCarInfoResult) result).getResp().getResult();
@@ -1085,14 +1085,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 return;
             }
             mCarPiont = carPoints;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mCancleAskOrderTaskId == id){
             ask_state = -1;
             hasUnfinishedOrder = false;
             mHelper.setCarVin("");
             needPostMessage = false;
             handler.removeMessages(1002);
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
@@ -1106,9 +1106,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverNumber = getAskChargeBean.getCharge_phone();
             carVin = getAskChargeBean.getCar_vin();
             mHelper.setCarVin(carVin);
-            tvCarNumber.setText(carNumber);
-            driverMobile.setText(driverNumber);
-            getMainActivityRadioGuoupChooesed();
+            tvCarNumber.setText("车牌号："+carNumber);
+            driverMobile.setText("电话："+driverNumber);
+            getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
@@ -1136,7 +1136,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         int needTimeArrive = (int) (distance / 30.0*60);
         carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
         tvCarNumber.setText("车牌号："+carNumber);
-        driverMobile.setText("电话： "+driverNumber);
+        driverMobile.setText("电话："+driverNumber);
         bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
         LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
         OverlayOptions options = new MarkerOptions()
@@ -1208,7 +1208,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         });
     }
 
-    private void getMainActivityRadioGuoupChooesed() {
+    private void getMainActivityRadioGroupChoose() {
         int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
         switch (checkedRadioButtonId) {
             case R.id.main_rbRecharge:
@@ -1236,11 +1236,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                         ToastUtil.showToast(getActivity(),"无网络");
                     }
                 } else if (ask_state == 1) {// 1,已接单 待充电
-                    ((BaseActivity)getActivity()).showLoading();
+//                    ((BaseActivity)getActivity()).showLoading();
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
-                    //mBaiduMap.clear();
+                    mBaiduMap.clear();
 //                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
 //                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
 //                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
@@ -1256,11 +1256,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
-        getMainActivityRadioGuoupChooesed();
+        getMainActivityRadioGroupChoose();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
-        getMainActivityRadioGuoupChooesed();
+        getMainActivityRadioGroupChoose();
     }
 
     public enum AskOrderStatus{
