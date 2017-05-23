@@ -205,6 +205,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mGetCityStationTaskId;
     private boolean useDefaultIcon = true;
     private boolean needPostMessage = true;
+    private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
 
     @Override
@@ -747,7 +748,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 //                Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
 //            }
 //        });
-
+        if (hasUnfinishedOrder){
+            Toast.makeText(getActivity(), "存在未完成的订单,请勿再次请求补电", Toast.LENGTH_LONG).show();
+            return;
+        }
         if (!Tool.isConnectingToInternet()) {
             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
             return;
@@ -1095,6 +1099,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             GetAskChargeBean getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
+            if (ask_state == 0 || ask_state == 1)
+                hasUnfinishedOrder = true;
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
             carVin = getAskChargeBean.getCar_vin();
@@ -1224,7 +1230,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.VISIBLE);
                     waitCar.setVisibility(View.GONE);
-                    mBaiduMap.clear();
                 } else if (ask_state == 1) {// 1,已接单 待充电
                     ((BaseActivity)getActivity()).showLoading();
                     askCarInputFrame.setVisibility(View.GONE);
