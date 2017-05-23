@@ -350,7 +350,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
                 new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
 
-        doGetRechargeCarLocation();
+        //doGetRechargeCarLocation();
     }
 
     private void showBottomDialog(Object obj,boolean needCalcDistance) {
@@ -1088,6 +1088,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getMainActivityRadioGuoupChooesed();
         } else if (mCancleAskOrderTaskId == id){
             ask_state = -1;
+            hasUnfinishedOrder = false;
             mHelper.setCarVin("");
             needPostMessage = false;
             handler.removeMessages(1002);
@@ -1266,6 +1267,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onOrderDispatched(EventManager.onOrderDispatched event){
         PushCustom msg = event.msg;
         if (msg.ask_state == 1) {
+            mBaiduMap.clear();
             mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
