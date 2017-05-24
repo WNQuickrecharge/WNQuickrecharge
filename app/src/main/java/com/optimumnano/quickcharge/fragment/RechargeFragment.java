@@ -324,6 +324,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                                 mSearchResult.add(point);
                             }
                         }
+                        if (mSearchResult.isEmpty()){
+                            ToastUtil.showToast(getActivity(),"未搜索到结果");
+//                            Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
+                        }
+
                         mStationAdapter.setNewData(mSearchResult);
                     }else {
                         getStations();
