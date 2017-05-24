@@ -63,4 +63,5 @@
     <string name="gun_number">编号:</string>
     <string name="title_activity_invoice_history">InvoiceHistoryActivity</string>
     <string name="recharge_car">补电车</string>
+    <string name="cookie_timeout">您已退出登录,请重新登陆</string>
 </resources>

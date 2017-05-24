@@ -60,6 +60,8 @@
                 android:background="@drawable/bg_charge_info_et"
                 android:padding="6dp"
                 android:gravity="center"
+                android:inputType="phone"
+                android:maxLength="11"
                 android:hint="请输入您的联系电话"
                 style="@style/tv_match"/>
 
