@@ -63,9 +63,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         initViews();
         initListener();
         Bundle bundle = getIntent().getExtras();
-        String cookieTimeOut = bundle.getString("CookieTimeOut");
-        if ("CookieTimeOut".equals(cookieTimeOut)) {
-            ToastUtil.showToast(this,R.string.cookie_timeout);
+        if (bundle != null) {
+            String cookieTimeOut = bundle.getString("CookieTimeOut");
+            if ("CookieTimeOut".equals(cookieTimeOut)) {
+                ToastUtil.showToast(this, R.string.cookie_timeout);
+            }
         }
     }
 
