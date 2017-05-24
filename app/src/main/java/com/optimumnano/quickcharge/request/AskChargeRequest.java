@@ -23,15 +23,15 @@ import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 public class AskChargeRequest extends BaseChargeRequest {
     private PreferencesHelper helper;
-    private String moblie;
+    private String mobile;
     private String name;
     private String address;
     private String plate;
 
-    public AskChargeRequest(BaseResult result, PreferencesHelper helper, String moblie, String name, String address, String plate) {
+    public AskChargeRequest(BaseResult result, PreferencesHelper helper, String mobile, String name, String address, String plate) {
         super(result);
         this.helper = helper;
-        this.moblie = moblie;
+        this.mobile = mobile;
         this.name = name;
         this.address = address;
         this.plate = plate;
@@ -57,7 +57,7 @@ public class AskChargeRequest extends BaseChargeRequest {
         HashMap<String, Object> requestJson = new HashMap<>();
         requestJson.put("lat", helper.getLocation().lat);
         requestJson.put("lng", helper.getLocation().lng);
-        requestJson.put("mobile", moblie);
+        requestJson.put("mobile", mobile);
         requestJson.put("name", SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, ""));
         requestJson.put("address", address);
         requestJson.put("plate", plate);
