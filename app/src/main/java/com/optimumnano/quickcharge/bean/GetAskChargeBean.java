@@ -27,6 +27,13 @@ public class GetAskChargeBean {
      */
 
     private String car_vin;
+    /**
+     * capp_lat : 22.73403
+     * capp_lng : 114.397789
+     */
+
+    private String capp_lat;
+    private String capp_lng;
 
     public int getAsk_state() {
         return ask_state;
@@ -74,5 +81,21 @@ public class GetAskChargeBean {
 
     public void setCar_vin(String car_vin) {
         this.car_vin = car_vin;
+    }
+
+    public String getCapp_lat() {
+        return capp_lat;
+    }
+
+    public void setCapp_lat(String capp_lat) {
+        this.capp_lat = capp_lat;
+    }
+
+    public String getCapp_lng() {
+        return capp_lng;
+    }
+
+    public void setCapp_lng(String capp_lng) {
+        this.capp_lng = capp_lng;
     }
 }
