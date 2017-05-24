@@ -206,6 +206,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private boolean needPostMessage = true;
     private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
+    private SuggestionInfo suggestionInfoInfo;
+    private GetAskChargeBean getAskChargeBean;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -704,7 +706,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         ((MainActivity) getActivity()).showLoading();
         mAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAskChargeTaskId,
-                new AskChargeRequest(new AskChargeResult(mContext), mHelper, phoneNumber, "Hl", address, carNumber), this));
+                new AskChargeRequest(new AskChargeResult(mContext), suggestionInfoInfo, phoneNumber, "Hl", address, carNumber), this));
 
     }
 
@@ -877,8 +879,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 if (bundle == null) {
                     return;
                 }
-                SuggestionInfo info = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
-                etAddress.setText(info.key);
+                suggestionInfoInfo = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
+                etAddress.setText(suggestionInfoInfo.key);
             }
         }
     }
@@ -1011,7 +1013,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
             LogUtils.e(TAG + " askCharge "+askCharge);
-            GetAskChargeBean getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
+            getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
             if (ask_state == 0 || ask_state == 1)
@@ -1024,6 +1026,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverMobile.setText("电话："+driverNumber);
             getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
+            tvCarNumber.setText("车牌号："+carNumber);
+            driverMobile.setText("电话："+driverNumber);
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
                 handler.sendEmptyMessageDelayed(1002, 15000);
@@ -1042,8 +1046,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         RechargeCarLocationBean rechargeCarLocationBean = JSON.parseObject(resp.getResult().toString(), RechargeCarLocationBean.class);
         String lat = rechargeCarLocationBean.getLat();
         String lng = rechargeCarLocationBean.getLng();
+        double carLat = TypeConversionUtils.toDouble(getAskChargeBean.getCapp_lat());
+        double carLng = TypeConversionUtils.toDouble(getAskChargeBean.getCapp_lng());
         double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
-                new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng));
+                new LatLng(carLat, carLng));
         distance /= 1000;
         DecimalFormat decimalFormat=new DecimalFormat("0.00");
         String format = decimalFormat.format(distance);
@@ -1065,7 +1071,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
         RoutePlanSearch routePlanSearch = RoutePlanSearch.newInstance();
         routePlanSearch.drivingSearch(new DrivingRoutePlanOption().from(PlanNode.withLocation(latLng)).
-                to(PlanNode.withLocation(new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng))));
+                to(PlanNode.withLocation(new LatLng(carLat, carLng))));
         routePlanSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
             @Override
             public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
@@ -1187,6 +1193,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
+            driverNumber = msg.phone;
+            ask_state = 1;
+            getMainActivityRadioGroupChoose();
         }
     }
 
