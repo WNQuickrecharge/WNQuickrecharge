@@ -589,7 +589,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late,
-            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait})
+            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait, R.id.tv_driver_mobile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
@@ -657,6 +657,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 myDialog.show();
                 break;
 
+            case R.id.tv_driver_mobile:
+                requestPermission(driverNumber);
+                break;
             default:
                 break;
         }
