@@ -131,7 +131,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Bind(R.id.iv_location)
     ImageView ivLocation;
     @Bind(R.id.et_address)
-    EditText etAddress;
+    TextView etAddress;
     @Bind(R.id.et_phone)
     EditText etPhone;
     @Bind(R.id.et_plate)
