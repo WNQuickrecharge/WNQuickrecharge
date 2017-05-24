@@ -206,6 +206,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private boolean needPostMessage = true;
     private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
+    private SuggestionInfo suggestionInfoInfo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -699,7 +700,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         ((MainActivity) getActivity()).showLoading();
         mAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAskChargeTaskId,
-                new AskChargeRequest(new AskChargeResult(mContext), mHelper, phoneNumber, "Hl", address, carNumber), this));
+                new AskChargeRequest(new AskChargeResult(mContext), suggestionInfoInfo, phoneNumber, "Hl", address, carNumber), this));
 
     }
 
@@ -872,8 +873,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 if (bundle == null) {
                     return;
                 }
-                SuggestionInfo info = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
-                etAddress.setText(info.key);
+                suggestionInfoInfo = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
+                etAddress.setText(suggestionInfoInfo.key);
             }
         }
     }
@@ -1019,6 +1020,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverMobile.setText("电话："+driverNumber);
             getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
+            tvCarNumber.setText("车牌号："+carNumber);
+            driverMobile.setText("电话："+driverNumber);
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
                 handler.sendEmptyMessageDelayed(1002, 15000);
@@ -1182,6 +1185,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
+            driverNumber = msg.phone;
+            ask_state = 1;
+            getMainActivityRadioGroupChoose();
         }
     }
 
