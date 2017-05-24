@@ -618,6 +618,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                             return;
                         }
                         dialog.dismiss();
+                        ((MainActivity) getActivity()).showLoading();
                         mCancleAskOrderTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
@@ -643,6 +644,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
                             return;
                         }
+                        ((MainActivity) getActivity()).showLoading();
                         mCancleAskOrderTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
@@ -954,6 +956,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(mContext,
                     ToastUtil.formatToastText(mContext, ((GetAskChargeResult) result).getResp()));
         } else if (mCancleAskOrderTaskId  == id){
+            closeLoading();
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
         } else if (mGetAskChargeCarLocationTaskId == id) {
@@ -992,6 +995,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mCarPiont = carPoints;
             getMainActivityRadioGroupChoose();
         } else if (mCancleAskOrderTaskId == id){
+            closeLoading();
             ask_state = -1;
             hasUnfinishedOrder = false;
             mHelper.setCarVin("");
