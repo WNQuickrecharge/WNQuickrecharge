@@ -57,7 +57,7 @@ public class AskChargeRequest extends BaseChargeRequest {
         HashMap<String, Object> requestJson = new HashMap<>();
         requestJson.put("lat", helper.getLocation().lat);
         requestJson.put("lng", helper.getLocation().lng);
-        requestJson.put("moblie", moblie);
+        requestJson.put("mobile", moblie);
         requestJson.put("name", SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, ""));
         requestJson.put("address", address);
         requestJson.put("plate", plate);
