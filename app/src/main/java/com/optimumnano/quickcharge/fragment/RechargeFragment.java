@@ -756,6 +756,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
             return;
         }
+        ((MainActivity) getActivity()).showLoading();
         mAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAskChargeTaskId,
                 new AskChargeRequest(new AskChargeResult(mContext), mHelper, phoneNumber, "Hl", address, carNumber), this));
@@ -1042,6 +1043,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     ToastUtil.formatToastText(mContext, ((GetMapRegionInfoResult) result).getMapRegionInfoHttpResp()));
             closeLoading();
         } else if (mAskChargeTaskId == id) {
+            closeLoading();
             Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             ToastUtil.showToast(getActivity(),
@@ -1072,6 +1074,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mPiont = points;
             getMainActivityRadioGroupChoose();
         } else if (mAskChargeTaskId == id) {
+            closeLoading();
             askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
             LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
