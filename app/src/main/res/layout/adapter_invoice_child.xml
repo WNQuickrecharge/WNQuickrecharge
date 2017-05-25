@@ -1,106 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/default_lrmargin"
-        android:orientation="horizontal"
         android:background="@color/white"
-        android:layout_marginTop="@dimen/default_lrmargin">
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="@dimen/default_lrmargin"
+        android:paddingLeft="@dimen/default_lrmargin">
+
         <CheckBox
             android:id="@+id/invoice_cb_child"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:checked="true"
-            android:enabled="false"
-            android:focusable="false"
             android:layout_marginRight="@dimen/default_lrmargin"
-            android:button="@drawable/selector_invoice_checkbox"/>
+            android:button="@drawable/selector_invoice_checkbox"
+            android:checked="false"
+            android:enabled="false"
+            android:focusable="false" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:text="订单编号"
                 android:textColor="@color/black"
-                android:text="订单编号"/>
+                android:textSize="12sp" />
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/default_padding"
-                android:src="@drawable/budianche"/>
+                android:src="@drawable/budianche" />
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/default_lrmargin">
-            <TextView
-                android:id="@+id/invoice_tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textSize="@dimen/default_textsize14"
-                android:textColor="@color/color66"
-                android:text="已完成"/>
+
             <TextView
                 android:id="@+id/invoice_tvOrdernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:layout_toLeftOf="@+id/invoice_tvStatus"
+                android:text="88888888"
+                android:singleLine="true"
                 android:textColor="@color/black"
-                android:layout_toLeftOf="@id/invoice_tvStatus"
-                android:text="88888888"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/invoice_tvCompany"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:textSize="@dimen/default_textsize16"
-                android:textColor="@color/black"
                 android:layout_below="@id/invoice_tvOrdernum"
-                android:text=""/>
+                android:layout_marginTop="@dimen/default_padding5"
+                android:text="沃特马电池有限公司"
+                android:textColor="@color/black"
+                android:textSize="@dimen/default_textsize12" />
 
             <TextView
                 android:id="@+id/invoice_tvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:textColor="@color/color66"
-                android:textSize="@dimen/default_textsize14"
                 android:layout_below="@id/invoice_tvCompany"
-                android:text="深圳市南山区"/>
+                android:layout_marginTop="@dimen/default_padding5"
+                android:text="深圳市南山区"
+                android:textColor="@color/color66"
+                android:textSize="@dimen/default_textsize12" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/invoice_tvAddress"
-                >
+                android:layout_below="@id/invoice_tvAddress">
+
                 <TextView
                     android:id="@+id/invoice_tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_padding5"
+                    android:text="2017-03-22 12:24"
                     android:textColor="@color/color66"
-                    android:textSize="@dimen/default_textsize14"
-                    android:text="2017-03-22 12:24"/>
+                    android:textSize="@dimen/default_textsize12" />
+
                 <TextView
                     android:id="@+id/invoice_tvMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/main_color_red"
-                    android:text="200"
-                    android:textSize="@dimen/default_textsize"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    />
+                    android:layout_centerVertical="true"
+                    android:text="200"
+                    android:textColor="@color/main_color_red"
+                    android:textSize="@dimen/default_textsize" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/invoice_tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已完成"
+                android:textColor="@color/color66"
+                android:textSize="@dimen/default_textsize12"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
     </LinearLayout>

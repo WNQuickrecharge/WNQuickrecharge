@@ -86,11 +86,14 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
                         String amount = resultArr[1];
                         mMiAmount.setRightText("¥ "+amount);
                         PayWayViewHelp.showPayWayStatus(WXPayEntryActivity.this,mTvPayway,payway);
-                    }else {//订单支付
+                    }else if(resultArr.length==3) {//订单支付
                         if (!TextUtils.isEmpty(resultArr[2])){
                             EventBus.getDefault().post(new EventManager.WeiXinPayCallback(0,resultArr[2]));
                             finish();
                         }
+                    }else {
+                        EventBus.getDefault().post(new EventManager.onInvoiceWxPaySueecss());
+                        finish();
                     }
                     break;
                 case -1:

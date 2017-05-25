@@ -16,11 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:paddingTop="@dimen/default_padding5"
-        android:paddingBottom="@dimen/default_padding"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/default_padding"
         android:paddingLeft="@dimen/default_padding40"
-        android:paddingRight="@dimen/default_padding40">
+        android:paddingRight="@dimen/default_padding40"
+        android:visibility="gone"
+        android:paddingTop="@dimen/default_padding5">
 
         <RadioButton
             android:id="@+id/invoice_type_rbEle"
@@ -57,7 +58,6 @@
                 style="@style/text_mainstyle12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_lrmargin"
                 android:background="@color/white"
                 android:padding="@dimen/default_lrmargin"
                 android:text="开票详情" />
@@ -157,6 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:drawablePadding="10dp"
                     android:drawableRight="@drawable/nextarrow"
                     android:text="填写购买方、备注、收款人等" />
             </RelativeLayout>
@@ -177,6 +178,7 @@
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:padding="@dimen/default_padding">
 
                 <TextView
@@ -200,8 +202,7 @@
                 android:id="@+id/invoice_type_llPaper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -250,8 +251,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/default_lrmargin"
-                        android:inputType="phone"
-                        android:hint="填写收件人电话" />
+                        android:hint="填写收件人电话"
+                        android:inputType="phone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -270,7 +271,7 @@
                         android:layout_marginLeft="@dimen/dimen_5"
                         android:text="所在地区" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/invoice_type_etArea"
                         style="@style/EditTextStyle"
                         android:layout_width="match_parent"
@@ -305,6 +306,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/money_tips"
                     style="@style/text_mainstyle12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

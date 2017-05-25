@@ -26,4 +26,6 @@ public class Constants {
     //订单状态
     public static final int GETCHARGEPROGRESS = 1;
     public static final int STARTCHARGE = 2;
+    //发票余额支付
+    public static Boolean isInvoiceYue = false;
 }

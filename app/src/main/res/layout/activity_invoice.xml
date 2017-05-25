@@ -52,7 +52,7 @@
         android:layout_below="@id/invoice_title"
         android:layout_above="@id/invoice_llBottom"
         android:divider="@color/default_bgcolor"
-        android:dividerHeight="@dimen/default_padding"
+        android:dividerHeight="@dimen/dimen_1"
         ></ExpandableListView>
 
 </RelativeLayout>

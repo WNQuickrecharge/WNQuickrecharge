@@ -38,7 +38,7 @@ public class InvoiceMoreActivity extends BaseActivity implements View.OnClickLis
     @Bind(R.id.activity_invoice)
     RelativeLayout activityInvoice;
 
-    private String regPhone,regAddress,bankCard,indentifyNum,remark;
+    private String regPhone, regAddress, bankCard, indentifyNum, remark;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,14 +51,13 @@ public class InvoiceMoreActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-
-
     public static void start(Activity context) {
         Intent intent = new Intent(context, InvoiceMoreActivity.class);
         context.startActivityForResult(intent, REQUEST_CODE);
     }
+
     //只要填了一个，其余信息必须全填
-    private boolean check(){
+    private boolean check() {
         regPhone = etBankNumber.getText().toString();
         regAddress = etRegisterAddress.getText().toString();
         bankCard = etCompanyRisa.getText().toString();
@@ -66,31 +65,28 @@ public class InvoiceMoreActivity extends BaseActivity implements View.OnClickLis
         remark = etRemark.getText().toString();
         //全为空
         if (StringUtils.isEmpty(regPhone) && StringUtils.isEmpty(regAddress) && StringUtils.isEmpty(bankCard)
-                && StringUtils.isEmpty(indentifyNum) && StringUtils.isEmpty(remark)){
+                && StringUtils.isEmpty(indentifyNum) && StringUtils.isEmpty(remark)) {
             return true;
-        }
-        else if (!StringUtils.isEmpty(regPhone) && !StringUtils.isEmpty(regAddress) && !StringUtils.isEmpty(bankCard)
-                && !StringUtils.isEmpty(indentifyNum) && !StringUtils.isEmpty(remark)){
+        } else if (!StringUtils.isEmpty(regPhone) && !StringUtils.isEmpty(regAddress) && !StringUtils.isEmpty(bankCard)
+                && !StringUtils.isEmpty(indentifyNum) && !StringUtils.isEmpty(remark)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     @Override
     public void onClick(View v) {
-        if (check()){
+        if (check()) {
             Intent intent = new Intent();
-            intent.putExtra("regPhone",regPhone);
-            intent.putExtra("regAddress",regAddress);
-            intent.putExtra("bankCard",bankCard);
-            intent.putExtra("indentifyNum",indentifyNum);
-            intent.putExtra("remark",remark);
-            setResult(100,intent);
+            intent.putExtra("regPhone", regPhone);
+            intent.putExtra("regAddress", regAddress);
+            intent.putExtra("bankCard", bankCard);
+            intent.putExtra("indentifyNum", indentifyNum);
+            intent.putExtra("remark", remark);
+            setResult(100, intent);
             finish();
-        }
-        else {
+        } else {
             showToast("请完善信息");
         }
     }

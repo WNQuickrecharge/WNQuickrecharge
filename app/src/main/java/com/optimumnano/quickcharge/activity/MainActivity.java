@@ -346,7 +346,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setRightTitle("");
                         hideRightTitle();
                         hideLeftTitle();
-                        //setRightTitle("开发票");
+                        setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
                     case R.id.main_rbMine:

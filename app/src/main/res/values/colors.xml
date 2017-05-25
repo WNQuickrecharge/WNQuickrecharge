@@ -37,4 +37,5 @@
     <color name="dialog_btncolor_press">#cecdcd</color>
 
     <color name="bg_gray">#ececec</color>
+    <color name="province_line_border">#C7C7C7</color>
 </resources>
