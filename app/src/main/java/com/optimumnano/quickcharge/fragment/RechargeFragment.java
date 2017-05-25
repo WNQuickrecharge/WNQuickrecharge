@@ -208,6 +208,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private DrivingRouteOverlay routeOverlay;
     private SuggestionInfo suggestionInfoInfo;
     private GetAskChargeBean getAskChargeBean;
+    private String capp_lat;
+    private String capp_lng;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -1016,8 +1018,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
-            if (ask_state == 0 || ask_state == 1)
+            if (ask_state == 0 || ask_state == 1) {
                 hasUnfinishedOrder = true;
+                capp_lat = getAskChargeBean.getCapp_lat();
+                capp_lng = getAskChargeBean.getCapp_lng();
+            }
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
             carVin = getAskChargeBean.getCar_vin();
@@ -1046,8 +1051,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         RechargeCarLocationBean rechargeCarLocationBean = JSON.parseObject(resp.getResult().toString(), RechargeCarLocationBean.class);
         String lat = rechargeCarLocationBean.getLat();
         String lng = rechargeCarLocationBean.getLng();
-        double carLat = TypeConversionUtils.toDouble(getAskChargeBean.getCapp_lat());
-        double carLng = TypeConversionUtils.toDouble(getAskChargeBean.getCapp_lng());
+        double carLat = TypeConversionUtils.toDouble(capp_lat);
+        double carLng = TypeConversionUtils.toDouble(capp_lng);
         double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
                 new LatLng(carLat, carLng));
         distance /= 1000;
