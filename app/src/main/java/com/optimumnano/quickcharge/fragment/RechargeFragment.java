@@ -620,37 +620,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 QrCodeActivity.start(getActivity());
                 break;
             case R.id.tv_delete_ask_order:
-                final SimpleDialog dialog = new SimpleDialog(getActivity());
-                dialog.setYesOnclickListener("确定", new SimpleDialog.onYesOnclickListener() {
-                    @Override
-                    public void onYesClick() {
-                        if (!Tool.isConnectingToInternet()) {
-                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        dialog.dismiss();
-                        ((MainActivity) getActivity()).showLoading();
-                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
-                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
-                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
-                    }
-                });
-                dialog.setNoOnclickListener("", new SimpleDialog.onNoOnclickListener() {
-                    @Override
-                    public void onNoClick() {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                break;
-            case R.id.tv_delete_ask_order_wait:
-                //final SimpleDialog myDialog = new SimpleDialog(getActivity());
 
-
-                final AlertDialog myDialog1 = new AlertDialog.Builder(getActivity()).create();
-                myDialog1.setCanceledOnTouchOutside(false);
-                myDialog1.show();
-                Window window = myDialog1.getWindow();
+                final AlertDialog myDialog = new AlertDialog.Builder(getActivity()).create();
+                myDialog.setCanceledOnTouchOutside(false);
+                myDialog.show();
+                Window window = myDialog.getWindow();
                 window.setContentView(R.layout.layout_dialog_simple_style);
                 //TextView title = (TextView) window.findViewById(R.id.tv_title);
                 TextView delete = (TextView) window.findViewById(R.id.right_delete);
@@ -658,7 +632,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        myDialog1.dismiss();
+                        myDialog.dismiss();
                     }
                 });
                 confirmCancel.setOnClickListener(new View.OnClickListener() {
@@ -668,6 +642,62 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
                             return;
                         }
+                        myDialog.dismiss();
+                        ((MainActivity) getActivity()).showLoading();
+                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
+                    }
+                });
+//                final SimpleDialog dialog = new SimpleDialog(getActivity());
+//                dialog.setYesOnclickListener("确定", new SimpleDialog.onYesOnclickListener() {
+//                    @Override
+//                    public void onYesClick() {
+//                        if (!Tool.isConnectingToInternet()) {
+//                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+//                            return;
+//                        }
+//                        dialog.dismiss();
+//                        ((MainActivity) getActivity()).showLoading();
+//                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+//                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+//                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
+//                    }
+//                });
+//                dialog.setNoOnclickListener("", new SimpleDialog.onNoOnclickListener() {
+//                    @Override
+//                    public void onNoClick() {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+                break;
+            case R.id.tv_delete_ask_order_wait:
+                //final SimpleDialog myDialog = new SimpleDialog(getActivity());
+
+
+                final AlertDialog myDialog1 = new AlertDialog.Builder(getActivity()).create();
+                myDialog1.setCanceledOnTouchOutside(false);
+                myDialog1.show();
+                Window window1 = myDialog1.getWindow();
+                window1.setContentView(R.layout.layout_dialog_simple_style);
+                //TextView title = (TextView) window.findViewById(R.id.tv_title);
+                TextView delete1 = (TextView) window1.findViewById(R.id.right_delete);
+                TextView confirmCancel1 = (TextView) window1.findViewById(R.id.tv_confirm_cancel_ask);
+                delete1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myDialog1.dismiss();
+                    }
+                });
+                confirmCancel1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!Tool.isConnectingToInternet()) {
+                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        myDialog1.dismiss();
                         ((MainActivity) getActivity()).showLoading();
                         mCancleAskOrderTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
