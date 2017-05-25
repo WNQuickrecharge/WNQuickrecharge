@@ -1021,6 +1021,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = getAskChargeBean.getAsk_state();
             if (ask_state == 0 || ask_state == 1) {
                 hasUnfinishedOrder = true;
+            }
+            if (ask_state == 1) {
                 capp_lat = getAskChargeBean.getCapp_lat();
                 capp_lng = getAskChargeBean.getCapp_lng();
             }
@@ -1207,6 +1209,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = 1;
             getMainActivityRadioGroupChoose();
         } else if (msg.ask_state == 4) {
+            handler.removeMessages(1002);
             mBaiduMap.clear();
             ask_state = 0;
             ToastUtil.showToast(getActivity(),"您的补电订单已改派,请稍等");
