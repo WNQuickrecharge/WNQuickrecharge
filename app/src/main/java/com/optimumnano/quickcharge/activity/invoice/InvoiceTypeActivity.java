@@ -255,28 +255,6 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                             regPhone, regAddress, bankCard, indentifyNum, remark), this));
 
         }
-//        manager.addInvoiceOrder(orderMoney, ids, etCompanyRisa.getText().toString(), allMoney,
-//                etName.getText().toString(), etAddress.getText().toString(),
-//                etPhone.getText().toString(),
-//                regPhone, regAddress, bankCard, indentifyNum, remark,
-//                new ManagerCallback<InvoiceOrderRsp>() {
-//                    @Override
-//                    public void onSuccess(InvoiceOrderRsp returnContent) {
-//                        super.onSuccess(returnContent);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putDouble("money", returnContent.postage);
-//                        bundle.putDouble("allmoney", allMoney);
-//                        bundle.putString("order_no", returnContent.i_order_no);
-//                        skipActivity(PayCenterActivity.class, bundle);
-//                        finish();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String msg) {
-//                        super.onFailure(msg);
-//                        showToast(msg);
-//                    }
-//                });
     }
 
     @Override

@@ -338,6 +338,11 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onRequestCancel(int id) {
 
     }
+
+    /**
+     * 微信支付成功后返回InvoiceApplyActivity
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInvoiceWxPaySueecss(EventManager.onInvoiceWxPaySueecss event) {
 
