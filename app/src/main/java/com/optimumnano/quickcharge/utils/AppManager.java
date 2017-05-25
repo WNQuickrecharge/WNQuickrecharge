@@ -3,6 +3,8 @@ package com.optimumnano.quickcharge.utils;
 import android.app.Activity;
 import android.content.Context;
 
+import com.optimumnano.quickcharge.activity.MainActivity;
+
 import org.xutils.common.util.LogUtil;
 
 import java.util.Stack;
@@ -77,6 +79,17 @@ public class AppManager {
             if (null != activityStack.get(i)) {
                 finishActivity(activityStack.get(i));
                 break;
+            }
+        }
+        activityStack.clear();
+    }
+    /**
+     * 结束所有Activity
+     */
+    public void finishAllActivityExcludeMainActivity() {
+        for (int i = 0, size = activityStack.size(); i < size; i++) {
+            if (!(activityStack.get(i) instanceof MainActivity)) {
+                finishActivity(activityStack.get(i));
             }
         }
         activityStack.clear();

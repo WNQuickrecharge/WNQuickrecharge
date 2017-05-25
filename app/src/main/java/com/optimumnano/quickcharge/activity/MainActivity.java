@@ -662,7 +662,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
         Log.d("ttt", "cookieTimeOut");
-        AppManager.getAppManager().finishAllActivity();
+        AppManager.getAppManager().finishAllActivityExcludeMainActivity();
         SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
         Intent intent = new Intent(MainActivity.this,LoginActivity.class);
         Bundle bundle = new Bundle();
