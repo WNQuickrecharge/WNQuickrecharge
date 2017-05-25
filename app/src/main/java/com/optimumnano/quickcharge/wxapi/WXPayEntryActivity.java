@@ -91,7 +91,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
                             EventBus.getDefault().post(new EventManager.WeiXinPayCallback(0,resultArr[2]));
                             finish();
                         }
-                    }else {
+                    }else {//resultArr.length==4  跳转微信支付成功界面
                         EventBus.getDefault().post(new EventManager.onInvoiceWxPaySueecss());
                         finish();
                     }
