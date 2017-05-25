@@ -1,88 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_invoice_apply"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.optimumnano.quickcharge.activity.invoice.InvoiceApplyActivity">
 
-    <include layout="@layout/title_main"/>
+    <include layout="@layout/title_main" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ok"
-        android:layout_marginTop="@dimen/default_padding50"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/default_textsize"
-        android:textColor="@color/black"
-        android:text="开票成功"
-        android:layout_marginTop="@dimen/default_padding"
-        />
+        android:layout_marginTop="@dimen/default_padding50"
+        android:src="@drawable/ok" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/default_textsize"
-        android:textColor="@color/color66"
-        android:text="我们会尽快为您处理"
         android:layout_marginTop="@dimen/default_padding"
-        />
+        android:text="开票成功"
+        android:textColor="@color/black"
+        android:textSize="@dimen/default_textsize" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/default_padding"
+        android:text="我们会尽快为您处理"
+        android:textColor="@color/color66"
+        android:textSize="@dimen/default_textsize" />
+
     <com.optimumnano.quickcharge.views.MenuItem1
         android:id="@+id/invoice_apply_miOrderno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="订单编号"
-        app:tvRightText="000"
-        app:showtvRight="true"
         android:layout_marginTop="@dimen/default_lrmargin"
         app:LeftTextColor="@color/color66"
-        app:rightTextColor="@color/color33"/>
+        app:rightTextColor="@color/color33"
+        app:showtvRight="true"
+        app:tvLeftText="订单编号"
+        app:tvRightText="000" />
+
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="支付类型"
-        app:tvRightText="快递费用"
-        app:showtvRight="true"
         android:layout_marginTop="1dp"
         app:LeftTextColor="@color/color66"
-        app:rightTextColor="@color/color33"/>
+        app:rightTextColor="@color/color33"
+        app:showtvRight="true"
+        app:tvLeftText="支付类型"
+        app:tvRightText="快递费用" />
 
     <com.optimumnano.quickcharge.views.MenuItem1
         android:id="@+id/invoice_apply_miMoney"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="开票金额"
-        app:tvRightText="300"
-        app:showtvRight="true"
         android:layout_marginTop="1dp"
         app:LeftTextColor="@color/color66"
-        app:rightTextColor="@color/color33"/>
+        app:rightTextColor="@color/color33"
+        app:showtvRight="true"
+        app:tvLeftText="开票金额"
+        app:tvRightText="300" />
+
     <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/time_for_pay_postage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="下单时间"
-        app:tvRightText="2017-03-03"
-        app:showtvRight="true"
         android:layout_marginTop="1dp"
         app:LeftTextColor="@color/color66"
-        app:rightTextColor="@color/color33"/>
+        app:rightTextColor="@color/color33"
+        app:showtvRight="true"
+        app:tvLeftText="下单时间"
+        app:tvRightText="2017-03-03" />
 
     <TextView
         android:id="@+id/invoice_apply_tvNext"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/ButtonStyle"
-        android:text="@string/finish"
+        android:layout_marginBottom="@dimen/default_padding40"
         android:layout_marginLeft="@dimen/default_lrmargin"
         android:layout_marginRight="@dimen/default_lrmargin"
-        android:layout_marginBottom="@dimen/default_padding40"
-        android:layout_marginTop="@dimen/default_padding40"/>
+        android:layout_marginTop="@dimen/default_padding40"
+        android:text="@string/finish" />
 </LinearLayout>

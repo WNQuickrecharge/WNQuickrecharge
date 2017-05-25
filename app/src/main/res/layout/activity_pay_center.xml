@@ -96,7 +96,6 @@
         app:ivLeftDrawable="@drawable/yue"
         app:LeftTextColor="@color/color66"
         app:rightTextColor="@color/color33"
-        app:showtvRight="true"
         app:showivLeft="true"
         android:layout_marginTop="1dp"/>
 

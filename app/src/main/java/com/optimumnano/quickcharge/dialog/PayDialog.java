@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.sdk.app.PayTask;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.setting.ModifyPayPasswordActivity;
 import com.optimumnano.quickcharge.base.BaseDialog;
@@ -24,9 +25,11 @@ import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.request.GetOrderSignRequest;
 import com.optimumnano.quickcharge.request.GetPayPwdRequest;
 import com.optimumnano.quickcharge.request.PayChargeBalanceRequest;
+import com.optimumnano.quickcharge.request.PayInvoiceBalanceRequest;
 import com.optimumnano.quickcharge.response.GetOrderSignResult;
 import com.optimumnano.quickcharge.response.GetPayPwdResult;
 import com.optimumnano.quickcharge.response.PayChargeBalanceResult;
+import com.optimumnano.quickcharge.response.PayInvoiceBalanceResult;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
@@ -118,6 +121,8 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
     private int mGetOrderSignTaskId;
     private int mPayChargeBalanceTaskId;
     private int mGetWxOrderSignTaskId;
+    private int mPayInvoiceBalanceTaskId;
+
 
     public PayDialog(Activity mAty) {
         super(mAty);
@@ -232,6 +237,22 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
         });
     }
 
+    /**
+     * 发票余额支付
+     */
+    public void payInvoiceYue() {
+        if (!Tool.isConnectingToInternet()) {
+            close();
+            ToastUtil.showToast(activity, "无网络");
+            payCallback.payFail("无网络");
+            return;
+        } else {
+            mPayInvoiceBalanceTaskId = TaskIdGenFactory.gen();
+            TaskDispatcher.getInstance(activity).dispatch(new HttpTask(mPayInvoiceBalanceTaskId,
+                    new PayInvoiceBalanceRequest(new PayInvoiceBalanceResult(activity), order_no, money), this));
+        }
+    }
+
     //余额支付
     public void payYue() {
 //        orderManager.startPay(order_no, money, new ManagerCallback() {
@@ -297,12 +318,12 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
 
     }
 
-    public void payWeiXin(double amount,String orderNum) {
-        if (amount == 0 || TextUtils.isEmpty(orderNum)){
-            ToastUtil.showToast(activity,"支付参数错误");
+    public void payWeiXin(double amount, String orderNum) {
+        if (amount == 0 || TextUtils.isEmpty(orderNum)) {
+            ToastUtil.showToast(activity, "支付参数错误");
             return;
         }
-        money =amount;
+        money = amount;
         order_no = orderNum;
         mGetWxOrderSignTaskId = TaskIdGenFactory.gen();
         TaskDispatcher.getInstance(activity).dispatch(new HttpTask(mGetWxOrderSignTaskId,
@@ -351,7 +372,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
     }
 
     public void setMoney(double money, String order_no, String sign) {
-        setMoney(money,order_no,sign, SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY,PayDialog.pay_yue));
+        setMoney(money, order_no, sign, SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue));
     }
 
     public void setMoney(double money, String order_no, String sign, int paytype) {
@@ -421,40 +442,38 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             passwordView.setVisibility(View.VISIBLE);
             passwordView.setText("");
             mPayTitle.setText("请输入支付密码");
-            dialog.getViewHolder().setVisible(R.id.pay_llEdt,true);
-            dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
-            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
-            dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
-            dialog.getViewHolder().setVisible(R.id.bt_pay,false);
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt, true);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail, false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess, false);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway, false);
+            dialog.getViewHolder().setVisible(R.id.bt_pay, false);
         } else if (status == PAYSUCCESS) {
             dialog.getViewHolder().setVisible(R.id.pay_llEdt, false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail, false);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess, true);
             dialog.getViewHolder().setText(R.id.payresult_tvMoney, "");
             dialog.getViewHolder().setVisible(R.id.pay_llPayway, false);
-            dialog.getViewHolder().setVisible(R.id.bt_pay,false);
+            dialog.getViewHolder().setVisible(R.id.bt_pay, false);
         } else if (status == PAYFAIL) {
             dialog.getViewHolder().setVisible(R.id.pay_llEdt, false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail, true);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess, false);
             dialog.getViewHolder().setVisible(R.id.pay_llPayway, false);
-            dialog.getViewHolder().setVisible(R.id.bt_pay,false);
-        }
-        else if (status == PAYBT){
+            dialog.getViewHolder().setVisible(R.id.bt_pay, false);
+        } else if (status == PAYBT) {
             mPayTitle.setText("支付订单");
-            dialog.getViewHolder().setVisible(R.id.pay_llEdt,true);
-            dialog.getViewHolder().setVisible(R.id.payresult_llFail,false);
-            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess,false);
-            dialog.getViewHolder().setVisible(R.id.pay_llPayway,false);
-            dialog.getViewHolder().setVisible(R.id.bt_pay,true);
+            dialog.getViewHolder().setVisible(R.id.pay_llEdt, true);
+            dialog.getViewHolder().setVisible(R.id.payresult_llFail, false);
+            dialog.getViewHolder().setVisible(R.id.payresult_llSuccess, false);
+            dialog.getViewHolder().setVisible(R.id.pay_llPayway, false);
+            dialog.getViewHolder().setVisible(R.id.bt_pay, true);
             passwordView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             dialog.getViewHolder().setVisible(R.id.pay_llEdt, false);
             dialog.getViewHolder().setVisible(R.id.payresult_llFail, false);
             dialog.getViewHolder().setVisible(R.id.payresult_llSuccess, false);
             dialog.getViewHolder().setVisible(R.id.pay_llPayway, true);
-            dialog.getViewHolder().setVisible(R.id.bt_pay,false);
+            dialog.getViewHolder().setVisible(R.id.bt_pay, false);
         }
     }
 
@@ -509,9 +528,9 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
 
     private void payWxOrAlipay() {
         close();
-        if (PayDialog.pay_wx == payWay){
-            payWeiXin(money,order_no);
-        }else if (PayDialog.pay_zfb == payWay){
+        if (PayDialog.pay_wx == payWay) {
+            payWeiXin(money, order_no);
+        } else if (PayDialog.pay_zfb == payWay) {
             payZFB();
         }
     }
@@ -547,6 +566,10 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             GetOrderSignResult r = (GetOrderSignResult) result;
             ToastUtil.showToast(activity, ToastUtil.formatToastText(activity, r.getResp()));
             payCallback.payFail(ToastUtil.formatToastText(activity, r.getResp()));
+        }else if(mPayInvoiceBalanceTaskId  == id){
+            close();
+            Constants.isInvoiceYue = false;
+            ToastUtil.showToast(activity, "支付失败");
         }
     }
 
@@ -558,21 +581,26 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             String finalPayPassword = MD5Utils.encodeMD5(Md5Paypassword);
 
             if (finalPayPassword.equals(paypwd)) {
-                if (payWay == pay_yue) {
+                if (payWay == pay_yue && Constants.isInvoiceYue) {
+                    payInvoiceYue();
+                }
+                if (payWay == pay_yue && !Constants.isInvoiceYue) {
                     payYue();
-                } else if (payWay == pay_zfb) {
+                }
+                if (payWay == pay_zfb) {
                     payZFB();
-                } else {
-                    payWeiXin(money,order_no);
+                }
+                if (payWay == pay_wx) {
+                    payWeiXin(money, order_no);
                 }
             } else {
                 setStatus(PayDialog.PAYFAIL);
             }
         } else if (mGetOrderSignTaskId == id) {
             String returnContent = ((GetOrderSignResult) result).getResp().getResult();
-            JSONObject jsonObject=null;
+            JSONObject jsonObject = null;
             try {
-                jsonObject=new JSONObject(returnContent);
+                jsonObject = new JSONObject(returnContent);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -581,7 +609,11 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
         } else if (mPayChargeBalanceTaskId == id) {
             setStatus(PAYSUCCESS);
             handler.sendEmptyMessageDelayed(1001, 2000);
-        } else if (mGetWxOrderSignTaskId == id){
+        }else if(mPayInvoiceBalanceTaskId == id){
+            Constants.isInvoiceYue = false;
+//            setStatus(PAYSUCCESS);
+            handler.sendEmptyMessageDelayed(1001, 2000);
+        } else if (mGetWxOrderSignTaskId == id) {
             JSONObject dataJson = null;
             try {
                 dataJson = new JSONObject(((GetOrderSignResult) result).getResp().getResult());
@@ -593,7 +625,7 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
             wxApi.registerApp(WX_APP_ID);
 
             String sign = dataJson.optString("sign");
-            WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\",""), WXPaySignBean.class);
+            WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\", ""), WXPaySignBean.class);
             boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
             if (isPaySupported) {
                 PayReq request = new PayReq();
@@ -604,10 +636,10 @@ public class PayDialog extends BaseDialog implements View.OnClickListener, HttpC
                 request.nonceStr = wxpayBean.noncestr;
                 request.timeStamp = wxpayBean.timestamp;
                 request.sign = wxpayBean.sign;
-                request.extData = PayDialog.pay_wx+","+money +","+order_no ;
+                request.extData = PayDialog.pay_wx + "," + money + "," + order_no;
                 wxApi.sendReq(request);
-            }else {
-                ToastUtil.showToast(activity,"微信未安装或者版本过低");
+            } else {
+                ToastUtil.showToast(activity, "微信未安装或者版本过低");
             }
         }
     }

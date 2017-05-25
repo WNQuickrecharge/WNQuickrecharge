@@ -12,7 +12,6 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.InvoiceManager;
 import com.optimumnano.quickcharge.request.GetInvoiceRecordRequest;
 import com.optimumnano.quickcharge.response.GetInvoiceRecordResult;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -31,8 +30,6 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     private List<InvoiceRecordBean> list = new ArrayList<>();
     private InvoiceRecordAdapter adapter;
 
-    private InvoiceManager manager = new InvoiceManager();
-
     private int mGetInvoiceOrderListTaskId;
 
     @Override
@@ -47,6 +44,12 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     protected void onDestroy() {
         super.onDestroy();
         mTaskDispatcher.cancel(mGetInvoiceOrderListTaskId);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recyclerView.startAutoRefresh();
     }
 
     @Override
@@ -105,6 +108,7 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
             return;
         }
         if (mGetInvoiceOrderListTaskId == id) {
+            list.clear();
             list.addAll(((GetInvoiceRecordResult) result).getResp().getResult());
             dataChanged();
         }

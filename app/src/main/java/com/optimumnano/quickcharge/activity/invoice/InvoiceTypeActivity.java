@@ -19,7 +19,6 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.InvoiceManager;
 import com.optimumnano.quickcharge.request.AddInvoiceOrderRequest;
 import com.optimumnano.quickcharge.response.AddInvoiceOrderResult;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -105,7 +104,6 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     private double allMoney;//发票金额
     private String ids;//所有的订单id
     private double orderMoney = 0;//订单金额
-    private InvoiceManager manager = new InvoiceManager();
     /**
      * 收件人姓名
      */
@@ -145,7 +143,6 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
 
     private void getExtras() {
         ids = getIntent().getExtras().getString("ids");
-//        idss = ids.substring(0,ids.length()-1);
         allMoney = getIntent().getExtras().getDouble("money");
         //暂定高于500没有邮费
         if (allMoney < 500) {
@@ -323,7 +320,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
         bundle.putDouble("allmoney", allMoney);
         bundle.putString("order_no", resp.getResult().i_order_no);
         skipActivity(PayCenterActivity.class, bundle);
-        finish();
+        InvoiceTypeActivity.this.finish();
     }
 
     @Override

@@ -81,6 +81,8 @@ public class EventManager {
     public static class onRechargeCarChoosed{}
 
     public static class onNearStationChoosed{}
+    public static class onInvoiceWxPaySueecss{}
+
 
     public static class WeiXinPayCallback {
         public String data;
