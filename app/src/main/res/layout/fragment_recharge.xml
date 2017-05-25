@@ -211,7 +211,7 @@
             android:paddingRight="@dimen/dimen_10"
             android:paddingLeft="@dimen/dimen_10"
             android:paddingBottom="@dimen/dimen_10"
-            android:visibility="gone"
+            android:visibility="visible"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -245,13 +245,26 @@
                     android:layout_width="wrap_content"
                     android:hint="车牌号:"
                     android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_centerHorizontal="true"
+                <LinearLayout
                     android:layout_below="@id/tv_car_number"
-                    android:id="@+id/tv_driver_mobile"
+                    android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
-                    android:hint="电话:"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_hintText"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:text="电话: "
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/tv_driver_mobile"
+                        android:textColor="@color/main_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
             </RelativeLayout>
         </LinearLayout>
 

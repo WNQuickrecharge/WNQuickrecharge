@@ -1028,13 +1028,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             carVin = getAskChargeBean.getCar_vin();
             mHelper.setCarVin(carVin);
 
-            setDriverMobile();
-            tvCarNumber.setText("车牌号："+carNumber);
-            //driverMobile.setText("电话："+driverNumber);
+            setDriverMobileAndCarNumber();
             getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
-            tvCarNumber.setText("车牌号："+carNumber);
-            setDriverMobile();
+
+            setDriverMobileAndCarNumber();
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
                 handler.sendEmptyMessageDelayed(1002, 15000);
@@ -1047,12 +1045,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         }
     }
 
-    private void setDriverMobile() {
-        String sb = "电话: "+driverNumber;
-        SimpleText st = SimpleText.create(getActivity(), sb)
-                .first(driverNumber).textColor(R.color.main_color);
-        st.linkify(driverMobile);
-        driverMobile.setText(st);
+    private void setDriverMobileAndCarNumber() {
+        driverMobile.setText(driverNumber);
+        tvCarNumber.setText("车牌号："+carNumber);
     }
 
     private void getAskChargeCarLocationAndShowRoutePlan(GetAskChargeCarLocationResult result) {
@@ -1070,8 +1065,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         String format = decimalFormat.format(distance);
         int needTimeArrive = (int) (distance / 30.0*60);
         carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
-        tvCarNumber.setText("车牌号："+carNumber);
-        setDriverMobile();
+        setDriverMobileAndCarNumber();
         bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
         LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
         OverlayOptions options = new MarkerOptions()
