@@ -188,7 +188,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int ask_state;//查询请求补电工单状态
     private String carVin;//移动补电车的vin码
     private String carNumber;//移动补电车的车牌号
-    private String driverNumber;//移动补电车司机电话
+    private String driverNumber = "";//移动补电车司机电话
     private List<Point> mStationList;
     private List<Point> mSearchResult=new ArrayList<>();
     private SearchStationAdapter mStationAdapter;
@@ -992,7 +992,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
             LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
-            Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_SHORT).show();
             ask_state = 0;
             getMainActivityRadioGroupChoose();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
@@ -1027,12 +1027,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverNumber = getAskChargeBean.getCharge_phone();
             carVin = getAskChargeBean.getCar_vin();
             mHelper.setCarVin(carVin);
+
+            setDriverMobile();
             tvCarNumber.setText("车牌号："+carNumber);
-            driverMobile.setText("电话："+driverNumber);
+            //driverMobile.setText("电话："+driverNumber);
             getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
             tvCarNumber.setText("车牌号："+carNumber);
-            driverMobile.setText("电话："+driverNumber);
+            setDriverMobile();
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
                 handler.sendEmptyMessageDelayed(1002, 15000);
@@ -1043,6 +1045,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         } else if (mGetCityStationTaskId  == id){
             mStationList = ((GetCityStationResult) result).getResp().getResult();
         }
+    }
+
+    private void setDriverMobile() {
+        String sb = "电话: "+driverNumber;
+        SimpleText st = SimpleText.create(getActivity(), sb)
+                .first(driverNumber).textColor(R.color.main_color);
+        st.linkify(driverMobile);
+        driverMobile.setText(st);
     }
 
     private void getAskChargeCarLocationAndShowRoutePlan(GetAskChargeCarLocationResult result) {
@@ -1061,7 +1071,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         int needTimeArrive = (int) (distance / 30.0*60);
         carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
         tvCarNumber.setText("车牌号："+carNumber);
-        driverMobile.setText("电话："+driverNumber);
+        setDriverMobile();
         bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
         LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
         OverlayOptions options = new MarkerOptions()
