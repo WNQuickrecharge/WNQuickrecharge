@@ -957,7 +957,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             closeLoading();
         } else if (mAskChargeTaskId == id) {
             closeLoading();
-            Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
+            ToastUtil.showToast(getActivity(),
+                    ToastUtil.formatToastText(mContext, ((AskChargeResult) result).getAskChargeResp()));
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((GetMapNearCarInfoResult)result).getResp()));
@@ -1205,6 +1206,12 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             driverNumber = msg.phone;
             ask_state = 1;
             getMainActivityRadioGroupChoose();
+        } else if (msg.ask_state == 4) {
+            mBaiduMap.clear();
+            ask_state = 0;
+            ToastUtil.showToast(getActivity(),"您的补电订单已改派,请稍等");
+            getMainActivityRadioGroupChoose();
+
         }
     }
 
