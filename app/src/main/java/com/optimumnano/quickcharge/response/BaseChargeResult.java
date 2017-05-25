@@ -14,13 +14,15 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public abstract class BaseChargeResult extends BaseResult {
+    private boolean isFirstCookieTimeOut = true;
     public BaseChargeResult(Context context) {
         super(context);
     }
 
     @Override
     protected boolean processStatus(int status) {
-        if (status == 401) {
+        if (status == 401 && isFirstCookieTimeOut) {
+            isFirstCookieTimeOut = false;
             EventBus.getDefault().post(new EventManager.cookieTimeOut());
             return true;
         }

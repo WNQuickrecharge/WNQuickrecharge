@@ -26,12 +26,13 @@
             android:id="@+id/message_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_30"
+            android:layout_marginTop="@dimen/dimen_10"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/right_delete"
             android:textColor="@color/color33"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:textSize="@dimen/sp_18"
             android:text="确认取消补电请求吗？" />
 
 

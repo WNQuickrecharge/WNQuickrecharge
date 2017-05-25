@@ -131,7 +131,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Bind(R.id.iv_location)
     ImageView ivLocation;
     @Bind(R.id.et_address)
-    EditText etAddress;
+    TextView etAddress;
     @Bind(R.id.et_phone)
     EditText etPhone;
     @Bind(R.id.et_plate)
@@ -179,7 +179,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private BottomSheetDialog mBsdialog;
     private View mPopView;
     private String serviceVersionJsonInfo;
-//    private MyDialog myDialog;
     private LinearLayout bottomDialogRoot;
     //创建marker的显示图标
     BitmapDescriptor bitmap = null;
@@ -189,7 +188,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int ask_state;//查询请求补电工单状态
     private String carVin;//移动补电车的vin码
     private String carNumber;//移动补电车的车牌号
-    private String driverNumber;//移动补电车司机电话
+    private String driverNumber = "";//移动补电车司机电话
     private List<Point> mStationList;
     private List<Point> mSearchResult=new ArrayList<>();
     private SearchStationAdapter mStationAdapter;
@@ -207,6 +206,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private boolean needPostMessage = true;
     private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
+    private SuggestionInfo suggestionInfoInfo;
+    private GetAskChargeBean getAskChargeBean;
+    private String capp_lat;
+    private String capp_lng;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -226,7 +229,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     @Override
     public void onStart() {
         super.onStart();
-//        startLocation();
     }
 
     @Override
@@ -325,6 +327,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                                 mSearchResult.add(point);
                             }
                         }
+                        if (mSearchResult.isEmpty()){
+                            ToastUtil.showToast(getActivity(),"未搜索到结果");
+//                            Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
+                        }
+
                         mStationAdapter.setNewData(mSearchResult);
                     }else {
                         getStations();
@@ -346,11 +353,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         searchRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchRv.setAdapter(mStationAdapter);
 
-        mGetAskChargeTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
-                new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
-
-        //doGetRechargeCarLocation();
     }
 
     private void showBottomDialog(Object obj,boolean needCalcDistance) {
@@ -409,21 +411,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             holder.collectRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*CollectManager.addCollectStation(holder.mItem.Id, new ManagerCallback() {
-                        @Override
-                        public void onSuccess(Object returnContent) {
-                            super.onSuccess(returnContent);
-                            ToastUtil.showToast(getActivity(), "收藏成功！");
-                            mBsdialog.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure(String msg) {
-                            super.onFailure(msg);
-                            ToastUtil.showToast(getActivity(), msg);
-
-                        }
-                    });*/
                     EventBus.getDefault().post(new EventManager.addCollectStation(holder.mItem.Id));
                 }
             });
@@ -449,19 +436,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     private void getStations() {
-        /*StationManager.getCityStations(((BaseActivity)getActivity()).mHelper.getCity(), new ManagerCallback() {
-            @Override
-            public void onSuccess(Object returnContent) {
-                super.onSuccess(returnContent);
-                String result = returnContent.toString();
-                mStationList = JSON.parseArray(result, Point.class);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-            }
-        });*/
         if (!Tool.isConnectingToInternet()) {
             return;
         }
@@ -544,10 +518,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         TextView tvPricePer;
         @Bind(R.id.tv_num)
         TextView tvNum;
-//        @Bind(R.id.tv_nav)
-//        TextView tvNav;
-//        @Bind(R.id.tv_fav)
-//        TextView tvFav;
         @Bind(R.id.tv_phonenum)
         TextView tvPhonenum;
         @Bind(R.id.tv_cancel)
@@ -628,7 +598,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     @OnClick({R.id.iv_location, R.id.et_address, R.id.tv_charge_now, R.id.tv_charge_late,
-            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait})
+            R.id.tv_scan_charge,R.id.tv_delete_ask_order,R.id.tv_delete_ask_order_wait, R.id.tv_driver_mobile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_location:
@@ -657,6 +627,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                             return;
                         }
                         dialog.dismiss();
+                        ((MainActivity) getActivity()).showLoading();
                         mCancleAskOrderTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
@@ -677,26 +648,12 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     @Override
                     public void onYesClick() {
                         myDialog.dismiss();
-                        /*mManager.cancleAskOrder(askNo, new ManagerCallback() {//TODO更新框架
-                            @Override
-                            public void onSuccess(Object returnContent) {
-                                super.onSuccess(returnContent);
-                                askOrderStatus=AskOrderStatus.DEFAULT;
-                                askCarInputFrame.setVisibility(View.VISIBLE);
-                                searchRechargeStaionFrame.setVisibility(View.GONE);
-                                carComingSoon.setVisibility(View.GONE);
-                            }
 
-                            @Override
-                            public void onFailure(String msg) {
-                                super.onFailure(msg);
-                                ToastUtil.showToast(getActivity(),msg);
-                            }
-                        });*/
                         if (!Tool.isConnectingToInternet()) {
                             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
                             return;
                         }
+                        ((MainActivity) getActivity()).showLoading();
                         mCancleAskOrderTaskId = TaskIdGenFactory.gen();
                         mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
@@ -709,6 +666,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     }
                 });
                 myDialog.show();
+                break;
+
+            case R.id.tv_driver_mobile:
+                requestPermission(driverNumber);
                 break;
             default:
                 break;
@@ -735,19 +696,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         }
         address = etAddress.getText().toString().trim();
         carNumber = etPlate.getText().toString().trim();
-//        mManager.getAskCharge(mHelper, phoneNumber, "Hl", address, carNumber, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                Toast.makeText(getActivity(), "提交充电请求成功!!", Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
-//            }
-//        });
+
         if (hasUnfinishedOrder){
             Toast.makeText(getActivity(), "存在未完成的订单,请勿再次请求补电", Toast.LENGTH_LONG).show();
             return;
@@ -756,9 +705,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
             return;
         }
+        ((MainActivity) getActivity()).showLoading();
         mAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAskChargeTaskId,
-                new AskChargeRequest(new AskChargeResult(mContext), mHelper, phoneNumber, "Hl", address, carNumber), this));
+                new AskChargeRequest(new AskChargeResult(mContext), suggestionInfoInfo, phoneNumber, "Hl", address, carNumber), this));
 
     }
 
@@ -830,8 +780,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     private void initPoint() {
-        //mBaiduMap.clear();
-        //getRegionCar();
         mGetMapRegionInfoTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetMapRegionInfoTaskId,
                 new GetMapRegionInfoRequest(new GetMapRegionInfoResult(mContext), mHelper), this));
@@ -840,39 +788,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         mTaskDispatcher.dispatch(new HttpTask(mGetNearRechargeCarInfoTaskId,
                 new GetMapNearCarInfoRequest(new GetMapNearCarInfoResult(mContext), mHelper), this));
     }
-
-//    private void getRegionCar() {
-//        mManager.getregionCarpile(mHelper, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                closeLoading();
-//                if (mCarPiont != null && mCarPiont.equals(returnContent))
-//                    return;
-//                mCarPiont = (List<CarPoint>) returnContent;
-//                int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
-//                switch (checkedRadioButtonId) {
-//                    case R.id.main_rbRecharge:
-//                        markerNearStaion();
-//                        break;
-//
-//                    case R.id.main_rbRechargeCar:
-//                        markerNearRechargeCar();
-//                        break;
-//
-//                    default:
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                ToastUtil.showToast(getActivity(), msg);
-//                closeLoading();
-//            }
-//        });
-//    }
 
 
     private void closeLoading() {
@@ -966,8 +881,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 if (bundle == null) {
                     return;
                 }
-                SuggestionInfo info = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
-                etAddress.setText(info.key);
+                suggestionInfoInfo = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
+                etAddress.setText(suggestionInfoInfo.key);
             }
         }
     }
@@ -982,7 +897,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
         if (mapView != null)
             mapView.onResume();
-        //startLocation();
     }
 
     @Override
@@ -1042,6 +956,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     ToastUtil.formatToastText(mContext, ((GetMapRegionInfoResult) result).getMapRegionInfoHttpResp()));
             closeLoading();
         } else if (mAskChargeTaskId == id) {
+            closeLoading();
             Toast.makeText(getActivity(), "提交充电请求失败!!", Toast.LENGTH_LONG).show();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             ToastUtil.showToast(getActivity(),
@@ -1050,6 +965,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(mContext,
                     ToastUtil.formatToastText(mContext, ((GetAskChargeResult) result).getResp()));
         } else if (mCancleAskOrderTaskId  == id){
+            closeLoading();
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
         } else if (mGetAskChargeCarLocationTaskId == id) {
@@ -1070,14 +986,15 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 return;
             }
             mPiont = points;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mAskChargeTaskId == id) {
+            closeLoading();
             askNo = ((AskChargeResult) result).getAskChargeResp().getResult().ask_no;
             LogUtils.i("test==askNo "+askNo);
             askOrderStatus=AskOrderStatus.START;
-            Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_SHORT).show();
             ask_state = 0;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             closeLoading();
             List<CarPoint> carPoints = ((GetMapNearCarInfoResult) result).getResp().getResult();
@@ -1085,31 +1002,37 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 return;
             }
             mCarPiont = carPoints;
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mCancleAskOrderTaskId == id){
+            closeLoading();
             ask_state = -1;
             hasUnfinishedOrder = false;
             mHelper.setCarVin("");
             needPostMessage = false;
             handler.removeMessages(1002);
-            getMainActivityRadioGuoupChooesed();
+            getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeTaskId == id) {
             closeLoading();
             String askCharge = ((GetAskChargeResult) result).getResp().getResult();
             LogUtils.e(TAG + " askCharge "+askCharge);
-            GetAskChargeBean getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
+            getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
-            if (ask_state == 0 || ask_state == 1)
+            if (ask_state == 0 || ask_state == 1) {
                 hasUnfinishedOrder = true;
+                capp_lat = getAskChargeBean.getCapp_lat();
+                capp_lng = getAskChargeBean.getCapp_lng();
+            }
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
             carVin = getAskChargeBean.getCar_vin();
             mHelper.setCarVin(carVin);
-            tvCarNumber.setText(carNumber);
-            driverMobile.setText(driverNumber);
-            getMainActivityRadioGuoupChooesed();
+
+            setDriverMobileAndCarNumber();
+            getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeCarLocationTaskId == id) {
+
+            setDriverMobileAndCarNumber();
             getAskChargeCarLocationAndShowRoutePlan((GetAskChargeCarLocationResult) result);
             if (needPostMessage) {
                 handler.sendEmptyMessageDelayed(1002, 15000);
@@ -1122,21 +1045,27 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         }
     }
 
+    private void setDriverMobileAndCarNumber() {
+        driverMobile.setText(driverNumber);
+        tvCarNumber.setText("车牌号："+carNumber);
+    }
+
     private void getAskChargeCarLocationAndShowRoutePlan(GetAskChargeCarLocationResult result) {
         GetAskChargeCarLocationHttpResp resp = result.getResp();
 
         RechargeCarLocationBean rechargeCarLocationBean = JSON.parseObject(resp.getResult().toString(), RechargeCarLocationBean.class);
         String lat = rechargeCarLocationBean.getLat();
         String lng = rechargeCarLocationBean.getLng();
+        double carLat = TypeConversionUtils.toDouble(capp_lat);
+        double carLng = TypeConversionUtils.toDouble(capp_lng);
         double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
-                new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng));
+                new LatLng(carLat, carLng));
         distance /= 1000;
         DecimalFormat decimalFormat=new DecimalFormat("0.00");
         String format = decimalFormat.format(distance);
         int needTimeArrive = (int) (distance / 30.0*60);
         carComeTime.setText("与补电车相距" + format + "公里,预计" + needTimeArrive + "分钟到达");
-        tvCarNumber.setText("车牌号："+carNumber);
-        driverMobile.setText("电话： "+driverNumber);
+        setDriverMobileAndCarNumber();
         bitmap1 = BitmapDescriptorFactory.fromResource(R.drawable.che);
         LatLng latLng = new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng));
         OverlayOptions options = new MarkerOptions()
@@ -1151,7 +1080,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
         RoutePlanSearch routePlanSearch = RoutePlanSearch.newInstance();
         routePlanSearch.drivingSearch(new DrivingRoutePlanOption().from(PlanNode.withLocation(latLng)).
-                to(PlanNode.withLocation(new LatLng(mHelper.getLocation().lat, mHelper.getLocation().lng))));
+                to(PlanNode.withLocation(new LatLng(carLat, carLng))));
         routePlanSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
             @Override
             public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
@@ -1208,7 +1137,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         });
     }
 
-    private void getMainActivityRadioGuoupChooesed() {
+    private void getMainActivityRadioGroupChoose() {
         int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
         switch (checkedRadioButtonId) {
             case R.id.main_rbRecharge:
@@ -1217,6 +1146,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 askCarInputFrame.setVisibility(View.GONE);
                 carComingSoon.setVisibility(View.GONE);
                 waitCar.setVisibility(View.GONE);
+                handler.removeMessages(1002);
                 break;
 
             case R.id.main_rbRechargeCar:
@@ -1228,6 +1158,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     waitCar.setVisibility(View.GONE);
                     markerNearRechargeCar();
                 } else if (ask_state == 0) {// 0,已下单 待接单
+                    markerNearRechargeCar();
                     if (Tool.isConnectingToInternet()) {
                         askCarInputFrame.setVisibility(View.GONE);
                         carComingSoon.setVisibility(View.VISIBLE);
@@ -1240,11 +1171,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     askCarInputFrame.setVisibility(View.GONE);
                     carComingSoon.setVisibility(View.GONE);
                     waitCar.setVisibility(View.VISIBLE);
-                    //mBaiduMap.clear();
-//                    mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
-//                    mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,
-//                            new GetAskChargeCarLocationRequest(new GetAskChargeCarLocationResult(mContext),
-//                                    mHelper.getCarVin()),this));
+                    mBaiduMap.clear();
                     doGetRechargeCarLocation();
                 }
                 break;
@@ -1256,11 +1183,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
-        getMainActivityRadioGuoupChooesed();
+        getMainActivityRadioGroupChoose();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
-        getMainActivityRadioGuoupChooesed();
+        getMainActivityRadioGroupChoose();
     }
 
     public enum AskOrderStatus{
@@ -1275,6 +1202,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             mHelper.setCarVin(msg.car_vin);
             carVin = msg.car_vin;
             carNumber = msg.car_no;
+            driverNumber = msg.phone;
+            ask_state = 1;
+            getMainActivityRadioGroupChoose();
         }
     }
 

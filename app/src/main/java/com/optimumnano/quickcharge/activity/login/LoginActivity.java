@@ -28,6 +28,7 @@ import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +62,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         setContentView(R.layout.activity_login);
         initViews();
         initListener();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String cookieTimeOut = bundle.getString("CookieTimeOut");
+            if ("CookieTimeOut".equals(cookieTimeOut)) {
+                ToastUtil.showToast(this, R.string.cookie_timeout);
+            }
+        }
     }
 
     @Override
