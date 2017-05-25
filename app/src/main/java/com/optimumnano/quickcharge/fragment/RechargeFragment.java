@@ -2,6 +2,7 @@ package com.optimumnano.quickcharge.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -642,13 +644,26 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 dialog.show();
                 break;
             case R.id.tv_delete_ask_order_wait:
-                final SimpleDialog myDialog = new SimpleDialog(getActivity());
-                myDialog.setMessage("确认取消补电请求吗?");
-                myDialog.setYesOnclickListener("确定", new SimpleDialog.onYesOnclickListener() {
-                    @Override
-                    public void onYesClick() {
-                        myDialog.dismiss();
+                //final SimpleDialog myDialog = new SimpleDialog(getActivity());
 
+
+                final AlertDialog myDialog1 = new AlertDialog.Builder(getActivity()).create();
+                myDialog1.setCanceledOnTouchOutside(false);
+                myDialog1.show();
+                Window window = myDialog1.getWindow();
+                window.setContentView(R.layout.layout_dialog_simple_style);
+                //TextView title = (TextView) window.findViewById(R.id.tv_title);
+                TextView delete = (TextView) window.findViewById(R.id.right_delete);
+                TextView confirmCancel = (TextView) window.findViewById(R.id.tv_confirm_cancel_ask);
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myDialog1.dismiss();
+                    }
+                });
+                confirmCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         if (!Tool.isConnectingToInternet()) {
                             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
                             return;
@@ -659,13 +674,34 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
                     }
                 });
-                myDialog.setNoOnclickListener(null, new SimpleDialog.onNoOnclickListener() {
-                    @Override
-                    public void onNoClick() {
-                        myDialog.dismiss();
-                    }
-                });
-                myDialog.show();
+
+
+
+
+
+//                myDialog.setMessage("确认取消补电请求吗?");
+//                myDialog.setYesOnclickListener("确定", new SimpleDialog.onYesOnclickListener() {
+//                    @Override
+//                    public void onYesClick() {
+//                        myDialog.dismiss();
+//
+//                        if (!Tool.isConnectingToInternet()) {
+//                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
+//                            return;
+//                        }
+//                        ((MainActivity) getActivity()).showLoading();
+//                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
+//                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
+//                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
+//                    }
+//                });
+//                myDialog.setNoOnclickListener(null, new SimpleDialog.onNoOnclickListener() {
+//                    @Override
+//                    public void onNoClick() {
+//                        myDialog.dismiss();
+//                    }
+//                });
+//                myDialog.show();
                 break;
 
             case R.id.tv_driver_mobile:
@@ -883,6 +919,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 }
                 suggestionInfoInfo = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
                 etAddress.setText(suggestionInfoInfo.key);
+                capp_lat = String.valueOf(suggestionInfoInfo.lat);
+                capp_lng = String.valueOf(suggestionInfoInfo.lng);
             }
         }
     }
@@ -1212,7 +1250,23 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             handler.removeMessages(1002);
             mBaiduMap.clear();
             ask_state = 0;
-            ToastUtil.showToast(getActivity(),"您的补电订单已改派,请稍等");
+            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+            Window window = alertDialog.getWindow();
+            window.setContentView(R.layout.dialog_hint);
+            TextView title = (TextView) window.findViewById(R.id.tv_title);
+            TextView confirm = (TextView) window.findViewById(R.id.tv_confirm);
+            title.setText("提醒");
+            confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            TextView tv_message = (TextView) window.findViewById(R.id.tv_message);
+            tv_message.setText("您的补电订单已改派,请稍等");
+
             getMainActivityRadioGroupChoose();
 
         }
