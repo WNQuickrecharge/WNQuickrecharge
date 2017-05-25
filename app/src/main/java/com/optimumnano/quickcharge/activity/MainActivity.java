@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     private MyViewPager viewPager;
     private static RadioGroup rg;
+    private boolean isFirstCookieTimeOut = true;
 
     public static RadioGroup getRg() {
         return rg;
@@ -145,7 +146,13 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         if (initDirs()) {
             initNavi();
         }
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            boolean isLogin = bundle.getBoolean("isLogin");
+            if (isLogin) {
+                rg.check(R.id.main_rbRechargeCar);
+            }
+        }
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
     }
@@ -662,13 +669,17 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
         Log.d("ttt", "cookieTimeOut");
-        AppManager.getAppManager().finishAllActivityExcludeMainActivity();
-        SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
-        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("CookieTimeOut","CookieTimeOut");
-        intent.putExtras(bundle);
-        startActivity(intent);
+        if (isFirstCookieTimeOut) {
+            isFirstCookieTimeOut = false;
+            AppManager.getAppManager().finishAllActivityExcludeMainActivity();
+            SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("CookieTimeOut","CookieTimeOut");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

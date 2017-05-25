@@ -276,7 +276,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         if (isFinishing()) {
             return;
         }
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isLogin",true);
+        intent.putExtras(bundle);
+        startActivity(intent);
         closeLoading();
         runOnUiThread(new Runnable() {
             @Override
