@@ -271,6 +271,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         }
         list.clear();
         list.addAll(((GetInvoiceConsumeResult) result).getResp().getResult());
+        if(list.isEmpty()){
+            return;
+        }
         dealData();
     }
 
