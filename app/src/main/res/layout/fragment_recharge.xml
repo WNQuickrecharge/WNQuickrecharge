@@ -213,7 +213,7 @@
             android:paddingRight="@dimen/dimen_10"
             android:paddingLeft="@dimen/dimen_10"
             android:paddingBottom="@dimen/dimen_10"
-            android:visibility="visible"
+            android:visibility="gone"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

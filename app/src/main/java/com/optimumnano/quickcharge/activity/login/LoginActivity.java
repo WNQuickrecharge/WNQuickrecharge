@@ -301,6 +301,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
         closeLoading();
         //TODO
+        if(((LoginResult) result).getLoginHttpResp() != null)
         showToast(((LoginResult) result).getLoginHttpResp().getResultMsg());
     }
 

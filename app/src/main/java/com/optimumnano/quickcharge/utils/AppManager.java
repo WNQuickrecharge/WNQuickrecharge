@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.optimumnano.quickcharge.activity.MainActivity;
+import com.optimumnano.quickcharge.activity.login.LoginActivity;
 
 import org.xutils.common.util.LogUtil;
 
@@ -86,13 +87,13 @@ public class AppManager {
     /**
      * 结束所有Activity
      */
-    public void finishAllActivityExcludeMainActivity() {
+    public void finishAllActivityExcludeLoginActivity() {
         for (int i = 0, size = activityStack.size(); i < size; i++) {
-            if (!(activityStack.get(i) instanceof MainActivity)) {
+            if (!(activityStack.get(i) instanceof LoginActivity)) {
                 finishActivity(activityStack.get(i));
             }
         }
-        activityStack.clear();
+        //activityStack.clear();
     }
     /**
      * 获取指定的Activity

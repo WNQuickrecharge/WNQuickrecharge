@@ -187,7 +187,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     BitmapDescriptor bitmap1 = null;
     private String askNo;
     private AskOrderStatus askOrderStatus;
-    private int ask_state;//查询请求补电工单状态
+    private int ask_state = -1;//查询请求补电工单状态
     private String carVin;//移动补电车的vin码
     private String carNumber;//移动补电车的车牌号
     private String driverNumber = "";//移动补电车司机电话
