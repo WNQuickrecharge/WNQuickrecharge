@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -14,12 +13,19 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public abstract class BaseChargeResult extends BaseResult {
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
     public BaseChargeResult(Context context) {
         super(context);
     }
 
     @Override
     protected boolean processStatus(int status) {
+        this.status = status;
         if (status == 401) {
             EventBus.getDefault().post(new EventManager.cookieTimeOut());
             return true;

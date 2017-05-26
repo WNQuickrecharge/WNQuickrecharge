@@ -79,7 +79,6 @@ import com.optimumnano.quickcharge.bean.RechargeCarLocationBean;
 import com.optimumnano.quickcharge.bean.StationBean;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
-import com.optimumnano.quickcharge.dialog.SimpleDialog;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
@@ -94,6 +93,7 @@ import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.request.GetMapNearCarInfoRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
 import com.optimumnano.quickcharge.response.AskChargeResult;
+import com.optimumnano.quickcharge.response.BaseChargeResult;
 import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetAskChargeCarLocationResult;
 import com.optimumnano.quickcharge.response.GetAskChargeResult;
@@ -1026,20 +1026,20 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         } else if (mAskChargeTaskId == id) {
             closeLoading();
             ToastUtil.showToast(getActivity(),
-                    ToastUtil.formatToastText(mContext, ((AskChargeResult) result).getAskChargeResp()));
+                    ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((AskChargeResult) result).getAskChargeResp()));
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((GetMapNearCarInfoResult)result).getResp()));
         } else if (mGetAskChargeTaskId == id) {
             ToastUtil.showToast(mContext,
-                    ToastUtil.formatToastText(mContext, ((GetAskChargeResult) result).getResp()));
+                    ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((GetAskChargeResult) result).getResp()));
         } else if (mCancleAskOrderTaskId  == id){
             closeLoading();
             ToastUtil.showToast(getActivity(),
-                    ToastUtil.formatToastText(mContext, ((CancelAskOrderResult) result).getResp()));
+                    ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((CancelAskOrderResult) result).getResp()));
         } else if (mGetAskChargeCarLocationTaskId == id) {
             ToastUtil.showToast(getActivity(),
-                    ToastUtil.formatToastText(mContext, ((GetAskChargeCarLocationResult) result).getResp()));
+                    ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((GetAskChargeCarLocationResult) result).getResp()));
         }
     }
 

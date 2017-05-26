@@ -5,7 +5,9 @@ import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.BaseHttpResp;
+import com.optimumnano.quickcharge.response.BaseChargeResult;
 
 /**
  * Created by Administrator on 2016/7/5.
@@ -32,6 +34,19 @@ public class ToastUtil {
     }
 
     public static String formatToastText(Context context, BaseHttpResp resp) {
+        if (resp==null){
+            return "网络连接异常";
+        }
+        if (TextUtils.isEmpty(resp.getResultMsg())) {
+            return "网络连接异常";//TODO
+        }
+        return resp.getResultMsg();
+    }
+
+    public static String formatToastText(Context context, BaseChargeResult result, BaseHttpResp resp) {
+        if (result.getStatus() == 401) {
+            return context.getString(R.string.cookie_timeout);
+        }
         if (resp==null){
             return "网络连接异常";
         }
