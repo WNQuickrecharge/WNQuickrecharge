@@ -134,7 +134,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 month = list.get(i).ConsumeMonth;
                 listStr.add(month + "月");
                 list1.add(list.get(i));
-            } else if (i == list.size() - 1) {
+            }
+            if (i == list.size() - 1) {
                 List<InvoiceOrder> list2 = new ArrayList<>();
                 list2.addAll(list1);
                 child.add(list2);
@@ -155,7 +156,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             double money = 0;
             InvoiceOrderGroup orderGroup = new InvoiceOrderGroup();
             for (InvoiceOrder order1 : child.get(j)) {
-                money = addMoney(money, order1.ConsumeCash);
+
+                    money = addMoney(money, order1.ConsumeCash);
             }
             orderGroup.ConsumeMonth = listStr.get(j);
             orderGroup.money = money;
@@ -271,9 +273,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         }
         list.clear();
         list.addAll(((GetInvoiceConsumeResult) result).getResp().getResult());
-        if(list.isEmpty()){
+        /*if(list.isEmpty()){
             return;
-        }
+        }*/
         dealData();
     }
 
