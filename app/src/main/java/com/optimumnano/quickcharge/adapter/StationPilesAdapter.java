@@ -131,10 +131,10 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
     @Override
     public void onRequestFail(int id, BaseResult result) {
         ((BaseActivity) mContext).closeLoading();
+        ToastUtil.showToast(context, context.getString(R.string.get_gun_info_fail));
         if (!mActive) {
             return;
         }
-        ToastUtil.showToast(context, context.getString(R.string.get_gun_info_fail));
     }
 
     @Override
