@@ -79,6 +79,7 @@
                 android:paddingBottom="@dimen/dimen_5"
                 android:paddingRight="25dp"
                 android:paddingLeft="25dp"
+                android:visibility="gone"
                 android:gravity="center"
                 android:drawableLeft="@drawable/icon_text_tip"
                 android:drawableRight="@drawable/nextarrow"
@@ -86,6 +87,7 @@
                 style="@style/tv_match"/>
 
             <LinearLayout
+                android:layout_marginTop="@dimen/dimen_5"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
