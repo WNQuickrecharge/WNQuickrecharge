@@ -53,6 +53,7 @@ import com.optimumnano.quickcharge.response.AddStationCollectionResult;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
+import com.optimumnano.quickcharge.utils.LogUtils;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -668,17 +669,14 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void cookieTimeOut(EventManager.cookieTimeOut event) {
-        Log.d("ttt", "cookieTimeOut");
-        if (isFirstCookieTimeOut) {
-            isFirstCookieTimeOut = false;
-            AppManager.getAppManager().finishAllActivityExcludeMainActivity();
-            SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("CookieTimeOut","CookieTimeOut");
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
+        LogUtils.d("ttt"+"cookieTimeOut");
+        AppManager.getAppManager().finishAllActivityExcludeMainActivity();
+        SharedPreferencesUtil.getEditor(SPConstant.SP_COOKIE).clear().commit();
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("CookieTimeOut","CookieTimeOut");
+        intent.putExtras(bundle);
+        startActivity(intent);
 
     }
 
@@ -686,6 +684,11 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     public void mainActivitySelectOrderTag(EventManager.mainActivitySelectOrderTag event) {
         viewPager.setCurrentItem(1);
         rg.check(R.id.main_rbOrder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void finishMainActivity(EventManager.finishMainActivity event) {
+      finish();
     }
 
 

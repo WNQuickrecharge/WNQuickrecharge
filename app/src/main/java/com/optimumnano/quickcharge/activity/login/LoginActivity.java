@@ -19,6 +19,7 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.manager.LoginManager;
 import com.optimumnano.quickcharge.net.ManagerCallback;
 import com.optimumnano.quickcharge.request.LoginRequest;
@@ -30,6 +31,7 @@ import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lzh.framework.updatepluginlib.UpdateBuilder;
@@ -67,6 +69,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             String cookieTimeOut = bundle.getString("CookieTimeOut");
             if ("CookieTimeOut".equals(cookieTimeOut)) {
                 ToastUtil.showToast(this, R.string.cookie_timeout);
+                EventBus.getDefault().post(new EventManager.finishMainActivity());
             }
         }
     }
