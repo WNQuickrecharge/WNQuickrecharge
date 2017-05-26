@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
@@ -30,6 +29,7 @@ import com.optimumnano.quickcharge.utils.GlideCacheUtil;
 import com.optimumnano.quickcharge.utils.MD5Utils;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.StringUtils;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -68,8 +68,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         if (bundle != null) {
             String cookieTimeOut = bundle.getString("CookieTimeOut");
             if ("CookieTimeOut".equals(cookieTimeOut)) {
-//                ToastUtil.showToast(this, R.string.cookie_timeout);
-                Toast.makeText(this,R.string.cookie_timeout,Toast.LENGTH_LONG).show();
+                ToastUtil.showToast(this, R.string.cookie_timeout);
                 EventBus.getDefault().post(new EventManager.finishMainActivity());
             }
         }
