@@ -98,4 +98,6 @@ public class EventManager {
             this.msg=msg;
         }
     }
+
+    public static class finishMainActivity{}
 }
