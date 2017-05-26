@@ -187,10 +187,15 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.invoice_tvNext:
 
-                Bundle bundle = new Bundle();
-                bundle.putDouble("money", allMoney);
-                bundle.putString("ids", allid);
-                skipActivity(InvoiceTypeActivity.class, bundle);
+                if (0 == allMoney) {
+                    showToast("请选择要开的发票");
+                    return;
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("money", allMoney);
+                    bundle.putString("ids", allid);
+                    skipActivity(InvoiceTypeActivity.class, bundle);
+                }
                 break;
             case R.id.title_tvRight:
                 skipActivity(InvoiceRecordActivity.class, null);
