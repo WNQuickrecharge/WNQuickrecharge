@@ -102,20 +102,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void doRequest() {
-//        manager.getInvoiceRecord(new ManagerCallback<List<InvoiceOrder>>() {
-//            @Override
-//            public void onSuccess(List<InvoiceOrder> returnContent) {
-//                super.onSuccess(returnContent);
-//                list = returnContent;
-//                dealData();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//            }
-//        });
-
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
         } else {
@@ -129,33 +115,44 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
 
     private void dealData() {
         List<InvoiceOrder> list1 = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (i == 0) {
-                month = list.get(i).ConsumeMonth;
-                listStr.add(month + "月");
-                list1.add(list.get(i));
-            } else if (i == list.size() - 1) {
-                List<InvoiceOrder> list2 = new ArrayList<>();
-                list2.addAll(list1);
-                child.add(list2);
-            } else if (list.get(i).ConsumeMonth == month) {
-                list1.add(list.get(i));
-            } else {
-                List<InvoiceOrder> list2 = new ArrayList<>();
-                list2.addAll(list1);
-                child.add(list2);
-                listStr.add(list.get(i).ConsumeMonth + "月");
+        if(1 == list.size()){
+            month = list.get(0).ConsumeMonth;
+            listStr.add(month + "月");
+            list1.add(list.get(0));
+            List<InvoiceOrder> list2 = new ArrayList<>();
+            list2.addAll(list1);
+            child.add(list2);
+        }else {
+            for (int i = 0; i < list.size(); i++) {
+                if (i == 0) {
+                    month = list.get(i).ConsumeMonth;
+                    listStr.add(month + "月");
+                    list1.add(list.get(i));
+                } else if (i == list.size() - 1) {
+                    List<InvoiceOrder> list2 = new ArrayList<>();
+                    list2.addAll(list1);
+                    child.add(list2);
+                } else if (list.get(i).ConsumeMonth == month) {
+                    list1.add(list.get(i));
+                } else {
+                    List<InvoiceOrder> list2 = new ArrayList<>();
+                    list2.addAll(list1);
+                    child.add(list2);
+                    listStr.add(list.get(i).ConsumeMonth + "月");
 
-                list1.clear();
-                list1.add(list.get(i));
-                month = list.get(i).ConsumeMonth;
+                    list1.clear();
+                    list1.add(list.get(i));
+                    month = list.get(i).ConsumeMonth;
+                }
             }
         }
+
         for (int j = 0; j < listStr.size(); j++) {
             double money = 0;
             InvoiceOrderGroup orderGroup = new InvoiceOrderGroup();
             for (InvoiceOrder order1 : child.get(j)) {
-                money = addMoney(money, order1.ConsumeCash);
+
+                    money = addMoney(money, order1.ConsumeCash);
             }
             orderGroup.ConsumeMonth = listStr.get(j);
             orderGroup.money = money;
@@ -271,9 +268,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         }
         list.clear();
         list.addAll(((GetInvoiceConsumeResult) result).getResp().getResult());
-        if(list.isEmpty()){
+        /*if(list.isEmpty()){
             return;
-        }
+        }*/
         dealData();
     }
 
