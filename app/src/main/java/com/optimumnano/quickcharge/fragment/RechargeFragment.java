@@ -1131,7 +1131,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         double carLng = TypeConversionUtils.toDouble(capp_lng);
         double distance = DistanceUtil.getDistance(new LatLng(TypeConversionUtils.toDouble(lat), TypeConversionUtils.toDouble(lng)),
                 new LatLng(carLat, carLng));
-        distance /= 1000;
+        distance = distance/1000*1.5;
         DecimalFormat decimalFormat=new DecimalFormat("0.00");
         String format = decimalFormat.format(distance);
         int needTimeArrive = (int) (distance / 30.0*60);
