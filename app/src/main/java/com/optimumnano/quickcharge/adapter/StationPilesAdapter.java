@@ -40,18 +40,13 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
     public static final int MAINTAIN = 3;         //维护
     public static final int APPOINTMENT = 4;      //预约
     public static final int NETWORK_OUTTIME = 5;         //网络断开
-    private boolean isChargeing = true;
-    private boolean isMaintain = true;
-    private boolean isNetWorkOutTime = true;
+    public static final int GUN_STATUS_NULL = 0; //服务器返回的状态为null
 
     private Context context;
-
     private int mGetGunInfoTaskId;
     private TaskDispatcher mTaskDispatcher;
     private boolean mActive;
-
-    private String finalFristFreeGunNo;
-    private GunBean finalFirstFreeGun;
+    private GunBean gunBean;
 
     public StationPilesAdapter(int layoutResId, List<PileBean> data, Context context) {
         super(layoutResId, data);
@@ -72,122 +67,61 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
     protected void convert(BaseViewHolder helper, final PileBean item) {
         TextView eletricPrice = helper.getView(R.id.tv_electric_price);
         TextView servicePrice = helper.getView(R.id.tv_service_price);
-        TextView pileStatus = helper.getView(R.id.pile_status_operation);
         TextView pileNo = helper.getView(R.id.tv_station_item_pileNo);
         LinearLayout linearLayout = helper.getView(R.id.ll_gunList);
-        ImageView imageView = helper.getView(R.id.gun_status_img);
-        String fristFreeGunNo = "";
-        String firstFreePileNo = "";
-        GunBean firstFreeGun = null;
+        List<GunBean> gunList = item.getGunList();
         for (int i = 0; i < item.getGunList().size(); i++) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.itemview_station_pile_gun, null);
             TextView gunNumber = (TextView) inflate.findViewById(R.id.tv_station_gun_number);
+            ImageView ivStatus = (ImageView) inflate.findViewById(R.id.iv_station_gun_status);
+            TextView tvOperation = (TextView) inflate.findViewById(R.id.tv_gun_operation);
+            gunBean = gunList.get(i);
+            showGunOperation(ivStatus, tvOperation);
             gunNumber.setText(item.getGunList().get(i).getGun_code());
             linearLayout.addView(inflate);
 
         }
-        if (item.getGunList().size() > 0) {
+        if (item.getGunList().size() > 0){
             eletricPrice.setText(Html.fromHtml(context.getString(R.string.station_electric_price, "¥ " + item.getGunList().get(0).max_price + "/kw.h")));
             servicePrice.setText(Html.fromHtml(context.getString(R.string.station_service_price, "¥ " + item.getGunList().get(0).max_service + "/kw.h")));
             pileNo.setText(item.getGunList().get(0).getPileNo());
-            for (int i = 0; i < item.getGunList().size(); i++) {
-                int gunStatus = item.getGunList().get(i).getGunStatus();
-                if (gunStatus != CHARGEING) {//所有的枪处于正在充电,桩才是正在充电状态
-                    isChargeing = false;
-                }
-                if (gunStatus != MAINTAIN) {
-                    isMaintain = false;
-                }
-                if (gunStatus != NETWORK_OUTTIME) {
-                    isNetWorkOutTime = false;
-                }
-            }
-            if (isChargeing) {
-                item.setStatus(CHARGEING);
-            }
-            if (isMaintain || isNetWorkOutTime) {
-                item.setStatus(MAINTAIN);
-            }
-
-            for (int i = 0; i < item.getGunList().size(); i++) {
-                GunBean gunBean = item.getGunList().get(i);
-                if (gunBean.getGunStatus() == PROMPTLY_CHARGE) {
-                    fristFreeGunNo = gunBean.getGun_code();
-                    firstFreeGun = gunBean;
-                    firstFreePileNo = gunBean.getPileNo();
-
-                    item.setStatus(PROMPTLY_CHARGE);
-                    break;
-                }
-            }
-        }
-        int status = item.getStatus();
-        switch (status) {
-            case PROMPTLY_CHARGE:
-                pileStatus.setText(R.string.charge_soon);
-                pileStatus.setTextColor(context.getResources().getColor(R.color.white));
-                imageView.setImageResource(R.mipmap.cdzhuang01);
-                pileStatus.setClickable(true);
-                finalFristFreeGunNo = fristFreeGunNo;
-                finalFirstFreeGun = firstFreeGun;
-
-                final String finalFirstFreePileNo = firstFreePileNo;
-                final String finalFristFreeGunNo1 = fristFreeGunNo;
-                pileStatus.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        OrderManager.getGunInfo(item.getPileNo(), new ManagerCallback() {
-//                            @Override
-//                            public void onSuccess(Object returnContent) {
-//                                super.onSuccess(returnContent);
-//                                Intent intent = new Intent(context, OrderActivity.class);
-//                                Bundle bundle = new Bundle();
-//                                bundle.putString("gun_no", finalFristFreeGunNo);
-//                                bundle.putSerializable("gunBean", finalFirstFreeGun);
-//                                intent.putExtras(bundle);
-//                                context.startActivity(intent);
-//                            }
-//
-//                            @Override
-//                            public void onFailure(String msg) {
-//                                super.onFailure(msg);
-//                                ToastUtil.showToast(context, context.getString(R.string.get_gun_info_fail));
-//                            }
-//                        });
-
-                        if (!Tool.isConnectingToInternet()) {
-                            ToastUtil.showToast(context, "无网络");
-                            return;
-                        }
-                        ((BaseActivity) mContext).showLoading();
-                        mGetGunInfoTaskId = TaskIdGenFactory.gen();
-                        mTaskDispatcher.dispatch(new HttpTask(mGetGunInfoTaskId,
-                                new GetGunInfoRequest(new GetGunInfoResult(context),
-                                        finalFirstFreePileNo + finalFristFreeGunNo1), (HttpCallback) StationPilesAdapter.this));
-                    }
-                });
-
-                break;
-
-            case CHARGEING:
-                pileStatus.setText(R.string.charging);
-                pileStatus.setBackgroundColor(context.getResources().getColor(R.color.white));
-                pileStatus.setTextColor(context.getResources().getColor(R.color.color99));
-                imageView.setImageResource(R.mipmap.cdzhuang02);
-                pileStatus.setClickable(false);
-                break;
-            case MAINTAIN:
-                pileStatus.setText(R.string.maintaining);
-                pileStatus.setBackgroundColor(context.getResources().getColor(R.color.white));
-                pileStatus.setTextColor(context.getResources().getColor(R.color.colorCC));
-                imageView.setImageResource(R.mipmap.cdzhuang03);
-                pileStatus.setClickable(false);
-                break;
-            default:
-                break;
         }
 
     }
+
+    private void showGunOperation(ImageView ivStatus, TextView tvOperation) {
+        int gunStatus = gunBean.getGunStatus();
+        if (gunStatus == PROMPTLY_CHARGE){
+            ivStatus.setImageResource(R.mipmap.icon_zhuang_1);
+            tvOperation.setBackgroundResource(R.drawable.bg_gun_operation_1);
+            tvOperation.setText("立即充电");
+            tvOperation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!Tool.isConnectingToInternet()) {
+                        ToastUtil.showToast(context, "无网络");
+                        return;
+                    }
+                    ((BaseActivity) mContext).showLoading();
+                    mGetGunInfoTaskId = TaskIdGenFactory.gen();
+                    mTaskDispatcher.dispatch(new HttpTask(mGetGunInfoTaskId,
+                            new GetGunInfoRequest(new GetGunInfoResult(context),
+                                    gunBean.getPileNo() + gunBean.getGun_code()), (HttpCallback) StationPilesAdapter.this));
+                }
+            });
+        }else if (gunStatus == CHARGEING){
+            ivStatus.setImageResource(R.mipmap.icon_zhuang_2);
+            tvOperation.setBackgroundResource(R.drawable.bg_gun_operation_2);
+            tvOperation.setTextColor(context.getResources().getColor(R.color.main_color));
+            tvOperation.setText("充电中");
+        }else if (gunStatus == MAINTAIN || gunStatus ==NETWORK_OUTTIME || gunStatus == GUN_STATUS_NULL){
+            ivStatus.setImageResource(R.mipmap.icon_zhuang_3);
+            tvOperation.setBackgroundResource(R.drawable.bg_gun_operation_3);
+            tvOperation.setTextColor(context.getResources().getColor(R.color.colorCC));
+            tvOperation.setText("正在维护");
+        }
+    }
+
 
     @Override
     public void onRequestCancel(int id) {
