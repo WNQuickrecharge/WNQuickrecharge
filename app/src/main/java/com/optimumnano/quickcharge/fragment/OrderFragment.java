@@ -29,6 +29,8 @@ import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
 import com.optimumnano.quickcharge.request.GetOrderListRequest;
 import com.optimumnano.quickcharge.response.GetOrderListResult;
+import com.optimumnano.quickcharge.utils.ToastUtil;
+import com.optimumnano.quickcharge.utils.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +138,9 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
 //                super.onFailure(msg);
 //            }
 //        });
-
+        if (!Tool.isConnectingToInternet()){
+            ToastUtil.showToast(getActivity(),"无网络!");
+        }
         mGetOrderListTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetOrderListTaskId,
                 new GetOrderListRequest(new GetOrderListResult(mContext), pageCount, pageSize), this));
@@ -198,6 +202,9 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         if (deAlive()) {
             return;
         }
+        ToastUtil.showToast(mContext,ToastUtil.formatToastText(mContext,
+                ((GetOrderListResult) result).getOrderListHttpResp()));
+        recyclerView.setRefreshCompleted(true);
     }
 
     @Override

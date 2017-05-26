@@ -96,6 +96,17 @@ public class AppManager {
         //activityStack.clear();
     }
     /**
+     * 结束所有Activity
+     */
+    public void finishAllActivityExcludeMainActivity() {
+        for (int i = 0, size = activityStack.size(); i < size; i++) {
+            if (!(activityStack.get(i) instanceof MainActivity)) {
+                finishActivity(activityStack.get(i));
+            }
+        }
+        //activityStack.clear();
+    }
+    /**
      * 获取指定的Activity
      */
     public static Activity getActivity(Class<?> cls) {
