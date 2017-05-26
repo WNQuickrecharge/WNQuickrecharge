@@ -133,6 +133,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
         ((BaseActivity) mContext).closeLoading();
         ToastUtil.showToast(context, context.getString(R.string.get_gun_info_fail));
         if (!mActive) {
+
             return;
         }
     }
