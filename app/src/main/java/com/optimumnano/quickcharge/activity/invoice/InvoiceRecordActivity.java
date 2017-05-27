@@ -64,22 +64,6 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     }
 
     private void initData() {
-       /* manager.getOrderlist(new ManagerCallback<List<InvoiceRecordBean>>() {
-            @Override
-            public void onSuccess(List<InvoiceRecordBean> returnContent) {
-                super.onSuccess(returnContent);
-                list.addAll(returnContent);
-                dataChanged();
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                super.onFailure(msg);
-                showToast(msg);
-            }
-        });
-*/
-
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
             return;
@@ -99,8 +83,6 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
             adapter.notifyDataSetChanged();
         }
     }
-
-    //http
 
     @Override
     public void onRequestSuccess(int id, BaseResult result) {

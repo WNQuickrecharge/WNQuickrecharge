@@ -22,9 +22,9 @@ public class InvoiceRecordBean {
 //            "Drawer": null,
 //            "CreateTime": "2017-05-05 21:41:35",
 //            "Payment": "支付宝",
-//            "LogisticsName": null,
-//            "LogisticsCode": null,
-//            "OperateTime": "",
+//            "LogisticsName": null, 物流公司名称
+//            "LogisticsCode": null,  快递单号
+//            "OperateTime": "",   邮寄时间
 //            "TaxpayerNo": null,
 //            "RegisteredAddress": null,
 //            "RegisteredPhoneNum": null,
