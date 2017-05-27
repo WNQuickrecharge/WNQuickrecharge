@@ -3,6 +3,7 @@ package com.optimumnano.quickcharge.request;
 import android.support.v4.util.ArrayMap;
 
 import com.alibaba.fastjson.JSON;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.http.BaseResult;
@@ -28,9 +29,9 @@ public class AskChargeRequest extends BaseChargeRequest {
     private String name;
     private String address;
     private String plate;
-    private SuggestionInfo info;
+    private PoiInfo info;
 
-    public AskChargeRequest(BaseResult result, SuggestionInfo info, String mobile, String name, String address, String plate) {
+    public AskChargeRequest(BaseResult result, PoiInfo info, String mobile, String name, String address, String plate) {
         super(result);
         this.mobile = mobile;
         this.name = name;
@@ -57,8 +58,8 @@ public class AskChargeRequest extends BaseChargeRequest {
     @Override
     protected RequestBody getRequestBody() {
         HashMap<String, Object> requestJson = new HashMap<>();
-        requestJson.put("lat", info.lat);
-        requestJson.put("lng", info.lng);
+        requestJson.put("lat", info.location.latitude);
+        requestJson.put("lng", info.location.longitude);
         requestJson.put("mobile", mobile);
         requestJson.put("name", SharedPreferencesUtil.getValue(SP_USERINFO, KEY_USERINFO_NICKNAME, ""));
         requestJson.put("address", address);

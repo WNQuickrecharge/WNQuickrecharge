@@ -8,8 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 
+import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
+import com.baidu.mapapi.search.poi.PoiCitySearchOption;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
@@ -21,6 +28,7 @@ import com.optimumnano.quickcharge.adapter.SugAddressAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
+import com.optimumnano.quickcharge.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +36,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SelectAddressActivity extends BaseActivity implements  OnGetSuggestionResultListener, OnListClickListener {
+public class SelectAddressActivity extends BaseActivity implements   OnListClickListener, OnGetPoiSearchResultListener {
 
     @Bind(R.id.et_record_number)
     EditText etRecordNumber;
@@ -37,8 +45,8 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
 
 
     private PoiSearch mPoiSearch = null;
-    private SuggestionSearch mSuggestionSearch = null;
-    private List<SuggestionInfo> suggest=new ArrayList<>();
+    //private SuggestionSearch mSuggestionSearch = null;
+    private List<PoiInfo> suggest=new ArrayList<>();
 
     SugAddressAdapter mAdapter;
 
@@ -50,8 +58,9 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
         initViews();
         setTitle(getString(R.string.chong_address));
         mPoiSearch = PoiSearch.newInstance();
-        mSuggestionSearch = SuggestionSearch.newInstance();
-        mSuggestionSearch.setOnGetSuggestionResultListener(this);
+        mPoiSearch.setOnGetPoiSearchResultListener(this);
+//        mSuggestionSearch = SuggestionSearch.newInstance();
+//        mSuggestionSearch.setOnGetSuggestionResultListener(this);
         mAdapter=new SugAddressAdapter(suggest,this);
         rvSug.setAdapter(mAdapter);
         rvSug.addItemDecoration(new DividerItemDecoration(this,
@@ -80,38 +89,41 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
                 /**
                  * 使用建议搜索服务获取建议列表，结果在onSuggestionResult()中更新
                  */
-                mSuggestionSearch
-                        .requestSuggestion((new SuggestionSearchOption())
-                                .keyword(cs.toString()).city(city));
+//                mSuggestionSearch
+//                        .requestSuggestion((new SuggestionSearchOption())
+//                                .keyword(cs.toString()).city(city));
+                mPoiSearch.searchInCity((new PoiCitySearchOption())
+                        .city(city)
+                        .keyword(cs.toString()).pageNum(0));
             }
         });
     }
 
 
-    @Override
-    public void onGetSuggestionResult(SuggestionResult res) {
-        if (res == null || res.getAllSuggestions() == null) {
-            return;
-        }
-        suggest.clear();
-        for (SuggestionResult.SuggestionInfo info : res.getAllSuggestions()) {
-            if (info.key != null&&!TextUtils.isEmpty(info.city)) {
-                SuggestionInfo info1=new SuggestionInfo();
-                info1.key=info.key;
-                info1.city=info.city;
-                info1.district=info.district;
-                info1.lat=info.pt.latitude;
-                info1.lng=info.pt.longitude;
-                suggest.add(info1);
-            }
-        }
-        mAdapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void onGetSuggestionResult(SuggestionResult res) {
+//        if (res == null || res.getAllSuggestions() == null) {
+//            return;
+//        }
+//        suggest.clear();
+//        for (SuggestionResult.SuggestionInfo info : res.getAllSuggestions()) {
+////            if (info.key != null&&!TextUtils.isEmpty(info.city)) {
+////                SuggestionInfo info1=new SuggestionInfo();
+////                info1.key=info.key;
+////                info1.city=info.city;
+////                info1.district=info.district;
+////                info1.lat=info.pt.latitude;
+////                info1.lng=info.pt.longitude;
+////                suggest.add(info1);
+////            }
+//        }
+//        mAdapter.notifyDataSetChanged();
+//    }
 
     @Override
     protected void onDestroy() {
         mPoiSearch.destroy();
-        mSuggestionSearch.destroy();
+        //mSuggestionSearch.destroy();
         super.onDestroy();
     }
 
@@ -119,7 +131,7 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
     public void onShowMessage(Object item) {
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY_FOR_RESULT, (SuggestionInfo)item);
+        bundle.putParcelable(KEY_FOR_RESULT, (PoiInfo)item);
         resultIntent.putExtras(bundle);
         this.setResult(RESULT_OK, resultIntent);
         this.finish();
@@ -129,5 +141,26 @@ public class SelectAddressActivity extends BaseActivity implements  OnGetSuggest
     public static void start(Context mContext){
         Intent intent=new Intent(mContext,SelectAddressActivity.class);
         ((BaseActivity)mContext).startActivityForResult(intent,REQUEST_CODE);
+    }
+
+    @Override
+    public void onGetPoiResult(PoiResult result) {
+        LogUtils.i("poiResult" + result);
+        suggest.clear();
+        if (result == null || result.getAllPoi() == null) {
+            return;
+        }
+        suggest.addAll(result.getAllPoi());
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+
+    }
+
+    @Override
+    public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+
     }
 }
