@@ -46,6 +46,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
@@ -208,7 +209,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private boolean needPostMessage = true;
     private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
-    private SuggestionInfo suggestionInfoInfo;
+    private PoiInfo suggestionInfoInfo;
     private GetAskChargeBean getAskChargeBean;
     private String capp_lat;
     private String capp_lng;
@@ -302,6 +303,23 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
             @Override
             public void onMapStatusChangeFinish(MapStatus mapStatus) {
+
+            }
+        });
+
+        etPlate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
@@ -760,7 +778,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             Toast.makeText(getActivity(), "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        address = etAddress.getText().toString().trim();
+        address = suggestionInfoInfo.address+"-"+etAddress.getText().toString().trim();
         carNumber = etPlate.getText().toString().trim();
 
         if (hasUnfinishedOrder){
@@ -947,10 +965,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 if (bundle == null) {
                     return;
                 }
-                suggestionInfoInfo = (SuggestionInfo) bundle.getSerializable(SelectAddressActivity.KEY_FOR_RESULT);
-                etAddress.setText(suggestionInfoInfo.key);
-                capp_lat = String.valueOf(suggestionInfoInfo.lat);
-                capp_lng = String.valueOf(suggestionInfoInfo.lng);
+                suggestionInfoInfo = (PoiInfo) bundle.getParcelable(SelectAddressActivity.KEY_FOR_RESULT);
+                etAddress.setText(suggestionInfoInfo.address+suggestionInfoInfo.name);
+                capp_lat = String.valueOf(suggestionInfoInfo.location.latitude);
+                capp_lng = String.valueOf(suggestionInfoInfo.location.longitude);
             }
         }
     }

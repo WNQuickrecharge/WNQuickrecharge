@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
 
@@ -21,11 +22,11 @@ import butterknife.ButterKnife;
 public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.ViewHolder> {
 
 
-    private final List<SuggestionInfo> mValues;
+    private final List<PoiInfo> mValues;
     private final OnListClickListener mListener;
 
 
-    public SugAddressAdapter(List<SuggestionInfo> mValues, OnListClickListener mListener) {
+    public SugAddressAdapter(List<PoiInfo> mValues, OnListClickListener mListener) {
         this.mValues = mValues;
         this.mListener = mListener;
     }
@@ -40,8 +41,8 @@ public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.tvPoiName.setText(holder.mItem.key);
-        holder.tvPoiDetail.setText(holder.mItem.city + " - " + holder.mItem.district);
+        holder.tvPoiName.setText(holder.mItem.name);
+        holder.tvPoiDetail.setText(holder.mItem.address);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +64,7 @@ public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.Vi
         TextView tvPoiName;
         @Bind(R.id.tv_poi_detail)
         TextView tvPoiDetail;
-        public SuggestionInfo mItem;
+        public PoiInfo mItem;
 
         public ViewHolder(View view) {
             super(view);

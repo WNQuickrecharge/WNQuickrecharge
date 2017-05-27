@@ -138,7 +138,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         List<Integer> months = new ArrayList();
         if (1 == list.size()) {
             month = list.get(0).ConsumeMonth;
-            listStr.add(month + "月");
+            months.add(month );
             list1.add(list.get(0));
             list2 = new ArrayList<>();
             list2.addAll(list1);
