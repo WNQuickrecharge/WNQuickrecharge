@@ -1097,7 +1097,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = -1;
             hasUnfinishedOrder = false;
             mHelper.setCarVin("");
-            needPostMessage = false;
             handler.removeMessages(1002);
             getMainActivityRadioGroupChoose();
         } else if (mGetAskChargeTaskId == id) {
@@ -1111,6 +1110,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 hasUnfinishedOrder = true;
             }
             if (ask_state == 1) {
+                needPostMessage = true;
                 capp_lat = getAskChargeBean.getCapp_lat();
                 capp_lng = getAskChargeBean.getCapp_lng();
             }
