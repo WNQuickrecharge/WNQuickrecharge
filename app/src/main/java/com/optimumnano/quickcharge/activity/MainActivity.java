@@ -28,6 +28,7 @@ import com.baidu.navisdk.adapter.BNaviSettingManager;
 import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
+import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
@@ -108,6 +109,9 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MyApplication.isLogin = true ;
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         //权限申请
         String[] permissions = new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -267,14 +271,12 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //EventBus.getDefault().unregister(this);
     }
 
     @Override
