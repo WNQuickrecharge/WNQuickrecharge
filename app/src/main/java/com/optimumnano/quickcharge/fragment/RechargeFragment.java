@@ -1049,6 +1049,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((GetMapNearCarInfoResult)result).getResp()));
         } else if (mGetAskChargeTaskId == id) {
+            closeLoading();
             ToastUtil.showToast(mContext,
                     ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((GetAskChargeResult) result).getResp()));
         } else if (mCancleAskOrderTaskId  == id){
@@ -1056,6 +1057,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((CancelAskOrderResult) result).getResp()));
         } else if (mGetAskChargeCarLocationTaskId == id) {
+            closeLoading();
             ToastUtil.showToast(getActivity(),
                     ToastUtil.formatToastText(mContext, ((BaseChargeResult) result), ((GetAskChargeCarLocationResult) result).getResp()));
         }
