@@ -989,6 +989,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onPause() {
         super.onPause();
         needPostMessage = false;
+        handler.removeMessages(1002);
         if (mapView != null)
             mapView.onPause();
 //        EventBus.getDefault().unregister(this);
@@ -1208,6 +1209,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                         routeOverlay = overlay;
                     mBaiduMap.setOnMarkerClickListener(overlay);
                     overlay.setData(result.getRouteLines().get(0));
+                    mBaiduMap.clear();
                     overlay.addToMap();
                     overlay.zoomToSpan();
 //                        ToastUtil.showToast(getActivity(),"路线规划完成");
@@ -1280,6 +1282,14 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     public void onNearStationChoosed(EventManager.onNearStationChoosed event){
         getMainActivityRadioGroupChoose();
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderTabChoosed(EventManager.onOrderTabChoosed event){
+        handler.removeMessages(1002);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMineTabChoosed(EventManager.onMineTabChoosed event){
+        handler.removeMessages(1002);
+    }
 
     public enum AskOrderStatus{
         DEFAULT,START,WAIT,COMMING,DELETE
@@ -1323,6 +1333,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     }
 
     private void doGetRechargeCarLocation() {
+        needPostMessage = true;
         if (needPostMessage) {
             mGetAskChargeCarLocationTaskId = TaskIdGenFactory.gen();
             mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeCarLocationTaskId,

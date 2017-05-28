@@ -354,6 +354,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setRightTitle("");
                         hideRightTitle();
                         hideLeftTitle();
+                        EventBus.getDefault().post(new EventManager.onOrderTabChoosed());
                         setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
@@ -363,6 +364,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setRightTitle("");//第一版不做消息
                         hideLeftTitle();
                         hideRightTitle();
+                        EventBus.getDefault().post(new EventManager.onMineTabChoosed());
                         viewPager.setCurrentItem(2);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {
