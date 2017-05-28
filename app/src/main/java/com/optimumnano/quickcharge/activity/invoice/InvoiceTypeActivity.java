@@ -59,7 +59,7 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
      * 充电费用
      */
     @Bind(R.id.et_battery_charging_price)
-    EditText etBatteryChargingPrice;
+    TextView etBatteryChargingPrice;
     /**
      * 更多信息栏
      */
