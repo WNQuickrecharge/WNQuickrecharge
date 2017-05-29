@@ -28,7 +28,6 @@ import com.baidu.navisdk.adapter.BNaviSettingManager;
 import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.igexin.sdk.PushManager;
 import com.optimumnano.quickcharge.Constants;
-import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.filter.FilterActivity;
 import com.optimumnano.quickcharge.activity.invoice.InvoiceActivity;
@@ -84,7 +83,6 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     private MyViewPager viewPager;
     private static RadioGroup rg;
-    private boolean isFirstCookieTimeOut = true;
 
     public static RadioGroup getRg() {
         return rg;
@@ -109,7 +107,6 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MyApplication.isLogin = true ;
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         //权限申请
@@ -160,6 +157,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         }
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
+        mHelper.setIslogin(true);
     }
 
     private boolean initDirs() {

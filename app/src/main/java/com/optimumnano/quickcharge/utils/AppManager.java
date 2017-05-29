@@ -85,10 +85,11 @@ public class AppManager {
         activityStack.clear();
     }
     /**
-     * 结束所有Activity
+     * 结束除登录界面的所有Activity
      */
     public void finishAllActivityExcludeLoginActivity() {
-        for (int i = 0, size = activityStack.size(); i < size; i++) {
+        int size = activityStack.size();
+        for (int i = 0; i < size - 1; i++) {
             if (!(activityStack.get(i) instanceof LoginActivity)) {
                 finishActivity(activityStack.get(i));
             }
@@ -96,10 +97,11 @@ public class AppManager {
         //activityStack.clear();
     }
     /**
-     * 结束所有Activity
+     * 结束除MainActivity以外的所有其他Activity
      */
     public void finishAllActivityExcludeMainActivity() {
-        for (int i = 0, size = activityStack.size(); i < size; i++) {
+        int size = activityStack.size();
+        for (int i = 0;i < size-1;  i++) {
             if (!(activityStack.get(i) instanceof MainActivity)) {
                 finishActivity(activityStack.get(i));
             }
