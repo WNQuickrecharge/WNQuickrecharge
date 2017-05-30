@@ -666,6 +666,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
             mHandler.sendEmptyMessageDelayed(EXIT_FLAG, 2000);
         } else {
             AppManager.getAppManager().finishAllActivity();
+            finish();
         }
     }
 

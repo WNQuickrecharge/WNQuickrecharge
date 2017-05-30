@@ -21,12 +21,14 @@ public class SplashActivity extends BaseActivity {
             new Handler().postDelayed(new Runnable(){
                 public void run() {
                     startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                    finish();
                 }
             }, 1000);
         }else {
             new Handler().postDelayed(new Runnable(){
                 public void run() {
                     startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+                    finish();
                 }
             }, 1000);
         }
