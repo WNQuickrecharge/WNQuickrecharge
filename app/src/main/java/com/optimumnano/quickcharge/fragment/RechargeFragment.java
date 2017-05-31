@@ -966,7 +966,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     return;
                 }
                 suggestionInfoInfo = (PoiInfo) bundle.getParcelable(SelectAddressActivity.KEY_FOR_RESULT);
-                etAddress.setText(suggestionInfoInfo.address+suggestionInfoInfo.name);
+                etAddress.setText(suggestionInfoInfo.address);
                 capp_lat = String.valueOf(suggestionInfoInfo.location.latitude);
                 capp_lng = String.valueOf(suggestionInfoInfo.location.longitude);
             }
@@ -1084,6 +1084,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             askOrderStatus=AskOrderStatus.START;
             Toast.makeText(getActivity(), "提交充电请求成功!", Toast.LENGTH_SHORT).show();
             ask_state = 0;
+            handler.sendEmptyMessageDelayed(1003,5000);
             getMainActivityRadioGroupChoose();
         } else if (mGetNearRechargeCarInfoTaskId == id) {
             closeLoading();
@@ -1114,6 +1115,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 needPostMessage = true;
                 capp_lat = getAskChargeBean.getCapp_lat();
                 capp_lng = getAskChargeBean.getCapp_lng();
+                handler.removeMessages(1003);
             }
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
@@ -1373,7 +1375,17 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             if (msg.what == 1002) {
                 doGetRechargeCarLocation();
             }
+            if (msg.what == 1003) {
+                doGetRechargeTaskStatus();
+                handler.sendEmptyMessageDelayed(1003,5000);
+            }
         }
     };
+
+    private void doGetRechargeTaskStatus() {
+        mGetAskChargeTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
+                new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
+    }
 
 }
