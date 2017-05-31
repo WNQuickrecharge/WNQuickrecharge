@@ -28,5 +28,5 @@ public class Constants {
     public static final int STARTCHARGE = 2;
     //判断是否开发票余额支付
     public static Boolean isInvoiceYue = false;
-    public static Boolean isSencond = false;
+    public static Boolean isRefresh = false;
 }

@@ -607,7 +607,7 @@
       <district name="其他" zipcode="519000" />
     </city>
   </province>
-  <province name="广西壮族自治区">
+  <province name="广西">
     <city name="百色市">
       <district name="德保县" zipcode="533000" />
       <district name="靖西县" zipcode="533000" />
@@ -770,7 +770,7 @@
       <district name="紫云苗族布依族自治县" zipcode="561000" />
       <district name="其他" zipcode="561000" />
     </city>
-    <city name="毕节地区">
+    <city name="毕节市">
       <district name="毕节市" zipcode="551700" />
       <district name="大方县" zipcode="551700" />
       <district name="赫章县" zipcode="551700" />
@@ -2318,7 +2318,7 @@
       <district name="其他" zipcode="115000" />
     </city>
   </province>
-  <province name="内蒙古自治区">
+  <province name="内蒙古">
     <city name="阿拉善盟">
       <district name="阿拉善右旗" zipcode="750300" />
       <district name="阿拉善左旗" zipcode="750300" />
@@ -2457,7 +2457,7 @@
       <district name="其他" zipcode="137400" />
     </city>
   </province>
-  <province name="宁夏回族自治区">
+  <province name="宁夏">
     <city name="固原市">
       <district name="泾源县" zipcode="756000" />
       <district name="隆德县" zipcode="756000" />
@@ -3346,7 +3346,7 @@
       <district name="其他" zipcode="100000" />
     </city>
   </province>
-  <province name="西藏自治区">
+  <province name="西藏">
     <city name="阿里地区">
       <district name="措勤县" zipcode="859000" />
       <district name="噶尔县" zipcode="859000" />
@@ -3441,7 +3441,7 @@
       <district name="其他" zipcode="856000" />
     </city>
   </province>
-  <province name="新疆维吾尔自治区">
+  <province name="新疆">
     <city name="阿克苏地区">
       <district name="阿克苏市" zipcode="843000" />
       <district name="阿瓦提县" zipcode="843000" />

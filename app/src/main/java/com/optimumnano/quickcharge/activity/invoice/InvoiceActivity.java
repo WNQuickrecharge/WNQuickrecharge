@@ -35,9 +35,18 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private TextView tvNext, tvAllMoney;
 
     private InvoiceAdapter adapter;
+    /**
+     * 元数据
+     */
     private List<InvoiceOrder> list;
 
+    /**
+     * 按月份封装的数据
+     */
     private List<InvoiceOrderGroup> group = new ArrayList<>();
+    /**
+     * 月份里的具体数据
+     */
     private List<List<InvoiceOrder>> child = new ArrayList<>();
 
     private double allMoney = 0;//发票金额
@@ -57,7 +66,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
 
-        Constants.isSencond = true;
+        Constants.isRefresh = true;
         ha.clear();
         initViews();
         initData();
@@ -68,7 +77,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        if (Constants.isSencond) {
+        if (Constants.isRefresh) {
             return;
         } else {
             child.clear();
@@ -83,7 +92,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onPause() {
         super.onPause();
-        Constants.isSencond = false;
+        Constants.isRefresh = false;
 
     }
 
@@ -133,12 +142,22 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private void dealData() {
         months = new ArrayList();
         groups = new HashSet<>();
+        /**
+         * 从list中拿出月份，封装成groups
+         * hashSet,值唯一
+         */
         for (InvoiceOrder pd : list) {
             groups.add(pd.getConsumeMonth());
         }
+        /**
+         * 转成有序的list集合
+         */
         for (int pd : groups) {
             months.add(pd);
         }
+        /**
+         * 封装child数据
+         */
         for (int month : groups) {
             List<InvoiceOrder> ch = new ArrayList<>();
             for (InvoiceOrder pd : list) {
@@ -148,6 +167,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 child.add(ch);
             }
         }
+        /**
+         * 封装月份数据的总金额
+         */
         for (int j = 0; j < months.size(); j++) {
             double money = 0;
             InvoiceOrderGroup orderGroup = new InvoiceOrderGroup();
