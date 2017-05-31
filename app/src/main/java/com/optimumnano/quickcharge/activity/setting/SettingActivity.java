@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.optimumnano.quickcharge.BuildConfig;
+import com.optimumnano.quickcharge.MyApplication;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.login.LoginActivity;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -143,6 +144,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             return;
         }
         showToast("您已退出登录");
+        MyApplication.getuiflag = false;
         AppManager.getAppManager().finishAllActivity();
         startActivity(new Intent(SettingActivity.this, LoginActivity.class));
         finish();

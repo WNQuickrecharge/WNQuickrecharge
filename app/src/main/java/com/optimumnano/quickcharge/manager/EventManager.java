@@ -82,6 +82,8 @@ public class EventManager {
 
     public static class onNearStationChoosed{}
     public static class onInvoiceWxPaySueecss{}
+    public static class onOrderTabChoosed{}
+    public static class onMineTabChoosed{}
 
 
     public static class WeiXinPayCallback {

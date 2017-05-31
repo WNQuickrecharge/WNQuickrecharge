@@ -83,7 +83,6 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     private MyViewPager viewPager;
     private static RadioGroup rg;
-    private boolean isFirstCookieTimeOut = true;
 
     public static RadioGroup getRg() {
         return rg;
@@ -108,6 +107,8 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         //权限申请
         String[] permissions = new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -156,6 +157,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         }
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
+        mHelper.setIslogin(true);
     }
 
     private boolean initDirs() {
@@ -267,14 +269,12 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -354,6 +354,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setRightTitle("");
                         hideRightTitle();
                         hideLeftTitle();
+                        EventBus.getDefault().post(new EventManager.onOrderTabChoosed());
                         setRightTitle("开发票");
                         viewPager.setCurrentItem(1);
                         break;
@@ -363,6 +364,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setRightTitle("");//第一版不做消息
                         hideLeftTitle();
                         hideRightTitle();
+                        EventBus.getDefault().post(new EventManager.onMineTabChoosed());
                         viewPager.setCurrentItem(2);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {
@@ -664,6 +666,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
             mHandler.sendEmptyMessageDelayed(EXIT_FLAG, 2000);
         } else {
             AppManager.getAppManager().finishAllActivity();
+            finish();
         }
     }
 

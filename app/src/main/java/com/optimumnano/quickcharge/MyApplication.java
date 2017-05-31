@@ -28,6 +28,7 @@ import java.io.File;
 public class MyApplication extends Application {
     public static boolean getuiflag = false;
     private static MyApplication instance;
+    public static boolean isLogin = false;
 
     @Override
     public void onCreate() {

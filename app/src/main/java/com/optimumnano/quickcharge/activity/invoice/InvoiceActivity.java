@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.InvoiceAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -14,7 +15,6 @@ import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
-import com.optimumnano.quickcharge.manager.InvoiceManager;
 import com.optimumnano.quickcharge.request.GetInvoiceConsumeRequest;
 import com.optimumnano.quickcharge.response.GetInvoiceConsumeResult;
 import com.optimumnano.quickcharge.utils.Tool;
@@ -22,6 +22,7 @@ import com.optimumnano.quickcharge.utils.Tool;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -34,14 +35,20 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private TextView tvNext, tvAllMoney;
 
     private InvoiceAdapter adapter;
+    /**
+     * 元数据
+     */
     private List<InvoiceOrder> list;
-    private List<String> listStr = new ArrayList<>();
 
+    /**
+     * 按月份封装的数据
+     */
     private List<InvoiceOrderGroup> group = new ArrayList<>();
+    /**
+     * 月份里的具体数据
+     */
     private List<List<InvoiceOrder>> child = new ArrayList<>();
 
-    private InvoiceManager manager = new InvoiceManager();
-    private int month;
     private double allMoney = 0;//发票金额
 
     private List<String> ids = new ArrayList<>();
@@ -50,23 +57,43 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private String allid;
     private HashMap<String, String> ha = new HashMap<>();
 
+    private HashSet<Integer> groups;
+    private List<Integer> months;
+    private Boolean isChildChecked = false;//子item是否点击，默认为没有点击false
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
 
-
+        Constants.isRefresh = true;
         ha.clear();
         initViews();
         initData();
         doRequest();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        list.clear();
-//        doRequest();
+        if (Constants.isRefresh) {
+            return;
+        } else {
+            child.clear();
+            group.clear();
+            allMoney = 0;
+            ids.clear();
+            tvAllMoney.setText("￥ 0.0");
+            doRequest();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Constants.isRefresh = false;
+
     }
 
     @Override
@@ -105,7 +132,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
         } else {
-
             mGetInvoiceConsumeTaskId = TaskIdGenFactory.gen();
             mTaskDispatcher.dispatch(new HttpTask(
                     mGetInvoiceConsumeTaskId, new GetInvoiceConsumeRequest(
@@ -114,47 +140,44 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void dealData() {
-        List<InvoiceOrder> list1 = new ArrayList<>();
-        if(1 == list.size()){
-            month = list.get(0).ConsumeMonth;
-            listStr.add(month + "月");
-            list1.add(list.get(0));
-            List<InvoiceOrder> list2 = new ArrayList<>();
-            list2.addAll(list1);
-            child.add(list2);
-        }else {
-            for (int i = 0; i < list.size(); i++) {
-                if (i == 0) {
-                    month = list.get(i).ConsumeMonth;
-                    listStr.add(month + "月");
-                    list1.add(list.get(i));
-                } else if (i == list.size() - 1) {
-                    List<InvoiceOrder> list2 = new ArrayList<>();
-                    list2.addAll(list1);
-                    child.add(list2);
-                } else if (list.get(i).ConsumeMonth == month) {
-                    list1.add(list.get(i));
-                } else {
-                    List<InvoiceOrder> list2 = new ArrayList<>();
-                    list2.addAll(list1);
-                    child.add(list2);
-                    listStr.add(list.get(i).ConsumeMonth + "月");
-
-                    list1.clear();
-                    list1.add(list.get(i));
-                    month = list.get(i).ConsumeMonth;
+        months = new ArrayList();
+        groups = new HashSet<>();
+        /**
+         * 从list中拿出月份，封装成groups
+         * hashSet,值唯一
+         */
+        for (InvoiceOrder pd : list) {
+            groups.add(pd.getConsumeMonth());
+        }
+        /**
+         * 转成有序的list集合
+         */
+        for (int pd : groups) {
+            months.add(pd);
+        }
+        /**
+         * 封装child数据
+         */
+        for (int month : groups) {
+            List<InvoiceOrder> ch = new ArrayList<>();
+            for (InvoiceOrder pd : list) {
+                if (pd.getConsumeMonth() == month) {
+                    ch.add(pd);
                 }
+                child.add(ch);
             }
         }
-
-        for (int j = 0; j < listStr.size(); j++) {
+        /**
+         * 封装月份数据的总金额
+         */
+        for (int j = 0; j < months.size(); j++) {
             double money = 0;
             InvoiceOrderGroup orderGroup = new InvoiceOrderGroup();
             for (InvoiceOrder order1 : child.get(j)) {
 
-                    money = addMoney(money, order1.ConsumeCash);
+                money = addMoney(money, order1.ConsumeCash);
             }
-            orderGroup.ConsumeMonth = listStr.get(j);
+            orderGroup.ConsumeMonth = months.get(j).toString();
             orderGroup.money = money;
             orderGroup.isChecked = false;
             group.add(orderGroup);
@@ -177,7 +200,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         money = decimal.subtract(b2).doubleValue();
         return money;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -203,7 +225,10 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onCheck(int position) {
         tvAllMoney.setText("");
-        allMoney = 0;
+        if (isChildChecked) {
+            allMoney = 0;
+            isChildChecked = false;
+        }
         if (group.get(position).isChecked) {
             group.get(position).isChecked = false;
             for (int i = 0; i < child.get(position).size(); i++) {
@@ -231,19 +256,22 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void onChildCheck(int position, int idss) {
+    public void onChildCheck(int position, int idss, int groupPosition) {
         String positionStr = String.valueOf(position);
-        if (list.get(position).isChecked) {
-            list.get(position).setChecked(false);
+        if (child.get(groupPosition).get(position).isChecked) {
+            child.get(groupPosition).get(position).setChecked(false);
             ha.remove(positionStr);
-//            allid = ha.get(position + "");
+            allMoney = subMoney(allMoney, child.get(groupPosition).get(position).ConsumeCash);
+            //allMoney==0的时候表示所有的子item都没有点击
+            if (allMoney == 0) {
+                isChildChecked = false;
+            }
 
-            allMoney = subMoney(allMoney, list.get(position).ConsumeCash);
         } else {
-            list.get(position).setChecked(true);
+            child.get(groupPosition).get(position).setChecked(true);
+            isChildChecked = true;
             ha.put(positionStr, idss + ",");
-//            allid = ha.get(position + "");
-            allMoney = addMoney(allMoney, list.get(position).ConsumeCash);
+            allMoney = addMoney(allMoney, child.get(groupPosition).get(position).ConsumeCash);
         }
         handlerHa();
         adapter.notifyDataSetChanged();
@@ -268,9 +296,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         }
         list.clear();
         list.addAll(((GetInvoiceConsumeResult) result).getResp().getResult());
-        /*if(list.isEmpty()){
-            return;
-        }*/
         dealData();
     }
 

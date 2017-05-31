@@ -151,7 +151,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         miPayway.setOnClickListener(this);
 //        rlPayway.setOnClickListener(this);
         tvNext.setOnClickListener(this);
-
         payWay = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
     }
 
@@ -216,7 +215,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         payDialog.setPayResultMoney(money);
         payDialog.setPayName("支付金额");
         payDialog.show();
-//        doPayPwdRequset();
     }
 
 
@@ -278,12 +276,10 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             restCash = userAccount.getRestCash();
             DecimalFormat df = new DecimalFormat("0.00");
             formatRestCash = df.format(restCash);
-            miPayway.setTvLeftText("余额(￥" + formatRestCash + ")");
+            PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+
         }
         if (mGetInvoiceSignTaskId == id) {
-//            pay(((GetInvoiceSignResult) result).getResp().getResult().sign);
-
-
             if (payWay == PayDialog.pay_wx) {
                 payDialog.payWeiXin(money, order_no);
             } else if (payWay == PayDialog.pay_zfb) {
