@@ -61,7 +61,7 @@ public class SelectAddressActivity extends BaseActivity implements   OnListClick
         mPoiSearch.setOnGetPoiSearchResultListener(this);
 //        mSuggestionSearch = SuggestionSearch.newInstance();
 //        mSuggestionSearch.setOnGetSuggestionResultListener(this);
-        mAdapter=new SugAddressAdapter(suggest,this);
+        mAdapter=new SugAddressAdapter(suggest,this,this);
         rvSug.setAdapter(mAdapter);
         rvSug.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL_LIST));

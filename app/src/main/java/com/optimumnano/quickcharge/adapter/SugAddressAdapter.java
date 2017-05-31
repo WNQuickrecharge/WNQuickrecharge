@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.bean.SuggestionInfo;
+import com.optimumnano.quickcharge.utils.ToastUtil;
 
 import java.util.List;
 
@@ -24,11 +26,13 @@ public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.Vi
 
     private final List<PoiInfo> mValues;
     private final OnListClickListener mListener;
+    private Context context;
 
 
-    public SugAddressAdapter(List<PoiInfo> mValues, OnListClickListener mListener) {
+    public SugAddressAdapter(List<PoiInfo> mValues, OnListClickListener mListener, Context context) {
         this.mValues = mValues;
         this.mListener = mListener;
+        this.context = context;
     }
 
     @Override
@@ -46,6 +50,10 @@ public class SugAddressAdapter extends RecyclerView.Adapter<SugAddressAdapter.Vi
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (holder.mItem.location == null) {
+                    ToastUtil.showToast(context,"当前地址没有经纬度信息");
+                    return;
+                }
                 if (mListener!=null)
                     mListener.onShowMessage(holder.mItem);
             }
