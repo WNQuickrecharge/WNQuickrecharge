@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
-import com.optimumnano.quickcharge.activity.mineinfo.WalletDepositAct;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserAccount;
 import com.optimumnano.quickcharge.bean.WXPaySignBean;
@@ -20,12 +19,9 @@ import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.request.GetAccountInfoRequest;
 import com.optimumnano.quickcharge.request.GetInvoiceSignRequest;
-import com.optimumnano.quickcharge.request.GetPayPwdRequest;
-import com.optimumnano.quickcharge.request.PayInvoiceBalanceRequest;
 import com.optimumnano.quickcharge.request.PayOrderInfoDepositRequest;
 import com.optimumnano.quickcharge.response.GetAccountInfoResult;
 import com.optimumnano.quickcharge.response.GetInvoiceSignResult;
-import com.optimumnano.quickcharge.response.GetPayPwdResult;
 import com.optimumnano.quickcharge.response.PayInvoiceBalanceResult;
 import com.optimumnano.quickcharge.response.PayOrderInfoDepositResult;
 import com.optimumnano.quickcharge.utils.PayWayViewHelp;
@@ -44,7 +40,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.common.util.LogUtil;
 
 import java.text.DecimalFormat;
 
@@ -224,12 +219,16 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     private void callWXPay() {
 
         if (!Tool.isConnectingToInternet()) {
-            showToast("请求失败，无网络");
+            showToast("无网络");
             return;
         }
-        mGetWXPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
+        mGetInvoiceSignTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceSignTaskId,
+                new GetInvoiceSignRequest(new GetInvoiceSignResult(mContext), order_no, PayDialog.pay_wx), this));
+
+       /* mGetWXPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetWXPayOrderInfoDepositTaskId,
-                new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), String.valueOf(money), payWay), this));
+                new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), String.valueOf(money), payWay), this));*/
     }
 
     @Override
@@ -237,7 +236,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         super.onDestroy();
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
-//        mTaskDispatcher.cancel(mGetInvoiceSignTaskId);
+        mTaskDispatcher.cancel(mGetInvoiceSignTaskId);
         mTaskDispatcher.cancel(mPayInvoiceBalanceTaskId);
         mTaskDispatcher.cancel(mGetPayPwdTaskId);
         mTaskDispatcher.cancel(mGetAccountInfoTaskId);
@@ -279,15 +278,15 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
 
         }
-        if (mGetInvoiceSignTaskId == id) {
+        /*if (mGetInvoiceSignTaskId == id) {
             if (payWay == PayDialog.pay_wx) {
                 payDialog.payWeiXin(money, order_no);
             } else if (payWay == PayDialog.pay_zfb) {
                 payDialog.setMoney(money, order_no);
                 payDialog.payZFB();
             }
-        }
-        if (mGetWXPayOrderInfoDepositTaskId == id) {
+        }*/
+        if (mGetInvoiceSignTaskId == id) {
             JSONObject dataJson = null;
             try {
                 dataJson = new JSONObject(((PayOrderInfoDepositResult) result).getResp().getResult());
