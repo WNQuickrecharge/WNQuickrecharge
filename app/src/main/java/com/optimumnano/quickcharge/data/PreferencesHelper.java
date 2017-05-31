@@ -48,7 +48,7 @@ public class PreferencesHelper {
     }
 
     public int showDistance() {
-        return mPref.getInt(KM, 20);
+        return mPref.getInt(KM, 4);
     }
 
     public void setKV(int km) {
