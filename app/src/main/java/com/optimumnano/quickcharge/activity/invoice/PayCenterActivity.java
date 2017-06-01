@@ -1,11 +1,14 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.sdk.app.PayTask;
 import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -43,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -100,7 +104,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
 
     private String order_no;
 
-    private int mGetInvoiceSignTaskId;
+    private int mGetInvoiceSignTaskIdByWx;
     /**
      * 余额支付请求识别码
      */
@@ -115,13 +119,60 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     private int mGetAccountInfoTaskId;
 
     private int mGetWXPayOrderInfoDepositTaskId;
+    private int mGetInvoiceSignTaskIdByZfb;
 
+    private String sign;//支付宝支付的签名
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            payDialog.close();
+            if (msg.what == 1000) {
+                Map mapresult = (Map) msg.obj;
+                JSONObject dataJson = new JSONObject(mapresult);
+                String resultStatus = dataJson.optString("resultStatus");// 结果码
+                switch (resultStatus) {
+                    case "9000"://支付成功
+                        showToast("支付成功");
+                        toInvoiceApply();
+                    case "8000"://正在处理,支付结果确认中
+                        showToast("正在处理,支付结果确认中");
+                        toInvoiceApply();
+                    case "6004"://支付结果未知
+//                            "支付成功"
+//                        payCallback.paySuccess(order_no);
+                        showToast("支付成功");
+                        toInvoiceApply();
+                        break;
+                    case "4000":
+                        showToast("订单支付失败");
+//                        payCallback.payFail("订单支付失败");
+                    case "5000":
+                        showToast("订单不能重复支付");
+//                        payCallback.payFail("订单不能重复支付");
+                        break;
+                    case "6001":
+                        showToast("取消支付");
+//                        payCallback.payFail("取消支付");
+                        break;
+                    case "6002":
+                        showToast("网络连接出错");
+//                        payCallback.payFail("网络连接出错");
+                        break;
+                    default:
+                        showToast("支付异常");
+//                        payCallback.payFail("支付异常");
+                        break;
+                }
+            }
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_center);
         ButterKnife.bind(this);
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         getExtras();
@@ -185,8 +236,9 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                         Constants.isInvoiceYue = true;
                         yue_pay();
                     } else if (payWay == PayDialog.pay_zfb) {//支付宝
-                        payDialog.setMoney(money, order_no);
-                        payDialog.payZFB();
+                        payByZfb();
+//                        payDialog.setMoney(money, order_no);
+//                        payDialog.payZFB();
                     } else if (payWay == PayDialog.pay_wx) {//微信
                         callWXPay();
                     }
@@ -223,8 +275,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             showToast("无网络");
             return;
         }
-        mGetInvoiceSignTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceSignTaskId,
+        mGetInvoiceSignTaskIdByWx = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceSignTaskIdByWx,
                 new GetInvoiceSignRequest(new GetInvoiceSignResult(mContext), order_no, PayDialog.pay_wx), this));
 
        /* mGetWXPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
@@ -232,12 +284,23 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                 new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), String.valueOf(money), payWay), this));*/
     }
 
+    private void payByZfb() {
+        if (!Tool.isConnectingToInternet()) {
+            showToast("无网络");
+            return;
+        }
+        mGetInvoiceSignTaskIdByZfb = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceSignTaskIdByZfb,
+                new GetInvoiceSignRequest(new GetInvoiceSignResult(mContext), order_no, PayDialog.pay_zfb), this));
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
-        mTaskDispatcher.cancel(mGetInvoiceSignTaskId);
+        mTaskDispatcher.cancel(mGetInvoiceSignTaskIdByZfb);
+        mTaskDispatcher.cancel(mGetInvoiceSignTaskIdByWx);
         mTaskDispatcher.cancel(mPayInvoiceBalanceTaskId);
         mTaskDispatcher.cancel(mGetPayPwdTaskId);
         mTaskDispatcher.cancel(mGetAccountInfoTaskId);
@@ -276,7 +339,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             restCash = userAccount.getRestCash();
             DecimalFormat df = new DecimalFormat("0.00");
             formatRestCash = df.format(restCash);
-            PayWayViewHelp.showPayWayStatus(miPayway,payWay,formatRestCash);
+            PayWayViewHelp.showPayWayStatus(miPayway, payWay, formatRestCash);
 
         }
         /*if (mGetInvoiceSignTaskId == id) {
@@ -287,8 +350,17 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                 payDialog.payZFB();
             }
         }*/
-        if (mGetInvoiceSignTaskId == id) {
+        if (mGetInvoiceSignTaskIdByZfb == id) {
+            sign = ((GetInvoiceSignResult) result).getResp().getResult().sign;
+//            startPay(sign);
+            payDialog.setMoney(money,order_no,sign);
+            payDialog.payZFB();
+            payDialog.setPayCallback(PayCenterActivity.this);
+
+        }
+        if (mGetInvoiceSignTaskIdByWx == id) {
             JSONObject dataJson = null;
+
             try {
                 dataJson = new JSONObject(((GetInvoiceSignResult) result).getResp().getResult().sign);
             } catch (JSONException e) {
@@ -299,6 +371,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             wxApi.registerApp(WX_APP_ID);
 
 //            String sign = dataJson.optString("sign");
+
+
             WXPaySignBean wxpayBean = JSON.parseObject(dataJson.toString(), WXPaySignBean.class);
             boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
             if (isPaySupported) {
@@ -310,7 +384,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                 request.nonceStr = wxpayBean.noncestr;
                 request.timeStamp = wxpayBean.timestamp;
                 request.sign = wxpayBean.sign;
-                request.extData = payWay + "," + money+","+"a"+","+"b";
+                request.extData = payWay + "," + money + "," + "a" + "," + "b";
                 wxApi.sendReq(request);
             } else {
                 showToast("微信未安装或者版本过低");
@@ -323,7 +397,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         if (isFinishing()) {
             return;
         }
-        if (mGetInvoiceSignTaskId == id) {
+        if (mGetInvoiceSignTaskIdByWx == id) {
             showToast(ToastUtil.formatToastText(mContext, ((GetInvoiceSignResult) result).getResp()));
         } else if (mPayInvoiceBalanceTaskId == id) {
             showToast(ToastUtil.formatToastText(mContext, ((PayInvoiceBalanceResult) result).getResp()));
@@ -334,9 +408,27 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onRequestCancel(int id) {
 
     }
+    private void startPay(final String sign) {
+        Runnable payRunnable = new Runnable() {
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(PayCenterActivity.this);
+                Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
+
+                Message msg = new Message();
+                msg.what = 1000;
+                msg.obj = result;
+                handler.sendMessage(msg);
+            }
+        };
+        // 必须异步调用
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
+    }
 
     /**
      * 微信支付成功后返回InvoiceApplyActivity
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)

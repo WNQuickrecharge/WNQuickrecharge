@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.netease.hearttouch.htrefreshrecyclerview.HTRefreshRecyclerView;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.InvoiceRecordAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -36,6 +37,7 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_record);
+        Constants.isInvoiceRecordRefresh = true;
         initViews();
         initData();
     }
@@ -49,7 +51,17 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
     @Override
     protected void onResume() {
         super.onResume();
-        recyclerView.startAutoRefresh();
+        if (Constants.isInvoiceRecordRefresh) {
+            return;
+        } else {
+            initData();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Constants.isInvoiceRecordRefresh = false;
     }
 
     @Override
@@ -71,8 +83,8 @@ public class InvoiceRecordActivity extends BaseActivity implements HttpCallback 
 
         mGetInvoiceOrderListTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(
-                mGetInvoiceOrderListTaskId,new GetInvoiceRecordRequest(
-                                                new GetInvoiceRecordResult(mContext)), this));
+                mGetInvoiceOrderListTaskId, new GetInvoiceRecordRequest(
+                new GetInvoiceRecordResult(mContext)), this));
     }
 
     private void dataChanged() {

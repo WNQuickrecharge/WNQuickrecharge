@@ -29,4 +29,5 @@ public class Constants {
     //判断是否开发票余额支付
     public static Boolean isInvoiceYue = false;
     public static Boolean isRefresh = false;
+    public static Boolean isInvoiceRecordRefresh = false;
 }
