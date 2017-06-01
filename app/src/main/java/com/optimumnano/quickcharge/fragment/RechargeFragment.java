@@ -471,12 +471,36 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
         Point point= (Point) item;
         showBottomDialog(point,true);
-        LatLng ll = new LatLng(point.Lat,
-                point.Lng);
+        markStation(point);
+        LatLng ll = new LatLng(point.Lat, point.Lng);
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(ll).zoom(15.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
 
+    }
+
+    private void markStation(Point info){
+        LatLng latLng;
+        OverlayOptions options;
+        Marker marker;
+        if (bitmap == null)
+            bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
+        //获取经纬度
+        //latLng = gpsToBd09ll(new LatLng(info.Lat, info.Lng));//将后台的wgs84坐标转为bd09坐标
+        latLng = new LatLng(info.Lat, info.Lng);//原始数据就是bd09坐标,不用转
+        //设置marker
+        options = new MarkerOptions()
+                .position(latLng)//设置位置
+                .icon(bitmap)//设置图标样式
+                .zIndex(9); // 设置marker所在层级
+//                        .draggable(true); // 设置手势拖拽;
+        //添加marker
+        marker = (Marker) mBaiduMap.addOverlay(options);
+        //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+        Bundle bundle = new Bundle();
+        //info必须实现序列化接口
+        bundle.putSerializable("info", info);
+        marker.setExtraInfo(bundle);
     }
 
     private void requestPermission(String servicePhone) {

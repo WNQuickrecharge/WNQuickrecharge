@@ -18,8 +18,7 @@
         app:LeftTextColor="@color/color66"
         app:rightTextColor="@color/color33"
         app:showtvRight="true"
-        app:tvLeftText="订单编号"
-        app:tvRightText="000" />
+        app:tvLeftText="订单编号"/>
 
     <com.optimumnano.quickcharge.views.MenuItem1
         android:layout_width="match_parent"
@@ -77,8 +76,7 @@
         app:LeftTextColor="@color/color66"
         app:rightTextColor="@color/main_color_red"
         app:showtvRight="true"
-        app:tvLeftText="订单金额"
-        app:tvRightText="10" />
+        app:tvLeftText="订单金额"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -91,9 +89,7 @@
         android:id="@+id/invoice_payway"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tvLeftText="余额（0.00）"
         app:showivRight="true"
-        app:ivLeftDrawable="@drawable/yue"
         app:LeftTextColor="@color/color66"
         app:rightTextColor="@color/color33"
         app:showivLeft="true"
