@@ -1,6 +1,7 @@
 package com.optimumnano.quickcharge.activity.invoice;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -289,7 +290,7 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         if (mGetInvoiceSignTaskId == id) {
             JSONObject dataJson = null;
             try {
-                dataJson = new JSONObject(((PayOrderInfoDepositResult) result).getResp().getResult());
+                dataJson = new JSONObject(((GetInvoiceSignResult) result).getResp().getResult().sign);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -297,8 +298,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             //将该app注册到微信
             wxApi.registerApp(WX_APP_ID);
 
-            String sign = dataJson.optString("sign");
-            WXPaySignBean wxpayBean = JSON.parseObject(sign.replace("\\", ""), WXPaySignBean.class);
+//            String sign = dataJson.optString("sign");
+            WXPaySignBean wxpayBean = JSON.parseObject(dataJson.toString(), WXPaySignBean.class);
             boolean isPaySupported = wxApi.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;//判断微信版本是否支持微信支付
             if (isPaySupported) {
                 PayReq request = new PayReq();

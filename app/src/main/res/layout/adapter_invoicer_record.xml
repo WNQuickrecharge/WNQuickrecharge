@@ -104,7 +104,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/desc1"
             android:layout_marginTop="@dimen/default_padding5"
-            android:text="配送时间：2017-02-03"
             android:textColor="@color/color99"
             android:textSize="@dimen/default_textsize12" />
 
@@ -112,7 +111,13 @@
             android:id="@+id/adapter_invoice_record_tvSendType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/desc1"
+            android:gravity="right"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
             android:text="邮政快递"
             android:textColor="@color/color33"
             android:textSize="@dimen/default_textsize14" />

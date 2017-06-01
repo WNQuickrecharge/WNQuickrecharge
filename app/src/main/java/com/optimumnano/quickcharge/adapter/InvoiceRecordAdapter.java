@@ -53,7 +53,6 @@ public class InvoiceRecordAdapter extends BaseQuickAdapter<InvoiceRecordBean, Ba
         helper.setText(R.id.adapter_invoice_record_tvOrderno, item.InvoiceOrderNo);
         /**
          *状态
-         * 待开具发票/待处理----->表示已经支付成功
          */
 
         if ("待支付".equals(item.Status)) {
@@ -75,13 +74,10 @@ public class InvoiceRecordAdapter extends BaseQuickAdapter<InvoiceRecordBean, Ba
             helper.setText(R.id.adapter_invoice_record_tvStatus, item.Status);
         }
 
-
         miType.setRightText(item.Type);
         miInvoiceMoney.setRightText("￥" + item.InvoiceAmount + "");
         miPostcash.setRightText("￥" + item.Postage + "");
-        if (StringUtils.isEmpty(item.OperateTime)) {
-            helper.setVisible(R.id.adapter_invoice_record_rlOperate, false);
-        } else {
+        if ("已完成".equals(item.Status)) {
             helper.setVisible(R.id.adapter_invoice_record_rlOperate, true);
             /**
              * 快递类型
@@ -91,6 +87,8 @@ public class InvoiceRecordAdapter extends BaseQuickAdapter<InvoiceRecordBean, Ba
              * 配送时间
              */
             helper.setText(R.id.adapter_invoice_record_tvSendTime, "配送时间:" + item.OperateTime);
+        } else {
+            helper.setVisible(R.id.adapter_invoice_record_rlOperate, false);
         }
     }
 }
