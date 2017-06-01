@@ -43,7 +43,7 @@
             android:text="支付方式"
             android:textColor="@color/color33"
             android:layout_centerVertical="true"
-            android:textSize="@dimen/default_textsize"/>
+            android:textSize="@dimen/sp_18"/>
 
         <ImageView
             android:id="@+id/ivRight"

@@ -39,7 +39,7 @@
             android:paddingTop="@dimen/dimen_10"
             android:paddingRight="@dimen/dimen_14"
             android:paddingLeft="@dimen/dimen_14"
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="vertical"
             android:background="@drawable/bg_charge_info"
             android:layout_width="match_parent"
@@ -123,7 +123,7 @@
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_search_recharge_station_frame"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -139,7 +139,7 @@
                     <ImageView
                         android:id="@+id/iv_icon_search"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="70dp"
+                        android:layout_marginLeft="100dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/icon_search"/>

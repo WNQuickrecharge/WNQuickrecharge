@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_16"
+            android:textColor="@color/color66"
             android:text="@string/gun_number" />
         <TextView
             android:id="@+id/tv_station_item_pileNo"
@@ -36,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_16"
+            android:textColor="@color/color66"
             android:text="@string/station_electric_price"/>
         <TextView
             android:id="@+id/tv_service_price"
@@ -43,6 +45,7 @@
             android:textSize="@dimen/sp_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/color66"
             android:text="@string/station_service_price"
             />
     </LinearLayout>
