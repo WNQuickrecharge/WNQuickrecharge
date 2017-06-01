@@ -1,57 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/default_bgcolor"
+    android:background="@color/colorEE"
     android:id="@+id/order_llMain"
     android:layout_height="wrap_content">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:padding="@dimen/default_padding"
-        android:background="@color/white">
+        android:paddingLeft="@dimen/dimen_14"
+        android:paddingRight="@dimen/dimen_14"
+        android:paddingTop="@dimen/dimen_10">
+
+        <TextView
+            android:id="@+id/order_tvNo"
+            style="@style/text_mainstyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_12"
+            android:textSize="@dimen/sp_16"
+            android:text="订单编号 88888" />
+
         <ImageView
             android:id="@+id/order_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/head"/>
+            android:layout_below="@id/order_tvNo"
+            android:src="@drawable/head" />
+
         <TextView
             android:id="@+id/order_status"
+            style="@style/text_mainstyle12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/text_mainstyle12"
-            android:text="待支付"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/default_padding20"/>
+            android:textColor="@color/color33"
+            android:textSize="@dimen/sp_16"
+            android:layout_marginRight="@dimen/dimen_12"
+            android:text="待支付" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_toRightOf="@id/order_iv"
-            android:layout_toLeftOf="@id/order_status"
+            android:layout_below="@id/order_tvNo"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding">
-            <TextView
-                android:id="@+id/order_tvNo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/text_mainstyle"
-                android:text="订单编号 88888"/>
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_toLeftOf="@id/order_status"
+            android:layout_toRightOf="@id/order_iv"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/order_tvAddress"
+                style="@style/text_mainstyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/text_mainstyle"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:text="深圳市南山区"/>
+                android:text="深圳市南山区" />
+
             <TextView
                 android:id="@+id/order_tvDate"
+                style="@style/text_mainstyle12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/text_mainstyle12"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:text="2017.2.27"/>
+                android:layout_marginTop="22dp"
+                android:text="2017.2.27" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -59,39 +73,47 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/default_padding"
+        android:layout_marginTop="0.5dp"
         android:background="@color/white"
-        android:layout_marginTop="2dp">
+        android:padding="@dimen/default_padding">
+
         <TextView
             android:id="@+id/order_tv"
+            style="@style/text_mainstyle12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/text_mainstyle12"
-            android:text="预付款："/>
+            android:text="预付款：" />
+
         <TextView
             android:id="@+id/order_tvMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/main_color_red"
-            android:textSize="14sp"
-            android:layout_toRightOf="@id/order_tv"
             android:layout_marginLeft="@dimen/default_padding"
-            android:text="￥200"/>
+            android:layout_toRightOf="@id/order_tv"
+            android:text="￥200"
+            android:textColor="@color/main_color_red"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/order_tvPay"
+            style="@style/ButtonStyle_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            style="@style/ButtonStyle_small"
-            android:text="支付订单"/>
+            android:text="支付订单" />
+
         <TextView
             android:id="@+id/order_tvComment"
+            style="@style/ButtonStyle_small_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            style="@style/ButtonStyle_small_gray"
-            android:visibility="gone"
-            android:text="已评价"/>
+            android:text="已评价"
+            android:visibility="gone" />
     </RelativeLayout>
+    <View
+        android:background="@color/default_color_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_10"/>
 
 </LinearLayout>

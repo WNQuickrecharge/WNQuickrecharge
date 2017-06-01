@@ -80,7 +80,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         viewHolder.setRefreshViewBackgroundResId(R.color.foreground_material_dark);
         recyclerView.setRefreshViewHolder(viewHolder);//不设置样式,则使用默认箭头样式
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));//设置列表布局方式
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);//设置数据源
         recyclerView.setOnLoadMoreListener(this);//实现OnLoadMoreListener接口
         recyclerView.setOnRefreshListener(this);//实现OnRefreshListener接口

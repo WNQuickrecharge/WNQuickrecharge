@@ -282,7 +282,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         super.initViews();
         setTitle(getString(R.string.recharge));
         setLeftTitle("定位");
-        setRightTitle("列表");
+        setRightTitle("");
         hideBack();
 
         viewPager = (MyViewPager) findViewById(R.id.main_viewPager);
@@ -377,7 +377,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                     case R.id.main_rbRechargeCar:
                         setTitle(getString(R.string.recharge));
                         setLeftTitle("定位");
-                        setRightTitle("列表");
+                        hideRightTitle();
                         viewPager.setCurrentItem(0);
                         EventBus.getDefault().post(new EventManager.onRechargeCarChoosed());
                         break;

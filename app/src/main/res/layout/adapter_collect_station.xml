@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dimen_1"
+    android:layout_marginBottom="@dimen/dimen_6"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -10,7 +11,10 @@
         android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/dimen_10"
+        android:paddingLeft="@dimen/dimen_10"
+        android:paddingRight="@dimen/dimen_10"
+        android:paddingTop="@dimen/dimen_14"
+        android:paddingBottom="@dimen/dimen_14"
         android:orientation="vertical">
 
         <LinearLayout
@@ -62,7 +66,7 @@
                 android:id="@+id/item_collect_electric_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dimen_10"
+                android:paddingLeft="@dimen/dimen_6"
                 android:textColor="@color/electric_charge" />
 
             <TextView
@@ -75,7 +79,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dimen_20"
+                android:paddingLeft="@dimen/dimen_10"
                 android:text="服务费"
                 android:textColor="@color/color33" />
 
@@ -83,7 +87,7 @@
                 android:id="@+id/item_collect_station_service_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dimen_10"
+                android:paddingLeft="@dimen/dimen_6"
                 android:textColor="@color/electric_charge" />
 
             <TextView
@@ -97,8 +101,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_10"
-            android:gravity="center_vertical"
+            android:gravity="bottom"
             android:orientation="horizontal">
 
             <TextView
@@ -134,8 +137,8 @@
 
             <LinearLayout
                 android:id="@+id/item_collect_GPS"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
+                android:layout_width="60dp"
+                android:layout_height="26dp"
                 android:background="@drawable/bg_daohang"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -143,7 +146,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_16"
+                    android:layout_marginLeft="@dimen/dimen_8"
                     android:src="@mipmap/daohang" />
 
                 <TextView
@@ -162,5 +165,5 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/view_line" />
+
 </LinearLayout>

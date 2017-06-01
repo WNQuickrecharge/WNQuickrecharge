@@ -43,7 +43,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/default_textsize14</item>
         <item name="android:textColor">@color/main_color</item>
-        <item name="android:background">@drawable/shape_maincolor_kuang</item>
+        <item name="android:background">@drawable/shape_maincolor_kuang_small_1</item>
         <item name="android:paddingTop">3dp</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:paddingLeft">@dimen/default_padding</item>

@@ -12,7 +12,12 @@ import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.adapter.MPagerAdapter;
 import com.optimumnano.quickcharge.animation.ZoomOutPageTransformer;
 import com.optimumnano.quickcharge.base.BaseFragment;
+import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.views.CustomViewPager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,7 @@ public class RechargerViewPagerFrag extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        EventBus.getDefault().register(this);
         initView();
         initData();
     }
@@ -65,5 +71,16 @@ public class RechargerViewPagerFrag extends BaseFragment {
     @Override
     protected void lazyLoad() {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
+        viewPager.setCurrentItem(0);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

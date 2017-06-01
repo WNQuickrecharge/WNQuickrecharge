@@ -22,6 +22,7 @@
     <color name="bg_black_80">#80000000</color>
     <color name="red">#FF0000</color>
     <color name="default_color">#F8F8F8</color>
+    <color name="default_color_1">#F6F6F6</color>
 
     <color name="main_color_press">#bbff486c</color>
     <color name="success">#1dee75</color>

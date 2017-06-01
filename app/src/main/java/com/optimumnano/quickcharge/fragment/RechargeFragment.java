@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -763,8 +764,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private void ask() {
         String phoneNumber = null;
         if (!Tool.isMobileNO(etPhone.getText().toString().trim())) {
-
-            Toast.makeText(getActivity(), "请输入正确的电话号码", Toast.LENGTH_LONG).show();
+            String m_ToastStr = "<font color='#ff3b30'>"+"请输入正确的电话号码"+"</font>";
+            Toast.makeText(getActivity(), Html.fromHtml(m_ToastStr), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "请输入正确的电话号码", Toast.LENGTH_LONG).show();
             return;
         }
         phoneNumber = etPhone.getText().toString().trim();

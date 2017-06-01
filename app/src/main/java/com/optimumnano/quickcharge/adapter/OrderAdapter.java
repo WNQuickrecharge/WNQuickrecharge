@@ -106,7 +106,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean,BaseViewHolder> imp
         }
         DecimalFormat decimalFormat=new DecimalFormat("0.00");
         helper.setText(R.id.order_tvDate,item.start_time);
-        helper.setText(R.id.order_tvNo,item.order_no);
+        helper.setText(R.id.order_tvNo,"订单编号 " + item.order_no);
         helper.setText(R.id.order_tvAddress,item.station_addr);
         helper.setText(R.id.order_tvMoney,"￥"+decimalFormat.format(item.frozen_cash));
         helper.setOnClickListener(R.id.order_tvPay, new View.OnClickListener() {
