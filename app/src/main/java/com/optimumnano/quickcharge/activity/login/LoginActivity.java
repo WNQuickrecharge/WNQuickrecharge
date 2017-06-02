@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
+import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.UserInfo;
 import com.optimumnano.quickcharge.http.BaseResult;
@@ -55,6 +56,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     LoginManager manager = new LoginManager();
 
     private int mLoginTaskId;
+    private BaiduNavigation navigation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 ToastUtil.showToast(this, R.string.cookie_timeout);
             }
         }
+        navigation = new BaiduNavigation(this);
     }
 
     @Override

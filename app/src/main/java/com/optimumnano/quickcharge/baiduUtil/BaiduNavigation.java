@@ -46,7 +46,7 @@ public class BaiduNavigation {
      * 描述:默认经纬度坐标为国际经纬度坐标系
      * 可选参数:GCJ02,BD09_MC,WGS84,BD09LL;
      */
-    public static final BNRoutePlanNode.CoordinateType DEFULT_ENDCOORDINATETYPE = WGS84;
+    public static final BNRoutePlanNode.CoordinateType DEFULT_ENDCOORDINATETYPE = BD09LL;
     public static final BNRoutePlanNode.CoordinateType DEFULT_STARTCOORDINATETYPE = BD09LL;
     public static final String ROUTE_PLAN_NODE = "routePlanNode";
     public static final String SHOW_CUSTOM_ITEM = "showCustomItem";

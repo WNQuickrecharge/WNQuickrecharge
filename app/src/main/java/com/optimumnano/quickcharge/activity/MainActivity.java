@@ -146,9 +146,9 @@ public class MainActivity extends BaseActivity implements HttpCallback {
         BNOuterLogUtil.setLogSwitcher(true);
 
         initListener();
-        if (initDirs()) {
-            initNavi();
-        }
+//        if (initDirs()) {
+//            initNavi();
+//        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             boolean isLogin = bundle.getBoolean("isLogin");
