@@ -38,6 +38,7 @@
         />
 
     <TextView
+        android:layout_centerVertical="true"
         android:id="@+id/tvRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,6 +50,6 @@
         android:maxLines="1"
         android:maxLength="21"
         android:ellipsize="end"
-        android:textSize="@dimen/default_textsize14" />
+        android:textSize="@dimen/sp_18" />
 
 </RelativeLayout>
