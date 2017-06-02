@@ -118,55 +118,10 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
      */
     private int mGetAccountInfoTaskId;
 
-    private int mGetWXPayOrderInfoDepositTaskId;
     private int mGetInvoiceSignTaskIdByZfb;
 
     private String sign;//支付宝支付的签名
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            payDialog.close();
-            if (msg.what == 1000) {
-                Map mapresult = (Map) msg.obj;
-                JSONObject dataJson = new JSONObject(mapresult);
-                String resultStatus = dataJson.optString("resultStatus");// 结果码
-                switch (resultStatus) {
-                    case "9000"://支付成功
-                        showToast("支付成功");
-                        toInvoiceApply();
-                    case "8000"://正在处理,支付结果确认中
-                        showToast("正在处理,支付结果确认中");
-                        toInvoiceApply();
-                    case "6004"://支付结果未知
-//                            "支付成功"
-//                        payCallback.paySuccess(order_no);
-                        showToast("支付成功");
-                        toInvoiceApply();
-                        break;
-                    case "4000":
-                        showToast("订单支付失败");
-//                        payCallback.payFail("订单支付失败");
-                    case "5000":
-                        showToast("订单不能重复支付");
-//                        payCallback.payFail("订单不能重复支付");
-                        break;
-                    case "6001":
-                        showToast("取消支付");
-//                        payCallback.payFail("取消支付");
-                        break;
-                    case "6002":
-                        showToast("网络连接出错");
-//                        payCallback.payFail("网络连接出错");
-                        break;
-                    default:
-                        showToast("支付异常");
-//                        payCallback.payFail("支付异常");
-                        break;
-                }
-            }
-        }
-    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -237,8 +192,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
                         yue_pay();
                     } else if (payWay == PayDialog.pay_zfb) {//支付宝
                         payByZfb();
-//                        payDialog.setMoney(money, order_no);
-//                        payDialog.payZFB();
                     } else if (payWay == PayDialog.pay_wx) {//微信
                         callWXPay();
                     }
@@ -278,10 +231,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         mGetInvoiceSignTaskIdByWx = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetInvoiceSignTaskIdByWx,
                 new GetInvoiceSignRequest(new GetInvoiceSignResult(mContext), order_no, PayDialog.pay_wx), this));
-
-       /* mGetWXPayOrderInfoDepositTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetWXPayOrderInfoDepositTaskId,
-                new PayOrderInfoDepositRequest(new PayOrderInfoDepositResult(mContext), String.valueOf(money), payWay), this));*/
     }
 
     private void payByZfb() {
@@ -304,7 +253,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
         mTaskDispatcher.cancel(mPayInvoiceBalanceTaskId);
         mTaskDispatcher.cancel(mGetPayPwdTaskId);
         mTaskDispatcher.cancel(mGetAccountInfoTaskId);
-        mTaskDispatcher.cancel(mGetWXPayOrderInfoDepositTaskId);
     }
 
     @Override
@@ -342,17 +290,8 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
             PayWayViewHelp.showPayWayStatus(miPayway, payWay, formatRestCash);
 
         }
-        /*if (mGetInvoiceSignTaskId == id) {
-            if (payWay == PayDialog.pay_wx) {
-                payDialog.payWeiXin(money, order_no);
-            } else if (payWay == PayDialog.pay_zfb) {
-                payDialog.setMoney(money, order_no);
-                payDialog.payZFB();
-            }
-        }*/
         if (mGetInvoiceSignTaskIdByZfb == id) {
             sign = ((GetInvoiceSignResult) result).getResp().getResult().sign;
-//            startPay(sign);
             payDialog.setMoney(money,order_no,sign);
             payDialog.payZFB();
             payDialog.setPayCallback(PayCenterActivity.this);
@@ -408,24 +347,6 @@ public class PayCenterActivity extends BaseActivity implements View.OnClickListe
     public void onRequestCancel(int id) {
 
     }
-    private void startPay(final String sign) {
-        Runnable payRunnable = new Runnable() {
-            @Override
-            public void run() {
-                PayTask alipay = new PayTask(PayCenterActivity.this);
-                Map<String, String> result = alipay.payV2(sign, true);//true表示唤起loading等待界面
-
-                Message msg = new Message();
-                msg.what = 1000;
-                msg.obj = result;
-                handler.sendMessage(msg);
-            }
-        };
-        // 必须异步调用
-        Thread payThread = new Thread(payRunnable);
-        payThread.start();
-    }
-
     /**
      * 微信支付成功后返回InvoiceApplyActivity
      *
