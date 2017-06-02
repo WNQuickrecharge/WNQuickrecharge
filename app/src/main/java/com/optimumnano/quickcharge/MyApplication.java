@@ -36,7 +36,7 @@ public class MyApplication extends Application {
         x.Ext.init(this);
         x.Ext.setDebug(true);
         ImageLoaderUtil.getInstance().init(this);
-        PushManager.getInstance().initialize(this.getApplicationContext(), GTPushService.class);
+
 
         //PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
         instance = this;

@@ -1141,7 +1141,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                 needPostMessage = true;
                 capp_lat = getAskChargeBean.getCapp_lat();
                 capp_lng = getAskChargeBean.getCapp_lng();
-                handler.removeMessages(1003);
             }
             carNumber = getAskChargeBean.getCharge_plate();
             driverNumber = getAskChargeBean.getCharge_phone();
@@ -1280,6 +1279,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
                     markerNearRechargeCar();
                 } else if (ask_state == 0) {// 0,已下单 待接单
                     markerNearRechargeCar();
+                    handler.removeMessages(1002);
                     if (Tool.isConnectingToInternet()) {
                         askCarInputFrame.setVisibility(View.GONE);
                         carComingSoon.setVisibility(View.VISIBLE);
@@ -1401,17 +1401,8 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             if (msg.what == 1002) {
                 doGetRechargeCarLocation();
             }
-            if (msg.what == 1003) {
-                doGetRechargeTaskStatus();
-                handler.sendEmptyMessageDelayed(1003,5000);
-            }
         }
     };
 
-    private void doGetRechargeTaskStatus() {
-        mGetAskChargeTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mGetAskChargeTaskId,
-                new GetAskChargeRequest(new GetAskChargeResult(mContext)), this));
-    }
 
 }

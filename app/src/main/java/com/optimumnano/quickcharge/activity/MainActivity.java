@@ -50,6 +50,7 @@ import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
 import com.optimumnano.quickcharge.request.AddStationCollectionRequest;
 import com.optimumnano.quickcharge.response.AddStationCollectionResult;
+import com.optimumnano.quickcharge.service.GTPushService;
 import com.optimumnano.quickcharge.service.MyIntentService;
 import com.optimumnano.quickcharge.utils.AppManager;
 import com.optimumnano.quickcharge.utils.KeyboardWatcher;
@@ -155,9 +156,15 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                 rg.check(R.id.main_rbRechargeCar);
             }
         }
+        PushManager.getInstance().initialize(this.getApplicationContext(), GTPushService.class);
 
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
         mHelper.setIslogin(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private boolean initDirs() {
