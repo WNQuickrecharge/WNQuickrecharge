@@ -3,7 +3,11 @@ package com.optimumnano.quickcharge.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -11,6 +15,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.baidu.navisdk.adapter.BNCommonSettingParam;
+import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
+import com.baidu.navisdk.adapter.BNaviSettingManager;
+import com.baidu.navisdk.adapter.BaiduNaviManager;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.baiduUtil.BaiduNavigation;
@@ -36,6 +45,8 @@ import org.json.JSONObject;
 import org.lzh.framework.updatepluginlib.UpdateBuilder;
 import org.xutils.common.util.LogUtil;
 
+import java.io.File;
+
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_BALANCE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_COOKIE;
 import static com.optimumnano.quickcharge.utils.SPConstant.KEY_USERINFO_HEADIMG_URL;
@@ -57,6 +68,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     private int mLoginTaskId;
     private BaiduNavigation navigation;
+    String authinfo = null;
+    private String mSDCardPath = null;
+
+    private boolean hasInitSuccess = false;
+    private boolean hasRequestComAuth = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +87,112 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 ToastUtil.showToast(this, R.string.cookie_timeout);
             }
         }
-        navigation = new BaiduNavigation(this);
+        //navigation = new BaiduNavigation(this);
+        if (initDirs()) {
+            initNavi();
+        }
+    }
+
+    private void initNavi() {
+        BNOuterTTSPlayerCallback ttsCallback = null;
+        BaiduNaviManager.getInstance().init(this, mSDCardPath, Constants.APP_FOLDER_NAME, new BaiduNaviManager.NaviInitListener() {
+            @Override
+            public void onAuthResult(int status, String msg) {
+                if (0 == status) {
+                    authinfo = "key校验成功!";
+
+                } else {
+                    authinfo = "key校验失败, " + msg;
+                }
+                Log.d("TAG", authinfo);
+            }
+
+            public void initSuccess() {
+                Log.d("TAG", "百度导航引擎初始化成功");
+                hasInitSuccess = true;
+                initSetting();
+            }
+
+            public void initStart() {
+                Log.d("TAG", "百度导航引擎初始化开始");
+            }
+
+            public void initFailed() {
+                Log.d("TAG", "百度导航引擎初始化失败");
+            }
+
+        }, null, ttsHandler, ttsPlayStateListener);
+
+    }
+    /**
+     * 内部TTS播报状态回调接口
+     */
+    private BaiduNaviManager.TTSPlayStateListener ttsPlayStateListener = new BaiduNaviManager.TTSPlayStateListener() {
+        @Override
+        public void playEnd() {
+            // showToastMsg("TTSPlayStateListener : TTS play end");
+        }
+
+        @Override
+        public void playStart() {
+            // showToastMsg("TTSPlayStateListener : TTS play start");
+        }
+    };
+
+    /**
+     * 内部TTS播报状态回传handler
+     */
+    private Handler ttsHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int type = msg.what;
+            switch (type) {
+                case BaiduNaviManager.TTSPlayMsgType.PLAY_START_MSG: {
+                    // showToastMsg("Handler : TTS play start");
+                    break;
+                }
+                case BaiduNaviManager.TTSPlayMsgType.PLAY_END_MSG: {
+                    // showToastMsg("Handler : TTS play end");
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    };
+    private void initSetting() {
+        // BNaviSettingManager.setDayNightMode(BNaviSettingManager.DayNightMode.DAY_NIGHT_MODE_DAY);
+        BNaviSettingManager
+                .setShowTotalRoadConditionBar(BNaviSettingManager.PreViewRoadCondition.ROAD_CONDITION_BAR_SHOW_ON);
+        BNaviSettingManager.setVoiceMode(BNaviSettingManager.VoiceMode.Veteran);
+        // BNaviSettingManager.setPowerSaveMode(BNaviSettingManager.PowerSaveMode.DISABLE_MODE);
+        BNaviSettingManager.setRealRoadCondition(BNaviSettingManager.RealRoadCondition.NAVI_ITS_ON);
+        Bundle bundle = new Bundle();
+        // 必须设置APPID，否则会静音
+        bundle.putString(BNCommonSettingParam.TTS_APP_ID, "9459984");
+        BNaviSettingManager.setNaviSdkParam(bundle);
+    }
+    private String getSdcardDir() {
+        if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().toString();
+        }
+        return null;
+    }
+
+    private boolean initDirs() {
+        mSDCardPath = getSdcardDir();
+        if (mSDCardPath == null) {
+            return false;
+        }
+        File f = new File(mSDCardPath, Constants.APP_FOLDER_NAME);
+        if (!f.exists()) {
+            try {
+                f.mkdir();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
