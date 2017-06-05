@@ -1134,6 +1134,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
+            if (ask_state == -1) {
+                hasUnfinishedOrder = false;
+            }
             if (ask_state == 0 || ask_state == 1) {
                 hasUnfinishedOrder = true;
             }
@@ -1362,6 +1365,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = -1;
             handler.removeMessages(1002);
             getMainActivityRadioGroupChoose();
+            hasUnfinishedOrder = false;
         }
     }
 
