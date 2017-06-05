@@ -208,7 +208,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
     private int mGetCityStationTaskId;
     private boolean useDefaultIcon = true;
     private boolean needPostMessage = true;
-    private boolean hasUnfinishedOrder = false;
+    //private boolean hasUnfinishedOrder = false;
     private DrivingRouteOverlay routeOverlay;
     private PoiInfo suggestionInfoInfo;
     private GetAskChargeBean getAskChargeBean;
@@ -807,10 +807,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         address = suggestionInfoInfo.address+"-"+etAddress.getText().toString().trim();
         carNumber = etPlate.getText().toString().trim();
 
-        if (hasUnfinishedOrder){
-            Toast.makeText(getActivity(), "存在未完成的订单,请勿再次请求补电", Toast.LENGTH_LONG).show();
-            return;
-        }
+//        if (hasUnfinishedOrder){
+//            Toast.makeText(getActivity(), "存在未完成的订单,请勿再次请求补电", Toast.LENGTH_LONG).show();
+//            return;
+//        }
         if (!Tool.isConnectingToInternet()) {
             Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
             return;
@@ -1123,7 +1123,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         } else if (mCancleAskOrderTaskId == id){
             closeLoading();
             ask_state = -1;
-            hasUnfinishedOrder = false;
+            //hasUnfinishedOrder = false;
             mHelper.setCarVin("");
             handler.removeMessages(1002);
             getMainActivityRadioGroupChoose();
@@ -1134,12 +1134,12 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             getAskChargeBean = JSON.parseObject(askCharge, GetAskChargeBean.class);
             askNo= getAskChargeBean.getAsk_no();
             ask_state = getAskChargeBean.getAsk_state();
-            if (ask_state == -1) {
-                hasUnfinishedOrder = false;
-            }
-            if (ask_state == 0 || ask_state == 1) {
-                hasUnfinishedOrder = true;
-            }
+//            if (ask_state == -1) {
+//                hasUnfinishedOrder = false;
+//            }
+//            if (ask_state == 0 || ask_state == 1) {
+//                hasUnfinishedOrder = true;
+//            }
             if (ask_state == 1) {
                 needPostMessage = true;
                 capp_lat = getAskChargeBean.getCapp_lat();
@@ -1365,7 +1365,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
             ask_state = -1;
             handler.removeMessages(1002);
             getMainActivityRadioGroupChoose();
-            hasUnfinishedOrder = false;
         }
     }
 
