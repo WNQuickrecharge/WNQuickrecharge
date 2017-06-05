@@ -1357,6 +1357,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 
             getMainActivityRadioGroupChoose();
 
+        } else if (msg.ask_state ==5) {
+            //ToastUtil.showToast(getActivity(),"");
+            ask_state = -1;
+            handler.removeMessages(1002);
+            getMainActivityRadioGroupChoose();
         }
     }
 
