@@ -163,8 +163,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             for (InvoiceOrder pd : list) {
                 if (pd.getConsumeMonth() == month) {
                     ch.add(pd);
+                    child.add(ch);
                 }
-                child.add(ch);
             }
         }
         /**
