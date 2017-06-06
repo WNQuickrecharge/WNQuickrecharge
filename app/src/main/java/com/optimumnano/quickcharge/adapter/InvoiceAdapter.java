@@ -130,6 +130,7 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
         holder.tvOrderNo.setText(order.C_ChargeOrderNum + "");
         holder.tvAddress.setText(order.Address + "");
         holder.TvMoney.setText("￥" + order.ConsumeCash);
+        holder.tvDate.setText(order.EndTime);
         holder.cb.setChecked(order.isChecked);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

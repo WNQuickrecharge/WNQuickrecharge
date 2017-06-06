@@ -54,7 +54,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/invoice_tvStatus"
-                android:text="88888888"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
@@ -65,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/invoice_tvOrdernum"
                 android:layout_marginTop="@dimen/default_padding5"
-                android:text="沃特马电池有限公司"
                 android:textColor="@color/black"
                 android:textSize="@dimen/default_textsize12" />
 
@@ -75,8 +73,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/invoice_tvCompany"
                 android:layout_marginTop="@dimen/default_padding5"
-                android:text="深圳市南山区"
                 android:textColor="@color/color66"
+                android:visibility="gone"
                 android:textSize="@dimen/default_textsize12" />
 
             <RelativeLayout
@@ -89,7 +87,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_padding5"
-                    android:text="2017-03-22 12:24"
                     android:textColor="@color/color66"
                     android:textSize="@dimen/default_textsize12" />
 
