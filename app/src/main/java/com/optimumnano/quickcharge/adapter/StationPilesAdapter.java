@@ -147,7 +147,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
         RechargeGunBean resultGunBean = ((GetGunInfoResult) result).getResp().getResult();
         Intent intent = new Intent(context, OrderActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("gun_no", resultGunBean.gun_code);
+        bundle.putString("gunNo", gunBean.getPileNo()+gunBean.getGun_code());
         bundle.putSerializable("gunBean", resultGunBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
