@@ -1245,6 +1245,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
 //                        ToastUtil.showToast(getActivity(),"路线规划完成");
                 } else {
                     ToastUtil.showToast(getActivity(),"路线规划失败" );
+                    doGetRechargeCarLocation();
                 }
             }
 
