@@ -79,7 +79,6 @@ import com.optimumnano.quickcharge.bean.Point;
 import com.optimumnano.quickcharge.bean.PushCustom;
 import com.optimumnano.quickcharge.bean.RechargeCarLocationBean;
 import com.optimumnano.quickcharge.bean.StationBean;
-import com.optimumnano.quickcharge.bean.SuggestionInfo;
 import com.optimumnano.quickcharge.data.PreferencesHelper;
 import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.http.BaseResult;
@@ -818,7 +817,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback,OnLis
         ((MainActivity) getActivity()).showLoading();
         mAskChargeTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mAskChargeTaskId,
-                new AskChargeRequest(new AskChargeResult(mContext), suggestionInfoInfo, phoneNumber, "Hl", address, carNumber), this));
+                new AskChargeRequest(new AskChargeResult(mContext), suggestionInfoInfo, phoneNumber, "Hl", address, carNumber.toUpperCase()), this));
 
     }
 
