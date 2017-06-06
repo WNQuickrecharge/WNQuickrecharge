@@ -49,7 +49,7 @@ public class InvoiceMoreActivity extends BaseActivity implements View.OnClickLis
         tvSubmit.setOnClickListener(this);
     }
 
-    //只要填了一个，其余信息必须全填
+    //只要填了一个，其余信息必须全填，备注除外
     private boolean check() {
         regPhone = etBankNumber.getText().toString();
         regAddress = etRegisterAddress.getText().toString();
@@ -58,10 +58,10 @@ public class InvoiceMoreActivity extends BaseActivity implements View.OnClickLis
         remark = etRemark.getText().toString();
         //全为空
         if (StringUtils.isEmpty(regPhone) && StringUtils.isEmpty(regAddress) && StringUtils.isEmpty(bankCard)
-                && StringUtils.isEmpty(indentifyNum) && StringUtils.isEmpty(remark)) {
+                && StringUtils.isEmpty(indentifyNum)) {
             return true;
         } else if (!StringUtils.isEmpty(regPhone) && !StringUtils.isEmpty(regAddress) && !StringUtils.isEmpty(bankCard)
-                && !StringUtils.isEmpty(indentifyNum) && !StringUtils.isEmpty(remark)) {
+                && !StringUtils.isEmpty(indentifyNum)) {
             return true;
         } else {
             return false;
