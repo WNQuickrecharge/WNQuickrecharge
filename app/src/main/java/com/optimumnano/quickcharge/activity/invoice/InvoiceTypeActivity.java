@@ -173,6 +173,17 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(intent, 520);
             }
         });
+        llGoToMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * 521为识别码，与InvoiceMoreActivity里一致
+                 */
+                Intent intent = new Intent();
+                intent.setClass(InvoiceTypeActivity.this, InvoiceMoreActivity.class);
+                startActivityForResult(intent, 521);
+            }
+        });
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -220,9 +231,9 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
                     addInviceOrder();
                 }
                 break;
-            case R.id.ll_go_to_more:
+            /*case R.id.ll_go_to_more:
                 InvoiceMoreActivity.start(this);
-                break;
+                break;*/
         }
 
     }
@@ -260,20 +271,32 @@ public class InvoiceTypeActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!TextUtils.isEmpty(regPhone)) {
-            regPhone = data.getStringExtra("regPhone");
-        }
-        if (!TextUtils.isEmpty(regAddress)) {
-            regAddress = data.getStringExtra("regAddress");
-        }
-        if (!TextUtils.isEmpty(bankCard)) {
-            bankCard = data.getStringExtra("bankCard");
-        }
-        if (!TextUtils.isEmpty(indentifyNum)) {
-            indentifyNum = data.getStringExtra("indentifyNum");
-        }
-        if (!TextUtils.isEmpty(remark)) {
-            remark = data.getStringExtra("remark");
+        if(requestCode == 521 && null != data){
+            if(null == regPhone){
+                regPhone = data.getStringExtra("regPhone");
+            }else {
+                regPhone = data.getStringExtra("regPhone");
+            }
+            if(null == regAddress){
+                regAddress = data.getStringExtra("regAddress");
+            }else {
+                regAddress = data.getStringExtra("regAddress");
+            }
+            if(null == bankCard){
+                bankCard = data.getStringExtra("bankCard");
+            }else {
+                bankCard = data.getStringExtra("bankCard");
+            }
+            if(null == indentifyNum){
+                indentifyNum = data.getStringExtra("indentifyNum");
+            }else {
+                indentifyNum = data.getStringExtra("indentifyNum");
+            }
+            if(null == remark){
+                remark = data.getStringExtra("remark");
+            }else {
+                remark = data.getStringExtra("remark");
+            }
         }
         if (requestCode == 520 && null != data) {
             endAddressStr = data.getStringExtra("address");
