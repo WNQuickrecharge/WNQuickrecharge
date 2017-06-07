@@ -39,13 +39,13 @@ android {
         versionName rootProject.ext.versionName
         manifestPlaceholders = [
                 //测试环境个推配置
-//                GETUI_APP_ID    : "Gczwzph8R360yyZjmNcnu3",
-//                GETUI_APP_KEY   : "yrZFObAydl5gS7V2fDevY",
-//                GETUI_APP_SECRET: "Ca1c0ZB5ALAkHsCTmibMV3"
+                GETUI_APP_ID    : "Gczwzph8R360yyZjmNcnu3",
+                GETUI_APP_KEY   : "yrZFObAydl5gS7V2fDevY",
+                GETUI_APP_SECRET: "Ca1c0ZB5ALAkHsCTmibMV3"
                 //生产环境个推配置
-                GETUI_APP_ID    : "EGwqPmPNSiAr6u8WadoaZ",
-                GETUI_APP_KEY   : "j9tgnYHQnZ9RR9gpgY4PY4",
-                GETUI_APP_SECRET: "ZSTzy2W71388bZP3HSTzM2"
+//                GETUI_APP_ID    : "EGwqPmPNSiAr6u8WadoaZ",
+//                GETUI_APP_KEY   : "j9tgnYHQnZ9RR9gpgY4PY4",
+//                GETUI_APP_SECRET: "ZSTzy2W71388bZP3HSTzM2"
         ]
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86_64"
