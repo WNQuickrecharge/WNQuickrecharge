@@ -29,6 +29,7 @@
             android:textColor="@color/color33"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_gravity="center"
             android:text="提示消息" />
 
         <View

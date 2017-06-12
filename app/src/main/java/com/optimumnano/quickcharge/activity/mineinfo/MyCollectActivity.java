@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 我的收藏
  * Created by mfwn on 2017/4/8.
  */
 

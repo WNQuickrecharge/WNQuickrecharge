@@ -100,6 +100,14 @@
         app:tvLeftText="关于我们"
         android:layout_marginTop="1dp"
         app:showivRight="true"/>
+    <com.optimumnano.quickcharge.views.MenuItem1
+        android:id="@+id/mine_complaints_suggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tvLeftText="投诉与建议"
+        android:visibility="gone"
+        android:layout_marginTop="1dp"
+        app:showivRight="true"/>
 
     </LinearLayout>
 

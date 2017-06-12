@@ -50,6 +50,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     private TextView mTvBalance;
     private TextView mTvNickName;
     private TextView mTvDeposit;
+    private MenuItem1 mine_complaints_suggestions;
 
     private int mGetUserInfoTaskId;
 
@@ -79,7 +80,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mTvBalance = (TextView) mainView.findViewById(R.id.mine_tv_balance);
         mTvNickName = (TextView) mainView.findViewById(R.id.mine_tv_nickname);
         mTvDeposit = (TextView) mainView.findViewById(R.id.mine_tv_deposit);
+        mine_complaints_suggestions = (MenuItem1) mainView.findViewById(R.id.mine_complaints_suggestions);
 
+        mine_complaints_suggestions.setOnClickListener(this);
         mywallet.setOnClickListener(this);
         mineAbout.setOnClickListener(this);
         mineCollect.setOnClickListener(this);
@@ -116,6 +119,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.mine_tv_deposit:
                 startActivity(new Intent(getActivity(), WalletDepositAct.class));
+                break;
+            case R.id.mine_complaints_suggestions:
+                startActivity(new Intent(getActivity(),ComplaintsSuggestionsAct.class));
                 break;
             default:
                 break;

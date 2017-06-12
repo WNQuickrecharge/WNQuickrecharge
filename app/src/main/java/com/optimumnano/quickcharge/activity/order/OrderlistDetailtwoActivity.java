@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
@@ -22,15 +23,21 @@ import com.optimumnano.quickcharge.views.MenuItem1;
 
 import java.text.DecimalFormat;
 
+/**
+ * 订单详情页面，包含下面两种情况
+ * 待评价=5,
+ * 已完成=6
+ */
 public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
     private TextView tvDeleteOrder;
     private TextView tvStatus, tvOrdernum, tvCompany, tvAddress, tvDate, tvServiceCash;
     private OrderBean orderBean;
     private MenuItem1 miUsertime, miAllelec, miRechargeCash, miAllMoney, miSMoney, miYFMoney, miBackMoney;
-    private OrderManager orderManager = new OrderManager();
     private TextView payWay;
     private ImageView orderIcon;
 
+
+    private MyDialog myDialog;
     private int mDeleteOrderTaskId;
 
     @Override
@@ -74,6 +81,8 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         orderIcon = (ImageView) findViewById(R.id.iv_order_icon);
 
         tvDeleteOrder.setOnClickListener(this);
+        myDialog = new MyDialog(this, R.style.MyDialog);
+        myDialog.setCancelable(false);
     }
 
     private void initData() {
@@ -113,25 +122,34 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.orderlistDetl_tvDeleteOrder:
-                deleteOrder();
+                deleteOrderClick();
                 break;
         }
     }
 
+    /**
+     * 删除订单弹出框
+     */
+    private void deleteOrderClick() {
+        myDialog.setTitle("确认是否删除");
+        myDialog.setMessage("订单一旦删除将不可恢复，\n请确认是否删除。");
+        myDialog.setYesOnclickListener("确认", new MyDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick() {
+                deleteOrder();
+                myDialog.dismiss();
+            }
+        });
+        myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+            @Override
+            public void onNoClick() {
+                myDialog.dismiss();
+            }
+        });
+        myDialog.show();
+    }
+
     private void deleteOrder() {
-//        orderManager.deleteOrder(orderBean.order_no, new ManagerCallback() {
-//            @Override
-//            public void onSuccess(Object returnContent) {
-//                super.onSuccess(returnContent);
-//                finish();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//                showToast(msg);
-//            }
-//        });
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
             return;
@@ -176,6 +194,7 @@ public class OrderlistDetailtwoActivity extends BaseActivity implements View.OnC
         }
         if (mDeleteOrderTaskId == id) {
             finish();
+            showToast("删除成功");
         }
     }
 

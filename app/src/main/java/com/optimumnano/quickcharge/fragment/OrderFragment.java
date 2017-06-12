@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +21,16 @@ import com.optimumnano.quickcharge.activity.order.OrderlistDetailtwoActivity;
 import com.optimumnano.quickcharge.adapter.OrderAdapter;
 import com.optimumnano.quickcharge.base.BaseFragment;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
+import com.optimumnano.quickcharge.listener.MyDeleteOrderClicListener;
 import com.optimumnano.quickcharge.listener.MyOnitemClickListener;
+import com.optimumnano.quickcharge.request.DeleteOrderRequest;
 import com.optimumnano.quickcharge.request.GetOrderListRequest;
+import com.optimumnano.quickcharge.response.DeleteOrderResult;
 import com.optimumnano.quickcharge.response.GetOrderListResult;
 import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
@@ -43,6 +46,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     HTRefreshRecyclerView recyclerView;
     private Context ctx;
 
+    private MyDialog myDialog;
     private OrderAdapter adapter;
     private List<OrderBean> orderList = new ArrayList<>();
 
@@ -50,6 +54,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     private int pageCount = 10;
 
     private int mGetOrderListTaskId;
+    private int mDeleteOrderTaskId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +75,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
     public void onDetach() {
         super.onDetach();
         mTaskDispatcher.cancel(mGetOrderListTaskId);
+        mTaskDispatcher.cancel(mDeleteOrderTaskId);
     }
 
     private void initViews() {
@@ -87,7 +93,19 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         recyclerView.setLoadMoreViewShow(false);
         recyclerView.setEnableScrollOnRefresh(true);
 
+        myDialog = new MyDialog(ctx, R.style.MyDialog);
+        myDialog.setCancelable(false);
+
         adapter.setContext(getActivity());
+        /**
+         * item点击事件，分类型跳转---->5目前等同于6状态
+         * 已取消=1,
+         * 待支付=2,
+         * 待充电=3,
+         * 充电中=4,
+         * 待评价=5,
+         * 已完成=6
+         */
         adapter.setOnitemClickListener(new MyOnitemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -106,6 +124,49 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
                 getActivity().startActivity(intent);
             }
         });
+        /**
+         * 删除订单
+         */
+        adapter.setDeleteOrderClicListener(new MyDeleteOrderClicListener() {
+            @Override
+            public void onDeleteItemClick(View view, final String str) {
+                /**
+                 * 删除订单弹出框
+                 */
+                myDialog.setTitle("确认是否删除");
+                myDialog.setMessage("订单一旦删除将不可恢复，\n请确认是否删除。");
+                myDialog.setYesOnclickListener("确认", new MyDialog.onYesOnclickListener() {
+                    @Override
+                    public void onYesClick() {
+                        deleteOrder(str);
+                        myDialog.dismiss();
+                    }
+                });
+                myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+                    @Override
+                    public void onNoClick() {
+                        myDialog.dismiss();
+                    }
+                });
+
+                myDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 删除订单
+     *
+     * @param str
+     */
+    private void deleteOrder(String str) {
+        if (!Tool.isConnectingToInternet()) {
+            ToastUtil.showToast(mContext, "无网络");
+            return;
+        }
+        mDeleteOrderTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mDeleteOrderTaskId,
+                new DeleteOrderRequest(new DeleteOrderResult(mContext), str), this));
     }
 
     @Override
@@ -138,8 +199,8 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
 //                super.onFailure(msg);
 //            }
 //        });
-        if (!Tool.isConnectingToInternet()){
-            ToastUtil.showToast(getActivity(),"无网络!");
+        if (!Tool.isConnectingToInternet()) {
+            ToastUtil.showToast(getActivity(), "无网络!");
         }
         mGetOrderListTaskId = TaskIdGenFactory.gen();
         mTaskDispatcher.dispatch(new HttpTask(mGetOrderListTaskId,
@@ -183,18 +244,25 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         if (deAlive()) {
             return;
         }
-        if (pageSize == 1) {
-            pageSize = 1;
-            orderList.clear();
+        if (id == mGetOrderListTaskId) {
+            if (pageSize == 1) {
+                pageSize = 1;
+                orderList.clear();
+            }
+            List<OrderBean> dataList = ((GetOrderListResult) result).getOrderListHttpResp().getResult();
+            if (dataList.size() < pageCount) {
+                recyclerView.setRefreshCompleted(false);
+            } else {
+                recyclerView.setRefreshCompleted(true);
+            }
+            orderList.addAll(dataList);
+            adapter.notifyDataSetChanged();
         }
-        List<OrderBean> dataList = ((GetOrderListResult) result).getOrderListHttpResp().getResult();
-        if (dataList.size() < pageCount) {
-            recyclerView.setRefreshCompleted(false);
-        } else {
-            recyclerView.setRefreshCompleted(true);
+        if (mDeleteOrderTaskId == id) {
+            ToastUtil.showToast(mContext, "删除成功");
+            recyclerView.startAutoRefresh();
+            adapter.notifyDataSetChanged();
         }
-        orderList.addAll(dataList);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -202,7 +270,7 @@ public class OrderFragment extends BaseFragment implements View.OnClickListener,
         if (deAlive()) {
             return;
         }
-        ToastUtil.showToast(mContext,ToastUtil.formatToastText(mContext,
+        ToastUtil.showToast(mContext, ToastUtil.formatToastText(mContext,
                 ((GetOrderListResult) result).getOrderListHttpResp()));
         recyclerView.setRefreshCompleted(true);
     }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorEE"
-    android:id="@+id/order_llMain"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/order_llMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -20,8 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_12"
-            android:textSize="@dimen/sp_16"
-            android:text="订单编号 88888" />
+            android:textSize="@dimen/sp_14" />
 
         <ImageView
             android:id="@+id/order_iv"
@@ -36,10 +36,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textColor="@color/color33"
-            android:textSize="@dimen/sp_16"
             android:layout_marginRight="@dimen/dimen_12"
-            android:text="待支付" />
+            android:paddingLeft="5dp"
+            android:text="待支付"
+            android:textColor="@color/color33"
+            android:textSize="@dimen/sp_16" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +83,7 @@
             style="@style/text_mainstyle12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="预付款：" />
+            android:text="充电金额：" />
 
         <TextView
             android:id="@+id/order_tvMoney"
@@ -90,7 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/default_padding"
             android:layout_toRightOf="@id/order_tv"
-            android:text="￥200"
             android:textColor="@color/main_color_red"
             android:textSize="14sp" />
 
@@ -111,9 +111,10 @@
             android:text="已评价"
             android:visibility="gone" />
     </RelativeLayout>
+
     <View
-        android:background="@color/default_color_1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_10"/>
+        android:layout_height="@dimen/dimen_10"
+        android:background="@color/default_color_1" />
 
 </LinearLayout>

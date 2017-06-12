@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <!--打电话的权限-->
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -60,15 +60,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".activity.login.LoginActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -85,7 +85,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </activity>
+        </activity>
 
         <meta-data
             android:name="BaiduMobAd_STAT_ID"
@@ -122,7 +122,7 @@
             android:name=".activity.login.ForgetPwdActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.selectAddress.SelectAddressActivity"
+            android:name=".activity.selectAddress.SelectAddressNewAct"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.order.OrderlistDetailtwoActivity"
@@ -229,6 +229,9 @@
             android:name=".activity.invoice.PayCenterActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.optimumnano.quickcharge.activity.qrcode.QrCodeForCarActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.invoice.InvoiceApplyActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -249,19 +252,23 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.invoice.InvoiceRecordActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" >
-        </activity>
+        <activity
+            android:name=".activity.invoice.InvoiceRecordActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".fragment.ComplaintsSuggestionsAct"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
         <receiver android:name=".wxapi.AppRegister">
             <intent-filter>
-                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP"/>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
         <activity

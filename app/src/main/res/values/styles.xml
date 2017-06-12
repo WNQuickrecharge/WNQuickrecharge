@@ -208,4 +208,9 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="myRatingBarBig" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar_back</item>
+        <item name="android:minHeight">60dip</item>
+        <item name="android:maxHeight">60dip</item>
+    </style>
 </resources>

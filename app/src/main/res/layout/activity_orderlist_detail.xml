@@ -1,206 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.optimumnano.quickcharge.activity.order.OrderlistDetailActivity">
-    <include layout="@layout/title_main"/>
+
+    <include layout="@layout/title_main" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:scrollbars="none">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/default_lrmargin"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        android:layout_marginTop="@dimen/default_lrmargin">
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:text="订单编号"/>
-            <ImageView
-                android:id="@+id/iv_order_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/default_lrmargin"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/default_lrmargin">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="订单编号"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/iv_order_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="@dimen/default_padding"
+                        android:src="@drawable/head" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin">
+
+                    <TextView
+                        android:id="@+id/orderlistDetl_tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="待支付"
+                        android:textColor="@color/main_color_red"
+                        android:textSize="@dimen/default_textsize14" />
+
+                    <TextView
+                        android:id="@+id/orderlistDetl_tvOrdernum"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/orderlistDetl_tvStatus"
+                        android:text="88888888"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/orderlistDetl_tvCompany"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/orderlistDetl_tvOrdernum"
+                        android:layout_marginTop="@dimen/default_padding5"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/default_textsize16" />
+
+                    <TextView
+                        android:id="@+id/orderlistDetl_tvAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/orderlistDetl_tvCompany"
+                        android:layout_marginTop="@dimen/default_padding5"
+                        android:text="深圳市南山区"
+                        android:textColor="@color/color66"
+                        android:textSize="@dimen/default_textsize14" />
+
+                    <TextView
+                        android:id="@+id/orderlistDetl_tvTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/orderlistDetl_tvAddress"
+                        android:layout_marginTop="@dimen/default_padding5"
+                        android:text="2017-03-22 12:24"
+                        android:textColor="@color/color66"
+                        android:textSize="@dimen/default_textsize14" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/orderlistDetl_miGunNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_padding"
-                android:src="@drawable/head"/>
-        </LinearLayout>
+                app:LeftTextColor="@color/color99"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                app:tvLeftText="充电枪号"
+                app:tvRightText="888888" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/default_lrmargin">
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/orderlistDetl_miPileType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_1"
+                app:LeftTextColor="@color/color99"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                app:tvLeftText="桩类型"
+                app:tvRightText="直流桩" />
+
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/orderlistDetl_miElec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_1"
+                app:LeftTextColor="@color/color99"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                app:tvLeftText="额定电流"
+                app:tvRightText="150.00A" />
+
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/orderlistDetl_miPower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_1"
+                app:LeftTextColor="@color/color99"
+                app:rightTextColor="@color/color33"
+                app:showtvRight="true"
+                app:tvLeftText="额定功率"
+                app:tvRightText="150kw" />
+
+            <com.optimumnano.quickcharge.views.MenuItem1
+                android:id="@+id/orderlistDetl_miFrozenCash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_1"
+                app:LeftTextColor="@color/color99"
+                app:rightTextColor="@color/main_color_red"
+                app:showtvRight="true"
+                app:tvLeftText="预交金额"
+                app:tvRightText="￥200" />
+
             <TextView
-                android:id="@+id/orderlistDetl_tvStatus"
+                style="@style/text_mainstyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textSize="@dimen/default_textsize14"
-                android:textColor="@color/main_color_red"
-                android:text="待支付"/>
-            <TextView
-                android:id="@+id/orderlistDetl_tvOrdernum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:layout_toLeftOf="@id/orderlistDetl_tvStatus"
-                android:text="88888888"/>
-            <TextView
-                android:id="@+id/orderlistDetl_tvCompany"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:textSize="@dimen/default_textsize16"
-                android:textColor="@color/black"
-                android:layout_below="@id/orderlistDetl_tvOrdernum"
-                android:text=""/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/default_lrmargin"
+                android:drawableLeft="@drawable/icon_text_tip"
+                android:drawablePadding="@dimen/default_padding5"
+                android:text="实际费用=实际充电金额+服务费" />
 
             <TextView
-                android:id="@+id/orderlistDetl_tvAddress"
-                android:layout_width="match_parent"
+                style="@style/text_mainstyle12"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:textColor="@color/color66"
-                android:textSize="@dimen/default_textsize14"
-                android:layout_below="@id/orderlistDetl_tvCompany"
-                android:text="深圳市南山区"/>
-            <TextView
-                android:id="@+id/orderlistDetl_tvTime"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/default_lrmargin"
+                android:gravity="center"
+                android:text="订单中多缴费用将会返回账户余额中，敬请留意" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding5"
-                android:textColor="@color/color66"
-                android:textSize="@dimen/default_textsize14"
-                android:layout_below="@id/orderlistDetl_tvAddress"
-                android:text="2017-03-22 12:24"/>
-        </RelativeLayout>
-    </LinearLayout>
-    <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/orderlistDetl_miGunNum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tvLeftText="充电枪号"
-        app:tvRightText="888888"
-        app:LeftTextColor="@color/color99"
-        app:rightTextColor="@color/color33"
-        android:layout_marginTop="@dimen/default_padding"
-        app:showtvRight="true"/>
-    <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/orderlistDetl_miPileType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tvLeftText="桩类型"
-        app:tvRightText="直流桩"
-        app:LeftTextColor="@color/color99"
-        app:rightTextColor="@color/color33"
-        android:layout_marginTop="@dimen/dimen_1"
-        app:showtvRight="true"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/default_padding40"
+                android:paddingTop="@dimen/default_padding40">
 
-    <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/orderlistDetl_miElec"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tvLeftText="额定电流"
-        app:tvRightText="150.00A"
-        app:LeftTextColor="@color/color99"
-        app:rightTextColor="@color/color33"
-        android:layout_marginTop="@dimen/dimen_1"
-        app:showtvRight="true"/>
+                <TextView
+                    android:id="@+id/orderlistDetl_tvPay"
+                    style="@style/ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/default_lrmargin"
+                    android:layout_marginRight="@dimen/default_lrmargin"
+                    android:text="支付订单" />
 
-    <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/orderlistDetl_miPower"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tvLeftText="额定功率"
-        app:tvRightText="150kw"
-        app:LeftTextColor="@color/color99"
-        app:rightTextColor="@color/color33"
-        android:layout_marginTop="@dimen/dimen_1"
-        app:showtvRight="true"/>
+                <TextView
+                    android:id="@+id/orderdtel_tvCancel"
+                    style="@style/ButtonStyle1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_lrmargin"
+                    android:text="取消订单" />
 
-    <com.optimumnano.quickcharge.views.MenuItem1
-        android:id="@+id/orderlistDetl_miFrozenCash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tvLeftText="预交金额"
-        app:tvRightText="￥200"
-        app:LeftTextColor="@color/color99"
-        app:rightTextColor="@color/main_color_red"
-        android:layout_marginTop="@dimen/dimen_1"
-        app:showtvRight="true"/>
+                <TextView
+                    android:id="@+id/orderlistDetl_tvWatchStatus"
+                    style="@style/ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="@dimen/default_lrmargin"
+                    android:text="查看状态"
+                    android:visibility="gone" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="实际费用=实际充电金额+服务费"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/default_lrmargin"
-        android:drawablePadding="@dimen/default_padding5"
-        style="@style/text_mainstyle"
-        android:drawableLeft="@drawable/icon_text_tip"/>
-
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        style="@style/text_mainstyle12"
-        android:text="订单中多缴费用将会返回账户余额中，敬请留意"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/default_lrmargin"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/default_padding40"
-        android:paddingBottom="@dimen/default_padding40">
-        <TextView
-            android:id="@+id/orderlistDetl_tvPay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ButtonStyle"
-            android:layout_marginLeft="@dimen/default_lrmargin"
-            android:layout_marginRight="@dimen/default_lrmargin"
-            android:text="支付订单"/>
-
-        <TextView
-            android:id="@+id/orderdtel_tvCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ButtonStyle1"
-            android:layout_margin="@dimen/default_lrmargin"
-            android:text="取消订单"/>
-
-        <TextView
-            android:id="@+id/orderlistDetl_tvWatchStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/ButtonStyle"
-            android:layout_margin="@dimen/default_lrmargin"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:text="查看状态"/>
-
-    </LinearLayout>
-    </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

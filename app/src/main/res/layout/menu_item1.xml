@@ -50,6 +50,6 @@
         android:maxLines="1"
         android:maxLength="21"
         android:ellipsize="end"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

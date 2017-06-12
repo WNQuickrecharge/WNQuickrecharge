@@ -9,15 +9,17 @@ import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.OrderBean;
+import com.optimumnano.quickcharge.dialog.MyDialog;
 import com.optimumnano.quickcharge.dialog.PayDialog;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.manager.OrderManager;
 import com.optimumnano.quickcharge.request.CancelOrderRequest;
+import com.optimumnano.quickcharge.request.DeleteOrderRequest;
 import com.optimumnano.quickcharge.response.CancelOrderResult;
+import com.optimumnano.quickcharge.response.DeleteOrderResult;
 import com.optimumnano.quickcharge.utils.SPConstant;
 import com.optimumnano.quickcharge.utils.SharedPreferencesUtil;
 import com.optimumnano.quickcharge.utils.ToastUtil;
@@ -32,17 +34,25 @@ import java.text.DecimalFormat;
 
 import static com.optimumnano.quickcharge.R.id.iv_order_icon;
 
+/**
+ * 订单详情页面，包含下面四种情况
+ * 已取消=1,
+ * 待支付=2,
+ * 待充电=3,
+ * 充电中=4,
+ */
 public class OrderlistDetailActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback, HttpCallback {
     private TextView tvPay, tvCancel, tvWatchStatus;
     private TextView tvStatus, tvOrdernum, tvCompany, tvAddress, tvDate;
     private OrderBean orderBean;
     private MenuItem1 miGunNum, miPileType, miElec, miPower, miForzenCatsh;
 
+    private MyDialog myDialog;
     private PayDialog payDialog;
-    private OrderManager orderManager = new OrderManager();
     private ImageView orderIcon;
 
     private int mCancelOrderTaskId;
+    private int mDeleteOrderTaskId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +87,12 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         tvAddress = (TextView) findViewById(R.id.orderlistDetl_tvAddress);
         tvDate = (TextView) findViewById(R.id.orderlistDetl_tvTime);
         orderIcon = (ImageView) findViewById(iv_order_icon);
+
+        myDialog = new MyDialog(this, R.style.MyDialog);
+        myDialog.setCancelable(false);
     }
 
-    private void initListener(){
+    private void initListener() {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         tvPay.setOnClickListener(this);
@@ -94,7 +107,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         if (orderBean.order_status == 1) {
             tvStatus.setText("已取消");
             tvPay.setVisibility(View.VISIBLE);
-            tvPay.setText("确定");
+            tvPay.setText("删除订单");
+            tvPay.setTextColor(getResources().getColor(R.color.red));
+            tvPay.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.shape_delete_order));
             tvCancel.setVisibility(View.GONE);
             tvWatchStatus.setVisibility(View.GONE);
         } else if (orderBean.order_status == 2) {
@@ -144,14 +159,14 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         switch (view.getId()) {
             case R.id.orderlistDetl_tvPay:
                 if (orderBean.order_status == 1) {
-                    finish();
+                    deleteOrderClick();
                 } else {
                     int paway = SharedPreferencesUtil.getValue(SPConstant.SP_USERINFO, SPConstant.KEY_USERINFO_DEFPAYWAY, PayDialog.pay_yue);
                     payDialog.setPayway(paway);
-                    payDialog.setMoney(orderBean.frozen_cash,orderBean.order_no);
-                    if (PayDialog.pay_yue == paway){
+                    payDialog.setMoney(orderBean.frozen_cash, orderBean.order_no);
+                    if (PayDialog.pay_yue == paway) {
                         payDialog.setStatus(PayDialog.EDTPWD);
-                    }else {
+                    } else {
                         payDialog.setStatus(PayDialog.PAYBT);
                     }
                     payDialog.show();
@@ -176,20 +191,42 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         }
     }
 
+    private void deleteOrderClick() {
+        myDialog.setTitle("确认是否删除");
+        myDialog.setMessage("订单一旦删除将不可恢复，\n请确认是否删除。");
+        myDialog.setYesOnclickListener("确认", new MyDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick() {
+                deleteOrder(orderBean.order_no);
+                myDialog.dismiss();
+            }
+        });
+        myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+            @Override
+            public void onNoClick() {
+                myDialog.dismiss();
+            }
+        });
+
+        myDialog.show();
+    }
+
+    /**
+     * 删除订单
+     *
+     * @param str
+     */
+    private void deleteOrder(String str) {
+        if (!Tool.isConnectingToInternet()) {
+            ToastUtil.showToast(mContext, "无网络");
+            return;
+        }
+        mDeleteOrderTaskId = TaskIdGenFactory.gen();
+        mTaskDispatcher.dispatch(new HttpTask(mDeleteOrderTaskId,
+                new DeleteOrderRequest(new DeleteOrderResult(mContext), str), this));
+    }
+
     private void cancelOrder() {
-//        orderManager.cancelOrder(orderBean.order_no, new ManagerCallback<String>() {
-//            @Override
-//            public void onSuccess(String returnContent) {
-//                super.onSuccess(returnContent);
-//                showToast("取消成功");
-//                finish();
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                super.onFailure(msg);
-//            }
-//        });
         if (!Tool.isConnectingToInternet()) {
             showToast("无网络");
             return;
@@ -214,8 +251,6 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         showToast(msg);
     }
 
-    //http
-
     @Override
     public void onRequestSuccess(int id, BaseResult result) {
         if (isFinishing()) {
@@ -223,6 +258,10 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
         }
         if (mCancelOrderTaskId == id) {
             showToast("取消成功");
+            finish();
+        }
+        if (mDeleteOrderTaskId == id) {
+            ToastUtil.showToast(mContext, "删除成功");
             finish();
         }
     }
@@ -245,6 +284,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mTaskDispatcher.cancel(mDeleteOrderTaskId);
         mTaskDispatcher.cancel(mCancelOrderTaskId);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
@@ -253,11 +293,11 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weiXinPayCallback(EventManager.WeiXinPayCallback event) {
         int code = event.code;
-        if (0 == code){
+        if (0 == code) {
             finish();
-        }else {
+        } else {
             //微信支付失败
         }
-        logtesti("orderdetail weixinpay callback "+event.code);
+        logtesti("orderdetail weixinpay callback " + event.code);
     }
 }
