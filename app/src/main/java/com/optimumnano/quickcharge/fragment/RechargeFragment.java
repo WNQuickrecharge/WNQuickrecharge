@@ -142,7 +142,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
     @Bind(R.id.et_address)
     TextView etAddress;
     @Bind(R.id.et_phone)
-    EditText etPhone;
+    TextView etPhone;
     @Bind(R.id.et_plate)
     EditText etPlate;
     @Bind(R.id.tv_tip)
@@ -810,10 +810,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
         }
         phoneNumber = etPhone.getText().toString().trim();
         String carNumber = null;
-        if (!Tool.isCarnumberNO(etPlate.getText().toString().trim())) {
+        /*if (!Tool.isCarnumberNO(etPlate.getText().toString().trim().toUpperCase())) {
             Toast.makeText(getActivity(), "请输入正确的车牌号", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         String address = null;
         if (TextUtils.isEmpty(etAddress.getText().toString().trim())) {
             Toast.makeText(getActivity(), "地址不能为空", Toast.LENGTH_SHORT).show();
@@ -821,7 +821,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
         }
         address = suggestionInfoInfo.address + "-" + etAddress.getText().toString().trim();
         carNumber = etPlate.getText().toString().trim();
-        if (!PublicUtils.isCar(carNumber)) {
+        if (!PublicUtils.isCar(carNumber.toUpperCase())) {
             ToastUtil.showToast(mContext,"车牌号不正确，请重新输入");
             return;
         }
@@ -1014,7 +1014,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
             String terminalnum = data.getStringExtra("terminalnum").toUpperCase();
             if (PublicUtils.isCar(carNumber)) {
                 etPlate.setText(carNumber);
-                ToastUtil.showToast(mContext, vin +":"+terminalnum);
+                ToastUtil.showToast(mContext, "vin:"+vin +"\n"+"terminalnum:"+terminalnum);
             } else {
                 etPlate.setText("");
                 ToastUtil.showToast(mContext, "车牌有误，请输入正确的车牌");
