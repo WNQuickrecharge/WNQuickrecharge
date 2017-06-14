@@ -47,6 +47,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
     private TaskDispatcher mTaskDispatcher;
     private boolean mActive;
     private GunBean gunBean;
+    private List<GunBean> gunList;
 
     public StationPilesAdapter(int layoutResId, List<PileBean> data, Context context) {
         super(layoutResId, data);
@@ -69,14 +70,14 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
         TextView servicePrice = helper.getView(R.id.tv_service_price);
         TextView pileNo = helper.getView(R.id.tv_station_item_pileNo);
         LinearLayout linearLayout = helper.getView(R.id.ll_gunList);
-        List<GunBean> gunList = item.getGunList();
+        gunList = item.getGunList();
         for (int i = 0; i < item.getGunList().size(); i++) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.itemview_station_pile_gun, null);
             TextView gunNumber = (TextView) inflate.findViewById(R.id.tv_station_gun_number);
             ImageView ivStatus = (ImageView) inflate.findViewById(R.id.iv_station_gun_status);
             TextView tvOperation = (TextView) inflate.findViewById(R.id.tv_gun_operation);
             gunBean = gunList.get(i);
-            showGunOperation(ivStatus, tvOperation);
+            showGunOperation(ivStatus, tvOperation,i);
             gunNumber.setText(item.getGunList().get(i).getGun_code());
             linearLayout.addView(inflate);
 
@@ -89,7 +90,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
 
     }
 
-    private void showGunOperation(ImageView ivStatus, TextView tvOperation) {
+    private void showGunOperation(ImageView ivStatus, TextView tvOperation, final int position) {
         int gunStatus = gunBean.getGunStatus();
         if (gunStatus == PROMPTLY_CHARGE){
             ivStatus.setImageResource(R.mipmap.icon_zhuang_1);
@@ -106,7 +107,7 @@ public class StationPilesAdapter extends BaseQuickAdapter<PileBean, BaseViewHold
                     mGetGunInfoTaskId = TaskIdGenFactory.gen();
                     mTaskDispatcher.dispatch(new HttpTask(mGetGunInfoTaskId,
                             new GetGunInfoRequest(new GetGunInfoResult(context),
-                                    gunBean.getPileNo() + gunBean.getGun_code()), (HttpCallback) StationPilesAdapter.this));
+                                    gunBean.getPileNo() + gunList.get(position).getGun_code()), (HttpCallback) StationPilesAdapter.this));
                 }
             });
         }else if (gunStatus == CHARGEING){
