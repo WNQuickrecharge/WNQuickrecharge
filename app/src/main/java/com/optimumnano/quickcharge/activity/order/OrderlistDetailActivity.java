@@ -119,9 +119,9 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
             tvCancel.setVisibility(View.VISIBLE);
             tvWatchStatus.setVisibility(View.GONE);
         } else if (orderBean.order_status == 3) {
-            tvStatus.setText("待充电");
+            tvStatus.setText("去充电");
             tvPay.setVisibility(View.GONE);
-            tvCancel.setVisibility(View.GONE);
+            tvCancel.setVisibility(View.VISIBLE);
             tvWatchStatus.setVisibility(View.VISIBLE);
         } else if (orderBean.order_status == 4) {
             tvStatus.setText("充电中");
@@ -173,7 +173,7 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
                 }
                 break;
             case R.id.orderdtel_tvCancel:
-                cancelOrder();
+                canncelOrderClick();
                 break;
             case R.id.orderlistDetl_tvWatchStatus:
                 Bundle bundle = new Bundle();
@@ -189,6 +189,26 @@ public class OrderlistDetailActivity extends BaseActivity implements View.OnClic
             default:
                 break;
         }
+    }
+
+    private void canncelOrderClick() {
+        myDialog.setTitle("确认是否取消");
+        myDialog.setMessage("订单一旦取消将不可恢复，\n请确认是否取消。");
+        myDialog.setYesOnclickListener("确认", new MyDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick() {
+                cancelOrder();
+                myDialog.dismiss();
+            }
+        });
+        myDialog.setNoOnclickListener("取消", new MyDialog.onNoOnclickListener() {
+            @Override
+            public void onNoClick() {
+                myDialog.dismiss();
+            }
+        });
+
+        myDialog.show();
     }
 
     private void deleteOrderClick() {

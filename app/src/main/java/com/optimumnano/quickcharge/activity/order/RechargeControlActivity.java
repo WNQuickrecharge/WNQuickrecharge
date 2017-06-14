@@ -37,7 +37,9 @@ import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 
 import org.xutils.common.util.LogUtil;
 
+import java.sql.Time;
 import java.util.HashMap;
+import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -84,9 +86,28 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         initViews();
         initListener();
         initData();
-
     }
 
+    /**
+     * 倒数计时一分钟
+     */
+    /*
+    Timer timer = new Timer();
+    timer.schedule(task, 60000);
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    showToast("5秒钟到了");
+                }
+            });
+        }
+    };
+    */
     private void startConnetService() {
         new Thread() {
             @Override

@@ -107,7 +107,7 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean, BaseViewHolder> im
                 helper.setText(R.id.order_status, "待充电");
                 helper.setVisible(R.id.order_tvPay, true);
                 helper.setVisible(R.id.order_tvComment, false);
-                helper.setText(R.id.order_tvPay, "查看状态");
+                helper.setText(R.id.order_tvPay, "去充电");
                 break;
             case 4:
                 helper.setText(R.id.order_status, "充电中");
@@ -154,11 +154,11 @@ public class OrderAdapter extends BaseQuickAdapter<OrderBean, BaseViewHolder> im
                         LogUtil.d("待支付");
                         break;
                     case 3:
-                        skipAct(item.order_no, Constants.STARTCHARGE);
-                        LogUtil.d("待充电");
+                        skipAct(item.order_no, Constants.STARTCHARGE);//2
+                        LogUtil.d("去充电");
                         break;
                     case 4:
-                        skipAct(item.order_no, Constants.GETCHARGEPROGRESS);
+                        skipAct(item.order_no, Constants.GETCHARGEPROGRESS);//1
                         LogUtil.d("充电中");
                         break;
                     case 5:

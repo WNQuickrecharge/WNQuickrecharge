@@ -197,7 +197,7 @@
 
                 <TextView
                     android:id="@+id/orderdtel_tvCancel"
-                    style="@style/ButtonStyle1"
+                    style="@style/ButtonStyle_deleteorder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/default_lrmargin"
