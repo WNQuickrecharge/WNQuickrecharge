@@ -90,7 +90,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:src="@drawable/frag_change_dinwei" />
+                    android:src="@drawable/qr_for_plate" />
             </LinearLayout>
 
             <TextView
