@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.optimumnano.quickcharge.Constants;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.bean.LongConnectMessageBean;
@@ -81,6 +82,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recharge_control);
+        Constants.isRefresh = true;
         startConnetService();
         getExtras();
         initViews();
@@ -161,6 +163,16 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         if (orderStatus == GETCHARGEPROGRESS) {//充电中
             dialog.show();
         }
+        cleanDatas();
+    }
+
+    /**
+     * 一进入此页面清空显示数据
+     */
+    private void cleanDatas() {
+        tvTime.setText(" ");
+        tvPersent.setText(" ");
+        waveLoadingView.setWaveHeight(0);
     }
 
     @Override
@@ -334,6 +346,12 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         if (orderStatus == 1) {
             dialog.show();
         }
+        if (Constants.isRefresh) {
+            return;
+        } else {
+            cleanDatas();
+            Constants.isRefresh = false;
+        }
     }
 
     private Connection conn = new Connection(HUB_URL, this, new LongPollingTransport(), "UUid=15678979657876") {
@@ -370,17 +388,20 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                 case 4://充电中
                     dialog.cancelDialog();
                     int soc = longConnectMessageBean.getSoc();
+                    String callback_order_no = longConnectMessageBean.getOrder_no();
                     String time_remain = longConnectMessageBean.getTime_remain();
                     tvTime.setVisibility(View.VISIBLE);
-                    tvTime.setText("预计充满还需" + time_remain + "分钟");
-                    tvPersent.setText(soc + "%");
-                    waveLoadingView.setWaveHeight(soc);
-                    tvDescone.setText("正在充电中");
-                    tvDescTwo.setText("请您稍作休息");
                     tvStart.setVisibility(View.GONE);
                     tvStop.setVisibility(View.VISIBLE);
-
-
+                    if (orderNo.equals(callback_order_no)) {
+                        tvTime.setText("预计充满还需" + time_remain + "分钟");
+                        tvPersent.setText(soc + "%");
+                        waveLoadingView.setWaveHeight(soc);
+                        tvDescone.setText("正在充电中");
+                        tvDescTwo.setText("请您稍作休息");
+                    } else {
+                        cleanDatas();
+                    }
                     break;
 
                 case 5:
@@ -432,6 +453,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     protected void onPause() {
         super.onPause();
         conn.Stop();
+        Constants.isRefresh = false;
     }
 
     //http
