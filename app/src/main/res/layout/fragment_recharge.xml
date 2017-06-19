@@ -102,8 +102,7 @@
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:paddingTop="@dimen/dimen_5"
-                android:text="电费:1.5元/度,服务费:0.5元/度"
-                android:visibility="gone" />
+                android:text="电费:1.5元/度,服务费:0.5元/度"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
