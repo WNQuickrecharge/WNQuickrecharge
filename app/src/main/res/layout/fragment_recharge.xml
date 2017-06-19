@@ -78,7 +78,6 @@
                     android:background="@null"
                     android:gravity="center"
                     android:hint="请输入您的车牌号"
-                    android:maxLength="8"
                     android:padding="6dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_14" />
