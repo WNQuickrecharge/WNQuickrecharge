@@ -71,16 +71,16 @@ public class QrCodeForCarActivity extends BaseActivity {
         @Override
         public void onAnalyzeSuccess(Bitmap mBitmap, final String result) {
             String plate = PublicUtils.getPlateValue(result,"plate");
-            String vin = PublicUtils.getPlateValue(result,"vin");
-            String terminalnum = PublicUtils.getPlateValue(result,"terminalnum");
+//            String vin = PublicUtils.getPlateValue(result,"vin");
+//            String terminalnum = PublicUtils.getPlateValue(result,"terminalnum");
             if (null == plate) {
                 showToast("请扫正确的车牌号二维码");
                 return;
             } else {
                 Intent intent = new Intent();
                 intent.putExtra("qr_result", plate);
-                intent.putExtra("vin", vin);
-                intent.putExtra("terminalnum", terminalnum);
+//                intent.putExtra("vin", vin);
+//                intent.putExtra("terminalnum", terminalnum);
                 setResult(523, intent);
                 finish();
             }

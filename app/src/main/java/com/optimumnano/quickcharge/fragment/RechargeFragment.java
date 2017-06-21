@@ -676,6 +676,7 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
                 ask();
                 break;
             case R.id.tv_charge_late:
+                ToastUtil.showToast(mContext,"敬请期待");
                 break;
             case R.id.tv_scan_charge:
                 QrCodeActivity.start(getActivity());
@@ -710,28 +711,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
                                 new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
                     }
                 });
-//                final SimpleDialog dialog = new SimpleDialog(getActivity());
-//                dialog.setYesOnclickListener("确定", new SimpleDialog.onYesOnclickListener() {
-//                    @Override
-//                    public void onYesClick() {
-//                        if (!Tool.isConnectingToInternet()) {
-//                            Toast.makeText(getActivity(), "无网络", Toast.LENGTH_LONG).show();
-//                            return;
-//                        }
-//                        dialog.dismiss();
-//                        ((MainActivity) getActivity()).showLoading();
-//                        mCancleAskOrderTaskId = TaskIdGenFactory.gen();
-//                        mTaskDispatcher.dispatch(new HttpTask(mCancleAskOrderTaskId,
-//                                new CancelAskOrderRequest(new CancelAskOrderResult(mContext), askNo), RechargeFragment.this));
-//                    }
-//                });
-//                dialog.setNoOnclickListener("", new SimpleDialog.onNoOnclickListener() {
-//                    @Override
-//                    public void onNoClick() {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                dialog.show();
                 break;
             case R.id.tv_delete_ask_order_wait:
                 //final SimpleDialog myDialog = new SimpleDialog(getActivity());
@@ -1010,11 +989,11 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
         }
         if (requestCode == 523 && null != data) {
             String carNumber = data.getStringExtra("qr_result").toUpperCase();
-            String vin = data.getStringExtra("vin").toUpperCase();
-            String terminalnum = data.getStringExtra("terminalnum").toUpperCase();
+//            String vin = data.getStringExtra("vin").toUpperCase();
+//            String terminalnum = data.getStringExtra("terminalnum").toUpperCase();
             if (PublicUtils.isCar(carNumber)) {
                 etPlate.setText(carNumber);
-                ToastUtil.showToast(mContext, "vin:"+vin +"\n"+"terminalnum:"+terminalnum);
+//                ToastUtil.showToast(mContext, "vin:"+vin +"\n"+"terminalnum:"+terminalnum);
             } else {
                 etPlate.setText("");
                 ToastUtil.showToast(mContext, "车牌有误，请输入正确的车牌");
@@ -1401,7 +1380,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
             getMainActivityRadioGroupChoose();
 
         } else if (msg.ask_state == 5) {
-            //ToastUtil.showToast(getActivity(),"");
             ask_state = -1;
             handler.removeMessages(1002);
             getMainActivityRadioGroupChoose();

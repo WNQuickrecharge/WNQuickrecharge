@@ -22,6 +22,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 筛选
+ */
+
 public class FilterActivity extends BaseActivity {
 
     @Bind(R.id.tv_location)

@@ -59,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="评价订单" />
+                        android:text="已完成" />
 
                     <TextView
                         android:id="@+id/orderlistDetl_tvOrdernum"

@@ -157,12 +157,12 @@ public class DistDetailAcapter extends RecyclerView.Adapter<DistDetailAcapter.Vi
      */
     public static String DoubleDP(double number, String fm) {
         String per;
-        if (number > 1000) {
+//        if (number > 1000) {
             per = "km";
             number = number / 1000;
-        } else {
-            per = "m";
-        }
+//        } else {
+//            per = "m";
+//        }
 
         StringBuffer buffer = new StringBuffer();
         DecimalFormat df = new DecimalFormat(fm);
