@@ -62,7 +62,7 @@
                 android:maxLength="11"
                 android:padding="6dp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_charge_info_et"
@@ -71,10 +71,10 @@
 
                 <EditText
                     android:id="@+id/et_plate"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_weight="15"
+                    android:layout_centerInParent="true"
                     android:background="@null"
                     android:gravity="center"
                     android:hint="请输入您的车牌号"
@@ -84,13 +84,14 @@
 
                 <ImageView
                     android:id="@+id/iv_car_card"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="1"
                     android:src="@drawable/qr_for_plate" />
-            </LinearLayout>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_tip"
