@@ -93,7 +93,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     protected void onPause() {
         super.onPause();
         Constants.isRefresh = false;
-
     }
 
     @Override
@@ -119,6 +118,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private void initData() {
         list = new ArrayList<>();
         if (adapter == null) {
+
             adapter = new InvoiceAdapter(this, child, group);
             adapter.setOnChecked(this);
             adapter.setOnChildChecked(this);
@@ -158,14 +158,14 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         /**
          * 封装child数据
          */
-        for (int month : groups) {
+        for (int month : months) {
             List<InvoiceOrder> ch = new ArrayList<>();
             for (InvoiceOrder pd : list) {
                 if (pd.getConsumeMonth() == month) {
                     ch.add(pd);
-                    child.add(ch);
                 }
             }
+            child.add(ch);
         }
         /**
          * 封装月份数据的总金额
@@ -173,9 +173,10 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         for (int j = 0; j < months.size(); j++) {
             double money = 0;
             InvoiceOrderGroup orderGroup = new InvoiceOrderGroup();
-            for (InvoiceOrder order1 : child.get(j)) {
 
-                money = addMoney(money, order1.ConsumeCash);
+            for (InvoiceOrder order : child.get(j)) {
+
+                money = addMoney(money, order.ConsumeCash);
             }
             orderGroup.ConsumeMonth = months.get(j).toString();
             orderGroup.money = money;
