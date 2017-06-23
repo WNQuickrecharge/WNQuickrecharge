@@ -93,7 +93,7 @@ public class InvoiceAdapter extends BaseExpandableListAdapter {
             holder = (ViewHolderParent) convertView.getTag();
         }
         InvoiceOrderGroup orderGroup = (InvoiceOrderGroup) getGroup(groupPosition);
-        holder.tvTitle.setText(orderGroup.ConsumeMonth+"月");
+        holder.tvTitle.setText(orderGroup.ConsumeMonth + "月");
         holder.tvMoney.setText("￥" + orderGroup.money);
         if (orderGroup.isChecked) {
             holder.cb.setImageResource(R.drawable.invoice_checked);
