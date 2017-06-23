@@ -61,7 +61,7 @@ import butterknife.ButterKnife;
 import static com.optimumnano.quickcharge.utils.SPConstant.SP_USERINFO;
 
 /**
- * 下单界面
+ * 扫码充电/输入终端号充电---->下单界面
  */
 public class OrderActivity extends BaseActivity implements View.OnClickListener, PayDialog.PayCallback, HttpCallback {
     private static final int SDK_PAY_FLAG = 001;

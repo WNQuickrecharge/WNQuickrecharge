@@ -69,19 +69,6 @@
                 android:orientation="horizontal">
 
 
-                <EditText
-                    android:id="@+id/et_plate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerInParent="true"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:hint="请输入您的车牌号"
-                    android:padding="6dp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_14" />
-
                 <ImageView
                     android:id="@+id/iv_car_card"
                     android:layout_width="wrap_content"
@@ -91,6 +78,20 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
                     android:src="@drawable/qr_for_plate" />
+
+                <EditText
+                    android:id="@+id/et_plate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:hint="请输入您的车牌号"
+                    android:padding="6dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    android:layout_alignTop="@+id/iv_car_card"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
             <TextView

@@ -104,7 +104,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void run() {
 
-                    showToast("5秒钟到了");
+                    showToast("60秒到了");
                 }
             });
         }
@@ -399,8 +399,6 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                         waveLoadingView.setWaveHeight(soc);
                         tvDescone.setText("正在充电中");
                         tvDescTwo.setText("请您稍作休息");
-                    } else {
-                        cleanDatas();
                     }
                     break;
 

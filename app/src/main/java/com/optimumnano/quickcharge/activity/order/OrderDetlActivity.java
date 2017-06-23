@@ -29,6 +29,10 @@ import java.text.DecimalFormat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * 订单详情界面
+ */
+
 public class OrderDetlActivity extends BaseActivity implements View.OnClickListener, HttpCallback {
     @Bind(R.id.orderdetl_tvConfirm)
     TextView tvConfirm;

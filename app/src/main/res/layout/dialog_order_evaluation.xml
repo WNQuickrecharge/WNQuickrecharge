@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Android="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
@@ -10,6 +11,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/evaluate_canncel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -22,6 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -34,18 +37,22 @@
             android:textSize="14sp" />
 
         <RatingBar
-            android:id="@+id/ratingBar"
+            android:id="@+id/one"
+            style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:numStars="5"
-            android:paddingLeft="10dp"
             android:progressTint="@color/main_color"
-            android:rating="2" />
+            android:rating="1"
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -58,41 +65,21 @@
             android:textSize="14sp" />
 
         <RatingBar
+            android:id="@+id/two"
+            style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:numStars="5"
-            android:paddingLeft="10dp"
             android:progressTint="@color/main_color"
-            android:rating="2" />
+            android:rating="1"
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="综合评分"
-            android:textSize="14sp" />
-
-        <RatingBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:paddingLeft="10dp"
-            android:progressTint="@color/main_color"
-            android:rating="2.5"
-            android:stepSize="0.5" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -106,19 +93,21 @@
             android:textSize="14sp" />
 
         <RatingBar
+            android:id="@+id/three"
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:numStars="5"
-            android:paddingLeft="10dp"
-            android:progressTint="#ff0000"
-            android:rating="2.5"
-            android:stepSize="0.5" />
+            android:progressTint="@color/main_color"
+            android:rating="1"
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -129,15 +118,17 @@
             android:layout_gravity="center_vertical"
             android:text="综合评分"
             android:textSize="14sp" />
+
         <RatingBar
-            android:id="@+id/grade"
-            style="@style/myRatingBarBig"
+            android:id="@+id/four"
+            style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="36dp"
-            android:layout_marginTop="38dp"
+            android:layout_marginLeft="10dp"
             android:numStars="5"
-            android:rating="2" />
+            android:progressTint="@color/main_color"
+            android:rating="1"
+            android:stepSize="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -158,7 +149,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/orderlistDetl_tvDeleteOrder"
+        android:id="@+id/submit_evaluate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="60dp"
