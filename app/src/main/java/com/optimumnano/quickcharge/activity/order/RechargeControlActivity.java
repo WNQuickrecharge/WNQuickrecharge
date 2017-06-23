@@ -386,7 +386,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     tvStop.setVisibility(View.VISIBLE);
                     break;
                 case 4://充电中
+
                     dialog.cancelDialog();
+
                     int soc = longConnectMessageBean.getSoc();
                     String callback_order_no = longConnectMessageBean.getOrder_no();
                     String time_remain = longConnectMessageBean.getTime_remain();
