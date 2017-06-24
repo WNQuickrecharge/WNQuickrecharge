@@ -27,4 +27,11 @@ public class WaitRechargeDialog extends BaseDialog{
         dialog.cancel();
 
     }
+    public boolean isShowing(){
+        if(dialog.isShowing()){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

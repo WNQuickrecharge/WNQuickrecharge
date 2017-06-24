@@ -1,5 +1,6 @@
 package com.optimumnano.quickcharge.activity.order;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -41,6 +42,7 @@ import org.xutils.common.util.LogUtil;
 import java.sql.Time;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -77,6 +79,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
 
     private int mStopChargeTaskId;
     private int mStartChargeTaskId;
+    private int status;//充电状态
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,25 +94,25 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
     }
 
     /**
-     * 倒数计时一分钟
+     * dian倒数计时一分钟
      */
-    /*
-    Timer timer = new Timer();
-    timer.schedule(task, 60000);
+
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-                    showToast("60秒到了");
+//                    showToast("60秒到了");
+                    if(status == 4){
+                        return;
+                    }else {
+                        dialog.cancelDialog();
+                    }
                 }
             });
         }
     };
-    */
     private void startConnetService() {
         new Thread() {
             @Override
@@ -212,12 +215,14 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
             dialog.cancelDialog();
             showToast("无网络");
             return;
+        } else {
+            Timer timer = new Timer();
+            timer.schedule(task, 60000);
+            mStartChargeTaskId = TaskIdGenFactory.gen();
+            mTaskDispatcher.dispatch(new HttpTask(mStartChargeTaskId,
+                    new StartChargeRequest(new StartChargeResult(mContext), orderNo), this));
         }
-        mStartChargeTaskId = TaskIdGenFactory.gen();
-        mTaskDispatcher.dispatch(new HttpTask(mStartChargeTaskId,
-                new StartChargeRequest(new StartChargeResult(mContext), orderNo), this));
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -364,7 +369,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
         public void OnMessage(String message) {
             Log.d(TAG, "message=" + message);
             LongConnectMessageBean longConnectMessageBean = JSON.parseObject(message, LongConnectMessageBean.class);
-            int status = longConnectMessageBean.getStatus();
+            status = longConnectMessageBean.getStatus();
             /** 订单状态
              * 免单=0,
              * 已取消=1,
