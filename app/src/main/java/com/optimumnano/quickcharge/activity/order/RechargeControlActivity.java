@@ -104,15 +104,16 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void run() {
 //                    showToast("60秒到了");
-                    if(status == 4){
+                    if (status == 4) {
                         return;
-                    }else {
+                    } else {
                         dialog.cancelDialog();
                     }
                 }
             });
         }
     };
+
     private void startConnetService() {
         new Thread() {
             @Override
@@ -223,6 +224,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     new StartChargeRequest(new StartChargeResult(mContext), orderNo), this));
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -423,11 +425,9 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                     conn.Stop();
                     finish();
                     break;
-
                 default:
                     break;
             }
-
         }
 
         @Override
