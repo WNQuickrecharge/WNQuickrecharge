@@ -406,9 +406,7 @@ public class RechargeControlActivity extends BaseActivity implements View.OnClic
                         tvDescTwo.setText("请您稍作休息");
                     }
                     break;
-
                 case 5:
-
                     break;
                 case 6://充电完成,跳转界面获取生成的订单信息.
                     tvDescone.setText("充电已完成！");
