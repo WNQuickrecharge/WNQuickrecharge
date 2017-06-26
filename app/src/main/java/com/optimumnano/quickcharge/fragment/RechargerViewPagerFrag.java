@@ -35,7 +35,7 @@ public class RechargerViewPagerFrag extends BaseFragment {
         return viewPager;
     }
 
-    RechargeFragment fragment=  new RechargeFragment();
+    RechargeStationFragment fragment=  new RechargeStationFragment();
 
     @Nullable
     @Override

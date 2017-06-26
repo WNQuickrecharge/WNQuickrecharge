@@ -1,0 +1,86 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- <com.baidu.mapapi.map.TextureMapView
+             android:id="@+id/map"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"/>-->
+        <com.baidu.mapapi.map.TextureMapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true" />
+
+        <ImageView
+            android:id="@+id/iv_location"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="@dimen/dimen_10"
+            android:src="@drawable/frag_change_dinwei"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:id="@+id/ll_search_recharge_station_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <LinearLayout style="@style/frame_input_search_station_style">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_charge_info_et"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_icon_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="100dp"
+                        android:src="@mipmap/icon_search" />
+
+                    <EditText
+                        android:id="@+id/et_ask_car_input"
+                        style="@style/tv_match_1"
+                        android:gravity="center"
+                        android:hint="搜索充电站" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_10"
+                    android:background="@drawable/bg_daohang"
+                    android:padding="@dimen/dimen_5"
+                    android:text="搜索"
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_station_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_25"
+                android:layout_marginRight="@dimen/dimen_25" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</FrameLayout>

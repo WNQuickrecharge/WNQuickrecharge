@@ -155,10 +155,10 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
     TextView tvScanCharge;
     @Bind(R.id.ll_ask_car_input_frame)
     LinearLayout askCarInputFrame;
-    @Bind(R.id.ll_search_recharge_station_frame)
-    LinearLayout searchRechargeStaionFrame;
-    @Bind(R.id.iv_icon_search)
-    ImageView iconSearch;
+//    @Bind(R.id.ll_search_recharge_station_frame)
+//    LinearLayout searchRechargeStaionFrame;
+//    @Bind(R.id.iv_icon_search)
+//    ImageView iconSearch;
     @Bind(R.id.et_ask_car_input)
     EditText askCarInput;
     @Bind(R.id.ll_car_coming_soon)
@@ -333,46 +333,46 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
             }
         });
 
-        askCarInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int length = s.toString().length();
-                if (length > 0) {
-                    iconSearch.setVisibility(View.GONE);
-                    if (mStationList != null) {
-                        mSearchResult.clear();
-                        for (Point point : mStationList) {
-                            if (point.StationName.contains(s.toString())) {
-                                mSearchResult.add(point);
-                            }
-                        }
-                        if (mSearchResult.isEmpty()) {
-                            ToastUtil.showToast(getActivity(), "未搜索到结果");
-//                            Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
-                        }
-
-                        mStationAdapter.setNewData(mSearchResult);
-                    } else {
-                        getStations();
-                    }
-
-                } else {
-                    mSearchResult.clear();
-                    mStationAdapter.setNewData(mSearchResult);
-                    iconSearch.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        askCarInput.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                int length = s.toString().length();
+//                if (length > 0) {
+//                    iconSearch.setVisibility(View.GONE);
+//                    if (mStationList != null) {
+//                        mSearchResult.clear();
+//                        for (Point point : mStationList) {
+//                            if (point.StationName.contains(s.toString())) {
+//                                mSearchResult.add(point);
+//                            }
+//                        }
+//                        if (mSearchResult.isEmpty()) {
+//                            ToastUtil.showToast(getActivity(), "未搜索到结果");
+////                            Tool.hiddenSoftKeyboard(getActivity(),askCarInput);
+//                        }
+//
+//                        mStationAdapter.setNewData(mSearchResult);
+//                    } else {
+//                        getStations();
+//                    }
+//
+//                } else {
+//                    mSearchResult.clear();
+//                    mStationAdapter.setNewData(mSearchResult);
+//                    iconSearch.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
 
         askOrderStatus = AskOrderStatus.DEFAULT;
 
@@ -1279,18 +1279,9 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
     private void getMainActivityRadioGroupChoose() {
         int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
         switch (checkedRadioButtonId) {
-            case R.id.main_rbRecharge:
-                markerNearStaion();
-                searchRechargeStaionFrame.setVisibility(View.VISIBLE);
-                askCarInputFrame.setVisibility(View.GONE);
-                carComingSoon.setVisibility(View.GONE);
-                waitCar.setVisibility(View.GONE);
-                handler.removeMessages(1002);
-                break;
-
             case R.id.main_rbRechargeCar:
 
-                searchRechargeStaionFrame.setVisibility(View.GONE);
+                //searchRechargeStaionFrame.setVisibility(View.GONE);
                 if (ask_state == -1) {  //-1 无订单
                     askCarInputFrame.setVisibility(View.VISIBLE);
                     carComingSoon.setVisibility(View.GONE);
@@ -1326,10 +1317,6 @@ public class RechargeFragment extends BaseFragment implements HttpCallback, OnLi
         getMainActivityRadioGroupChoose();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNearStationChoosed(EventManager.onNearStationChoosed event) {
-        getMainActivityRadioGroupChoose();
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOrderTabChoosed(EventManager.onOrderTabChoosed event) {

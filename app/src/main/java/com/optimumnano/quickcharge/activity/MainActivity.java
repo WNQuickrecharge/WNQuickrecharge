@@ -42,6 +42,8 @@ import com.optimumnano.quickcharge.event.OnNaviEvent;
 import com.optimumnano.quickcharge.event.OnPushDataEvent;
 import com.optimumnano.quickcharge.fragment.MineFragment;
 import com.optimumnano.quickcharge.fragment.OrderFragment;
+import com.optimumnano.quickcharge.fragment.RechargeFragment;
+import com.optimumnano.quickcharge.fragment.RechargeStationFragment;
 import com.optimumnano.quickcharge.fragment.RechargerViewPagerFrag;
 import com.optimumnano.quickcharge.http.BaseResult;
 import com.optimumnano.quickcharge.http.HttpCallback;
@@ -96,6 +98,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
     private OrderFragment orderFragment;
     private MineFragment mineFragment;
     private RechargerViewPagerFrag rechargerViewPagerFrag;
+    private RechargeFragment rechargeFragment;
 
     KeyboardWatcher keyboardWatcher;
 
@@ -324,6 +327,9 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 //        }
         switch (viewPager.getCurrentItem()) {
             case 0:
+
+                break;
+            case 1:
                 String s = tvRight.getText().toString();
                 if ("列表".equals(s)) {
                     tvRight.setText("地图");
@@ -333,10 +339,10 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                     rechargerViewPagerFrag.getViewPager().setCurrentItem(0);
                 }
                 break;
-            case 1:
+            case 2:
                 skipActivity(InvoiceActivity.class, null);
                 break;
-            case 2:
+            case 3:
 
                 break;
         }
@@ -352,7 +358,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         setTitle(getString(R.string.recharge));
                         setLeftTitle("定位");
                         setRightTitle("列表");
-                        viewPager.setCurrentItem(0);
+                        viewPager.setCurrentItem(1);
                         EventBus.getDefault().post(new EventManager.onNearStationChoosed());
                         break;
                     case R.id.main_rbOrder:
@@ -363,7 +369,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         hideLeftTitle();
                         EventBus.getDefault().post(new EventManager.onOrderTabChoosed());
                         setRightTitle("开发票");
-                        viewPager.setCurrentItem(1);
+                        viewPager.setCurrentItem(2);
                         break;
                     case R.id.main_rbMine:
                         setTitle(getString(R.string.mine));
@@ -372,7 +378,7 @@ public class MainActivity extends BaseActivity implements HttpCallback {
                         hideLeftTitle();
                         hideRightTitle();
                         EventBus.getDefault().post(new EventManager.onMineTabChoosed());
-                        viewPager.setCurrentItem(2);
+                        viewPager.setCurrentItem(3);
 
                         /*tvRight.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -434,9 +440,11 @@ public class MainActivity extends BaseActivity implements HttpCallback {
 
     public void initData() {
         rechargerViewPagerFrag = new RechargerViewPagerFrag();
+        rechargeFragment = new RechargeFragment();
         //rechargeFragment = new RechargeFragment();
         orderFragment = new OrderFragment();
         mineFragment = new MineFragment();
+        listFrg.add(rechargeFragment);
         listFrg.add(rechargerViewPagerFrag);
         listFrg.add(orderFragment);
         listFrg.add(mineFragment);
