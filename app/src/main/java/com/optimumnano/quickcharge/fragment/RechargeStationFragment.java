@@ -1,7 +1,6 @@
 package com.optimumnano.quickcharge.fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,12 +17,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -47,9 +44,6 @@ import com.jaychang.st.SimpleText;
 import com.optimumnano.quickcharge.R;
 import com.optimumnano.quickcharge.activity.MainActivity;
 import com.optimumnano.quickcharge.activity.StationActivity;
-import com.optimumnano.quickcharge.activity.qrcode.QrCodeActivity;
-import com.optimumnano.quickcharge.activity.qrcode.QrCodeForCarActivity;
-import com.optimumnano.quickcharge.activity.selectAddress.SelectAddressNewAct;
 import com.optimumnano.quickcharge.adapter.OnListItemClickListener;
 import com.optimumnano.quickcharge.adapter.SearchStationAdapter;
 import com.optimumnano.quickcharge.base.BaseActivity;
@@ -63,10 +57,8 @@ import com.optimumnano.quickcharge.http.HttpCallback;
 import com.optimumnano.quickcharge.http.HttpTask;
 import com.optimumnano.quickcharge.http.TaskIdGenFactory;
 import com.optimumnano.quickcharge.manager.EventManager;
-import com.optimumnano.quickcharge.request.CancelAskOrderRequest;
 import com.optimumnano.quickcharge.request.GetCityStationRequest;
 import com.optimumnano.quickcharge.request.GetMapRegionInfoRequest;
-import com.optimumnano.quickcharge.response.CancelAskOrderResult;
 import com.optimumnano.quickcharge.response.GetCityStationResult;
 import com.optimumnano.quickcharge.response.GetMapRegionInfoResult;
 import com.optimumnano.quickcharge.utils.DividerItemDecoration;
@@ -210,6 +202,26 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
             }
         });
 
+        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
+            @Override
+            public void onMapStatusChangeStart(MapStatus mapStatus) {
+                if (mSearchResult.size() > 0) {
+                    mSearchResult.clear();
+                    mStationAdapter.setNewData(mSearchResult);
+                }
+            }
+
+            @Override
+            public void onMapStatusChange(MapStatus mapStatus) {
+
+            }
+
+            @Override
+            public void onMapStatusChangeFinish(MapStatus mapStatus) {
+
+            }
+        });
+
 
         getStations();
         mStationAdapter = new SearchStationAdapter(mSearchResult, this);
@@ -227,7 +239,7 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNearStationChoosed(EventManager.onNearStationChoosed event) {
-        //mBaiduMap.clear();
+        mBaiduMap.clear();
         startLocation();
         getStations();
     }
@@ -443,6 +455,13 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
         bean.setRunTimeSpan(mItem.RunTimeSpan);
         return bean;
     }
+    public interface RequestPermissionType {
+
+        /**
+         * 请求打电话的权限码
+         */
+        int REQUEST_CODE_ASK_CALL_PHONE = 100;
+    }
 
     private void requestPermission(String servicePhone) {
         //判断Android版本是否大于23
@@ -451,7 +470,7 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
 
             if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE},
-                        RechargeFragment.RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE);
+                        RechargeStationFragment.RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE);
                 return;
             } else {
                 callPhone(servicePhone);
