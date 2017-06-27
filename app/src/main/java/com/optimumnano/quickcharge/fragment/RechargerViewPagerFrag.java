@@ -74,7 +74,7 @@ public class RechargerViewPagerFrag extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRechargeCarChoosed(EventManager.onRechargeCarChoosed event){
+    public void onNearStationChoosed(EventManager.onNearStationChoosed event){
         viewPager.setCurrentItem(0);
     }
 

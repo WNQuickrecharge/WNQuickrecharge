@@ -132,8 +132,7 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
         View mainView = inflater.inflate(R.layout.fragment_recharge_station, container, false);
         ButterKnife.bind(this, mainView);
         mHelper = new PreferencesHelper(getActivity());
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         return mainView;
     }
     @Override
@@ -226,6 +225,13 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
         getStations();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNearStationChoosed(EventManager.onNearStationChoosed event) {
+        //mBaiduMap.clear();
+        startLocation();
+        getStations();
+    }
+
 
     private void getStations() {
         if (!Tool.isConnectingToInternet()) {
@@ -252,6 +258,7 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
             getMainActivityRadioGroupChoose();
         }  else if (mGetCityStationTaskId == id) {
             mStationList = ((GetCityStationResult) result).getResp().getResult();
+            getMainActivityRadioGroupChoose();
         }
 
     }
@@ -525,7 +532,6 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
 
         }
 
-
     }
 
     private void closeLoading() {
@@ -542,21 +548,8 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
 
     private void getMainActivityRadioGroupChoose() {
         int checkedRadioButtonId = MainActivity.getRg().getCheckedRadioButtonId();
-        switch (checkedRadioButtonId) {
-            case R.id.main_rbRecharge:
-                markerNearStaion();
-//                //searchRechargeStaionFrame.setVisibility(View.VISIBLE);
-//                askCarInputFrame.setVisibility(View.GONE);
-//                carComingSoon.setVisibility(View.GONE);
-//                waitCar.setVisibility(View.GONE);
-//                handler.removeMessages(1002);
-                break;
-
-
-
-            default:
-                break;
-        }
+        if (checkedRadioButtonId == R.id.main_rbRecharge)
+            markerNearStaion();
     }
 
     private void markerNearStaion() {
@@ -572,7 +565,7 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
         LatLng latLng;
         OverlayOptions options;
         Marker marker;
-        for (Point info : mPiont) {
+        for (final Point info : mPiont) {
             if (bitmap == null)
                 bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.chongdianzhuang0001);
             //获取经纬度
@@ -591,6 +584,15 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
             //info必须实现序列化接口
             bundle.putSerializable("info", info);
             marker.setExtraInfo(bundle);
+            mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    if (marker.getExtraInfo().getSerializable("info").equals(info)){
+                        showBottomDialog(info,true);
+                    }
+                    return true;
+                }
+            });
         }
     }
 
@@ -655,8 +657,6 @@ public class RechargeStationFragment extends BaseFragment implements HttpCallbac
                 if (locationClient != null)
                     startLocation();
                 break;
-
-
 
             default:
                 break;
