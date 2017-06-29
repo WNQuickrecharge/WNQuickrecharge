@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -262,9 +263,16 @@ public class QrCodeActivity extends BaseActivity implements HttpCallback {
             return;
         }
         closeLoading();
-        //设置可以重复扫描
-        ((CaptureActivityHandler) fragment.getHandler()).restartPreviewAndDecode();
-        showToast(getString(R.string.get_gun_info_fail));
+        showToast(((GetGunInfoResult) result).getResp().getResultMsg());
+        new Handler().postDelayed(new Runnable(){
+
+            public void run() {
+                //设置可以重复扫描
+                ((CaptureActivityHandler) fragment.getHandler()).restartPreviewAndDecode();
+            }
+
+        }, 2000);
+
     }
 
     @Override
