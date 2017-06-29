@@ -3,7 +3,6 @@ package com.optimumnano.quickcharge.activity.qrcode;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -13,6 +12,7 @@ import com.optimumnano.quickcharge.base.BaseActivity;
 import com.optimumnano.quickcharge.utils.PublicUtils;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.uuzuche.lib_zxing.decoding.CaptureActivityHandler;
 
 /**
  * 扫描获取车牌
@@ -70,11 +70,13 @@ public class QrCodeForCarActivity extends BaseActivity {
     CodeUtils.AnalyzeCallback analyzeCallback = new CodeUtils.AnalyzeCallback() {
         @Override
         public void onAnalyzeSuccess(Bitmap mBitmap, final String result) {
-            String plate = PublicUtils.getPlateValue(result,"plate");
+            String plate = PublicUtils.getPlateValue(result, "plate");
 //            String vin = PublicUtils.getPlateValue(result,"vin");
 //            String terminalnum = PublicUtils.getPlateValue(result,"terminalnum");
             if (null == plate) {
                 showToast("请扫正确的车牌号二维码");
+                //设置可以重复扫描
+                ((CaptureActivityHandler) fragment.getHandler()).restartPreviewAndDecode();
                 return;
             } else {
                 Intent intent = new Intent();

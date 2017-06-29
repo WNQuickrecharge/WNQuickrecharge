@@ -1,1 +1,1 @@
-include ':app', ':library', ':materialanimatedswitch', ':SignalA', ':parallel-basic-http-client', ':SignalA.LongPolling'
+include ':app', ':library', ':materialanimatedswitch', ':SignalA', ':parallel-basic-http-client', ':SignalA.LongPolling','lib-zxing'

@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/SignalA" />
             <option value="$PROJECT_DIR$/SignalA.LongPolling" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/lib-zxing" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/materialanimatedswitch" />
             <option value="$PROJECT_DIR$/parallel-basic-http-client" />

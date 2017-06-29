@@ -30,6 +30,7 @@ import com.optimumnano.quickcharge.utils.ToastUtil;
 import com.optimumnano.quickcharge.utils.Tool;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.uuzuche.lib_zxing.decoding.CaptureActivityHandler;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -261,6 +262,8 @@ public class QrCodeActivity extends BaseActivity implements HttpCallback {
             return;
         }
         closeLoading();
+        //设置可以重复扫描
+        ((CaptureActivityHandler) fragment.getHandler()).restartPreviewAndDecode();
         showToast(getString(R.string.get_gun_info_fail));
     }
 
